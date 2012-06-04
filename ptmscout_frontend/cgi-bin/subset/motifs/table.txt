@@ -1,0 +1,20 @@
+#!/usr/bin/python
+import cgi
+print "Content-Type: application/octet-stream\n"
+
+form = cgi.FieldStorage()
+num = form.getvalue('num',None)
+
+filename = "tables/table%s.txt" % num
+
+
+try:
+	fo = open(filename, "r")
+
+	str = fo.read()
+	fo.close()
+except IOError: str = "error opening file"
+
+print str
+
+# Close opend file

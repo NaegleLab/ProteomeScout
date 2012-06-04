@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <title>JsGraphics Chart Demo (WebFX)</title>
+    <script type="text/javascript" src="includes/wz_jsgraphics.js"></script>
+		<script type="text/javascript" src="includes/chart.js"></script>
+		<script type="text/javascript" src="includes/jgchartpainter.js"></script>
+		<script type="text/javascript" src="includes/demo.js"></script>
+		<link type="text/css" rel="StyleSheet" href="../../webfxlayout.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="includes/canvaschart.css" />
+		<style type="text/css">
+			.chart { margin-left: 20px; }
+		</style>
+	</head>
+	<body onload="demo1();">
+		<div class="webfx-main-body">
+   	 <h2>Chart Demo (using JsGraphics painter)</h2>
+	    <p>
+	    	Demo of the chart component using the <code>JsGraphics</code> painter
+	    	implementation by <a href="http://www.coolcode.cn/?p=123">Ma Bingyao</a>.
+	    	It uses the <a href="http://www.walterzorn.com/jsgraphics/jsgraphics_e.htm">jsgraphics</a>
+	    	toolkit by Walter Zorn to draw shapes using nothing more than carefully positions divs.
+	    </p>
+	    <p>
+	    	Should work in almost any browser, however there is no support for
+	    	anti-aliasing and the performance is not great, however as a fall back
+	    	implementation it serves it purpose well.
+	    </p>
+	    <p>
+	    	This implementation is not complete and is provided mostly as a reference at this stage.
+	    </p>
+	    <p>
+	    	<div id="chart" class="chart" style="width: 800px; height: 400px;"></div>
+	  	</p>
+			<p>
+				<a href="chart.html">Introduction</a><br />
+				<a href="implementation.html">Implementation</a><br />
+				<a href="usage.html">Usage</a><br />
+				<a href="api.html">API</a><br />
+				<a href="demo.html">Demo</a><br />
+				<a href="svgdemo.xhtml">SVG Demo (mozilla/opera only)</a><br />
+				JsGraphics Demo<br />
+				<a href="http://webfx.eae.net/download/chart103.zip">Download</a>
+			</p>
+			<p class="author">Author: Emil A Eklund</p>
+			<!-- end webfx-main-body -->
+		</div>
+  </body>
+</html>

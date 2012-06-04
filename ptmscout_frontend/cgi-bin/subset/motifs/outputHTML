@@ -1,0 +1,104 @@
+<html><head><title>Motif Results</title>
+	<script type="text/javascript" src="http://euphrates.mit.edu/mgymrek/paging.js"></script>
+	<script type="text/javascript" src="http://euphrates.mit.edu/mgymrek/chart/includes/excanvas.js"></script>
+	<script type="text/javascript" src="http://euphrates.mit.edu/mgymrek/chart/includes/chart.js"></script>
+	<script type="text/javascript" src="http://euphrates.mit.edu/mgymrek/chart/includes/canvaschartpainter.js"></script>
+	<link rel="stylesheet" type="text/css" href="http://euphrates.mit.edu/mgymrek/chart/includes/canvaschart.css" ><link rel="stylesheet" type="text/css" href="http://euphrates.mit.edu/mgymrek/test.css">
+	<script type="text/javascript">
+	function toggle(o) {
+	var e = document.getElementById(o);
+	e.style.display = e.style.display == 'block' ? 'none' : 'block';
+	}
+	function toggleGO(d1,d2,d3,form)
+	{
+	var c = document.getElementById(d1);
+	var b = document.getElementById(d2);
+	var f = document.getElementById(d3);  
+	c.style.display = (c.style.display == 'none') ? 'block' : 'none';
+	b.style.display = (b.style.display == 'none') ? 'block' : 'none';
+	f.style.display = (f.style.display == 'none') ? 'block' : 'none'; 
+	if (form.tog.value =="show GO terms")
+	    {
+	    form.tog.value = "hide GO terms";
+	    }
+        else
+	    {
+	    form.tog.value = "show GO terms";
+	    }
+	}
+	</script>
+	<script type="text/javascript">
+	function showmenu(elmnt)
+	{
+	document.getElementById(elmnt).style.visibility="visible";
+	}
+	function hidemenu(elmnt)
+	{
+	document.getElementById(elmnt).style.visibility="hidden";
+	}
+	</script>
+	<script type="text/javascript"  src="http://euphrates.mit.edu/mgymrek/wz_jsgraphics.js"></script>
+	<script type="text/javascript"  src="http://euphrates.mit.edu/mgymrek/graphs.js"></script>
+	<style type="text/css"><!--//  Pat Drummond patdrummond.org
+	.boxpopup {
+
+	    font-family:Arial,sans-serif; font-size:smaller; /*POPUP FONT */
+	        color:black; background:#FFFF99; /*COLOURS*/ >
+		    width:250px; text-align:center; /*BOX WIDTH, CENTERED TEXT */
+		        padding:4px 5px 4px 5px; /*SPACE FROM TEXT TO BORDER*/
+			    font-weight:bold; /* TEXT WEIGHT*/
+			        border:1px solid gray; /*POPUP BORDER*/
+				    }
+
+				    #pdq {position:absolute; visibility:hidden; z-index:200; background-color:FFFFCC; border:1px solid gray;}
+				    //-->
+				    </style>
+	</head>
+	<body>
+	<div id="pdq"></div>
+	<script TYPE="text/javascript"><!--//  Pat Drummond patdrummond.org
+	OffsetX=-110; // MODIFY THESE VALUES TO
+	OffsetY=20;   // CHANGE THE POSITION.
+	var old,skn,iex=(document.all),yyy=-1000;
+	var ns4=document.layers
+	var ns6=document.getElementById&&!document.all
+	var ie4=document.all
+	if (ns4) skn=document.pdq
+	else if (ns6) skn=document.getElementById("pdq").style
+	else if (ie4) skn=document.all.pdq.style
+	if (ns4) document.captureEvents(Event.MOUSEMOVE);
+	else {
+	skn.visibility="visible"
+	skn.display="none"
+	}
+	document.onmousemove=get_mouse;
+	function popup(msg){
+	var content="<div class=boxpopup>"+msg+"<\/div>";
+	yyy=OffsetY;
+	if(ns4){skn.document.write(content);skn.document.close();skn.visibility="visible"}
+	if(ns6){document.getElementById("pdq").innerHTML=content;skn.display=''}
+	if(ie4){document.all("pdq").innerHTML=content;skn.display=''}
+	}
+	function get_mouse(e){
+	var x=(ns4||ns6)?e.pageX:event.x+document.body.scrollLeft;
+	skn.left=x+OffsetX;
+	var y=(ns4||ns6)?e.pageY:event.y+document.body.scrollTop;
+	skn.top=y+yyy;
+	}
+	function remove_popup(){
+	yyy=-1000;
+	if(ns4){skn.visibility="hidden";}
+	else if (ns6||ie4)
+	skn.display="none"
+	}
+	//-->
+	</script> 
+	<center>
+	<div id="header"><br><img alt="PTMScout logo" src="http://euphrates.mit.edu/mgymrek/logo.jpg"></div>
+
+	<div id="menu">
+	<br> <a href="http://euphrates.mit.edu/cgi-bin/mgymrek/index.py">HOME </a><font color="\#99CCFF">&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</font> DATASETS<font color="\#99CCFF">&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</font>  		HELP<font color="\#99CCFF">&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</font>  ABOUT
+	<hr width = "50%" ></div><br><br><br><table   width = 40%% ><tr bgcolor="cccccc"><th>Motif</th><th>In Foreground</th><th>In Background</th><th>P-value</th></tr><tr><td> E..P...y....... </td><td>7/64</td><td>6/234</td><td>5.57 x 10<sup>-4</sup></td></tr><tr><td> .......y..SR... </td><td>5/64</td><td>6/234</td><td>1.36 x 10<sup>-3</sup></td></tr><tr><td> ....D..y.....G. </td><td>5/64</td><td>6/234</td><td>1.36 x 10<sup>-3</sup></td></tr><tr><td> E......y.....G. </td><td>5/64</td><td>6/234</td><td>1.36 x 10<sup>-3</sup></td></tr><tr><td> .......yO....Y. </td><td>8/64</td><td>6/234</td><td>1.75 x 10<sup>-3</sup></td></tr><tr><td> ...-.P.y....... </td><td>6/64</td><td>6/234</td><td>1.92 x 10<sup>-3</sup></td></tr><tr><td> ...-...yO...... </td><td>9/64</td><td>6/234</td><td>3.20 x 10<sup>-3</sup></td></tr><tr><td> .......yO...... </td><td>2/64</td><td>6/234</td><td>3.27 x 10<sup>-3</sup></td></tr><tr><td> E......y....... </td><td>1/64</td><td>6/234</td><td>5.01 x 10<sup>-3</sup></td></tr><tr><td> ....-..y....G.. </td><td>7/64</td><td>6/234</td><td>5.09 x 10<sup>-3</sup></td></tr><tr><td> ....O..yO....Y. </td><td>7/64</td><td>6/234</td><td>5.09 x 10<sup>-3</sup></td></tr><tr><td> ...-...yL...... </td><td>4/64</td><td>6/234</td><td>5.22 x 10<sup>-3</sup></td></tr><tr><td> .......yI....Y. </td><td>4/64</td><td>6/234</td><td>5.22 x 10<sup>-3</sup></td></tr><tr><td> .......yO.SR... </td><td>4/64</td><td>6/234</td><td>5.22 x 10<sup>-3</sup></td></tr><tr><td> ......EyL...... </td><td>4/64</td><td>6/234</td><td>5.22 x 10<sup>-3</sup></td></tr><tr><td> ....O..y......E </td><td>4/64</td><td>6/234</td><td>5.22 x 10<sup>-3</sup></td></tr><tr><td> ....O..yO-..... </td><td>4/64</td><td>6/234</td><td>5.22 x 10<sup>-3</sup></td></tr><tr><td> ...E..EyO...... </td><td>4/64</td><td>6/234</td><td>5.22 x 10<sup>-3</sup></td></tr><tr><td> E...-..y.....G. </td><td>4/64</td><td>6/234</td><td>5.22 x 10<sup>-3</sup></td></tr><tr><td> E......y......+ </td><td>4/64</td><td>6/234</td><td>5.22 x 10<sup>-3</sup></td></tr><tr><td> E......y..D.... </td><td>4/64</td><td>6/234</td><td>5.22 x 10<sup>-3</sup></td></tr><tr><td> .-.....y...G... </td><td>6/64</td><td>6/234</td><td>6.01 x 10<sup>-3</sup></td></tr><tr><td> ....-..y.....G. </td><td>6/64</td><td>6/234</td><td>6.01 x 10<sup>-3</sup></td></tr><tr><td> .......yO.O.... </td><td>6/64</td><td>6/234</td><td>6.01 x 10<sup>-3</sup></td></tr><tr><td> .......yOO..... </td><td>6/64</td><td>6/234</td><td>6.01 x 10<sup>-3</sup></td></tr><tr><td> ....D..y......+ </td><td>6/64</td><td>6/234</td><td>6.01 x 10<sup>-3</sup></td></tr><tr><td> ...E...y..O.... </td><td>6/64</td><td>6/234</td><td>6.01 x 10<sup>-3</sup></td></tr><tr><td> ...-...y...R... </td><td>5/64</td><td>6/234</td><td>6.41 x 10<sup>-3</sup></td></tr><tr><td> .......y.D....E </td><td>5/64</td><td>6/234</td><td>6.41 x 10<sup>-3</sup></td></tr><tr><td> ....D..y......K </td><td>5/64</td><td>6/234</td><td>6.41 x 10<sup>-3</sup></td></tr><tr><td> ...E..-yO...... </td><td>5/64</td><td>6/234</td><td>6.41 x 10<sup>-3</sup></td></tr><tr><td> ......Ty....... </td><td>8/64</td><td>6/234</td><td>8.31 x 10<sup>-3</sup></td></tr><tr><td> ....O..yO...... </td><td>8/64</td><td>6/234</td><td>8.31 x 10<sup>-3</sup></td></tr></table><br><br><br><br><br><div id="footer"><a href="reporterror.cgi"> Questions or comments?</a> Email mgymrek@mit.edu</div>
+		</center>
+		</body>
+		</html>

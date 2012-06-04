@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet type="text/xsl" href="api.xsl"?>
+
+<documentation>
+
+<class name="Chart">
+
+	<description>
+		Chart class, used to define and create charts. Constructor takes container
+		element as the first, and only, parameter.
+	</description>
+
+	<syntax>new Chart(el);</syntax>
+
+	<methods>
+		<method name="setPainterFactory">
+			<description>Sets factory function used to create the chart painter. If not set CanvasChartPainterFactory is used.</description>
+			<arguments>
+				<argument name="fFactory" type="Function" description="Factory function to use, such as CanvasChartPainterFactory or SVGChartPainterFactory." />
+			</arguments>
+			<returns type="void" />
+		</method>
+		<method name="setVerticalRange">
+			<description>Sets the range of the vertical axis, if not set the minimum and maximum value of all series will be used.</description>
+			<arguments>
+				<argument name="min" type="Number" description="Minimum value." />
+				<argument name="max" type="Number" description="Maximum value." />
+			</arguments>
+			<returns type="void" />
+		</method>
+		<method name="setLabelPrecision">
+			<description>Sets the precision for labels on the vertical axis.</description>
+			<arguments>
+				<argument name="precision" type="Number" description="Desired precision in number of decimals." />
+			</arguments>
+			<returns type="void" />
+		</method>
+		<method name="setShowLegend">
+			<description>Controls whatever or not the legend should be shown. Defaults to true if not set.</description>
+			<arguments>
+				<argument name="b" type="Boolean" description="If true legend is shown, if false it's not." />
+			</arguments>
+			<returns type="void" />
+		</method>
+		<method name="setGridDensity">
+			<description>Sets grid density, the number of grid lines shown and the number of axis labels.</description>
+			<arguments>
+				<argument name="x" type="Number" description="Number of grid lines and labels on the x-axis." />
+				<argument name="y" type="Number" description="Number of grid lines and labels on the y-axis." />
+			</arguments>
+			<returns type="void" />
+		</method>
+		<method name="setHorizontalLabels">
+			<description>Sets the labels for the horizontal axis, number of labels specified should match the x-axis density specified with setGridDensity.</description>
+			<arguments>
+				<argument name="labels" type="String[]" description="Array of labels." />
+			</arguments>
+			<returns type="void" />
+		</method>
+		<method name="setDefaultType">
+			<description>Sets default series type. Flags can be one of CHART_LINE, CHART_AREA or CHART_BAR and optionally CHART_STACKED. For instance to set the default type to a line chart, CHART_LINE is specified, for a stacked area chart CHART_AREA | CHART_STACKED is used.</description>
+			<arguments>
+				<argument name="flags" type="Number" description="Bitmap determining default series type" />
+			</arguments>
+			<returns type="void" />
+		</method>
+		<method name="setBarWidth">
+			<description>Sets with of bars for bar charts.</description>
+			<arguments>
+				<argument name="width" type="Number" description="Width of bars, in pixels." />
+			</arguments>
+			<returns type="void" />
+		</method>
+		<method name="setBarDistance">
+			<description>Sets distance between bars for bar charts.</description>
+			<arguments>
+				<argument name="distance" type="Number" description="Distance between bars, in pixels." />
+			</arguments>
+			<returns type="void" />
+		</method>
+		<method name="add">
+			<description>Adds series to chart.</description>
+			<arguments>
+				<argument name="label"  type="String" description="Label of series, shown in legend." />
+				<argument name="color"  type="String" description="Color the series area, line or bar will be drawn using." />
+				<argument name="values" type="Number[]" description="Array of values making up the series." />
+				<argument name="flags"  type="Number" optional="true" description="Series type, overrides the default type if specified." />
+			</arguments>
+			<returns type="void" />
+		</method>
+		<method name="draw">
+			<description>Draws the chart, all series should be added and all settings made before calling this.</description>
+			<arguments />
+			<returns type="void" />
+		</method>
+	</methods>
+	<fields />
+	<events />
+</class>
+
+</documentation>

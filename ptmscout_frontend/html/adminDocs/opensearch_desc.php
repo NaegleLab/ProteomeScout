@@ -1,0 +1,1 @@
+../docs/opensearch_desc.php

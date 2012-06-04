@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>Chart Usage (WebFX)</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script type="text/javascript" src="local/webfxlayout.js"></script>
+		<link type="text/css" rel="stylesheet" href="columnlist.css" />
+		<script src="columnlist.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<!-- WebFX Layout Include -->
+		<script type="text/javascript">
+			//<![CDATA[
+			var articleMenu= new WebFXMenu;
+			articleMenu.left  = 384;
+			articleMenu.top   = 86;
+			articleMenu.width = 140;
+			articleMenu.add(new WebFXMenuItem("Introduction", "chart.html"));
+			articleMenu.add(new WebFXMenuItem("Implementation", "implementation.html"));
+			articleMenu.add(new WebFXMenuItem("Usage", "usage.html"));
+			articleMenu.add(new WebFXMenuItem("API", "api.html"));
+			articleMenu.add(new WebFXMenuItem("Demo", "demo.html"));
+			articleMenu.add(new WebFXMenuItem("SVG Demo (mozilla/opera only)", "svgdemo.xhtml"));
+			articleMenu.add(new WebFXMenuItem("JsGraphics Demo", "jsgdemo.html"));
+			articleMenu.add(new WebFXMenuSeparator);
+			articleMenu.add(new WebFXMenuItem("Download", "http://webfx.eae.net/download/chart103.zip"));
+			webfxMenuBar.add(new WebFXMenuButton("Article Menu", null, null, articleMenu));
+
+			webfxLayout.writeTitle("Chart Usage");
+			webfxLayout.writeMenu();
+			webfxLayout.writeDesignedByEdger();
+			//]]>
+		</script>
+		<!-- End WebFX Layout Includes -->
+		<div class="webfx-main-body">
+			<h2>Usage</h2>
+			<p>
+				To use the Chart widget the <i>chart.js</i>, <i>canvaschartpainter.js</i>
+				and <i>canvaschart.css</i> files needs to be included. Furthermore for
+				IE support the <i>excanvas.js</i> files needs to be included.
+				<pre>&lt;script type="text/javascript" src="includes/<a href="includes/excanvas.js">excanvas.js</a>"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="includes/<a href="includes/chart.js">chart.js</a>"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="includes/<a href="includes/canvaschartpainter.js">canvaschartpainter.js</a>"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" type="text/css" href="includes/<a href="includes/canvaschart.css">canvaschart.css</a>" /&gt;</pre>
+			</p>
+			<p>
+				Once the includes are in place a container for the chart needs to be
+				added to the document. This is where the chart will be drawn and the
+				size and location of the container determines these properites of the
+				chart as well.
+			</p>
+			<p>
+				To create a chart thats 400 by 200 insert the following HTML code where
+				the chart should appear. Memorize the id of the container as we'll be
+				using that later to draw the chart.
+				<pre>&lt;div id="chart" class="chart" style="width: 400px; height: 200px;"&gt;&lt;/div&gt;</pre>
+			</p>
+			<h3>Chart Definition</h3>
+			<p>
+				The first thing one has to do to draw a chart is to create an instance
+				of the Chart class. The constructor takes a single parameter, a
+				reference to the container element. So to create a Chart object from the
+				container we just created the following JavaScript code is used;
+				<code>var c = new Chart(document.getElementById('chart'));</code>
+			</p>
+			<p>
+				Once that's done, let's set a few parameters.
+			</p>
+			<pre>c.setDefaultType(CHART_AREA | CHART_STACKED);
+c.setGridDensity(5, 5);
+c.setVerticalRange(0, 200);
+c.setHorizontalLabels(['mon', 'tue', 'wed', 'thu', 'fri']);</pre>
+			<p>
+				The first line will set the default chart type to stacked area.
+				The second sets the The x and y-axis density to 10, which
+				controls the number of grid lines and labels.
+				The third and fourth sets the range and the labels for the horizontal axis.
+			</p>
+			<p>
+				Now the series can be added to the chart.
+			</p>
+			<pre>c.add('Spam',            '#4040FF', [ 5, 10, 20, 10, 40, 52, 68, 70, 70, 60]);
+c.add('Innocent',        '#8080FF', [ 8,  7, 12, 20, 24, 16, 36, 28, 28, 45]);
+c.add('Missed Spam',     '#A5A5FF', [ 8,  7, 12, 20, 24, 16, 36, 36, 18,  5]);
+c.add('False Positives', '#DEDEFF', [ 1,  2,  3,  2,  1,  4, 18, 12,  8,  7]);</pre>
+			<p>
+				The first argument is the label, which will be shown in the legend. The
+				second is the color that will be used to draw the series and the third
+				is an array with the values that makes up the series.
+			</p>
+			<p>
+				At this time we're almost done. A component object has been created, the
+				options set and the series added. All that remains is to call the draw
+				method, <code>c.draw();</code>. This will draw the chart onto the
+				container. 
+			</p>
+			<p>
+				For it to work properly in IE with IECanvas the canvas emulation must
+				be initialized prior to calling the draw method. It's therefore
+				recommended to include an onload handler that does that, either by
+				including the following in the body tag <code>onload="ieCanvasInit('includes/iecanvas.htc');"</code>
+				or this in a script block <code>window.onload = function() { ieCanvasInit('includes/iecanvas.htc'); };</code>.
+				You might also want to call the chart creation code from there.
+			</p>
+			<p>
+				Putting it all together:
+			</p>
+			<pre>function draw() {
+var c = new Chart(document.getElementById('chart'));
+c.setDefaultType(CHART_AREA | CHART_STACKED);
+c.setGridDensity(5, 5);
+c.setVerticalRange(0, 100);
+c.setHorizontalLabels(['mon', 'tue', 'wed', 'thu', 'fri']);
+c.add('Spam',            '#4040FF', [ 5, 10, 20, 10, 40, 52, 68, 70, 70, 60]);
+c.add('Innocent',        '#8080FF', [ 8,  7, 12, 20, 24, 16, 36, 28, 28, 45]);
+c.add('Missed Spam',     '#A5A5FF', [ 8,  7, 12, 20, 24, 16, 36, 36, 18,  5]);
+c.add('False Positives', '#DEDEFF', [ 1,  2,  3,  2,  1,  4, 18, 12,  8,  7]);
+c.draw();
+}
+
+window.onload = function() {
+ieCanvasInit('includes/iecanvas.htc');
+draw(); 
+};
+</pre>
+			<h3>Result</h3>
+			<p>
+				<iframe src="demo2.html" style="width: 420px; height: 220px; border: none;"></iframe>
+			</p>
+			<p>
+				<a href="chart.html">Introduction</a><br />
+				<a href="implementation.html">Implementation</a><br />
+				Usage<br />
+				<a href="api.html">API</a><br />
+				<a href="demo.html">Demo</a><br />
+				<a href="svgdemo.xhtml">SVG Demo</a> (mozilla/opera only)<br />
+				<a href="jsgdemo.html">JsGraphics Demo</a><br />
+				<a href="http://webfx.eae.net/download/chart103.zip">Download</a>
+			</p>
+			<p class="author">Author: Emil A Eklund</p>
+			<!-- end webfx-main-body -->
+		</div>
+	</body>
+</html>

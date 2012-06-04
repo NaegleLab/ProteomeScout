@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>Chart Demo (WebFX)</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script type="text/javascript" src="local/webfxlayout.js"></script>
+    <script type="text/javascript" src="includes/excanvas.js"></script>
+    <script type="text/javascript" src="includes/wz_jsgraphics.js"></script>
+		<script type="text/javascript" src="includes/chart.js"></script>
+		<script type="text/javascript" src="includes/canvaschartpainter.js"></script>
+		<script type="text/javascript" src="includes/jgchartpainter.js.js"></script>
+		<script type="text/javascript" src="includes/demo.js"></script>
+		<link rel="stylesheet" type="text/css" href="includes/canvaschart.css" />
+		<style type="text/css">
+			.chart { margin-left: 20px; }
+		</style>
+	</head>
+	<body onload="demo();">
+		<!-- WebFX Layout Include -->
+		<script type="text/javascript">
+			//<![CDATA[
+			var articleMenu= new WebFXMenu;
+			articleMenu.left  = 384;
+			articleMenu.top   = 86;
+			articleMenu.width = 140;
+			articleMenu.add(new WebFXMenuItem("Introduction", "chart.html"));
+			articleMenu.add(new WebFXMenuItem("Implementation", "implementation.html"));
+			articleMenu.add(new WebFXMenuItem("Usage", "usage.html"));
+			articleMenu.add(new WebFXMenuItem("API", "api.html"));
+			articleMenu.add(new WebFXMenuItem("Demo", "demo.html"));
+			articleMenu.add(new WebFXMenuItem("SVG Demo (mozilla/opera only)", "svgdemo.xhtml"));
+			articleMenu.add(new WebFXMenuItem("JsGraphics Demo", "jsgdemo.html"));
+			articleMenu.add(new WebFXMenuSeparator);
+			articleMenu.add(new WebFXMenuItem("Download", "http://webfx.eae.net/download/chart103.zip"));
+			webfxMenuBar.add(new WebFXMenuButton("Article Menu", null, null, articleMenu));
+
+			webfxLayout.writeTitle("Chart Demo");
+			webfxLayout.writeMenu();
+			webfxLayout.writeDesignedByEdger();
+			//]]>
+		</script>
+		<!-- End WebFX Layout Includes -->
+		<div class="webfx-main-body">
+   	 <h2>Demo</h2>
+			<p>
+				A few demonstrations of the chart competent, using the
+				<code>CanvasChartPainter</code> painter implementation.
+			</p>
+			<p>
+				Tested in Mozilla Firefox 1.5, Opera 9 and Internet Explorer 6 however
+				any browser with JS, DOM and Canvas support should be able to handle it.
+				Internet Explorer requires a canvas implementation, such as the
+				<a href="http://developer.novell.com/xforms/">Novell XForms plugin</a> or
+				the <a href="http://me.eae.net/archive/2005/12/29/canvas-in-ie/">IECanvas</a>
+				emulation script (used here).
+			</p>
+			<h3>Stacked Area, Line and Bar</h3>
+			<p>
+				A stacked area chart, complete with labels and a legend. Also includes a
+				line and two bars.
+				<div id="chart"  class="chart" style="width: 800px; height: 400px;"></div>
+			</p>
+			<h3>Stacked Area, Line, Smaller</h3>
+			<p>
+				Smaller version of the above chart, without the bars and with reduced
+				grid density.
+				<div id="chart2" class="chart" style="width: 400px; height: 200px;"></div>
+			</p>
+			<h3>Lines</h3>
+			<p>
+				Line chart, without the legend.
+				<div id="chart3" class="chart" style="width: 400px; height: 200px;"></div>
+			</p>
+			<h3>Bars</h3>
+	    <p>
+	    	Bar chart, without legend and labels.
+	    	<div id="chart4" class="chart" style="width: 200px; height: 100px;"></div>
+	  	</p>
+			<p>
+				<a href="chart.html">Introduction</a><br />
+				<a href="implementation.html">Implementation</a><br />
+				<a href="usage.html">Usage</a><br />
+				<a href="api.html">API</a><br />
+				Demo<br />
+				<a href="svgdemo.xhtml">SVG Demo</a> (mozilla/opera only)<br />
+				<a href="jsgdemo.html">JsGraphics Demo</a><br />
+				<a href="http://webfx.eae.net/download/chart103.zip">Download</a>
+			</p>
+			<p class="author">Author: Emil A Eklund</p>
+			<!-- end webfx-main-body -->
+		</div>
+	</body>
+</html>

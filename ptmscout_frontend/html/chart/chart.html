@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>Chart (WebFX)</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script type="text/javascript" src="local/webfxlayout.js"></script>
+	</head>
+	<body>
+		<!-- WebFX Layout Include -->
+		<script type="text/javascript">
+			//<![CDATA[
+			var articleMenu= new WebFXMenu;
+			articleMenu.left  = 384;
+			articleMenu.top   = 86;
+			articleMenu.width = 140;
+			articleMenu.add(new WebFXMenuItem("Introduction", "chart.html"));
+			articleMenu.add(new WebFXMenuItem("Implementation", "implementation.html"));
+			articleMenu.add(new WebFXMenuItem("Usage", "usage.html"));
+			articleMenu.add(new WebFXMenuItem("API", "api.html"));
+			articleMenu.add(new WebFXMenuItem("Demo", "demo.html"));
+			articleMenu.add(new WebFXMenuItem("SVG Demo (mozilla/opera only)", "svgdemo.xhtml"));
+			articleMenu.add(new WebFXMenuItem("JsGraphics Demo", "jsgdemo.html"));
+			articleMenu.add(new WebFXMenuSeparator);
+			articleMenu.add(new WebFXMenuItem("Download", "http://webfx.eae.net/download/chart103.zip"));
+			webfxMenuBar.add(new WebFXMenuButton("Article Menu", null, null, articleMenu));
+
+			webfxLayout.writeTitle("Chart");
+			webfxLayout.writeMenu();
+			webfxLayout.writeDesignedByEdger();
+			//]]>
+		</script>
+		<!-- End WebFX Layout Includes -->
+		<div class="webfx-main-body">
+			<div class="license">
+				Licensed under the <a href="http://webfx.eae.net/license/mit">MIT License</a>
+				<p>
+					This component may be obtained, modified and distributed free of charge for personal as
+					well as commercial use. Please see the license for the complete terms and  exact wording.
+				</p>
+			</div>
+			<p>
+				<span class="date">2006-01-08</span>: First public version released.<br />
+				<span class="date">2006-01-10</span>: Fixed bug in automatic range calculation. <br />
+				Also added explicit cast to float for stacked series.<br />
+				<span class="date">2006-04-16</span>: Updated CanvasChartPainter to use
+				the <a href="http://sourceforge.net/projects/excanvas">ExplorerCanvas</a>
+				ie emulation layer instead of the, now deprecated,
+				<a href="http://me.eae.net/archive/2005/12/29/canvas-in-ie/">IECanvas</a>
+				one.<br />
+				Added <a href="http://www.walterzorn.com/jsgraphics/jsgraphics_e.htm">jsgraphics</a>
+				painter by <a href="http://www.coolcode.cn/?p=123">Ma Bingyao</a>.<br />
+				<span class="date">2006-08-28</span>: Updated bundled
+				<a href="http://sourceforge.net/projects/excanvas">ExplorerCanvas</a>
+				to support printing in IE.
+			</p>
+			<h2>Introduction</h2>
+			<p>
+				In web applications developed now days a lot of the logic that previously
+				resided on the server side is now being implemented on the client side.
+				This is especially true for information presentation, components such as
+				trees and columnlist makes it possible for users to interact with the
+				application, or web site if you wish, without contacting the server.
+				However the ability to present data in a graphic rather than textual
+				format has been quite limited, unless a plugin is used or an image is
+				requested from the server.
+			</p>
+			<p>
+				That's where this component comes in to place, it allows various forms
+				of charts to be created, without any additional plugin, and without
+				using images.
+			</p>
+			<h3>Chart Types</h3>
+			<p>
+				A few different chart types are supported and they can be combined in
+				a variety of configurations even in the same chart. The following types
+				are supported:
+			</p>
+			<ul>
+				<li>Area</li>
+				<li>Line</li>
+				<li>Stacked Area</li>
+				<li>Stacked Line</li>
+				<li>Vertical Bars</li>
+			</ul>
+			<p>
+				Introduction<br />
+				<a href="implementation.html">Implementation</a><br />
+				<a href="usage.html">Usage</a><br />
+				<a href="api.html">API</a><br />
+				<a href="demo.html">Demo</a><br />
+				<a href="svgdemo.xhtml">SVG Demo</a> (mozilla/opera only)<br />
+				<a href="jsgdemo.html">JsGraphics Demo</a><br />
+				<a href="http://webfx.eae.net/download/chart103.zip">Download</a>
+			</p>
+			<p class="author">Author: Emil A Eklund</p>
+			<!-- end webfx-main-body -->
+		</div>
+	</body>
+</html>

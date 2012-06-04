@@ -1,0 +1,12 @@
+#!/usr/bin/python
+import cgi
+print "Content-Type: application/octet-stream\n"
+form = cgi.FieldStorage()
+filename = form.getvalue('filename','')
+try:
+	fo = open(filename, "rb")
+
+	str = fo.read();
+	print str
+	fo.close()
+except IOError: print "Error opening file"

@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+	<head>
+		<title>SVG Chart Demo (WebFX)</title>
+    <script type="text/javascript" src="includes/iecanvas.js"></script>
+		<script type="text/javascript" src="includes/chart.js"></script>
+		<script type="text/javascript" src="includes/svgchartpainter.js"></script>
+		<script type="text/javascript" src="includes/demo.js"></script>
+		<link type="text/css" rel="StyleSheet" href="../../webfxlayout.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="includes/canvaschart.css" />
+		<style type="text/css">
+			.chart { margin-left: 20px; }
+		</style>
+	</head>
+	<body onload="demo1('svg');">
+		<div class="webfx-main-body">
+   	 <h2>Chart Demo (using SVG painter)</h2>
+	    <p>
+	    	Demo of the chart component using the <code>SVGChartPainter</code> painter implementation.
+	    </p>
+	    <p>
+	    	Tested in Mozilla Firefox and Opera 9 however any browser with JS, DOM and SVG or SVG Tiny support should be able to handle it.
+	    	Mozilla requires content to be served as <code>text/xml</code> or <code>application/xhtml+xml</code> to allow inline SVG.
+	    </p>
+	    <p>
+	    	This implementation is not complete and is provided mostly as a reference at this stage.
+	    </p>
+	    <p>
+	    	<svg xmlns="http://www.w3.org/2000/svg" id="chart" width="800" height="400">SVG Support Required</svg>
+	  	</p>
+			<p>
+				<a href="chart.html">Introduction</a><br />
+				<a href="implementation.html">Implementation</a><br />
+				<a href="usage.html">Usage</a><br />
+				<a href="api.html">API</a><br />
+				<a href="demo.html">Demo</a><br />
+				SVG Demo (mozilla/opera only)<br />
+				<a href="jsgdemo.html">JsGraphics Demo</a><br />
+				<a href="http://webfx.eae.net/download/chart103.zip">Download</a>
+			</p>
+			<p class="author">Author: Emil A Eklund</p>
+			<!-- end webfx-main-body -->
+		</div>
+	</body>
+</html>

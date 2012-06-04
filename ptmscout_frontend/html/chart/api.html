@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>Chart API (WebFX)</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<!-- WebFX Layout Include -->
+		<script type="text/javascript" src="local/webfxlayout.js"></script>
+		<script type="text/javascript" src="../../webfxapi.js"></script>
+		<!-- end WebFX Layout Includes -->
+	</head>
+	<body>
+		<!-- WebFX Layout Include -->
+		<script type="text/javascript">
+			//<![CDATA[
+			var articleMenu= new WebFXMenu;
+			articleMenu.left  = 384;
+			articleMenu.top   = 86;
+			articleMenu.width = 140;
+			articleMenu.add(new WebFXMenuItem("Introduction", "chart.html"));
+			articleMenu.add(new WebFXMenuItem("Implementation", "implementation.html"));
+			articleMenu.add(new WebFXMenuItem("Usage", "usage.html"));
+			articleMenu.add(new WebFXMenuItem("API", "api.html"));
+			articleMenu.add(new WebFXMenuItem("Demo", "demo.html"));
+			articleMenu.add(new WebFXMenuItem("SVG Demo (mozilla/opera only)", "svgdemo.xhtml"));
+			articleMenu.add(new WebFXMenuItem("JsGraphics Demo", "jsgdemo.html"));
+			articleMenu.add(new WebFXMenuSeparator);
+			articleMenu.add(new WebFXMenuItem("Download", "http://webfx.eae.net/download/chart103.zip"));
+			webfxMenuBar.add(new WebFXMenuButton("Article Menu", null, null, articleMenu));
+
+			webfxLayout.writeTitle("Chart API");
+			webfxLayout.writeMenu();
+			webfxLayout.writeDesignedByEdger();
+			//]]>
+		</script>
+		<!-- End WebFX Layout Includes -->
+		<div class="webfx-main-body">
+			<h2 id="Chart">Chart</h2><p>
+		Chart class, used to define and create charts. Constructor takes container
+		element as the first, and only, parameter.
+	</p><h3>Syntax</h3><pre>new Chart(el);</pre><h3>Parameters</h3><h3>Static Methods</h3><table><thead><tr><td>Name</td><td>Description</td></tr></thead><tbody><tr><td colspan="2">None.</td></tr></tbody></table><h3>Static Fields</h3><table><thead><tr><td>Name</td><td>Type</td><td>Descripton</td></tr></thead><tbody><tr><td colspan="3">None.</td></tr></tbody></table><h3>Methods</h3><table><thead><tr><td>Name</td><td>Description</td></tr></thead><tbody><tr><td><a class="helpLink" href="javascript://" onclick="toggleMethodArguments( event, this ); return false;">add</a><div class="methodContainer"><div class="methodInfo"><h4>Syntax</h4><p><code><span class="object">object</span>.add(<span class="methodArgument">label</span>, <span class="methodArgument">color</span>, <span class="methodArgument">values</span>&nbsp;[, <span class="methodArgument">flags</span>])</code></p><h4>Arguments</h4><table><thead><tr><td>Name</td><td>Type</td><td>Descripton</td></tr></thead><tbody><tr><td><code>label</code></td><td><code>String</code></td><td>Label of series, shown in legend.</td></tr><tr><td><code>color</code></td><td><code>String</code></td><td>Color the series area, line or bar will be drawn using.</td></tr><tr><td><code>values</code></td><td><code>Number[]</code></td><td>Array of values making up the series.</td></tr><tr><td><code>flags</code></td><td><code>Number</code></td><td><span class="optional">Optional.</span> Series type, overrides the default type if specified.</td></tr></tbody></table><h4>Return Type</h4><p><code>void</code></p></div></div></td><td>Adds series to chart.</td></tr><tr><td><a class="helpLink" href="javascript://" onclick="toggleMethodArguments( event, this ); return false;">draw</a><div class="methodContainer"><div class="methodInfo"><h4>Syntax</h4><p><code><span class="object">object</span>.draw()</code></p><h4>Arguments</h4><table><thead><tr><td>Name</td><td>Type</td><td>Descripton</td></tr></thead><tbody><tr><td></td></tr></tbody></table><h4>Return Type</h4><p><code>void</code></p></div></div></td><td>Draws the chart, all series should be added and all settings made before calling this.</td></tr><tr><td><a class="helpLink" href="javascript://" onclick="toggleMethodArguments( event, this ); return false;">setBarDistance</a><div class="methodContainer"><div class="methodInfo"><h4>Syntax</h4><p><code><span class="object">object</span>.setBarDistance(<span class="methodArgument">distance</span>)</code></p><h4>Arguments</h4><table><thead><tr><td>Name</td><td>Type</td><td>Descripton</td></tr></thead><tbody><tr><td><code>distance</code></td><td><code>Number</code></td><td>Distance between bars, in pixels.</td></tr></tbody></table><h4>Return Type</h4><p><code>void</code></p></div></div></td><td>Sets distance between bars for bar charts.</td></tr><tr><td><a class="helpLink" href="javascript://" onclick="toggleMethodArguments( event, this ); return false;">setBarWidth</a><div class="methodContainer"><div class="methodInfo"><h4>Syntax</h4><p><code><span class="object">object</span>.setBarWidth(<span class="methodArgument">width</span>)</code></p><h4>Arguments</h4><table><thead><tr><td>Name</td><td>Type</td><td>Descripton</td></tr></thead><tbody><tr><td><code>width</code></td><td><code>Number</code></td><td>Width of bars, in pixels.</td></tr></tbody></table><h4>Return Type</h4><p><code>void</code></p></div></div></td><td>Sets with of bars for bar charts.</td></tr><tr><td><a class="helpLink" href="javascript://" onclick="toggleMethodArguments( event, this ); return false;">setDefaultType</a><div class="methodContainer"><div class="methodInfo"><h4>Syntax</h4><p><code><span class="object">object</span>.setDefaultType(<span class="methodArgument">flags</span>)</code></p><h4>Arguments</h4><table><thead><tr><td>Name</td><td>Type</td><td>Descripton</td></tr></thead><tbody><tr><td><code>flags</code></td><td><code>Number</code></td><td>Bitmap determining default series type</td></tr></tbody></table><h4>Return Type</h4><p><code>void</code></p></div></div></td><td>Sets default series type. Flags can be one of CHART_LINE, CHART_AREA or CHART_BAR and optionally CHART_STACKED. For instance to set the default type to a line chart, CHART_LINE is specified, for a stacked area chart CHART_AREA | CHART_STACKED is used.</td></tr><tr><td><a class="helpLink" href="javascript://" onclick="toggleMethodArguments( event, this ); return false;">setGridDensity</a><div class="methodContainer"><div class="methodInfo"><h4>Syntax</h4><p><code><span class="object">object</span>.setGridDensity(<span class="methodArgument">x</span>, <span class="methodArgument">y</span>)</code></p><h4>Arguments</h4><table><thead><tr><td>Name</td><td>Type</td><td>Descripton</td></tr></thead><tbody><tr><td><code>x</code></td><td><code>Number</code></td><td>Number of grid lines and labels on the x-axis.</td></tr><tr><td><code>y</code></td><td><code>Number</code></td><td>Number of grid lines and labels on the y-axis.</td></tr></tbody></table><h4>Return Type</h4><p><code>void</code></p></div></div></td><td>Sets grid density, the number of grid lines shown and the number of axis labels.</td></tr><tr><td><a class="helpLink" href="javascript://" onclick="toggleMethodArguments( event, this ); return false;">setHorizontalLabels</a><div class="methodContainer"><div class="methodInfo"><h4>Syntax</h4><p><code><span class="object">object</span>.setHorizontalLabels(<span class="methodArgument">labels</span>)</code></p><h4>Arguments</h4><table><thead><tr><td>Name</td><td>Type</td><td>Descripton</td></tr></thead><tbody><tr><td><code>labels</code></td><td><code>String[]</code></td><td>Array of labels.</td></tr></tbody></table><h4>Return Type</h4><p><code>void</code></p></div></div></td><td>Sets the labels for the horizontal axis, number of labels specified should match the x-axis density specified with setGridDensity.</td></tr><tr><td><a class="helpLink" href="javascript://" onclick="toggleMethodArguments( event, this ); return false;">setLabelPrecision</a><div class="methodContainer"><div class="methodInfo"><h4>Syntax</h4><p><code><span class="object">object</span>.setLabelPrecision(<span class="methodArgument">precision</span>)</code></p><h4>Arguments</h4><table><thead><tr><td>Name</td><td>Type</td><td>Descripton</td></tr></thead><tbody><tr><td><code>precision</code></td><td><code>Number</code></td><td>Desired precision in number of decimals.</td></tr></tbody></table><h4>Return Type</h4><p><code>void</code></p></div></div></td><td>Sets the precision for labels on the vertical axis.</td></tr><tr><td><a class="helpLink" href="javascript://" onclick="toggleMethodArguments( event, this ); return false;">setPainterFactory</a><div class="methodContainer"><div class="methodInfo"><h4>Syntax</h4><p><code><span class="object">object</span>.setPainterFactory(<span class="methodArgument">fFactory</span>)</code></p><h4>Arguments</h4><table><thead><tr><td>Name</td><td>Type</td><td>Descripton</td></tr></thead><tbody><tr><td><code>fFactory</code></td><td><code>Function</code></td><td>Factory function to use, such as CanvasChartPainterFactory or SVGChartPainterFactory.</td></tr></tbody></table><h4>Return Type</h4><p><code>void</code></p></div></div></td><td>Sets factory function used to create the chart painter. If not set CanvasChartPainterFactory is used.</td></tr><tr><td><a class="helpLink" href="javascript://" onclick="toggleMethodArguments( event, this ); return false;">setShowLegend</a><div class="methodContainer"><div class="methodInfo"><h4>Syntax</h4><p><code><span class="object">object</span>.setShowLegend(<span class="methodArgument">b</span>)</code></p><h4>Arguments</h4><table><thead><tr><td>Name</td><td>Type</td><td>Descripton</td></tr></thead><tbody><tr><td><code>b</code></td><td><code>Boolean</code></td><td>If true legend is shown, if false it's not.</td></tr></tbody></table><h4>Return Type</h4><p><code>void</code></p></div></div></td><td>Controls whatever or not the legend should be shown. Defaults to true if not set.</td></tr><tr><td><a class="helpLink" href="javascript://" onclick="toggleMethodArguments( event, this ); return false;">setVerticalRange</a><div class="methodContainer"><div class="methodInfo"><h4>Syntax</h4><p><code><span class="object">object</span>.setVerticalRange(<span class="methodArgument">min</span>, <span class="methodArgument">max</span>)</code></p><h4>Arguments</h4><table><thead><tr><td>Name</td><td>Type</td><td>Descripton</td></tr></thead><tbody><tr><td><code>min</code></td><td><code>Number</code></td><td>Minimum value.</td></tr><tr><td><code>max</code></td><td><code>Number</code></td><td>Maximum value.</td></tr></tbody></table><h4>Return Type</h4><p><code>void</code></p></div></div></td><td>Sets the range of the vertical axis, if not set the minimum and maximum value of all series will be used.</td></tr></tbody></table><h3>Fields</h3><table><thead><tr><td>Name</td><td>Type</td><td>Descripton</td></tr></thead><tbody><tr><td colspan="3">None.</td></tr></tbody></table><h3>Events</h3><table><thead><tr><td>Name</td><td>Descripton</td></tr></thead><tbody><tr><td colspan="2">None.</td></tr></tbody></table><h3>Remarks</h3><p>
+			None.
+		</p>
+			<p>
+				<a href="chart.html">Introduction</a><br />
+				<a href="implementation.html">Implementation</a><br />
+				<a href="usage.html">Usage</a><br />
+				API<br />
+				<a href="demo.html">Demo</a><br />
+				<a href="svgdemo.xhtml">SVG Demo (mozilla/opera only)</a><br />
+				<a href="jsgdemo.html">JsGraphics Demo</a><br />
+				<a href="http://webfx.eae.net/download/chart103.zip">Download</a>
+			</p>
+			<p class="author">Author: Emil A Eklund</p>
+			<!-- end webfx-main-body -->
+		</div>
+	</body>
+</html>

@@ -1,0 +1,121 @@
+#!/usr/bin/python
+from pathname import *
+import cgi
+import cgitb;cgitb.enable()
+print "Content-Type: application/octet-stream\n"
+import sys
+import MySQLdb
+import re
+db = MySQLdb.connect(user= "%s"%user, passwd="%s"%mysql, db="%s"%database)
+c=db.cursor()
+form = cgi.FieldStorage() 
+expid=form.getvalue("expid",20)
+
+
+### make a dictionary of peptide: gi number
+pepToGI = {}
+
+for item in form.keys():
+    if "sel" in item:
+       val = form.getvalue(item)
+       ## get pep
+       query="""select phosphopep from MS where id = %s"""%item[3:]
+       c.execute(query)
+       x=c.fetchall()
+       if len(x)>0:
+              pepToGI[x[0][0]]=val
+
+### get filename of old data file, copy it's text
+query = """select dataset from experiment where id= %s"""%expid
+c.execute(query)
+x=c.fetchall()
+try: filenameOnly = x[0][0]
+#filename = dataPath+filenameOnly
+except IndexError: filenameOnly = None
+
+filename = dataPath+filenameOnly
+
+if filename!=None:
+   try:
+      lines= open(filename,'r').readlines()
+   except IOError: lines=["Internal Error: no data file found. Contact site administrator"]
+   ## for each line, match peptide to form value, print with new gi number
+   newtext= lines[0].strip()+'\t'+"sites(new)"+'\t'+"protein name(new)\tgene name(new)\n"
+   columns = [item.strip() for item in lines[0].split('\t')]
+   #print columns
+
+   ## get acc col:
+   accCol = 0
+   pepCol=0
+   for item in columns:
+	if re.match("acc",item.lower()) != None or re.match("acc:",item.lower()) != None:
+		accCol = columns.index(item)
+	if re.search("pep", item.lower()) != None or re.search("pep:tryps",item.lower())!=None:
+		pepCol = columns.index(item)		
+   for line in lines[1:]:
+       good = True
+       items = line.split('\t')
+       #print items[accCol], items[pepCol],pepToGI.get(items[pepCol],None)
+
+       pep = items[pepCol].replace('pY','y')
+       pep = pep.replace('pT','t')
+       pep = pep.replace('pS','s')
+       pep = pep.strip()
+       if pep in pepToGI.keys():
+              items[accCol]=pepToGI.get(pep,None)
+           
+       ### get new site assignment for this protein, add to end as column as "New Site Assignment"
+       columns.append("New site assignment")
+       #first get protein id
+       query = """select protein_id, name, acc_gene, sequence from acc join protein on protein.id=acc.protein_id where value = '%s' """%items[accCol].strip()
+       
+       c.execute(query)
+       x=c.fetchall()
+       try:
+		pid = x[0][0]
+                name = x[0][1]
+                acc_gene=x[0][2]
+                sequence = x[0][3]
+       except IndexError:
+	      #print "Error getting protein id"
+	      #sys.exit(0)
+	      pid = None
+	      good=False # there was an error finding the accession, must have had error loading protein?
+	      
+      
+       
+       try:
+           startPos = sequence.find(pep.upper())
+           sites=[]
+           for m in re.finditer("[a-z]", pep):
+               if startPos == -1:
+                   sites.append('error assigning to protein for PEP')
+                   sites.append(pep.upper())
+                   #sites.append(sequence)
+               site = m.group(0).upper() + str(m.start(0)+startPos+1)
+               sites.append(site)
+       except:
+           sites.append('error')
+       siteStr = ""
+       # uniquify sites
+       sites = list(set(sites))
+       for site in sites:
+	   if site == sites[-1]:
+	      siteStr += site
+	   else:
+	   	   siteStr += site+"/"
+              
+       items.append(siteStr)
+       items.append(name)
+       items.append(acc_gene)
+       ###
+       newline= ''
+       for item in items:
+	   newline += item.strip()+'\t'
+       newline= newline.strip()+'\n'
+       if good:
+              newtext += newline
+   print newtext
+else:
+	print "Error"
+       

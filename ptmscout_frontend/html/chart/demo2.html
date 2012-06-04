@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <title>Chart Demo (using Canvas painter)</title>
+    <script type="text/javascript" src="includes/excanvas.js"></script>
+		<script type="text/javascript" src="includes/chart.js"></script>
+		<script type="text/javascript" src="includes/canvaschartpainter.js"></script>
+		<link rel="stylesheet" type="text/css" href="includes/canvaschart.css" />
+		<style type="text/css">
+			html, body { border: none; padding: 0px; margin: 0px; }
+		</style>
+  </head>
+  <body onload="demo();">
+    <div id="chart" class="chart" style="width: 400px; height: 200px;"></div>
+    <script type="text/javascript">
+    	function draw() {
+    		var c = new Chart(document.getElementById('chart'));
+				c.setDefaultType(CHART_AREA | CHART_STACKED);
+				c.setGridDensity(5, 5);
+				c.setVerticalRange(0, 200);
+				c.setHorizontalLabels(['mon', 'tue', 'wed', 'thu', 'fri']);
+				c.add('Spam',            '#4040FF', [ 5, 10, 20, 10, 40, 52, 68, 70, 70, 60]);
+				c.add('Innocent',        '#8080FF', [ 8,  7, 12, 20, 24, 16, 36, 28, 28, 45]);
+				c.add('Missed Spam',     '#A5A5FF', [ 8,  7, 12, 20, 24, 16, 36, 36, 18,  5]);
+				c.add('False Positives', '#DEDEFF', [ 1,  2,  3,  2,  1,  4, 18, 12,  8,  7]);
+				c.draw();
+    	}
+    	
+    	window.onload = function() {
+    		draw();
+    	};
+    </script>
+  </body>
+</html>

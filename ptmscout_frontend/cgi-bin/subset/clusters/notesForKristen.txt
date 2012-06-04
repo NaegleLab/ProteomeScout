@@ -1,0 +1,46 @@
+
+Hey Kristen,
+
+I have a couple of follow up questions:
+
+
+> 1 ... cluster questions
+**********************************
+A couple questions here:
+1. not quite sure what you mean by "non-entries for MS ids"... so does that mean some MS ids will belong to no cluster, which looks like the case in "example2.txt"?
+
+2. Some cluster sets have quite a large number of clusters (I saw up to 28). Should I then display 28 tabs?)
+
+************************************
+>
+> 2. How do I call your code?
+/home/knaegle/SVN/knaegle/scripts/dataIO/call_printMinDataDescForExpId_webdev.pl
+EXPERIMENT_ID OUTPUT_FILE
+This is to output the MS ids, the gene name and site_code and then the
+data (since they need the data to create the clusters).  Let me know
+if you have a problem calling this. Permissions say that you should be
+able to execute it, but I don't know if all the dependent libraries
+are also accessible.
+************************************
+I tried :
+
+/home/knaegle/SVN/knaegle/scripts/dataIO/call_printMinDataDescForExpId_webdev.pl 11 test.txt
+
+
+I got:
+
+Can't locate dataIO.pm in @INC (@INC contains: /usr/lib64/perl5/5.8.5/x86_64-linux-thread-multi /usr/lib/perl5/5.8.5 /usr/lib64/perl5/site_perl/5.8.5/x86_64-linux-thread-multi /usr/lib/perl5/site_perl/5.8.5 /usr/lib/perl5/site_perl /usr/lib64/perl5/vendor_perl/5.8.5/x86_64-linux-thread-multi /usr/lib/perl5/vendor_perl/5.8.5 /usr/lib64/perl5/vendor_perl/5.8.3/x86_64-linux-thread-multi /usr/lib/perl5/vendor_perl .) at /home/knaegle/SVN/knaegle/scripts/dataIO/call_printMinDataDescForExpId_webdev.pl line 4.
+
+
+BEGIN failed--compilation aborted at /home/knaegle/SVN/knaegle/scripts/dataIO/call_printMinDataDescForExpId_webdev.pl line 4.
+
+
+************************
+Also, unrelated, but I was going to try to go home for 2-3 weeks some time this summer. I can still work at home and have gchat/skype meetings. So 1. is this ok? and 2. are there any particular bad times to not be around? I was thinking of going for end of July/beginning of August but am flexible. 
+
+Thanks!
+
+~Melissa
+
+P.S. Does Brian know about the cluster stuff? I am meeting with him today and could but him as well :)
+

@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>Chart Implementation (WebFX)</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script type="text/javascript" src="local/webfxlayout.js"></script>
+	</head>
+	<body>
+		<!-- WebFX Layout Include -->
+		<script type="text/javascript">
+			//<![CDATA[
+			var articleMenu= new WebFXMenu;
+			articleMenu.left  = 384;
+			articleMenu.top   = 86;
+			articleMenu.width = 140;
+			articleMenu.add(new WebFXMenuItem("Introduction", "chart.html"));
+			articleMenu.add(new WebFXMenuItem("Implementation", "implementation.html"));
+			articleMenu.add(new WebFXMenuItem("Usage", "usage.html"));
+			articleMenu.add(new WebFXMenuItem("API", "api.html"));
+			articleMenu.add(new WebFXMenuItem("Demo", "demo.html"));
+			articleMenu.add(new WebFXMenuItem("SVG Demo (mozilla/opera only)", "svgdemo.xhtml"));
+			articleMenu.add(new WebFXMenuItem("JsGraphics Demo", "jsgdemo.html"));
+			articleMenu.add(new WebFXMenuSeparator);
+			articleMenu.add(new WebFXMenuItem("Download", "http://webfx.eae.net/download/chart103.zip"));
+			webfxMenuBar.add(new WebFXMenuButton("Article Menu", null, null, articleMenu));
+
+			webfxLayout.writeTitle("Chart Implementation");
+			webfxLayout.writeMenu();
+			webfxLayout.writeDesignedByEdger();
+			//]]>
+		</script>
+		<!-- End WebFX Layout Includes -->
+		<div class="webfx-main-body">
+			<h2>Implementation</h2>
+			<p>
+				As HTML in itself doesn't include any functionality for drawing the only
+				kind of chart that can easily be made is the bar chart. Stretching an
+				image, or a block container (such as a div), to a certain width will
+				accomplish that. Creating line, area and pie charts though is a bit
+				trickier.
+			</p>
+			<h3>Drawing</h3>
+			<p>
+				With the release of Internet Explorer 5 Microsoft introduced an API for
+				drawing vector graphics, called VML. Erik wrote the
+				<a href="http://webfx.eae.net/dhtml/VMLClock/clock.html">VML Clock</a>
+				article shortly after it's release to showcase it, however it's seen
+				little coverage and hardly any deployment.
+				(<a href="http://www.bindows.net/">Bindows</a>™, the company where
+				Erik used to work, actually does use VML in a few of their components,
+				such as charts and gauges).
+			</p>
+			<p>
+				One of the reasons VML has hardly seen any use is because it's IE only
+				and most people have been waiting for SVG. Which has been under way for
+				several years now but only recently where added to the  default Mozilla
+				builds and Opera. To make matters worse it seems IE will not be getting
+				native SVG support anytime soon.
+			</p>
+			<h3>Canvas</h3>
+			<p>
+				Early last year Apple introduced
+				<a href="http://developer.mozilla.org/en/docs/Drawing_Graphics_with_Canvas">Canvas</a>,
+				yet another technology for drawing, in their Safari web browser.
+				Unlike SVG and VML it's based on pixels rather than vectors. While this
+				might seems inferior it's actually very suitable for drawing fixed size
+				2D graphics, such as charts and graphs.
+			</p>
+			<p>
+				Since being introduced by Apple support for it has been added both to
+				Mozilla and Opera, making it available in all major web browser but IE.
+			</p>
+			<p>
+				My original plan was to create the Chart component to use different
+				painters depending on the browser, that way VML could be used in IE and
+				Canvas or SVG in all other browsers. That's also how I built it, but at
+				the time the API and the Canvas painter implementation where complete the
+				<a href="http://me.eae.net/archive/2005/12/29/canvas-in-ie/">IECanvas</a>
+				emulation project I've been working on had come far enough to allow the
+				Canvas implementation to be used in IE as well.
+			</p>
+			<p>
+				<a href="chart.html">Introduction</a><br />
+				Implementation<br />
+				<a href="usage.html">Usage</a><br />
+				<a href="api.html">API</a><br />
+				<a href="demo.html">Demo</a><br />
+				<a href="svgdemo.xhtml">SVG Demo</a> (mozilla/opera only)<br />
+				<a href="jsgdemo.html">JsGraphics Demo</a><br />
+				<a href="http://webfx.eae.net/download/chart103.zip">Download</a>
+			</p>
+			<p class="author">Author: Emil A Eklund</p>
+			<!-- end webfx-main-body -->
+		</div>
+	</body>
+</html>
+ 

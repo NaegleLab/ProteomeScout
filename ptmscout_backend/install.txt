@@ -1,0 +1,261 @@
+= Pre-requisites and system configuration =
+
+== Recommended System Configuration ==
+We apologize that we cannot gurantee compatibility with all versions of possible software.  
+However, we can provide the platform setup for which we have developed and had success on:
+* Red Hat Enterprise Linux Server release 5.4 (Tikanga)
+* Apache 2.2.3 (Red Hat) 
+* MySQL 5.0.77
+* Perl 5.8.8
+* Python 2.4.3
+
+== Required Packages ==
+Please make sure these are installed
+
+* Perl Packages, available from cpan.org:
+** bioperl
+** Math::Counting
+** CMUNGALL/GO
+** GO-TermFinder
+
+* Python Packages, available from pypi.python.org:
+** numpy
+** matplotlib
+
+* HMMER (HMMER2 not HMMER3)
+** Unfortunately, we do not support HMMER3, so please be sure to retrieve and install the 
+last version of HMMER2 available from http://hmmer.janelia.org/
+** During the HMMER installation, prepare for mutliple threads by using: 
+   ./configure --enable-threads
+
+
+
+= Installation =
+
+== Downloading and Paths ==
+You will need to determine the following locations for where you will place 
+PTMScout code and data. The installer will also need root privileges. 
+* An installation directory where data directories will reside as well as non-http 
+perl code (referred to as the backend scripts).  
+This will be referred to as <your-install-dir>.  For example /opt/ptmscout
+* Your cgi-bin directory accessible at http://<your.url.com>/cgi-bin.  
+Referred to as <your-cgi-bin-dir>
+* Your html directory accessible at http://<your.url.com>. Referred to as <your-html-dir>.
+* NOTE: Python headers, called by apache from the web access, will expect Python to be in 
+/usr/local/bin/python.  If your python path is somewhere else you can setup a symbolic link 
+to /usr/local/bin/python.  See known installation problems for a more complete description. 
+
+===Download and extraction ===
+* Download the package and extract to <your-install-dir>
+* Move all contents of the cgi-bin directory to <your-cgi-bin-dir>/<cgi-bin-ext> 
+** Keep in mind what you name your cgi-bin-ext will be your URL: 
+http://your.url.com/cgi-bin/cgi-bin-ext, so use something appropriately 
+informative and usable.
+** SELinux specifically run: /sbin/restorecon -R -v '<your-cgi-bin>/<cgi-bin-ext>' 
+
+* Move all contents of the html directory to <your-html-dir>/<html-ext>.  
+You could copy directly into html, but to separate other functionality from 
+PTMScout, we recommend you create a new directory for this. 
+** SELinux specifically run: /sbin/restorecon -R -v '<your-html-dir>/<html-ext>'
+
+=== Permissions ===
+* Python/CGI scripts will be creating various temporary files. Hence, you must ensure the 
+directories below are writeable by all users (i.e. chmod a+w <dir>):
+   ** <your-tmp-dir>
+* In <cgi-bin-ext> the following directories:
+   ** tempFiles/clusters
+   ** tempFiles/entropy
+   ** tempFiles/fasta
+   ** tempFiles/motifFiles
+   ** tempFiles/tables
+   ** imageScripts/mpl
+   ** pegg
+   ** subset
+   ** subset/motifs
+   ** subset/motifs/tables 
+   ** subset/motifs/htmls
+   ** subset/motifs/numsfile.txt
+* In <your-install-dir>
+  ** /datasets
+
+
+
+== Databases ==
+Create two databases, one to hold ptmscout data and the other will be for a local version of refseq. 
+* Create database: <your_ptmscout_db>
+** Create two users: <user_admin> has ALL privileges 
+		     <user> has SELECT privileges
+
+* Create database: <your_refseq_db>
+** Give <user_admin> permissions for ALL privileges to <your_refseq_db>
+
+* Setup the schemas: Schemas and the expression data have been rolled into .sql files for you to 
+setup in <your_install_dir>/backups. websterize.py <experiment_id>
+** Change into the /backups directory and run the following mysql load commands
+** mysql -u<user_admin> -p <your_ptmscout_db> < ptmscout_schema.sql
+** msyql -u<user_admin> -p <your_refseq_db> < refseq_schema.sql
+
+
+
+= Configuring your system = 
+* Make sure <your-install-dir>/ptmscout_backend/lib is in your global Perl 
+pathway before running any scripts (or use the includes switch when you run 
+any perl scripts in ptmscout_backend).  PERL5LIB is the global environment variable.
+* You will need to configure the following global files to point to your appropriate 
+directories and databases.  Names to be replaced are in <> and correspond with language 
+used during the rest of the installation instructions. 
+** <your-cgi-bin-dir>/<cgi-bin-ext>/pathname.py
+** <your-cgi-bin-dir>/cgi-bin-ext>/includes/secureDB.py (this is where you will enter 
+database information for .py, make this readable by owner only to ensure security). 
+*** At this point, check to make sure all subdirectories in <cgi-bin-ext> which have a 
+pathname.py are symbolic links to <your-cgi-bin-dir>/<cgi-bin-ext>/pathname.py 
+** <your-install-dir>/ptmscout_backend/lib/globalVars.pm
+
+*If you are going to have more than one database, then in 
+<your-install-dir>/ptmscout_backend/lib/DBTools/dbIO.pm add those and a single letter 
+code to returnDBHNoCommit. 
+* If you are only going to have one database which is "Production" then configuration 
+setup you performed in globalVars.pm and secureDB.py is sufficient. 
+* globalVars.pm has placeholders for a test database and an update database.  You 
+may choose to create those databases when/if needed.  
+
+
+= Update Dependencies = 
+
+== Load Refseq Database == 
+* Run the script to fetch and load Refseq information, this is grabbing the most current 
+Refseq release: 
+perl  <your-install-dir>/ptmscout_backend/scripts/NCBI_DB/call_addAllFilesToDB.pl 0
+** The CHECK argument at the end will turn off checking.  Should this process crash 
+partway through, then set this to 1 to ensure duplicate records are not added 
+(this will slow the load considerably). 
+
+== Gene Ontology ==
+* Retrieve the latest ontology file in obo format from Gene Ontology 
+(http://geneontology.org/GO.downloads.ontology.shtml) and place it in 
+<your-install-dir>/GO/<latest_gene_ontology.obo>_rel<x>. 
+* You must make sure to add the release number <x> to this file name.
+* Make a symbolic link to this named gene_ontology.obo.  This is the file looked for 
+when loading GO terms in the database. By making it a symbolic link you can always 
+keep older versions while updating easily. 
+** ln -s <latest_gene_ontology.obo> gene_ontology.obo
+** For example: gene_ontology.obo will link to gene_ontology.obo_rel1.2 if the current 
+GO version is 1.2
+* Use PTMScout's script to automatically retrieve annotation files:
+** perl <your-install-dir>/ptmscout_backend/scripts/geneOntology/call_retrieveAllGOAnnotationFiles.pl 1
+*** The argument passed to this script (REMOVE_IEA) is a boolean value, set to 1 if 
+you would like to remove all 'inferred electronic annotations', which we recommend. 
+
+
+
+
+= Getting Started =
+ 
+* The script for loading files of experiments is: call_loadDataFile.pl and is found under 
+the ptmscout_backend/scripts/database directory. This is the usage:
+
+* perl call_loadDataFile.pl  DATA_FILE NAME AUTHOR DESCRIPTION CONTACT PMID URL PUBLISHED 
+AMBGUITY EXPORT EXPID_LINK SUBMISSION_EMAIL PRIMARY_MOD(S) JOURNAL PUB_DATE VOLUME PAGES 
+[P|U|T]
+** DATA_FILE - tab separated file with minimal columns acc and pep. 
+** NAME - name of experiment
+** AUTHOR - authors
+** DESCRIPTION - a nice and informative description of the dataset and experimental conditions.
+** CONTACT - contact information for the dataset
+** PMID - pubmed id, if datase is published
+** URL - URL to the dataset (if it was downloaded from a site or a link to the PMID record)
+** PUBLISHED - boolean value: 1 if published.  
+** AMBIGUITY - boolean value: 1 if you want to concurrently check for other possible protein 
+assignments (within the database and in refseq). Use 0 if you are loading compendia, or other 
+peptide values that don't represent the exact fragment.
+** EXPORT - boolean value: 0 will limit exportability. 0 is reserved for things like data 
+compendia that will lock down certain website features
+** EXPID_LINK - if this is a child experiment, this is the experiment.id of the parent 
+experiment
+** SUMBISSION_EMAIL - email of person submitting dataset.
+** PRIMARY_MODS - 'Y', 'S','T', and 'K' are currently accepted to indicate the primary 
+modifications 
+** JOURNAL, PUB_DATE (publication date), VOLUME and PAGES are all arguments concerning 
+information regarding the publication, if applicable. If unpublished, these values may be null.
+** Argument indicating database to load into. P stands for "Production". This is set in 
+globalVars.pm 
+
+
+* Once you have loaded
+
+Example text files have been placed into the <your-install-dir>/datasets directory and 
+their loading commands are below (replace email and directory path).  We suggest you attempt the first
+dataset load from the command line and the second as an example for dataset loading through the web interface.
+
+*NOTE: The following dataset loads will take a significant amount of time, on the order of hours) as proteins are loaded for the first time into your database, their domains will need to be computed if not parsable from Pfam files.  Please run these to completion, despite warnings and other debugging messages. You'll also experience "maintaining database" messages the first time you load a dataset. 
+
+=Wolf-Yadlin et. al. 2007 PNAS:=
+perl call_loadDataFile.pl <your-install-dir>/datasets/white_7TimePt_msxplore.txt 'Multiple reaction monitoring for robust quantitative proteomic analysis of cellular signaling networks.' 'Alejandro Wolf-Yadlin, Sampsa Hautaniemi, Douglas A Lauffenburger, Forest M White' 'Saturating EGF stimulation of HMEC cells, measured across 7 time points, using MRM' 'fwhite@mit.edu' 17389395 'http://www.ncbi.nlm.nih.gov/pubmed/17389395?ordinalpos=2&itool=EntrezSystem2.PEntrez.Pubmed.Pubmed_ResultsPanel.Pubmed_DefaultReportPanel.Pubmed_RVDocSum' 1 1 1 0 '<your-email>' 'Y' 'Proc Natl Acad Sci U S A' '2009-12-12 01:00:01' '104' '5860-5' 'P'
+
+=Schmelzle et. al. Insulin dataset:= (try loading this through the web interface: save the file and use the indicated arguments)
+perl call_loadDataFile.pl <your-install-dir>/datasets/white_insulin_table2_averagesStdDevs.txt5927072 '[Average and Std Deviations] [Added in mixed phosphosites, picked first of multiple sites when unknown] Temporal dynamics of tyrosine phosphorylation in insulin signaling' 'Katrin Schmelzle, Susan Kane, Scott Gridley, Gustav E Lienhard, Forest M White' '3T3-L1 adipocytes stimulated with 150nmol/l insulin for 0, 5, 15, 45 minutes. Mixed sites of unknown determination removed' 'fwhite@mit.edu' 16873679 'http://www.ncbi.nlm.nih.gov/sites/entrez?holding=&db=pubmed&cmd=search&term=16873679' 1 1 1 20 '<your-email>' 'Y' 'Diabetes' '2006-Aug' '55' '2171-9' 'P'
+
+
+== Known Problems in Installation == 
+Below are some possible problems we have encountered during installation in various environments 
+(some are denoted elsewhere in the installation instructions):
+
+===SELinux Configuration===
+* The following are possible SELinux configuration solutions if you see indication in your log 
+files as possible problems:
+**  Restorecon may be required on the html and cgi-bin directories
+*** /sbin/restorecon -R -v '<your-html-dir>/<html-ext>'
+*** /sbin/restorecon -R -v '<your-cgi-bin>/cgi-bin/<cgi-bin-ext>' 
+** Symbolic links in all subdirectories for pathname.py may be dissallowed.  The hard copy of 
+pathname.py exists in <your-cgi-bin>/cgi-bin/<cgi-bin-ext>/pathname.py and all subdirectories that 
+contain .py or .cgi scripts importing pathname.py, do so at the directory level, where symbolic 
+links are setup to the root.  Do the following to fix this:
+*** AFTER you have established that .cgi and .py scripts work in your root directory 
+(such as index.py and experiment.cgi) via the web, hardcopy the pathname.py in <cgi-bin-ext> 
+directory to the following subdirectories in <cgi-bin-ext> with a pathname.py 
+*** To get this list do the following in <cgi-bin-ext> directory: find . -name "pathname.py"
+** You may need to allow httpd to talk to the network for certain functionality (like load PMID information 
+automatically during the data loading process)
+*** Check the option: Allow HTTPD scripts and modules to connect to the network 
+
+===Paths to Perl/Python===
+* Python scripts, labeled .py and .cgi in the <cgi-bin-ext> directory direct python paths to 
+/usr/local/bin/python.  If your python binary exists in another directory, such as /usr/bin/python 
+you need to do one of the following:
+** Create a symbolic link from /usr/local/bin/python to your system's python (find this 
+by doing the following: which python)
+** If you have a different python version already established in /usr/local/bin, then you must
+change the headers of all .py and .cgi scripts and executable .txt scripts in the <cgi-bin-ext> 
+directory and subdirectory. 
+
+*Perl scripts expect Perl to exist in /usr/bin/perl, so similar rules apply to Perl scripts
+as above, however, very few Perl scripts are called from python, so should you need to hardcode
+the Perl directive, it is important only for the following files:
+* located in <your-install-dir>/ptmscout_backend/scripts/:
+  ** dataIO/call_printMinDataDescForExpId.pl
+  ** dataIO/call_printRefFromPMID.pl
+* located in <cgi-bin-ext>
+  ** subset/motifs/perl c_stat_sig_peptide_refpass_depth_memory.phospho_acetyl.pl
+  ** subset/motifs/make_fgs_bg.pl
+  ** subset/motifs/process_motifs.pl
+  ** load/entrez.pl
+
+
+= Beyond Installation=
+
+== Cron Jobs for removing temporary files ==
+* Temporary files are written in a variety of places, set up cron jobs for intervals at your convenience 
+to clean up necessary temporary file locations.  There are two python scripts that you can add to 
+a cron job that will clean up temporary files NOT located in <your-tmp-dir>. They are:
+** <cgi-bin-ext>/rmFiles.py
+** <cgi-bin-ext>/subset/motifs/motifCleanup.py
+* Removal of files in the directory where fixed HTML results are generated 
+(when a user requests an e-mail response of a motif enrichment in subset selection) 
+are not cleared when these scripts are run. These results reside in:
+<cgi-bin-ext>/subset/motifs/htmls/  
+
+== Dictionaries == 
+* When very large datasets are loaded, e.g. >500 entries, you can create dictionaries 
+for speeding up web interface to these datasets
+** In <your-cgi-bin-dir>/<cgi-bin-ext>/dictionaries/
+*** run: python websterize.py <experiment_id>

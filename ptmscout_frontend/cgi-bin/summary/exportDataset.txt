@@ -1,0 +1,28 @@
+#!/usr/bin/python
+from pathname import *
+import cgi
+print "Content-Type: application/octet-stream\n"
+form = cgi.FieldStorage()
+expid = form.getvalue('expid',None)
+filename = "%s/output%s.txt"%(dataSummary,expid)
+
+## make the file
+import os
+os.chdir(path+'subset/clusters/')
+
+if expid !=None:
+   command = """perl -I"%s" %scall_printMinDataDescForExpId.pl %s %s %s""" %(libPath,scriptPath,expid, filename, PERL_DB)
+   
+   os.system(command)
+
+# Actual File Content will go hear.
+try:
+	fo = open(filename, "rb")
+
+	str = fo.read();
+	fo.close()
+	print str
+except IOError:
+       print "no file found"
+
+
