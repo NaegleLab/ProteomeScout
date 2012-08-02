@@ -1,0 +1,7 @@
+ptmscout_backend/GO
+ptmscout_backend/ptmscout_source/lib/globalVars.pm
+ptmscout_frontend/cgi-bin/createdDirs
+ptmscout_frontend/cgi-bin/includes/secureDB.py*
+ptmscout_frontend/cgi-bin/pathname.py*
+ptmscout_frontend/cgi-bin/tempFiles
+
