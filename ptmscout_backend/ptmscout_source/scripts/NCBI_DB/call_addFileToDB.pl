@@ -15,7 +15,7 @@ getNCBIFile($number);
 my $dbh = returnRefSeqDBHNOCommit();
 my $date = 'March 2008';
 my $fileName = returnFileNameMV($number);
-addFileToDB($dbh, $fileName, $date);
+addFileToDB($dbh, $fileName, $date, 0);
 $dbh->commit();
 #$dbh->rollback();
 
