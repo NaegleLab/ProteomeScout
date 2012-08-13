@@ -46,7 +46,7 @@ sub makeNCBIMVurl($){
 # April 30, 2008
 sub returnFileNameMV($){
     my ($number) = @_;
-    my $file = 'vertebrate_mammalian'.$number.'.protein.faa.gz';
+    my $file = 'vertebrate_mammalian.'.$number.'.protein.faa.gz';
     return $file;
 
 }
@@ -196,7 +196,7 @@ sub returnCurrentRefSeqFileNumbers(){
     open(TF, $tempFile) || die "Can't open $tempFile for reading\n";
     my @numbers; 
     while(defined(my $line=<TF>)){
-	if($line =~ m/vertebrate_mammalian(\d+)\.protein\.faa\.gz/){
+	if($line =~ m/vertebrate_mammalian\.(\d+)\.protein\.faa\.gz/){
 	    push @numbers, $1;
 	}
 
