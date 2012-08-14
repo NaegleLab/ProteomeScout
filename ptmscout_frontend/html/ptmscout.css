@@ -1,0 +1,24 @@
+div.error, 
+div.feedback
+{
+text-align:center;
+  border: 2px solid #ccc;
+  margin-left: auto;
+  margin-right: auto;
+  width:75%;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+div.error {
+  color:red;
+}
+
+div.feedback {
+  
+}
+
+.validation_error {
+  color: red;
+}
+
