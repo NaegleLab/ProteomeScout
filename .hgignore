@@ -1,4 +1,5 @@
 ptmscout_backend/GO
+ptmscout_backend/NCBI_DB
 ptmscout_backend/ptmscout_source/lib/globalVars.pm
 ptmscout_frontend/cgi-bin/createdDirs
 ptmscout_frontend/cgi-bin/includes/secureDB.py*
