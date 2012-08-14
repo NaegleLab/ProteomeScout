@@ -8,7 +8,6 @@ from peptideFunctions import *
 from proteinFcns import *
 import copy
 import sets
-from tableFunctions import *
 
 def makeWholeExpTable(exp_id, c,search,stringency,form,cols,url,letter=None,msids=[],width='100',speciesSearch="all",exactProName = None,syns=True,meta_queries=[],icons=True,newtab=False,default = False):
 	if url == "sample.cgi": title= "Browse_Experiment"
