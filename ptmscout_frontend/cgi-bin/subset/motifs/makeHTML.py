@@ -70,7 +70,7 @@ def main():
 		tablefile = open('%ssubset/motifs/tables/table%s.txt'%(path,num),'w')
 	except IOError:
 		print "<BR>error openingtablefile<BR>"
-		tablefile = open('/tmp/ptmscout/table.txt%s'%random.randint(0,100000000),'w')
+		tablefile = open(scratchPath + 'table.txt%s'%random.randint(0,100000000),'w')
 	tablefile.write('Motif\tFG\tBG\tP-value\n')
 
 ## 	############################################

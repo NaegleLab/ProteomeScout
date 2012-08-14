@@ -24,6 +24,7 @@ scriptPath = "/data/ptmscout/ptmscout_backend/scripts/dataIO/"
 fastaPath = "<your-path>/ptmscout_frontend/cgi-bin/tempFiles/fasta/"
 weblogoPath = "<your-path>/ptmscout_frontend/cgi-bin/weblogo/"
 dataSummary = "<your-path>/ptmscout_frontend/cgi-bin/tempFiles/datasets/"
+scratchPath = "/tmp/ptmscout/"
 sysEmail = "your-email@your-institute.edu"
 
 import os

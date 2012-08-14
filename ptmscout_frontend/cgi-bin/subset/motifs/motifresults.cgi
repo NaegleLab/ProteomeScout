@@ -88,7 +88,7 @@ def main():
 		tablefile = open('%ssubset/motifs/tables/table%s.txt'%(path,num),'w')
 	except IOError:
 		print "<BR>error openingtablefile<BR>"
-		tablefile = open('/tmp/ptmscout/table.txt','w')
+		tablefile = open(scratchPath + 'table.txt','w')
 	tablefile.write('Motif\tFG\tBG\tP-value\n')
 ## 	######################################
 ## 	### get foreground and background

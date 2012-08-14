@@ -184,7 +184,7 @@ def main():
 	### div to put enriched features###############
 	print "<div id='enriched'></div>"
 	### along the way, print enriched features to a file handle, enFile, and t the end print that info to this div
-	filename = '/tmp/ptmscout/file'+str(random.randint(0,1000000))
+	filename = scratchPath + 'file'+str(random.randint(0,1000000))
 	enFile = open(filename,'w')
 	
 	### end div to put enriched features
@@ -405,7 +405,7 @@ def sortListByElement(list,index):
 	list = [t[1] for t in tmp]
 	return list
 
-def subsetGOTable(dSub,dAll,num_exp,num_sample,subMS,allMS,sort="enrichment",heading = "ID",selectedids=[],pvalue = 1000,name="",type="MSid",myProteins=0,myPeps=0,myMSids=0,totalProteins=0,totalPeps=0,totalMSids=0,linkType=None,file = open('/tmp/ptmscout/test%s.txt'%random.randint(0,10000),'w')):
+def subsetGOTable(dSub,dAll,num_exp,num_sample,subMS,allMS,sort="enrichment",heading = "ID",selectedids=[],pvalue = 1000,name="",type="MSid",myProteins=0,myPeps=0,myMSids=0,totalProteins=0,totalPeps=0,totalMSids=0,linkType=None,file = open(scratchPath + 'test%s.txt'%random.randint(0,10000),'w')):
 	subsize=len(selectedids)
 	if sort=='enrichment':
 		num = 3
