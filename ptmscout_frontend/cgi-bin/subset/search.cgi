@@ -36,7 +36,7 @@ def main():
 	printJavaScript()
 	pvalJS()
 	form = cgi.FieldStorage()
-	exp_id = form.getvalue("exp_id",7)
+	exp_id = form.getvalue("exp_id",7)[0]
 	file_key = form.getvalue("file_key", "")
 	user_file_name = form.getvalue("user_file_name", "") # name of the file the user uploaded
 	
