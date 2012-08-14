@@ -15,3 +15,6 @@ ptmscout_backend/pfam/Pfam_fs_rel23
 ptmscout_backend/pfam/swisspfam_rel23
 ptmscout_backend/pfam/swisspfam_rel23_subset
 .*\.pyc
+.*.project
+.*.pydevproject
+.includepath
