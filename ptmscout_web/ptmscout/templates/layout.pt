@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" metal:define-macro="layout">
+  <head>
+    <?python import ptmscout.paths as paths; ?>
+    <title>${pageTitle}</title>
+  	<link rel="stylesheet" type="text/css" href="../ptmscout.css" />
+	<link rel="stylesheet" type="text/css" href="../test.css" />
+	<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/ptmscout.css')}" />
+  </head>
+  <body>
+	<div id="menu">
+	  <div style="float:left; text-align:left">
+	    <a href="${homeUrl}/index.py">Experiments</a> |
+        <a href='${homeUrl}/browse/prosearch.cgi'>Proteins</a>
+	  </div>
+	  <div style="float:right;text-align:right">
+	    <a href='/login'>Login</a> |
+	    <a target='_blank' href="${documentationUrl}title=Main_Page">Documentation</a> |
+	    <a href='${homeUrl}/about.cgi'>About</a>
+      </div>
+	</div>
+
+	<div id="page">
+	
+	  <div id="header"><a href="${homeUrl}/index.py"><img alt="PTMScout logo" src="${imagesUrl}/logo.jpg" title="Home" /></a></div>
+	
+	  <div id="breadcrumb">${pageTitle}</div>
+	
+	  <div id="content" metal:define-slot="content"></div>
+	
+	  <div id="footer">Questions or comments? <br/>Email ${adminEmail}
+        <div id="footerLicense">
+		  <p class="box">
+		    <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">
+		      <img alt="Creative Commons License" style="border: medium none ;" src="http://i.creativecommons.org/l/by/3.0/us/88x31.png" />
+		      <br />
+		    </a>
+		    Except where otherwise noted, content on this site is
+		    <br />
+		    licensed under a 
+		    <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 License</a>
+		    <br />
+		    <a rel="terms" href="${homeUrl}/terms.cgi">Terms of Use</a>
+		  </p>
+	    </div>
+      </div>
+	</div>
+  </body>
+</html>

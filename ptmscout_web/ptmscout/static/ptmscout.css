@@ -1,0 +1,56 @@
+.loginform {
+	margin-top:20px;
+	margin-bottom:20px;
+	margin-left:auto;
+	margin-right:auto;
+	width: 500px;
+}
+
+.loginform .fieldname {
+	width:150px;
+}
+
+.formcategory {
+	border:solid;
+	border-width:2px;
+	border-color:black;
+	font-weight:bold;
+	font-size:14pt;	
+}
+
+.formsubmission {
+	float:right;
+}
+
+.notifications {
+	width:150px;
+}
+
+.infobox {
+	border:solid;
+	border-width:1px;
+	border-color:black;
+	background:#99CCFF;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:20px;
+	margin-bottom:20px;
+	width: 600px;
+
+}
+
+.infoheader {
+	padding:10px;
+	background:#77AADD;
+	font-size:18pt;
+	font-weight:bold;
+}
+
+.infotext {
+	padding:20px;
+}
+
+.errorbox {
+	background:#FF3333;
+	padding:10px;
+}
