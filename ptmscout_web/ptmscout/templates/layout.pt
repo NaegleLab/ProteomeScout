@@ -14,7 +14,7 @@
         <a href='${homeUrl}/browse/prosearch.cgi'>Proteins</a>
 	  </div>
 	  <div style="float:right;text-align:right">
-	    <a href='/login'>Login</a> |
+	    <a href='${request.application_url}/login'>Login</a> |
 	    <a target='_blank' href="${documentationUrl}title=Main_Page">Documentation</a> |
 	    <a href='${homeUrl}/about.cgi'>About</a>
       </div>
