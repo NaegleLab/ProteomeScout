@@ -8,11 +8,9 @@ def post(request, var, default):
     
 def __check_array(array, var, default):
     try:
-        val = array.getall(var)
-        return val[0]
+        val = array[var]
+        return val
     except KeyError:
-        pass
-    except IndexError:
         pass
      
     return default
