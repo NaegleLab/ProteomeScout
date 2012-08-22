@@ -1,24 +1,21 @@
 <div metal:use-macro="layout">
     <div metal:fill-slot="content">
     	<div class="loginform">
-    		<div tal:condition="reason != ''" class="errorbox">Submission Error: ${reason}</div>
+    		<div tal:condition="reason != None" class="errorbox">Submission Error: ${reason}</div>
 	        <form method="POST" action="${request.application_url}/process_registration">
 	      		<div class="formcategory">Preferred Credentials:</div>
 	        	<table>
 	        		<tr>
 	        			<td class="fieldname">Username:</td>
 	        			<td><input type="text" name="username" value="${username}" /></td>
-	        			<td><div class="notifications" id="userverify"></div></td>
 	        		</tr>
 	        		<tr>
 	        			<td class="fieldname">Password:</td>
 	        			<td><input type="password" name="pass1" value="" /></td>
-	        			<td><div class="notifications" id="pass1verify"></div></td>
 	        		</tr>
 	        		<tr>
 	        			<td class="fieldname">Repeat Password:</td>
 	        			<td><input type="password" name="pass2" value="" /></td>
-	        			<td><div class="notifications" id="pass2verify"></div></td>
 	        		</tr>
 	        		
 	        	</table>
@@ -27,17 +24,14 @@
 	        		<tr>
 	        			<td class="fieldname" >Name:</td>
 	        			<td><input type="text" name="name" value="${name}" /></td>
-	        			<td><div class="notifications"></div></td>
 	        		</tr>
 	        		<tr>
 	        			<td class="fieldname">E-mail Address:</td>
 	        			<td><input type="text" name="email" value="${email}" /></td>
-	        			<td><div class="notifications" id="emailverify"></div></td>
 	        		</tr>
 	        		<tr>
 	        			<td class="fieldname">Institution:</td>
 	        			<td><input type="text" name="institution" value="${institution}" /></td>
-	        			<td><div class="notifications"></div></td>
 	        		</tr>
 	        	</table>
 	        	<div class="formsubmission"><input type="submit" value="Register" /></div>
