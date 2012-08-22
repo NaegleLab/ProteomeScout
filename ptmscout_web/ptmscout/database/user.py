@@ -1,4 +1,4 @@
-from models import Base
+from models import Base, DBSession
 from sqlalchemy import Column, Integer, VARCHAR, TIMESTAMP
 import hashlib
 import os
@@ -6,7 +6,7 @@ from sqlalchemy.util import buffer
 
 class PTMUser(Base):
     __tablename__ = 'users'
-    id = Column(Integer(10), primary_key=True)
+    id = Column(Integer(10), primary_key=True, autoincrement=True)
     
     # credentials
     username = Column(VARCHAR(30), unique=True)
@@ -29,6 +29,10 @@ class PTMUser(Base):
         self.email = email
         self.institution = institution
         
+    def saveUser(self):
+        DBSession.add(self)
+        DBSession.flush()
+        
     def createUser(self, password):
         self.salt = self.__byteStringToHex(os.urandom(5))
         self.salted_password = hashlib.sha256(self.salt + password).hexdigest()
@@ -39,3 +43,9 @@ class PTMUser(Base):
     
     def __byteStringToHex(self, byteString):
         return ''.join([hex(ord(c))[2:].zfill(2) for c in byteString])
+    
+def getUserById(uid):
+    return DBSession.query(PTMUser).filter_by(id=uid).first()
+    
+def getUserByUsername(username):
+    return DBSession.query(PTMUser).filter_by(username=username).first()
