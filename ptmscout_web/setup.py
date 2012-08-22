@@ -10,6 +10,8 @@ requires = [
     'pyramid',
     'pyramid_debugtoolbar',
     'waitress',
+    'SQLAlchemy',
+    'zope.sqlalchemy'
     ]
 
 setup(name='ptmscout',
