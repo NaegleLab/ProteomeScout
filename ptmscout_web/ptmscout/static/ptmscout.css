@@ -3,7 +3,7 @@
 	margin-bottom:20px;
 	margin-left:auto;
 	margin-right:auto;
-	width: 500px;
+	width: 350px;
 }
 
 .loginform .fieldname {
@@ -20,10 +20,6 @@
 
 .formsubmission {
 	float:right;
-}
-
-.notifications {
-	width:150px;
 }
 
 .infobox {
@@ -53,4 +49,10 @@
 .errorbox {
 	background:#FF3333;
 	padding:10px;
+}
+
+.centered {
+	margin-left: auto;
+	margin-right: auto;
+	width:60%;
 }
