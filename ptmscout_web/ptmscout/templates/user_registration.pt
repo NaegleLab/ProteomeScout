@@ -1,0 +1,42 @@
+<div metal:use-macro="layout">
+    <div metal:fill-slot="content">
+    	<div class="loginform">
+    		<div tal:condition="reason != None" class="errorbox">Submission Error: ${reason}</div>
+	        <form method="POST" action="${request.application_url}/process_registration">
+	      		<div class="formcategory">Preferred Credentials:</div>
+	        	<table>
+	        		<tr>
+	        			<td class="fieldname">Username:</td>
+	        			<td><input type="text" name="username" value="${username}" /></td>
+	        		</tr>
+	        		<tr>
+	        			<td class="fieldname">Password:</td>
+	        			<td><input type="password" name="pass1" value="" /></td>
+	        		</tr>
+	        		<tr>
+	        			<td class="fieldname">Repeat Password:</td>
+	        			<td><input type="password" name="pass2" value="" /></td>
+	        		</tr>
+	        		
+	        	</table>
+	        	<div class="formcategory">Contact Information:</div>
+	        	<table>
+	        		<tr>
+	        			<td class="fieldname" >Name:</td>
+	        			<td><input type="text" name="name" value="${name}" /></td>
+	        		</tr>
+	        		<tr>
+	        			<td class="fieldname">E-mail Address:</td>
+	        			<td><input type="text" name="email" value="${email}" /></td>
+	        		</tr>
+	        		<tr>
+	        			<td class="fieldname">Institution:</td>
+	        			<td><input type="text" name="institution" value="${institution}" /></td>
+	        		</tr>
+	        	</table>
+	        	<div class="formsubmission"><input type="submit" value="Register" /></div>
+	        </form>
+	        <div></div>
+	    </div>
+    </div>
+</div>

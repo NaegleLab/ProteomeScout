@@ -14,6 +14,9 @@ ptmscout_backend/log
 ptmscout_backend/pfam/Pfam_fs_rel23
 ptmscout_backend/pfam/swisspfam_rel23
 ptmscout_backend/pfam/swisspfam_rel23_subset
+ptmscout_web/build
+ptmscout_web/dist
+ptmscout_web/ptmscout.egg-info
 .*\.pyc
 .*.project
 .*.pydevproject
