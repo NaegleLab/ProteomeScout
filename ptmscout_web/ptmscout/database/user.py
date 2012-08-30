@@ -1,4 +1,4 @@
-from models import Base, DBSession
+from . import Base, DBSession
 from sqlalchemy import Column, Integer, VARCHAR, TIMESTAMP
 import ptmscout.utils.crypto as crypto 
 from pyramid import security
@@ -56,18 +56,21 @@ class NoSuchUser(Exception):
 def getUserByRequest(request):
     username = security.authenticated_userid(request)
     if username is not None:
-        return getUserByUsername(username)
+        try:
+            return getUserByUsername(username)
+        except NoSuchUser:
+            return None
 
 def getUserById(uid):
-    try:
-        return DBSession.query(PTMUser).filter_by(id=uid).first()
-    except:
+    value = DBSession.query(PTMUser).filter_by(id=uid).first()
+    if value == None:
         raise NoSuchUser(uid=uid)
+    return value
     
 def getUserByUsername(username):
-    try:
-        return DBSession.query(PTMUser).filter_by(username=username).first()
-    except:
+    value = DBSession.query(PTMUser).filter_by(username=username).first()
+    if value == None:
         raise NoSuchUser(username=username)
+    return value
     
     

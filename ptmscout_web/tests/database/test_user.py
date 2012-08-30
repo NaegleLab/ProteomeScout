@@ -10,7 +10,7 @@ class UserTestCase(DBTestCase):
         user.saveUser()
 
         try:        
-            newuser = dbuser.getUserByUsername("newguy")
+            newuser = dbuser.getUserById(user.id)
         except NoSuchUser:
             self.fail("User insert failed")
             
@@ -38,3 +38,14 @@ class UserTestCase(DBTestCase):
         newuser = dbuser.getUserById(user.id)
         
         self.assertEqual(user.username, newuser.username) 
+        
+    def test_getUserByUsername_should_throw_exception_when_no_such_user(self):
+        try:
+            dbuser.getUserByUsername("nosuchuser")
+        except NoSuchUser, n:
+            self.assertEqual("nosuchuser", n.username)
+        except Exception, e:
+            self.fail("Unexpected exception: " + str(e))
+        else:
+            self.fail("Expected exception NoSuchUser was not thrown")
+        
