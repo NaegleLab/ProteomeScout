@@ -10,6 +10,7 @@ from pyramid import security
 import re
 import config
 from ptmscout import database
+from ptmscout.utils import mail
 
 
 
@@ -184,6 +185,8 @@ def __process_registration(request):
     ptm_user = user.PTMUser(username, name, email, institute)
     ptm_user.createUser(pass1)
     ptm_user.saveUser()
+    
+    mail.send_automail_message(request, [email], "PTMScout Account Activiation Details", "%s, \n\nThank you for choosing PTMScout for your research.\n\nYou can activate your new account by visiting <a href=\"%s/activate_account?username=%s&token=%s\">this link</a>.\n\nThanks,\n-The PTMScout Team" % (ptm_user.name, request.application_url, ptm_user.username, ptm_user.activation_token))
     
     database.commit()
 

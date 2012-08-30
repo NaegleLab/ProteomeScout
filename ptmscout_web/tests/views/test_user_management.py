@@ -284,12 +284,13 @@ class UserManagementTests(unittest.TestCase):
             self.fail("Unexpected exception thrown: " + str(e))
         else:
             self.fail("Expected exception HTTPFound, no exception raised")
-        
+    
+    @patch('ptmscout.utils.mail.send_automail_message')
     @patch('ptmscout.database.commit')
     @patch.object(dbuser.PTMUser, 'createUser')
     @patch.object(dbuser.PTMUser, 'saveUser')
     @patch('ptmscout.database.user.getUserByUsername')
-    def test_user_registration_success_should_send_email_on_success_and_store_new_user(self, patch_getUser, patch_saveUser, patch_createUser, patch_commit):
+    def test_user_registration_success_should_send_email_on_success_and_store_new_user(self, patch_getUser, patch_saveUser, patch_createUser, patch_commit, patch_automail):
         patch_getUser.side_effect = dbuser.NoSuchUser(username="a_username")
         
         request = DummyRequest()
@@ -303,6 +304,7 @@ class UserManagementTests(unittest.TestCase):
         
         result = user_registration_success(request)
 
+        self.assertTrue(patch_automail.called, "User was not notified of account activation by e-mail")
         self.assertTrue(patch_saveUser.called, "User was not saved to database")
         self.assertTrue(patch_createUser.called, "User object not initialized before DB commit")
         
@@ -322,7 +324,7 @@ class UserManagementTests(unittest.TestCase):
         
         self.assertEqual("Account Activation Failure", result['header'])
         self.assertEqual("Account Activation", result['pageTitle'])
-        self.assertEqual("The specified account is not valid, please try <a href=\"http://www.example.com/register\">registering</a>", result['message'])
+        self.assertEqual("The specified account is not valid, please try <a href=\"http://example.com/register\">registering</a>", result['message'])
     
     @patch('ptmscout.database.user.getUserByUsername')
     def test_user_account_activation_should_fail_if_username_does_not_exist(self, patch_getUser):
@@ -336,7 +338,7 @@ class UserManagementTests(unittest.TestCase):
         
         self.assertEqual("Account Activation Failure", result['header'])
         self.assertEqual("Account Activation", result['pageTitle'])
-        self.assertEqual("The specified account is not valid, please try <a href=\"http://www.example.com/register\">registering</a>", result['message'])
+        self.assertEqual("The specified account is not valid, please try <a href=\"http://example.com/register\">registering</a>", result['message'])
     
     @patch('ptmscout.database.user.getUserByUsername')
     def test_user_account_activation_should_fail_if_user_token_incorrect(self, patch_getUser):
@@ -350,7 +352,7 @@ class UserManagementTests(unittest.TestCase):
         
         self.assertEqual("Account Activation Failure", result['header'])
         self.assertEqual("Account Activation", result['pageTitle'])
-        self.assertEqual("The specified account is not valid, please try <a href=\"http://www.example.com/register\">registering</a>", result['message'])
+        self.assertEqual("The specified account is not valid, please try <a href=\"http://example.com/register\">registering</a>", result['message'])
     
     @patch('ptmscout.database.commit')
     @patch.object(dbuser.PTMUser, 'saveUser')
@@ -370,7 +372,7 @@ class UserManagementTests(unittest.TestCase):
         self.assertEqual(1, ptm_user.active)
         self.assertEqual("Account Activation Succeeded", result['header'])
         self.assertEqual("Account Activation", result['pageTitle'])
-        self.assertEqual("Your account is now active. Please <a href=\"http://www.example.com/login\">login</a>", result['message'])
+        self.assertEqual("Your account is now active. Please <a href=\"http://example.com/login\">login</a>", result['message'])
     
     
         

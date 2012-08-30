@@ -43,5 +43,7 @@ def main(global_config, **settings):
     config.add_view(forbidden_view, context=Forbidden)
     config.add_route('activate_account', '/activate_account')
     
+    config.include('pyramid_mailer')
+    
     config.scan()
     return config.make_wsgi_app()
