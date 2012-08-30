@@ -2,7 +2,7 @@
     <div metal:fill-slot="content">
     	<div class = "infobox">
     		<div class = "infoheader">${header}</div>
-	    	<p class = "infotext">${message}</p>
+	    	<p class = "infotext" tal:content="structure message"></p>
     	</div>
     </div>
 </div>
