@@ -1,7 +1,6 @@
 from tests.DBTestCase import DBTestCase
-import database.user
-from database.user import PTMUser
-from sqlalchemy.util import buffer
+import ptmscout.database.user as dbuser
+from ptmscout.database.user import PTMUser, NoSuchUser
 
 
 class UserTestCase(DBTestCase):
@@ -9,8 +8,12 @@ class UserTestCase(DBTestCase):
         user = PTMUser("newguy", "new guy's name", "newguy@someschool.edu", "some school")
         user.createUser("password")
         user.saveUser()
-        
-        newuser = database.user.getUserByUsername("newguy")
+
+        try:        
+            newuser = dbuser.getUserByUsername("newguy")
+        except NoSuchUser:
+            self.fail("User insert failed")
+            
         self.assertEqual(user.username, newuser.username)
         
         self.assertEqual(user.salted_password, newuser.salted_password)
@@ -22,13 +25,16 @@ class UserTestCase(DBTestCase):
         self.assertEqual(user.activation_token, newuser.activation_token)
         
         self.assertEqual(0, user.active)
-        self.assertNotEqual(None, newuser.date_created)
+        self.assertEqual(0, newuser.active)
+        
+        self.assertNotEqual(None, user.date_created)
+        self.assertEqual(user.date_created, newuser.date_created)
         
     def test_createUser_should_set_correct_id(self):
         user = PTMUser("newguy", "new guy's name", "newguy@someschool.edu", "some school")
         user.createUser("password")
         user.saveUser()
         
-        newuser = database.user.getUserById(user.id)
+        newuser = dbuser.getUserById(user.id)
         
         self.assertEqual(user.username, newuser.username) 
