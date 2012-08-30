@@ -3,11 +3,11 @@ from pyramid import testing
 from paste.deploy.loadwsgi import appconfig
 
 from sqlalchemy import engine_from_config
-from ptmscout.database.models import DBSession, Base  # base declarative object
+from ptmscout.database import DBSession, Base  # base declarative object
 
 import os
 here = os.path.dirname(__file__)
-settings = appconfig('config:' + os.path.join(here, '../../', 'development.ini'))
+settings = appconfig('config:' + os.path.join(here, '../', 'development.ini'))
 
 class DBTestCase(unittest.TestCase):
     @classmethod

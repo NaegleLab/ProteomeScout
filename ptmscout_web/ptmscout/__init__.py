@@ -1,7 +1,7 @@
 from pyramid.config import Configurator
 
 from sqlalchemy import engine_from_config
-from database.models import DBSession
+from database import DBSession
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from database.user import getUserByRequest
