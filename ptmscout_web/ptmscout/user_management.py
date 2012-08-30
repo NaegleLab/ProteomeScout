@@ -7,6 +7,9 @@ from database import user
 from utils import crypto
 from database.user import NoSuchUser
 from pyramid import security
+import re
+import config
+from ptmscout import database
 
 
 
@@ -109,22 +112,52 @@ def __process_login(request):
     return True
 
 def __process_registration(request):
-    username = webutils.post(request, 'username', "")
-    pass1    = webutils.post(request, 'pass1', "")
-    pass2    = webutils.post(request, 'pass2', "")
+    username = webutils.post(request, 'username', "").strip()
+    pass1    = webutils.post(request, 'pass1', "").strip()
+    pass2    = webutils.post(request, 'pass2', "").strip()
     
-    name      = webutils.post(request, 'name', "")
-    email     = webutils.post(request, 'email', "")
-    institute = webutils.post(request, 'institution', "")
+    name      = webutils.post(request, 'name', "").strip()
+    email     = webutils.post(request, 'email', "").strip()
+    institute = webutils.post(request, 'institution', "").strip()
     
-    resp_dict = {'username': username, 'name':name, 'email':email, 'institution':institute}
+    resp_dict = {'username': username, 'email':email, 'name':name, 'institution':institute}
     
     if username == "" or pass1 == "" or pass2 == "" or name == "" or email == "" or institute == "":
         resp_dict['reason'] = "Form fields cannot be empty"
         return resp_dict
 
+    try:
+        _ptm_user = user.getUserByUsername(username)
+        resp_dict['reason'] = "Username is already in use"
+        return resp_dict
+    except NoSuchUser:
+        pass
+    
+    
+    email_regex = re.compile("[a-z0-9\.\-\_]+@[a-z0-9\.\-\_]+\.([a-z]+)$", re.I)
+    
+    matches = email_regex.match(email)
+    if not matches:
+        resp_dict['reason'] = "Email address is invalid"
+        return resp_dict
+
+    domain = matches.group(1)
+    if domain != "edu":
+        resp_dict['reason'] = "Email address must belong to .edu domain"
+        return resp_dict
+
+    if len(pass1) < config.MINIMUM_PASSWORD_LENGTH:
+        resp_dict['reason'] = "Password must be at least %d characters in length" % config.MINIMUM_PASSWORD_LENGTH
+        return resp_dict
+
     if( pass1 != pass2 ):
         resp_dict['reason'] = "Password confirmation does not match"
         return resp_dict
+
+    ptm_user = user.PTMUser(username, name, email, institute)
+    ptm_user.createUser(pass1)
+    ptm_user.saveUser()
+    
+    database.commit()
 
     return True
