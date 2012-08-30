@@ -29,11 +29,6 @@ def user_registration_view(request):
             'reason':reason,
             'pageTitle': "User Registration"}
     
-@forbidden_view_config(renderer='templates/forbidden.pt')
-def forbidden_view(request):
-    return {
-            'pageTitle': "Forbidden"}
-
 @view_config(route_name='process_registration', renderer='templates/information.pt')
 def user_registration_success(request):
     result = __process_registration(request)
@@ -78,7 +73,40 @@ def user_logout(request):
             'pageTitle': "Logout",
             'header': "Logout Successful",
             'message': "You have successfully logged out."}
+    
+    
+@view_config(route_name='activate_account', renderer='templates/information.pt')
+def user_account_activation(request):
+    username = webutils.get(request, 'username', "").strip()
+    token = webutils.get(request, 'token', "").strip()
+    
+    if username == "" or token == "":
+        return __failed_account_activation(request)
+    
+    ptm_user = None
+    try:
+        ptm_user = user.getUserByUsername(username)
+    except NoSuchUser:
+        return __failed_account_activation(request)
+    
+    if ptm_user.activation_token != token:
+        return __failed_account_activation(request)
+    
+    ptm_user.setActive()
+    ptm_user.saveUser()
+    
+    database.commit()    
+    
+    return {'pageTitle':"Account Activation",
+            'header':"Account Activation Succeeded",
+            'message':"Your account is now active. Please <a href=\""+request.application_url+"/login\">login</a>"}
 
+## Internal Functions
+
+def __failed_account_activation(request):
+    return {'pageTitle':"Account Activation",
+            'header':"Account Activation Failure",
+            'message':"The specified account is not valid, please try <a href=\""+request.application_url+"/register\">registering</a>"}
 
 def __process_login(request):
     username = webutils.post(request, 'username', "")

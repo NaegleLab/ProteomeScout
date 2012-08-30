@@ -32,6 +32,9 @@ class PTMUser(Base):
         DBSession.add(self)
         DBSession.flush()
         
+    def setActive(self):
+        self.active = 1
+        
     def createUser(self, password):
         self.salt, self.salted_password = crypto.saltedPassword(password)  
         self.activation_token = crypto.generateActivationToken()

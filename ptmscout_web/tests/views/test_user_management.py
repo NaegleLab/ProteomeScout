@@ -6,7 +6,7 @@ import urllib
 from mock import patch
 import ptmscout.database.user as dbuser
 from ptmscout.user_management import user_login, user_logout, user_login_success,\
-    user_registration_view, user_registration_success
+    user_registration_view, user_registration_success, user_account_activation
 import ptmscout.utils.crypto as crypto
 
 class UserManagementTests(unittest.TestCase):
@@ -311,6 +311,68 @@ class UserManagementTests(unittest.TestCase):
         self.assertEqual("User Registration", result['pageTitle'])
         self.assertEqual("A confirmation e-mail has been sent to the specified e-mail address. Please check your e-mail to complete your registration.", result['message'])
         
+        
+    def test_user_account_activation_should_fail_if_fields_not_specified(self):
+        request = DummyRequest()
+        
+        request.GET['username'] = ""
+        request.GET['token'] = ""
+        
+        result = user_account_activation(request)
+        
+        self.assertEqual("Account Activation Failure", result['header'])
+        self.assertEqual("Account Activation", result['pageTitle'])
+        self.assertEqual("The specified account is not valid, please try <a href=\"http://www.example.com/register\">registering</a>", result['message'])
+    
+    @patch('ptmscout.database.user.getUserByUsername')
+    def test_user_account_activation_should_fail_if_username_does_not_exist(self, patch_getUser):
+        patch_getUser.side_effect = dbuser.NoSuchUser()
+        request = DummyRequest()
+        
+        request.GET['username'] = "username"
+        request.GET['token'] = "token"
+        
+        result = user_account_activation(request)
+        
+        self.assertEqual("Account Activation Failure", result['header'])
+        self.assertEqual("Account Activation", result['pageTitle'])
+        self.assertEqual("The specified account is not valid, please try <a href=\"http://www.example.com/register\">registering</a>", result['message'])
+    
+    @patch('ptmscout.database.user.getUserByUsername')
+    def test_user_account_activation_should_fail_if_user_token_incorrect(self, patch_getUser):
+        patch_getUser.return_value = createUserForTest("username", "email", "password", 0)
+        request = DummyRequest()
+        
+        request.GET['username'] = "username"
+        request.GET['token'] = "token"
+        
+        result = user_account_activation(request)
+        
+        self.assertEqual("Account Activation Failure", result['header'])
+        self.assertEqual("Account Activation", result['pageTitle'])
+        self.assertEqual("The specified account is not valid, please try <a href=\"http://www.example.com/register\">registering</a>", result['message'])
+    
+    @patch('ptmscout.database.commit')
+    @patch.object(dbuser.PTMUser, 'saveUser')
+    @patch('ptmscout.database.user.getUserByUsername')
+    def test_user_account_activation_should_succeed_if_all_parameters_correct(self, patch_getUser, patch_saveUser, patch_commit):
+        ptm_user = createUserForTest("username", "email", "password", 0)
+        patch_getUser.return_value = ptm_user
+        request = DummyRequest()
+        
+        request.GET['username'] = "username"
+        request.GET['token'] = ptm_user.activation_token
+        
+        result = user_account_activation(request)
+        
+        self.assertTrue(patch_saveUser.called, "User was not saved")
+        self.assertTrue(patch_commit.called, "Database changed were not committed")
+        self.assertEqual(1, ptm_user.active)
+        self.assertEqual("Account Activation Succeeded", result['header'])
+        self.assertEqual("Account Activation", result['pageTitle'])
+        self.assertEqual("Your account is now active. Please <a href=\"http://www.example.com/login\">login</a>", result['message'])
+    
+    
         
 def createUserForTest(username, email, password, active):
     user = dbuser.PTMUser(username, "A User", email, "institution")
