@@ -35,6 +35,13 @@
 
 }
 
+.forbiddenheader{
+	padding:10px;
+	background:#EE1133;
+	font-size:18pt;
+	font-weight:bold;
+}
+
 .infoheader {
 	padding:10px;
 	background:#77AADD;

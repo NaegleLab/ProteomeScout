@@ -4,12 +4,14 @@ from sqlalchemy import engine_from_config
 from database.models import DBSession
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
-from database.user import checkUserGroup, getUserByRequest
+from database.user import getUserByRequest
 
 from pyramid.security import (
     Allow,
     Authenticated,
     )
+from ptmscout.user_management import forbidden_view
+from pyramid.exceptions import Forbidden
 
 class RootFactory(object):
     __acl__ = [ (Allow, Authenticated, 'upload') ]
@@ -24,7 +26,7 @@ def main(global_config, **settings):
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
     
-    authn_policy = AuthTktAuthenticationPolicy('$up3r$3cr3t', callback=checkUserGroup)
+    authn_policy = AuthTktAuthenticationPolicy('$up3r$3cr3t')
     authz_policy = ACLAuthorizationPolicy()
     
     config.set_request_property(getUserByRequest, 'user', reify=True)
@@ -38,5 +40,7 @@ def main(global_config, **settings):
     config.add_route('process_login', '/process_login')
     config.add_route('register', '/register')
     config.add_route('process_registration', '/process_registration')
+    config.add_view(forbidden_view, context=Forbidden)
+    
     config.scan()
     return config.make_wsgi_app()

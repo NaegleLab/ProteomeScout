@@ -1,8 +1,8 @@
 from layout import site_layout
 from pyramid.httpexceptions import HTTPFound
-from pyramid.view import view_config
+from pyramid.view import view_config, forbidden_view_config
 import urllib
-import webutils
+import utils.webutils as webutils
 from database import user
 from utils import crypto
 from database.user import NoSuchUser
@@ -25,6 +25,11 @@ def user_registration_view(request):
             'institution':institution,
             'reason':reason,
             'pageTitle': "User Registration"}
+    
+@forbidden_view_config(renderer='templates/forbidden.pt')
+def forbidden_view(request):
+    return {'layout': site_layout(),
+            'pageTitle': "Forbidden"}
 
 @view_config(route_name='process_registration', renderer='templates/information.pt')
 def user_registration_success(request):
@@ -63,7 +68,8 @@ def user_login_success(request):
 
 @view_config(route_name='logout', renderer='templates/information.pt')
 def user_logout(request):    
-    security.forget(request)
+    request.response.headers.extend(security.forget(request))
+    request.user = None
     
     return {'layout': site_layout(),
             'pageTitle': "Logout",
@@ -94,7 +100,8 @@ def __process_login(request):
             resp_dict['reason'] = "Account has not been activated"
             return resp_dict
         
-        security.remember(request, ptm_user.id)
+        request.user = ptm_user
+        request.response.headers.extend(security.remember(request, ptm_user.username))
     except NoSuchUser:
         resp_dict['reason'] = "Credentials incorrect"
         return resp_dict

@@ -1,0 +1,8 @@
+<div metal:use-macro="layout">
+    <div metal:fill-slot="content">
+    	<div class = "infobox">
+    		<div class = "forbiddenheader">Forbidden</div>
+	    	<p class = "infotext">You do not have permission to access this resource. Please <a href = "${request.application_url}/login">log in</a></p>
+    	</div>
+    </div>
+</div>

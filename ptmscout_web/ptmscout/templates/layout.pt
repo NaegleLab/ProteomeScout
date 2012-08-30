@@ -14,7 +14,13 @@
         <a href='${homeUrl}/browse/prosearch.cgi'>Proteins</a>
 	  </div>
 	  <div style="float:right;text-align:right">
-	    <a href='${request.application_url}/login'>Login</a> |
+	    <span tal:condition="request.user == None">
+	    	<a href='${request.application_url}/login'>Login</a> | 
+	    </span>
+	    <span tal:condition="request.user != None">
+		    <a href='${request.application_url}/logout'>Logout: ${request.user.username}</a> |
+		    <a href='${request.application_url}/upload'>Upload Data</a> |
+	    </span>
 	    <a target='_blank' href="${documentationUrl}title=Main_Page">Documentation</a> |
 	    <a href='${homeUrl}/about.cgi'>About</a>
       </div>

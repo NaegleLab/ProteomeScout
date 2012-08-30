@@ -29,7 +29,10 @@ class UserManagementTests(unittest.TestCase):
     @patch('pyramid.security.forget')
     def test_user_logout_should_display_logout_message(self, patch_security):
         request = DummyRequest()
+        request.user = "something"
         value = user_logout(request)
+        
+        self.assertEqual(None, request.user)
         
         patch_security.assert_called_once_with(request)
         self.assertEqual("Logout", value['pageTitle'])
@@ -128,7 +131,8 @@ class UserManagementTests(unittest.TestCase):
 
         value = user_login_success(request)
         
-        patch_security.assert_called_once_with(request, UserManagementTests.TEST_USER_ID)
+        self.assertEqual(patch_getUser.return_value, request.user)
+        patch_security.assert_called_once_with(request, "good_username")
         self.assertEqual("Login", value['pageTitle'])
         self.assertEqual("Login Successful", value['header'])
         self.assertEqual("You have successfully logged in.", value['message'])

@@ -1,6 +1,7 @@
 from models import Base, DBSession
 from sqlalchemy import Column, Integer, VARCHAR, TIMESTAMP
 import ptmscout.utils.crypto as crypto 
+from pyramid import security
 
 class PTMUser(Base):
     __tablename__ = 'users'
@@ -18,7 +19,7 @@ class PTMUser(Base):
     date_created = Column(TIMESTAMP)
     
     # activation data
-    active = Column(Integer(1), default = 0)
+    active = Column(Integer(1), default=0)
     activation_token = Column(VARCHAR(50))
     
     def __init__(self, username, name, email, institution):
@@ -41,8 +42,8 @@ class PTMUser(Base):
     
 class NoSuchUser(Exception):
     def __init__(self, uid=None, username=None):
-        self.uid=uid
-        self.username=username
+        self.uid = uid
+        self.username = username
     def __str__(self):
         value = ""
         if self.uid != None:
@@ -52,23 +53,21 @@ class NoSuchUser(Exception):
         
         return "Could not find user %s" % value
 
-def checkUserGroup(uid, request):
-    try:
-        _ptm_user = getUserById(uid)
-        return ["group:users"]
-    except:
-        return None
+def getUserByRequest(request):
+    username = security.authenticated_userid(request)
+    if username is not None:
+        return getUserByUsername(username)
 
 def getUserById(uid):
     try:
         return DBSession.query(PTMUser).filter_by(id=uid).first()
     except:
-        raise NoSuchUser(uid = uid)
+        raise NoSuchUser(uid=uid)
     
 def getUserByUsername(username):
     try:
         return DBSession.query(PTMUser).filter_by(username=username).first()
     except:
-        raise NoSuchUser(username = username)
+        raise NoSuchUser(username=username)
     
     
