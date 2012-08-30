@@ -1,8 +1,6 @@
 from models import Base, DBSession
 from sqlalchemy import Column, Integer, VARCHAR, TIMESTAMP
-import hashlib
-import os
-from sqlalchemy.util import buffer
+import ptmscout.utils.crypto as crypto 
 
 class PTMUser(Base):
     __tablename__ = 'users'
@@ -34,18 +32,43 @@ class PTMUser(Base):
         DBSession.flush()
         
     def createUser(self, password):
-        self.salt = self.__byteStringToHex(os.urandom(5))
-        self.salted_password = hashlib.sha256(self.salt + password).hexdigest()
-        self.activation_token = self.__byteStringToHex(os.urandom(25))
+        self.salt, self.salted_password = crypto.saltedPassword(password)  
+        self.activation_token = crypto.generateActivationToken()
         
     def checkPassword(self, password):
         pass
     
-    def __byteStringToHex(self, byteString):
-        return ''.join([hex(ord(c))[2:].zfill(2) for c in byteString])
     
+class NoSuchUser(Exception):
+    def __init__(self, uid=None, username=None):
+        self.uid=uid
+        self.username=username
+    def __str__(self):
+        value = ""
+        if self.uid != None:
+            value = str(self.uid)
+        if self.username != None:
+            value = str(self.username)
+        
+        return "Could not find user %s" % value
+
+def checkUserGroup(uid, request):
+    try:
+        _ptm_user = getUserById(uid)
+        return ["group:users"]
+    except:
+        return None
+
 def getUserById(uid):
-    return DBSession.query(PTMUser).filter_by(id=uid).first()
+    try:
+        return DBSession.query(PTMUser).filter_by(id=uid).first()
+    except:
+        raise NoSuchUser(uid = uid)
     
 def getUserByUsername(username):
-    return DBSession.query(PTMUser).filter_by(username=username).first()
+    try:
+        return DBSession.query(PTMUser).filter_by(username=username).first()
+    except:
+        raise NoSuchUser(username = username)
+    
+    
