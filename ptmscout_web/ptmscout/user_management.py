@@ -3,6 +3,10 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 import urllib
 import webutils
+from database import user
+from utils import crypto
+from database.user import NoSuchUser
+from pyramid import security
 
 
 
@@ -57,6 +61,14 @@ def user_login_success(request):
     else:
         raise HTTPFound(request.application_url+"/login?"+urllib.urlencode(result))
 
+@view_config(route_name='logout', renderer='templates/information.pt')
+def user_logout(request):    
+    security.forget(request)
+    
+    return {'layout': site_layout(),
+            'pageTitle': "Logout",
+            'header': "Logout Successful",
+            'message': "You have successfully logged out."}
 
 ## Internal Functions
 
@@ -69,7 +81,24 @@ def __process_login(request):
     if username == "" or password == "":
         resp_dict['reason'] = "All fields are required"
         return resp_dict
-
+    
+    try:
+        ptm_user = user.getUserByUsername(username)
+        
+        _, salted_password = crypto.saltedPassword(password, ptm_user.salt)
+        
+        if salted_password != ptm_user.salted_password:
+            raise NoSuchUser()
+        
+        if not ptm_user.active:
+            resp_dict['reason'] = "Account has not been activated"
+            return resp_dict
+        
+        security.remember(request, ptm_user.id)
+    except NoSuchUser:
+        resp_dict['reason'] = "Credentials incorrect"
+        return resp_dict
+    
     return True
 
 def __process_registration(request):

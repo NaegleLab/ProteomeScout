@@ -14,7 +14,7 @@
 	        			<td><input type="password" name="password" value="" /></td>
 	        		</tr>
 	        	</table>
-	        	<div class="formsubmission"><input type="submit" value="Register" /></div>
+	        	<div class="formsubmission"><input type="submit" value="Login" /></div>
 	        </form>
 	        <div class="centered">No credentials? Register <a href="${request.application_url}/register">here</a></div>
 	        <div></div>
