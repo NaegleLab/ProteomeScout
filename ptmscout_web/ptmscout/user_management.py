@@ -21,7 +21,7 @@ def user_registration_view(request):
     institution = webutils.get(request, 'institution', "")
     reason = webutils.get(request, 'reason', None)
     
-    return {'layout': site_layout(),
+    return {
             'username':username,
             'email':email,
             'name':name,
@@ -31,14 +31,14 @@ def user_registration_view(request):
     
 @forbidden_view_config(renderer='templates/forbidden.pt')
 def forbidden_view(request):
-    return {'layout': site_layout(),
+    return {
             'pageTitle': "Forbidden"}
 
 @view_config(route_name='process_registration', renderer='templates/information.pt')
 def user_registration_success(request):
     result = __process_registration(request)
     if result == True:
-        return {'layout': site_layout(),
+        return {
             'pageTitle': "User Registration",
             'header': "Registration Successful",
             'message': "A confirmation e-mail has been sent to the specified e-mail address. Please check your e-mail to complete your registration."}
@@ -52,7 +52,7 @@ def user_login(request):
     username = webutils.get(request, 'username', "")
     reason = webutils.get(request, 'reason', None)
     
-    return {'layout': site_layout(),
+    return {
             'username': username,
             'reason':reason,
             'pageTitle': "Login"}
@@ -62,7 +62,7 @@ def user_login(request):
 def user_login_success(request):
     result = __process_login(request)
     if result == True:
-        return {'layout': site_layout(),
+        return {
                 'pageTitle': "Login",
                 'header': "Login Successful",
                 'message': "You have successfully logged in."}
@@ -74,12 +74,11 @@ def user_logout(request):
     request.response.headers.extend(security.forget(request))
     request.user = None
     
-    return {'layout': site_layout(),
+    return {
             'pageTitle': "Logout",
             'header': "Logout Successful",
             'message': "You have successfully logged out."}
 
-## Internal Functions
 
 def __process_login(request):
     username = webutils.post(request, 'username', "")
