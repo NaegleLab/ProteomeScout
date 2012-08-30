@@ -10,7 +10,7 @@ from pyramid.security import (
     Allow,
     Authenticated,
     )
-from ptmscout.user_management import forbidden_view
+from ptmscout.errors import forbidden_view
 from pyramid.exceptions import Forbidden
 
 class RootFactory(object):
@@ -41,6 +41,7 @@ def main(global_config, **settings):
     config.add_route('register', '/register')
     config.add_route('process_registration', '/process_registration')
     config.add_view(forbidden_view, context=Forbidden)
+    config.add_route('activate_account', '/activate_account')
     
     config.scan()
     return config.make_wsgi_app()

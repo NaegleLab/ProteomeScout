@@ -8,9 +8,19 @@ from sqlalchemy.orm import (
 from zope.sqlalchemy import ZopeTransactionExtension
 from zope.sqlalchemy.datamanager import mark_changed
 import transaction
+from sqlalchemy.exc import IntegrityError
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 Base = declarative_base()
 
+
+class InternalDatabaseError(Exception):
+    pass
+
+
 def commit():
-    transaction.commit()
+    try:
+        transaction.commit()
+    except IntegrityError:
+        transaction.abort()
+        raise InternalDatabaseError
