@@ -6,6 +6,7 @@
   	<link rel="stylesheet" type="text/css" href="../ptmscout.css" />
 	<link rel="stylesheet" type="text/css" href="../test.css" />
 	<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/ptmscout.css')}" />
+	<div metal:define-slot="header"></div>
   </head>
   <body>
 	<div id="menu">

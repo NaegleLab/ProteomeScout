@@ -1,4 +1,7 @@
 <div metal:use-macro="layout">
+	<div metal:fill-slot="header">
+		<meta http-equiv="refresh" content="3; url=experiments">
+	</div>
     <div metal:fill-slot="content">
     	<div class = "infobox">
     		<div class = "infoheader">${header}</div>
