@@ -1,5 +1,5 @@
 from . import Base, DBSession
-from sqlalchemy import Column, Integer, VARCHAR, TIMESTAMP, Text
+from sqlalchemy import Column, Integer, VARCHAR, Text
 
 class Experiment(Base):
     __tablename__ = 'experiment'

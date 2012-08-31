@@ -1,6 +1,5 @@
-from layout import site_layout
 from pyramid.httpexceptions import HTTPFound
-from pyramid.view import view_config, forbidden_view_config
+from pyramid.view import view_config
 import urllib
 import utils.webutils as webutils
 from database import user
@@ -9,8 +8,7 @@ from database.user import NoSuchUser
 from pyramid import security
 import re
 import config
-from ptmscout import database
-from ptmscout.utils import mail
+from ptmscout.utils import mail, transactions
 
 
 
@@ -96,7 +94,7 @@ def user_account_activation(request):
     ptm_user.setActive()
     ptm_user.saveUser()
     
-    database.commit()    
+    transactions.commit()    
     
     return {'pageTitle':"Account Activation",
             'header':"Account Activation Succeeded",
@@ -188,6 +186,6 @@ def __process_registration(request):
     
     mail.send_automail_message(request, [email], "PTMScout Account Activiation Details", "%s, \n\nThank you for choosing PTMScout for your research.\n\nYou can activate your new account by visiting <a href=\"%s/activate_account?username=%s&token=%s\">this link</a>.\n\nThanks,\n-The PTMScout Team" % (ptm_user.name, request.application_url, ptm_user.username, ptm_user.activation_token))
     
-    database.commit()
+    transactions.commit()
 
     return True

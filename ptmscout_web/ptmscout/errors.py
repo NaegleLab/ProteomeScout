@@ -1,5 +1,5 @@
 from pyramid.view import forbidden_view_config, view_config
-from ptmscout.database import InternalDatabaseError, MailerError
+from ptmscout.utils.transactions import InternalDatabaseError, MailerError
 
 
 @view_config(context=InternalDatabaseError, renderer='templates/information.pt')
