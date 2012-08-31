@@ -32,8 +32,8 @@ class User(Base):
     activation_token = Column(VARCHAR(50))
 
     experiments = relationship("Experiment",
-                                   secondary=permissions_table,
-                                   backref="Users")
+                                   secondary=permissions_table)
+    #                              backref="Users")
     
     def __init__(self, username="", name="", email="", institution=""):
         self.username = username
