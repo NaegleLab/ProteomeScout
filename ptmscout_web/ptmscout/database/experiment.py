@@ -38,6 +38,18 @@ class Experiment(Base):
     def saveExperiment(self):
         DBSession.add(self)
         DBSession.flush()
+        
+    def getCitationString(self):
+        string = ""
+        if self.journal != "" and self.journal != None:
+            string += self.journal + ". "
+        if self.pub_date != "" and self.pub_date != None:
+            string += self.pub_date + ". "
+        if self.volume != "" and self.volume != None:
+            string += "Vol " + str(self.volume) + ". "
+        if self.pages != "" and self.pages != None:
+            string += self.pages + "."
+        return string
 
 class NoSuchExperiment(Exception):
     def __init__(self, eid):
