@@ -1,11 +1,11 @@
 from tests.DBTestCase import DBTestCase
 import ptmscout.database.user as dbuser
-from ptmscout.database.user import PTMUser, NoSuchUser
+from ptmscout.database.user import User, NoSuchUser
 
 
 class UserTestCase(DBTestCase):
     def test_createUser_should_insert_user(self):
-        user = PTMUser("newguy", "new guy's name", "newguy@someschool.edu", "some school")
+        user = User("newguy", "new guy's name", "newguy@someschool.edu", "some school")
         user.createUser("password")
         user.saveUser()
 
@@ -31,7 +31,7 @@ class UserTestCase(DBTestCase):
         self.assertEqual(user.date_created, newuser.date_created)
         
     def test_createUser_should_set_correct_id(self):
-        user = PTMUser("newguy", "new guy's name", "newguy@someschool.edu", "some school")
+        user = User("newguy", "new guy's name", "newguy@someschool.edu", "some school")
         user.createUser("password")
         user.saveUser()
         

@@ -180,7 +180,7 @@ def __process_registration(request):
         resp_dict['reason'] = "Password confirmation does not match"
         return resp_dict
 
-    ptm_user = user.PTMUser(username, name, email, institute)
+    ptm_user = user.User(username, name, email, institute)
     ptm_user.createUser(pass1)
     ptm_user.saveUser()
     

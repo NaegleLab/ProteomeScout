@@ -3,7 +3,9 @@ from sqlalchemy import Column, Integer, VARCHAR, TIMESTAMP
 import ptmscout.utils.crypto as crypto 
 from pyramid import security
 
-class PTMUser(Base):
+
+
+class User(Base):
     __tablename__ = 'users'
     id = Column(Integer(10), primary_key=True, autoincrement=True)
     
@@ -61,13 +63,13 @@ def getUserByRequest(request):
             return None
 
 def getUserById(uid):
-    value = DBSession.query(PTMUser).filter_by(id=uid).first()
+    value = DBSession.query(User).filter_by(id=uid).first()
     if value == None:
         raise NoSuchUser(uid=uid)
     return value
     
 def getUserByUsername(username):
-    value = DBSession.query(PTMUser).filter_by(username=username).first()
+    value = DBSession.query(User).filter_by(username=username).first()
     if value == None:
         raise NoSuchUser(username=username)
     return value

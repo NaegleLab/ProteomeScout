@@ -287,8 +287,8 @@ class UserManagementTests(unittest.TestCase):
     
     @patch('ptmscout.utils.mail.send_automail_message')
     @patch('ptmscout.database.commit')
-    @patch.object(dbuser.PTMUser, 'createUser')
-    @patch.object(dbuser.PTMUser, 'saveUser')
+    @patch.object(dbuser.User, 'createUser')
+    @patch.object(dbuser.User, 'saveUser')
     @patch('ptmscout.database.user.getUserByUsername')
     def test_user_registration_success_should_send_email_on_success_and_store_new_user(self, patch_getUser, patch_saveUser, patch_createUser, patch_commit, patch_automail):
         patch_getUser.side_effect = dbuser.NoSuchUser(username="a_username")
@@ -355,7 +355,7 @@ class UserManagementTests(unittest.TestCase):
         self.assertEqual("The specified account is not valid, please try <a href=\"http://example.com/register\">registering</a>", result['message'])
     
     @patch('ptmscout.database.commit')
-    @patch.object(dbuser.PTMUser, 'saveUser')
+    @patch.object(dbuser.User, 'saveUser')
     @patch('ptmscout.database.user.getUserByUsername')
     def test_user_account_activation_should_succeed_if_all_parameters_correct(self, patch_getUser, patch_saveUser, patch_commit):
         ptm_user = createUserForTest("username", "email", "password", 0)
@@ -377,7 +377,7 @@ class UserManagementTests(unittest.TestCase):
     
         
 def createUserForTest(username, email, password, active):
-    user = dbuser.PTMUser(username, "A User", email, "institution")
+    user = dbuser.User(username, "A User", email, "institution")
     user.createUser(password)
     user.id = UserManagementTests.TEST_USER_ID
     user.active = active
