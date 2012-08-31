@@ -11,10 +11,10 @@ class ExperimentViewTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
         
-    @patch('ptmscout.database.experiment.getAllExperiments')
-    def test_experiment_listing(self, patch_getAllExperiments):
+    @patch('ptmscout.database.experiment.getExperimentTree')
+    def test_experiment_listing(self, patch_getExperimentTree):
         request = DummyRequest()
-        patch_getAllExperiments.return_value = [1,2,3,4,5]
+        patch_getExperimentTree.return_value = [1,2,3,4,5]
         
         result = experiment_listing(request)
         

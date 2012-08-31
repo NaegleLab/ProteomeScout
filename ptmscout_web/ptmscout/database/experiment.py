@@ -66,4 +66,19 @@ def getExperimentById(experiment_id):
 
 def getAllExperiments():
     return DBSession.query(Experiment).all()
+
+def getExperimentTree():
+    experiments = getAllExperiments()
+    for experiment in experiments:
+        experiment.children = []
+        
+    experiment_dict = dict([(experiment.id, experiment) for experiment in experiments])
+    experiment_tree = []
+    for experiment in experiments:
+        if experiment.experiment_id != 0:
+            experiment_dict[experiment.experiment_id].children.append(experiment)
+        else:
+            experiment_tree.append(experiment)
+    
+    return experiment_tree
     

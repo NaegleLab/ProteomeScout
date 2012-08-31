@@ -1,22 +1,38 @@
 <div metal:use-macro="layout">
+	<div metal:fill-slot="header">
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/jquery-1.8.1.js')}" ></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/experiments.js')}" ></script>
+	</div>
     <div metal:fill-slot="content">
     	<table width = "100%"><tr><td align="justify">PTMScout is a web application for viewing and analyzing data from mass spectrometry experiments and other datasets for post-translational protein modifications. The goal of PTMScout is to provide a useable interface for biologists to easily work with large datasets of post-translational measurements.</td></tr></table>
     	<table class = "experimenttable" width = "100%">
     		<tbody>
 		   		<tr>
+		   			<th></th>
 		   			<th>Experiment</th>
 		   			<th>Description</th>
 		   			<th>Author</th>
 		   			<th>Journal Info</th>
 		   			<th>Primary Modifications</th>
 		   		</tr>
-				<tr tal:repeat="(i, experiment) enumerate(experiments)" tal:attributes="class 'even' if i % 2 == 0 else 'odd'">
-					<td><a tal:attributes="href '../cgi-bin/experiment.cgi?expid=' + str(experiment.id)" tal:content="experiment.name"></a></td>
-					<td><a tal:attributes="href '../cgi-bin/experiment.cgi?expid=' + str(experiment.id)" tal:content="experiment.description"></a></td>
-					<td><a tal:attributes="href '../cgi-bin/experiment.cgi?expid=' + str(experiment.id)" tal:content="experiment.author"></a></td>
-					<td class="citation" tal:content="experiment.getCitationString()"></td>
-					<td><a tal:attributes="href '../cgi-bin/experiment.cgi?expid=' + str(experiment.id)" tal:content="experiment.primaryModification"></a></td>
-				</tr>
+		   		<tal:experiments tal:repeat="(i, experiment) enumerate(experiments)">
+					<tr tal:attributes="class 'experiment' + (' even' if i % 2 == 0 else ' odd');" >
+						<td><a tal:condition="len(experiment.children) > 0" class="expand" href="${request.application_url}/experiments" tal:attributes="id 'e'+str(experiment.id)">[+]</a></td>
+						<td><a tal:attributes="href '../cgi-bin/experiment.cgi?expid=' + str(experiment.id)" tal:content="experiment.name"></a></td>
+						<td><a tal:attributes="href '../cgi-bin/experiment.cgi?expid=' + str(experiment.id)" tal:content="experiment.description"></a></td>
+						<td><a tal:attributes="href '../cgi-bin/experiment.cgi?expid=' + str(experiment.id)" tal:content="experiment.author"></a></td>
+						<td class="citation" tal:content="experiment.getCitationString()"></td>
+						<td><a tal:attributes="href '../cgi-bin/experiment.cgi?expid=' + str(experiment.id)" tal:content="experiment.primaryModification"></a></td>
+					</tr>
+					<tr tal:repeat="child experiment.children" tal:attributes="class 'subexperiment' + (' even' if i % 2 == 0 else ' odd');id 'e'+str(experiment.id)" >
+						<td></td>
+						<td><a tal:attributes="href '../cgi-bin/experiment.cgi?expid=' + str(child.id)" tal:content="child.name"></a></td>
+						<td><a tal:attributes="href '../cgi-bin/experiment.cgi?expid=' + str(child.id)" tal:content="child.description"></a></td>
+						<td><a tal:attributes="href '../cgi-bin/experiment.cgi?expid=' + str(child.id)" tal:content="child.author"></a></td>
+						<td class="citation" tal:content="child.getCitationString()"></td>
+						<td><a tal:attributes="href '../cgi-bin/experiment.cgi?expid=' + str(child.id)" tal:content="child.primaryModification"></a></td>						
+					</tr>
+				</tal:experiments>
 			</tbody>
 		</table>    	
     </div>

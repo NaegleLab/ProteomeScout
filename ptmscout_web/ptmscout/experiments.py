@@ -8,6 +8,6 @@ def redirect_to_experiments(request):
 
 @view_config(route_name='experiments', renderer='templates/experiments.pt')
 def experiment_listing(request):
-    experiments = experiment.getAllExperiments()
+    experiments = experiment.getExperimentTree()
     return {'pageTitle': "Home - Experiments",
             'experiments': experiments}
