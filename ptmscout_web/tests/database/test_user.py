@@ -1,9 +1,47 @@
 from tests.DBTestCase import DBTestCase
 import ptmscout.database.user as dbuser
-from ptmscout.database.user import User, NoSuchUser
+from ptmscout.database.user import User, NoSuchUser, getUserById
+from ptmscout.database.experiment import Experiment
 
 
 class UserTestCase(DBTestCase):
+    def test_user_should_associate_with_correct_permissions(self):
+        experiments = [Experiment(),Experiment(),Experiment()] 
+        for i, exp in enumerate(experiments):
+            exp.id = 1000 + i
+            exp.name = "experiment " + str(exp.id)
+            exp.author = ""
+            exp.date = ""
+            exp.published = ""
+            exp.ambiguity = 0
+            exp.export = 0
+            exp.experiment_id = 0
+            exp.dataset = ""
+            exp.submitter = ""
+            exp.primaryModification = "Y"
+            exp.saveExperiment()
+            
+        users = [User(), User()]
+        
+        for i, user in enumerate(users):
+            user.id = 100+i
+            user.username = "user" + str(i)
+            user.createUser("password")
+            user.active=1
+        
+        users[0].experiments.append(experiments[0])
+        users[0].experiments.append(experiments[1])
+        
+        users[1].experiments.append(experiments[1])
+        users[1].experiments.append(experiments[2])
+        
+        [user.saveUser() for user in users]
+        
+        self.assertEqual([experiments[0].id, experiments[1].id], [exp.id for exp in getUserById(100).experiments])
+        self.assertEqual([experiments[1].id, experiments[2].id], [exp.id for exp in getUserById(101).experiments])
+        
+        
+        
     def test_createUser_should_insert_user(self):
         user = User("newguy", "new guy's name", "newguy@someschool.edu", "some school")
         user.createUser("password")

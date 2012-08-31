@@ -2,8 +2,15 @@ from . import Base, DBSession
 from sqlalchemy import Column, Integer, VARCHAR, TIMESTAMP
 import ptmscout.utils.crypto as crypto 
 from pyramid import security
+from sqlalchemy.schema import ForeignKey, Table
+from sqlalchemy.types import Enum
+from sqlalchemy.orm import relationship
 
-
+permissions_table = Table('permissions', Base.metadata, 
+                      Column('user_id', Integer(10), ForeignKey('users.id')),
+                      Column('experiment_id', Integer(10), ForeignKey('experiment.id')),
+                      Column('access_level', Enum(['view', 'owner']))
+                    )
 
 class User(Base):
     __tablename__ = 'users'
@@ -23,8 +30,12 @@ class User(Base):
     # activation data
     active = Column(Integer(1), default=0)
     activation_token = Column(VARCHAR(50))
+
+    experiments = relationship("Experiment",
+                                   secondary=permissions_table,
+                                   backref="Users")
     
-    def __init__(self, username, name, email, institution):
+    def __init__(self, username="", name="", email="", institution=""):
         self.username = username
         self.name = name
         self.email = email

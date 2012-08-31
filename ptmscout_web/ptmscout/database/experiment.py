@@ -32,7 +32,7 @@ class Experiment(Base):
     journal = Column(VARCHAR(45))
     pub_date = Column(VARCHAR(20))
     
-    public = Column(Integer(1))
+    public = Column(Integer(1),default=0)
     
     def __init__(self):
         pass
