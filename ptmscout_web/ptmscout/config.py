@@ -1,6 +1,6 @@
-homeUrl="http://localhost/cgi-bin"
+homeUrl="../cgi-bin"
 documentationUrl="http://ptmscout.mit.edu/docs/index.php?"
-imagesUrl="http://localhost/images"
+imagesUrl="../images"
 adminEmail = "matt.matlock@gmail.com"
 
 automailerEmail = "automailer@ptmscout.wustl.edu"
