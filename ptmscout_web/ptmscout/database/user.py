@@ -39,10 +39,6 @@ class PTMUser(Base):
         self.salt, self.salted_password = crypto.saltedPassword(password)  
         self.activation_token = crypto.generateActivationToken()
         
-    def checkPassword(self, password):
-        pass
-    
-    
 class NoSuchUser(Exception):
     def __init__(self, uid=None, username=None):
         self.uid = uid
