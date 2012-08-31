@@ -17,6 +17,31 @@ class RootFactory(object):
     __acl__ = [ (Allow, Authenticated, 'upload') ]
     def __init__(self, request):
         pass
+    
+def add_views(config):
+    config.include('pyramid_mailer')
+    
+    config.add_static_view('static', 'static', cache_max_age=3600)
+    
+    config.add_route('about', '/about')
+    config.add_route('terms', '/terms')
+    
+    config.add_route('redirect_to_experiments','/')
+    config.add_route('experiments','/experiments')
+    config.add_route('upload', '/upload')
+    
+    config.add_route('login', '/login')
+    config.add_route('process_login', '/process_login')
+    config.add_route('logout', '/logout')
+    
+    config.add_route('register', '/register')
+    config.add_route('process_registration', '/process_registration')
+    config.add_route('activate_account', '/activate_account')
+    
+    config.add_view(forbidden_view, context=Forbidden)
+    
+def includeme(config):
+    add_views(config)
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
@@ -33,22 +58,7 @@ def main(global_config, **settings):
     config.set_authentication_policy(authn_policy)
     config.set_authorization_policy(authz_policy)
     
-    config.add_static_view('static', 'static', cache_max_age=3600)
-    config.add_route('redirect_to_experiments','/')
-    config.add_route('experiments','/experiments')
-    config.add_route('upload', '/upload')
-    
-    config.add_route('login', '/login')
-    config.add_route('process_login', '/process_login')
-    config.add_route('logout', '/logout')
-    
-    config.add_route('register', '/register')
-    config.add_route('process_registration', '/process_registration')
-    config.add_route('activate_account', '/activate_account')
-    
-    config.add_view(forbidden_view, context=Forbidden)
-    
-    config.include('pyramid_mailer')
+    add_views(config)
     
     config.scan()
     return config.make_wsgi_app()
