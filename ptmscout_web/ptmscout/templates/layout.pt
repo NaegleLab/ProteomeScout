@@ -10,7 +10,7 @@
   <body>
 	<div id="menu">
 	  <div style="float:left; text-align:left">
-	    <a href="${homeUrl}/index.py">Experiments</a> |
+	    <a href="${request.application_url}/experiments">Experiments</a> |
         <a href='${homeUrl}/browse/prosearch.cgi'>Proteins</a>
 	  </div>
 	  <div style="float:right;text-align:right">
@@ -28,7 +28,7 @@
 
 	<div id="page">
 	
-	  <div id="header"><a href="${homeUrl}/index.py"><img alt="PTMScout logo" src="${imagesUrl}/logo.jpg" title="Home" /></a></div>
+	  <div id="header"><a href="${request.application_url}/"><img alt="PTMScout logo" src="${imagesUrl}/logo.jpg" title="Home" /></a></div>
 	
 	  <div id="breadcrumb">${pageTitle}</div>
 	
