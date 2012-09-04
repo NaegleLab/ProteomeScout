@@ -14,7 +14,7 @@ from ptmscout.errors import forbidden_view
 from pyramid.exceptions import Forbidden
 
 class RootFactory(object):
-    __acl__ = [ (Allow, Authenticated, 'upload') ]
+    __acl__ = [ (Allow, Authenticated, 'private') ]
     def __init__(self, request):
         pass
     
@@ -40,6 +40,9 @@ def add_views(config):
     
     config.add_route('forgot_password', '/forgot_password')
     config.add_route('process_forgot_password', '/retrieve_password')
+    
+    config.add_route('account_management', '/account')
+    config.add_route('change_password', '/change_password')
     
     config.add_view(forbidden_view, context=Forbidden)
     
