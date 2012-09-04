@@ -4,6 +4,9 @@ import hashlib
 def __byteStringToHex(byteString):
     return ''.join([hex(ord(c))[2:].zfill(2) for c in byteString])
 
+def randomString(size):
+    return __byteStringToHex(os.urandom(size))
+
 def generateActivationToken():
     return __byteStringToHex(os.urandom(25))
 def generateSalt():
