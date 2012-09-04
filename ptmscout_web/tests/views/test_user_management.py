@@ -7,7 +7,7 @@ from mock import patch, Mock
 import ptmscout.database.user as dbuser
 from ptmscout.user_management import user_login, user_logout, user_login_success,\
     user_registration_view, user_registration_success, user_account_activation,\
-    forgot_password, process_forgot_password
+    forgot_password, process_forgot_password, manage_account, change_password
 import ptmscout.utils.crypto as crypto
 
 class UserManagementTests(unittest.TestCase):
@@ -18,6 +18,92 @@ class UserManagementTests(unittest.TestCase):
 
     def tearDown(self):
         testing.tearDown()
+        
+    def test_manage_account_should_display_account_info(self):
+        request = DummyRequest()
+        request.GET['reason'] = "reason"
+        ptm_user = createUserForTest("username", "email", "password", 1)
+        request.user = ptm_user        
+        
+        info = manage_account(request)
+        self.assertEqual("Account Management", info['pageTitle'])
+        self.assertEqual("username", info['username'])
+        self.assertEqual("A User", info['fullname'])
+        self.assertEqual("email", info['email'])
+        self.assertEqual("institution", info['institution'])
+        self.assertEqual("reason", info['reason'])
+    
+    @patch('ptmscout.utils.transactions.commit')
+    def test_change_password_should_notify_on_success_and_update_db(self, patch_commit):
+        request = DummyRequest()
+        request.POST['old_pass'] = "password"
+        request.POST['new_pass1'] = "newpassword"
+        request.POST['new_pass2'] = "newpassword"
+        ptm_user = createUserForTest("username", "email", "password", 1)
+        request.user = ptm_user
+        
+        info = change_password(request)
+        
+        self.assertEqual("Password successfully changed.", info['message'])
+        self.assertEqual("Success", info['header'])
+        self.assertEqual("Change Password", info['pageTitle'])
+        
+        _, new_salted_password = crypto.saltedPassword("newpassword", ptm_user.salt)
+        self.assertEqual(new_salted_password, ptm_user.salted_password)
+        
+        self.assertTrue(ptm_user.saveUser.called)
+        self.assertTrue(patch_commit.called)
+        
+    def test_change_password_should_fail_if_passwords_not_supplied(self):
+        request = DummyRequest()
+        request.POST['old_pass'] = ""
+        request.POST['new_pass1'] = ""
+        request.POST['new_pass2'] = ""
+        ptm_user = createUserForTest("username", "email", "password", 1)
+        request.user = ptm_user
+        
+        try:
+            change_password(request)
+        except HTTPFound, f:
+            self.assertEqual("http://example.com/account?"+urllib.urlencode({'reason':"Form fields cannot be empty"}), f.location)
+        except Exception, e:
+            self.fail("Unexpected exception thrown: " + str(e))
+        else:
+            self.fail("Expected exception HTTPFound, no exception raised")
+    
+    def test_change_password_should_fail_if_old_password_not_correct(self):
+        request = DummyRequest()
+        request.POST['old_pass'] = "wrongpass"
+        request.POST['new_pass1'] = "newpassword"
+        request.POST['new_pass2'] = "newpassword"
+        ptm_user = createUserForTest("username", "email", "password", 1)
+        request.user = ptm_user
+        
+        try:
+            change_password(request)
+        except HTTPFound, f:
+            self.assertEqual("http://example.com/account?"+urllib.urlencode({'reason':"Supplied password was incorrect"}), f.location)
+        except Exception, e:
+            self.fail("Unexpected exception thrown: " + str(e))
+        else:
+            self.fail("Expected exception HTTPFound, no exception raised") 
+        
+    def test_change_password_should_fail_if_passwords_do_not_match(self):
+        request = DummyRequest()
+        request.POST['old_pass'] = "password"
+        request.POST['new_pass1'] = "newpass1"
+        request.POST['new_pass2'] = "newpass2"
+        ptm_user = createUserForTest("username", "email", "password", 1)
+        request.user = ptm_user
+        
+        try:
+            change_password(request)
+        except HTTPFound, f:
+            self.assertEqual("http://example.com/account?"+urllib.urlencode({'reason':"New password confirmation did not match"}), f.location)
+        except Exception, e:
+            self.fail("Unexpected exception thrown: " + str(e))
+        else:
+            self.fail("Expected exception HTTPFound, no exception raised")
 
     def test_forgot_password_should_display_forgot_password_form(self):
         request = DummyRequest()

@@ -10,6 +10,43 @@ import re
 import config
 from ptmscout.utils import mail, transactions
 
+@view_config(route_name='account_management', renderer='templates/account.pt', permission='private')
+def manage_account(request):
+    reason = webutils.get(request, 'reason', None)
+    return {'username': request.user.username,
+            'fullname': request.user.name,
+            'email': request.user.email,
+            'institution': request.user.institution,
+            'pageTitle': "Account Management",
+            'reason': reason}
+
+@view_config(route_name='change_password', renderer='templates/information.pt', permission='private')
+def change_password(request):
+    oldpass = webutils.post(request, 'old_pass', "")
+    newpass1 = webutils.post(request, 'new_pass1', "")
+    newpass2 = webutils.post(request, 'new_pass2', "")
+    
+    if oldpass == "" or newpass1 == "" or newpass2 == "":
+        raise HTTPFound(request.application_url + "/account?" + urllib.urlencode({'reason':"Form fields cannot be empty"}))
+    
+    if newpass1 != newpass2:
+        raise HTTPFound(request.application_url + "/account?" + urllib.urlencode({'reason':"New password confirmation did not match"}))
+    
+    _, old_salted_pass = crypto.saltedPassword(oldpass, request.user.salt)
+    
+    if old_salted_pass != request.user.salted_password:
+        raise HTTPFound(request.application_url + "/account?" + urllib.urlencode({'reason':"Supplied password was incorrect"}))
+    
+    _, new_salted_pass = crypto.saltedPassword(newpass1, request.user.salt)
+    request.user.salted_password = new_salted_pass
+    request.user.saveUser()
+    
+    transactions.commit()
+    
+    return {'pageTitle': "Change Password",
+            'message': "Password successfully changed.",
+            'header': "Success"}
+
 @view_config(route_name='forgot_password', renderer='templates/forgot_password.pt')
 def forgot_password(request):
     email = webutils.get(request, 'email', "")
@@ -30,7 +67,7 @@ def process_forgot_password(request):
     
     try:
         ptm_user = user.getUserByEmail(email)
-        ptm_user.salted_password, _ = crypto.saltedPassword(new_password, ptm_user.salt)
+        _, ptm_user.salted_password = crypto.saltedPassword(new_password, ptm_user.salt)
         ptm_user.saveUser()
     except NoSuchUser:
         raise HTTPFound(request.application_url + "/forgot_password?" + urllib.urlencode({'email':email, 'reason': "E-mail address does not match any user record"}))

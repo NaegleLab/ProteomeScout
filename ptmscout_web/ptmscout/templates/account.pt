@@ -1,0 +1,47 @@
+<div metal:use-macro="layout">
+    <div metal:fill-slot="content">
+    	<div class="loginform">
+    		<div class="formcategory">Account Information:</div>
+        	<table>
+        		<tr>
+        			<td class="fieldname">Username:</td>
+        			<td>${username}</td>
+        		</tr>
+        		<tr>
+        			<td class="fieldname">Full Name:</td>
+        			<td>${fullname}</td>
+        		</tr>
+        		<tr>
+        			<td class="fieldname">Institution:</td>
+        			<td>${institution}</td>
+        		</tr>
+        		<tr>
+        			<td class="fieldname">E-mail:</td>
+        			<td>${email}</td>
+        		</tr>
+        	</table>
+      	
+   			<div tal:condition="reason != None" class="errorbox">Error: ${reason}</div>
+	      	<div class="formcategory">Change your password:</div>
+	        <form method="POST" action="${request.application_url}/change_password">
+	           	<table>
+	        		<tr>
+	        			<td class="fieldname">Current password:</td>
+	        			<td><input type="password" name="old_pass" value="" /></td>
+	        		</tr>
+	        		<tr>
+	        			<td class="fieldname">Enter new password:</td>
+	        			<td><input type="password" name="new_pass2" value="" /></td>
+	        		</tr>
+	        		<tr>
+	        			<td class="fieldname">Repeat new password:</td>
+	        			<td><input type="password" name="new_pass1" value="" /></td>
+	        		</tr>
+	        	</table>
+	        	<div class="formsubmission"><input type="submit" value="Change Password" /></div>
+	        </form>
+	        
+	        <div></div>
+	    </div>
+    </div>
+</div>
