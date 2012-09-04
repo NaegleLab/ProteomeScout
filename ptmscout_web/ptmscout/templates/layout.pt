@@ -19,7 +19,8 @@
 	    	<a href='${request.application_url}/login'>Login</a> | 
 	    </span>
 	    <span tal:condition="request.user != None">
-		    <a href='${request.application_url}/logout'>Logout: ${request.user.username}</a> |
+	    	<a href='${request.application_url}/account'>Account: ${request.user.username}</a> |
+		    <a href='${request.application_url}/logout'>Logout</a> |
 		    <a href='${request.application_url}/upload'>Upload Data</a> |
 	    </span>
 	    <a target='_blank' href="${documentationUrl}title=Main_Page">Documentation</a> |
