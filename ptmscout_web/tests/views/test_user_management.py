@@ -3,10 +3,11 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.testing import DummyRequest
 import unittest
 import urllib
-from mock import patch
+from mock import patch, Mock
 import ptmscout.database.user as dbuser
 from ptmscout.user_management import user_login, user_logout, user_login_success,\
-    user_registration_view, user_registration_success, user_account_activation
+    user_registration_view, user_registration_success, user_account_activation,\
+    forgot_password, process_forgot_password
 import ptmscout.utils.crypto as crypto
 
 class UserManagementTests(unittest.TestCase):
@@ -18,6 +19,87 @@ class UserManagementTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
+    def test_forgot_password_should_display_forgot_password_form(self):
+        request = DummyRequest()
+        request.GET['email'] = "someemail@institute.edu"
+        request.GET['reason'] = "reason"
+        
+        info = forgot_password(request)
+        
+        self.assertEqual("Forgotten Password Retrieval", info['pageTitle'])
+        self.assertEqual("someemail@institute.edu", info['email'])
+        self.assertEqual("reason", info['reason'])
+
+    @patch('ptmscout.utils.transactions.commit')    
+    @patch('ptmscout.database.user.getUserByEmail')
+    @patch('ptmscout.utils.crypto.randomString')
+    @patch('ptmscout.utils.mail.send_automail_message')
+    def test_process_forgot_password_should_display_success_reset_password_and_send_email_when_user_exists(self, patch_sendMail, patch_crypto, patch_getUser, patch_commit):
+        user_email = "a_valid_email@institute.edu"
+        ptm_user = createUserForTest("username", user_email, "password", 1)
+        patch_getUser.return_value = ptm_user
+        new_password = "as24jdf945"
+        patch_crypto.return_value = new_password
+        
+        request = DummyRequest()
+        request.POST['email'] = user_email
+        
+        info = process_forgot_password(request)
+        self.assertEqual("Forgotten Password Retrieval", info['pageTitle'])
+        self.assertEqual("Password Reset Success", info['header'])
+        self.assertEqual("Your username and a temporary password have been sent to your e-mail address", info['message'])
+        
+        self.assertTrue(patch_sendMail.called)
+        
+        login_url = request.application_url + "/login"
+        account_url = request.application_url + "/account"
+        
+        password_reset_message = """A User,
+        
+        Your password in PTMScout has been reset, your new login credentials are:
+        Username: %s
+        Password: %s
+        
+        Please visit <a href="%s">PTMScout</a> to login.
+        After logging in, your can change your password <a href="%s">here</a>.
+        
+        -PTMScout Administrator
+        """ % ("username", new_password, login_url, account_url)
+        
+        patch_sendMail.assert_called_with(request, [user_email], "PTMScout password reset", password_reset_message)
+        self.assertTrue(ptm_user.saveUser.called)
+        self.assertTrue(patch_commit.called)
+        
+    @patch('ptmscout.database.user.getUserByEmail')
+    def test_process_forgot_password_should_display_error_when_email_not_provided(self, patch_getUser):
+        patch_getUser.side_effect = dbuser.NoSuchUser(username="a_username")
+        request = DummyRequest()
+        request.POST['email'] = ""
+        
+        try:
+            process_forgot_password(request)
+        except HTTPFound, f:
+            self.assertEqual("http://example.com/forgot_password?"+urllib.urlencode({'email':"",'reason':"Form fields cannot be empty"}), f.location)
+        except Exception, e:
+            self.fail("Unexpected exception thrown: " + str(e))
+        else:
+            self.fail("Expected exception HTTPFound, no exception raised")
+            
+    @patch('ptmscout.database.user.getUserByEmail')
+    def test_process_forgot_password_should_display_error_when_no_such_user(self, patch_getUser):
+        patch_getUser.side_effect = dbuser.NoSuchUser(username="a_username")
+        request = DummyRequest()
+        request.POST['email'] = "username@institute.edu"
+        
+        try:
+            process_forgot_password(request)
+        except HTTPFound, f:
+            self.assertEqual("http://example.com/forgot_password?"+urllib.urlencode({'email':"username@institute.edu",'reason':"E-mail address does not match any user record"}), f.location)
+        except Exception, e:
+            self.fail("Unexpected exception thrown: " + str(e))
+        else:
+            self.fail("Expected exception HTTPFound, no exception raised")
+                
     def test_login_should_display_login_page(self):
         
         request = DummyRequest()
@@ -286,11 +368,10 @@ class UserManagementTests(unittest.TestCase):
             self.fail("Expected exception HTTPFound, no exception raised")
     
     @patch('ptmscout.utils.mail.send_automail_message')
-    @patch('ptmscout.database.commit')
-    @patch.object(dbuser.User, 'createUser')
-    @patch.object(dbuser.User, 'saveUser')
+    @patch('ptmscout.utils.transactions.commit')
+    @patch('ptmscout.database.user.User')
     @patch('ptmscout.database.user.getUserByUsername')
-    def test_user_registration_success_should_send_email_on_success_and_store_new_user(self, patch_getUser, patch_saveUser, patch_createUser, patch_commit, patch_automail):
+    def test_user_registration_success_should_send_email_on_success_and_store_new_user(self, patch_getUser, patch_User, patch_commit, patch_automail):
         patch_getUser.side_effect = dbuser.NoSuchUser(username="a_username")
         
         request = DummyRequest()
@@ -303,10 +384,11 @@ class UserManagementTests(unittest.TestCase):
         request.POST['institution'] = "institute"
         
         result = user_registration_success(request)
-
+        
+        user_instance = patch_User.return_value
         self.assertTrue(patch_automail.called, "User was not notified of account activation by e-mail")
-        self.assertTrue(patch_saveUser.called, "User was not saved to database")
-        self.assertTrue(patch_createUser.called, "User object not initialized before DB commit")
+        self.assertTrue(user_instance.saveUser.called, "User was not saved to database")
+        self.assertTrue(user_instance.createUser.called, "User object not initialized before DB commit")
         
         self.assertTrue(patch_commit.called, "Database changed were not committed")
         
@@ -354,10 +436,10 @@ class UserManagementTests(unittest.TestCase):
         self.assertEqual("Account Activation", result['pageTitle'])
         self.assertEqual("The specified account is not valid, please try <a href=\"http://example.com/register\">registering</a>", result['message'])
     
-    @patch('ptmscout.database.commit')
-    @patch.object(dbuser.User, 'saveUser')
+    @patch('ptmscout.utils.transactions.commit')
+    @patch('ptmscout.database.user.User')
     @patch('ptmscout.database.user.getUserByUsername')
-    def test_user_account_activation_should_succeed_if_all_parameters_correct(self, patch_getUser, patch_saveUser, patch_commit):
+    def test_user_account_activation_should_succeed_if_all_parameters_correct(self, patch_getUser, patch_user, patch_commit):
         ptm_user = createUserForTest("username", "email", "password", 0)
         patch_getUser.return_value = ptm_user
         request = DummyRequest()
@@ -367,9 +449,9 @@ class UserManagementTests(unittest.TestCase):
         
         result = user_account_activation(request)
         
-        self.assertTrue(patch_saveUser.called, "User was not saved")
+        self.assertTrue(ptm_user.setActive.called, "User was not set as active")
+        self.assertTrue(ptm_user.saveUser.called, "User was not saved")
         self.assertTrue(patch_commit.called, "Database changed were not committed")
-        self.assertEqual(1, ptm_user.active)
         self.assertEqual("Account Activation Succeeded", result['header'])
         self.assertEqual("Account Activation", result['pageTitle'])
         self.assertEqual("Your account is now active. Please <a href=\"http://example.com/login\">login</a>", result['message'])
@@ -377,8 +459,13 @@ class UserManagementTests(unittest.TestCase):
     
         
 def createUserForTest(username, email, password, active):
-    user = dbuser.User(username, "A User", email, "institution")
-    user.createUser(password)
-    user.id = UserManagementTests.TEST_USER_ID
-    user.active = active
-    return user
+    mock = Mock()
+    mock.username = username
+    mock.name = "A User"
+    mock.email = email
+    mock.institution = "institution"
+    mock.salt, mock.salted_password = crypto.saltedPassword(password)  
+    mock.activation_token = crypto.generateActivationToken()
+    mock.id = UserManagementTests.TEST_USER_ID
+    mock.active = active
+    return mock

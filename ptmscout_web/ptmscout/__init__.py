@@ -38,6 +38,9 @@ def add_views(config):
     config.add_route('process_registration', '/process_registration')
     config.add_route('activate_account', '/activate_account')
     
+    config.add_route('forgot_password', '/forgot_password')
+    config.add_route('process_forgot_password', '/retrieve_password')
+    
     config.add_view(forbidden_view, context=Forbidden)
     
 def includeme(config):

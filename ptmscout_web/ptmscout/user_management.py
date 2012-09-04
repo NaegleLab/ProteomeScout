@@ -10,7 +10,53 @@ import re
 import config
 from ptmscout.utils import mail, transactions
 
+@view_config(route_name='forgot_password', renderer='templates/forgot_password.pt')
+def forgot_password(request):
+    email = webutils.get(request, 'email', "")
+    reason = webutils.get(request, 'reason', None)
+    
+    return {'pageTitle': "Forgotten Password Retrieval",
+            'email': email,
+            'reason': reason}
 
+@view_config(route_name='process_forgot_password', renderer='templates/information.pt')
+def process_forgot_password(request):
+    email = webutils.post(request, 'email', "")
+    
+    if email == "":
+        raise HTTPFound(request.application_url + "/forgot_password?" + urllib.urlencode({'email':email, 'reason':"Form fields cannot be empty"}))
+    
+    new_password = crypto.randomString(5)
+    
+    try:
+        ptm_user = user.getUserByEmail(email)
+        ptm_user.salted_password, _ = crypto.saltedPassword(new_password, ptm_user.salt)
+        ptm_user.saveUser()
+    except NoSuchUser:
+        raise HTTPFound(request.application_url + "/forgot_password?" + urllib.urlencode({'email':email, 'reason': "E-mail address does not match any user record"}))
+    
+    login_url = request.application_url + "/login"
+    account_url = request.application_url + "/account"
+    
+    message = """%s,
+        
+        Your password in PTMScout has been reset, your new login credentials are:
+        Username: %s
+        Password: %s
+        
+        Please visit <a href="%s">PTMScout</a> to login.
+        After logging in, your can change your password <a href="%s">here</a>.
+        
+        -PTMScout Administrator
+        """ % (ptm_user.name, ptm_user.username, new_password, login_url, account_url)
+    
+    mail.send_automail_message(request, [email], "PTMScout password reset", message)
+    
+    transactions.commit()
+    
+    return {'pageTitle': "Forgotten Password Retrieval",
+            'header': "Password Reset Success",
+            'message':"Your username and a temporary password have been sent to your e-mail address"}
 
 @view_config(route_name='register',renderer='templates/user_registration.pt')
 def user_registration_view(request):
