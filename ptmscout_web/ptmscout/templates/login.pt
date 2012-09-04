@@ -16,6 +16,7 @@
 	        	</table>
 	        	<div class="formsubmission"><input type="submit" value="Login" /></div>
 	        </form>
+	        <div class="centered">Forgot your password? Click <a href="${request.application_url}/forgot_password">here</a></div>
 	        <div class="centered">No credentials? Register <a href="${request.application_url}/register">here</a></div>
 	        <div></div>
 	    </div>
