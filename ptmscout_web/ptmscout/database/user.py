@@ -49,19 +49,22 @@ class User(Base):
         self.active = 1
         
     def createUser(self, password):
-        self.salt, self.salted_password = crypto.saltedPassword(password)  
+        self.salt, self.salted_password = crypto.saltedPassword(password)
         self.activation_token = crypto.generateActivationToken()
         
 class NoSuchUser(Exception):
-    def __init__(self, uid=None, username=None):
+    def __init__(self, uid=None, username=None, email=None):
         self.uid = uid
         self.username = username
+        self.email = email
     def __str__(self):
         value = ""
         if self.uid != None:
             value = str(self.uid)
         if self.username != None:
             value = str(self.username)
+        if self.email != None:
+            value = str(self.email)
         
         return "Could not find user %s" % value
 
@@ -83,6 +86,12 @@ def getUserByUsername(username):
     value = DBSession.query(User).filter_by(username=username).first()
     if value == None:
         raise NoSuchUser(username=username)
+    return value
+
+def getUserByEmail(email):
+    value = DBSession.query(User).filter_by(email=email).first()
+    if value == None:
+        raise NoSuchUser(email=email)
     return value
     
     

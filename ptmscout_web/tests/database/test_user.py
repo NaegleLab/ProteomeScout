@@ -86,4 +86,22 @@ class UserTestCase(DBTestCase):
             self.fail("Unexpected exception: " + str(e))
         else:
             self.fail("Expected exception NoSuchUser was not thrown")
+            
+    def test_getUserByEmail_should_return_user_when_exists(self):
+        user = User("newguy", "new guy's name", "newguy@someschool.edu", "some school")
+        user.createUser("password")
+        user.saveUser()
         
+        newuser = dbuser.getUserByEmail("newguy@someschool.edu")
+        
+        self.assertEqual(user.username, newuser.username) 
+
+    def test_getUserByEmail_should_throw_exception_when_no_such_user(self):
+        try:
+            dbuser.getUserByEmail("nosuchuser")
+        except NoSuchUser, n:
+            self.assertEqual("nosuchuser", n.email)
+        except Exception, e:
+            self.fail("Unexpected exception: " + str(e))
+        else:
+            self.fail("Expected exception NoSuchUser was not thrown")
