@@ -7,7 +7,8 @@ from mock import patch, Mock
 import ptmscout.database.user as dbuser
 from ptmscout.user_management import user_login, user_logout, user_login_success,\
     user_registration_view, user_registration_success, user_account_activation,\
-    forgot_password, process_forgot_password, manage_account, change_password
+    forgot_password, process_forgot_password, manage_account, change_password,\
+    change_password_success
 import ptmscout.utils.crypto as crypto
 
 class UserManagementTests(unittest.TestCase):
@@ -42,17 +43,28 @@ class UserManagementTests(unittest.TestCase):
         ptm_user = createUserForTest("username", "email", "password", 1)
         request.user = ptm_user
         
-        info = change_password(request)
+        try:
+            change_password(request)
+            
+            _, new_salted_password = crypto.saltedPassword("newpassword", ptm_user.salt)
+            self.assertEqual(new_salted_password, ptm_user.salted_password)
+            
+            self.assertTrue(ptm_user.saveUser.called)
+            self.assertTrue(patch_commit.called)
+        except HTTPFound, f:
+            self.assertEqual("http://example.com/change_password_success", f.location)
+        except Exception, e:
+            self.fail("Unexpected exception thrown: " + str(e))
+        else:
+            self.fail("Expected exception HTTPFound, no exception raised")
+        
+    def test_change_password_success_should_display_notification(self):
+        request = DummyRequest()
+        info = change_password_success(request)
         
         self.assertEqual("Password successfully changed.", info['message'])
         self.assertEqual("Success", info['header'])
         self.assertEqual("Change Password", info['pageTitle'])
-        
-        _, new_salted_password = crypto.saltedPassword("newpassword", ptm_user.salt)
-        self.assertEqual(new_salted_password, ptm_user.salted_password)
-        
-        self.assertTrue(ptm_user.saveUser.called)
-        self.assertTrue(patch_commit.called)
         
     def test_change_password_should_fail_if_passwords_not_supplied(self):
         request = DummyRequest()
@@ -306,9 +318,6 @@ class UserManagementTests(unittest.TestCase):
         self.assertEqual("Login Successful", value['header'])
         self.assertEqual("You have successfully logged in.", value['message'])
         
-    def test_salter(self):
-        print crypto.saltedPassword("password", '41683edb7a')
-        
     def test_user_registration_view_should_display_correct_fields(self):
         request = DummyRequest()
         
@@ -542,7 +551,9 @@ class UserManagementTests(unittest.TestCase):
         self.assertEqual("Account Activation", result['pageTitle'])
         self.assertEqual("Your account is now active. Please <a href=\"http://example.com/login\">login</a>", result['message'])
     
-    
+    def test_salter(self):
+        print crypto.saltedPassword("password", '41683edb7a')
+        print crypto.saltedPassword("secret", '41683edb7a')
         
 def createUserForTest(username, email, password, active):
     mock = Mock()

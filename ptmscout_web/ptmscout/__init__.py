@@ -43,6 +43,7 @@ def add_views(config):
     
     config.add_route('account_management', '/account')
     config.add_route('change_password', '/change_password')
+    config.add_route('change_password_success', '/change_password_success')
     
     config.add_view(forbidden_view, context=Forbidden)
     

@@ -9,6 +9,7 @@ from pyramid import security
 import re
 import config
 from ptmscout.utils import mail, transactions
+from ptmscout.database import DBSession
 
 @view_config(route_name='account_management', renderer='templates/account.pt', permission='private')
 def manage_account(request):
@@ -20,7 +21,7 @@ def manage_account(request):
             'pageTitle': "Account Management",
             'reason': reason}
 
-@view_config(route_name='change_password', renderer='templates/information.pt', permission='private')
+@view_config(route_name='change_password', permission='private')
 def change_password(request):
     oldpass = webutils.post(request, 'old_pass', "")
     newpass1 = webutils.post(request, 'new_pass1', "")
@@ -43,6 +44,10 @@ def change_password(request):
     
     transactions.commit()
     
+    raise HTTPFound(request.application_url + "/change_password_success")
+    
+@view_config(route_name='change_password_success', renderer='templates/information.pt', permission='private')
+def change_password_success(request):
     return {'pageTitle': "Change Password",
             'message': "Password successfully changed.",
             'header': "Success"}
