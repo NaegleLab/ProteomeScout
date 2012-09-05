@@ -28,7 +28,7 @@
 
 	<div id="page">
 	
-	  <div id="header"><a href="${request.application_url}/"><img alt="PTMScout logo" src="${request.application_url}/${imagesUrl}/logo.jpg" title="Home" /></a></div>
+	  <div id="header"><a href="${request.application_url}/"><img alt="PTMScout logo" src="${request.static_url('ptmscout:static/images/logo.jpg')}" title="Home" /></a></div>
 	
 	  <div id="breadcrumb">${pageTitle}</div>
 	
