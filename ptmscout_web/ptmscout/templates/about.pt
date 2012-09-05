@@ -109,7 +109,7 @@
 			<ul>
 				<li>In order to download your own version of PTMScout software,
 					for analysis of non-public data, please e-mail the administrator at
-					<a href="${adminEmail}">ptmscout_admin@mit.edu</a>.
+					<a href="${adminEmail}">${adminEmail}</a>.
 					The software is distributed under the 
 					<a href="http://creativecommons.org/licenses/by-nc-sa/3.0">Creative
 					Commons Attribution Noncommercial license.</a>

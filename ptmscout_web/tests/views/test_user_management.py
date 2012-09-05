@@ -10,6 +10,7 @@ from ptmscout.user_management import user_login, user_logout, user_login_success
     forgot_password, process_forgot_password, manage_account, change_password,\
     change_password_success
 import ptmscout.utils.crypto as crypto
+from ptmscout import strings
 
 class UserManagementTests(unittest.TestCase):
     TEST_USER_ID = 17
@@ -27,7 +28,7 @@ class UserManagementTests(unittest.TestCase):
         request.user = ptm_user        
         
         info = manage_account(request)
-        self.assertEqual("Account Management", info['pageTitle'])
+        self.assertEqual(strings.account_management_page_title, info['pageTitle'])
         self.assertEqual("username", info['username'])
         self.assertEqual("A User", info['fullname'])
         self.assertEqual("email", info['email'])
@@ -52,7 +53,7 @@ class UserManagementTests(unittest.TestCase):
             self.assertTrue(ptm_user.saveUser.called)
             self.assertTrue(patch_commit.called)
         except HTTPFound, f:
-            self.assertEqual("http://example.com/change_password_success", f.location)
+            self.assertEqual(request.application_url + "/change_password_success", f.location)
         except Exception, e:
             self.fail("Unexpected exception thrown: " + str(e))
         else:
@@ -62,9 +63,9 @@ class UserManagementTests(unittest.TestCase):
         request = DummyRequest()
         info = change_password_success(request)
         
-        self.assertEqual("Password successfully changed.", info['message'])
-        self.assertEqual("Success", info['header'])
-        self.assertEqual("Change Password", info['pageTitle'])
+        self.assertEqual(strings.change_password_success_message, info['message'])
+        self.assertEqual(strings.success_header, info['header'])
+        self.assertEqual(strings.change_password_page_title, info['pageTitle'])
         
     def test_change_password_should_fail_if_passwords_not_supplied(self):
         request = DummyRequest()
@@ -77,7 +78,7 @@ class UserManagementTests(unittest.TestCase):
         try:
             change_password(request)
         except HTTPFound, f:
-            self.assertEqual("http://example.com/account?"+urllib.urlencode({'reason':"Form fields cannot be empty"}), f.location)
+            self.assertEqual(request.application_url + "/account?"+urllib.urlencode({'reason':strings.failure_reason_form_fields_cannot_be_empty}), f.location)
         except Exception, e:
             self.fail("Unexpected exception thrown: " + str(e))
         else:
@@ -94,7 +95,7 @@ class UserManagementTests(unittest.TestCase):
         try:
             change_password(request)
         except HTTPFound, f:
-            self.assertEqual("http://example.com/account?"+urllib.urlencode({'reason':"Supplied password was incorrect"}), f.location)
+            self.assertEqual(request.application_url + "/account?"+urllib.urlencode({'reason':strings.failure_reason_incorrect_password}), f.location)
         except Exception, e:
             self.fail("Unexpected exception thrown: " + str(e))
         else:
@@ -111,7 +112,7 @@ class UserManagementTests(unittest.TestCase):
         try:
             change_password(request)
         except HTTPFound, f:
-            self.assertEqual("http://example.com/account?"+urllib.urlencode({'reason':"New password confirmation did not match"}), f.location)
+            self.assertEqual(request.application_url + "/account?"+urllib.urlencode({'reason':strings.failure_reason_new_passwords_not_matching}), f.location)
         except Exception, e:
             self.fail("Unexpected exception thrown: " + str(e))
         else:
@@ -124,7 +125,7 @@ class UserManagementTests(unittest.TestCase):
         
         info = forgot_password(request)
         
-        self.assertEqual("Forgotten Password Retrieval", info['pageTitle'])
+        self.assertEqual(strings.forgotten_password_page_title, info['pageTitle'])
         self.assertEqual("someemail@institute.edu", info['email'])
         self.assertEqual("reason", info['reason'])
 
@@ -143,28 +144,19 @@ class UserManagementTests(unittest.TestCase):
         request.POST['email'] = user_email
         
         info = process_forgot_password(request)
-        self.assertEqual("Forgotten Password Retrieval", info['pageTitle'])
-        self.assertEqual("Password Reset Success", info['header'])
-        self.assertEqual("Your username and a temporary password have been sent to your e-mail address", info['message'])
+        self.assertEqual(strings.forgotten_password_page_title, info['pageTitle'])
+        self.assertEqual(strings.forgotten_password_success_header, info['header'])
+        self.assertEqual(strings.forgotten_password_success_message, info['message'])
         
         self.assertTrue(patch_sendMail.called)
         
         login_url = request.application_url + "/login"
         account_url = request.application_url + "/account"
         
-        password_reset_message = """A User,
+        password_reset_message = strings.forgotten_password_email_message % (ptm_user.name, "username", new_password, login_url, account_url)
         
-        Your password in PTMScout has been reset, your new login credentials are:
-        Username: %s
-        Password: %s
-        
-        Please visit <a href="%s">PTMScout</a> to login.
-        After logging in, your can change your password <a href="%s">here</a>.
-        
-        -PTMScout Administrator
-        """ % ("username", new_password, login_url, account_url)
-        
-        patch_sendMail.assert_called_with(request, [user_email], "PTMScout password reset", password_reset_message)
+        patch_sendMail.assert_called_with(request, [user_email], 
+                                          strings.forgotten_password_email_subject, password_reset_message)
         self.assertTrue(ptm_user.saveUser.called)
         self.assertTrue(patch_commit.called)
         
@@ -177,7 +169,7 @@ class UserManagementTests(unittest.TestCase):
         try:
             process_forgot_password(request)
         except HTTPFound, f:
-            self.assertEqual("http://example.com/forgot_password?"+urllib.urlencode({'email':"",'reason':"Form fields cannot be empty"}), f.location)
+            self.assertEqual(request.application_url + "/forgot_password?"+urllib.urlencode({'email':"",'reason':strings.failure_reason_form_fields_cannot_be_empty}), f.location)
         except Exception, e:
             self.fail("Unexpected exception thrown: " + str(e))
         else:
@@ -192,7 +184,7 @@ class UserManagementTests(unittest.TestCase):
         try:
             process_forgot_password(request)
         except HTTPFound, f:
-            self.assertEqual("http://example.com/forgot_password?"+urllib.urlencode({'email':"username@institute.edu",'reason':"E-mail address does not match any user record"}), f.location)
+            self.assertEqual(request.application_url + "/forgot_password?"+urllib.urlencode({'email':"username@institute.edu",'reason':strings.failure_reason_email_address_not_on_record}), f.location)
         except Exception, e:
             self.fail("Unexpected exception thrown: " + str(e))
         else:
@@ -204,7 +196,7 @@ class UserManagementTests(unittest.TestCase):
     
         info = user_login(request)
         
-        self.assertEqual('Login', info['pageTitle'])
+        self.assertEqual(strings.login_page_title, info['pageTitle'])
         self.assertEqual(None, info['reason'])
         
     @patch('pyramid.security.forget')
@@ -216,9 +208,9 @@ class UserManagementTests(unittest.TestCase):
         self.assertEqual(None, request.user)
         
         patch_security.assert_called_once_with(request)
-        self.assertEqual("Logout", value['pageTitle'])
-        self.assertEqual("Logout Successful", value['header'])
-        self.assertEqual("You have successfully logged out.", value['message'])
+        self.assertEqual(strings.logout_page_title, value['pageTitle'])
+        self.assertEqual(strings.logout_page_header, value['header'])
+        self.assertEqual(strings.logout_page_message, value['message'])
         
     def test_login_should_display_error_with_reason_and_populate_username(self):
         request = DummyRequest()
@@ -228,7 +220,7 @@ class UserManagementTests(unittest.TestCase):
         
         info = user_login(request)
         
-        self.assertEqual('Login', info['pageTitle'])
+        self.assertEqual(strings.login_page_title, info['pageTitle'])
         self.assertEqual('a_username', info['username'])
         self.assertEqual("you didn't do it right", info['reason'])
         
@@ -242,7 +234,7 @@ class UserManagementTests(unittest.TestCase):
             user_login_success(request)
             self.fail("Expected exception HTTPFound, no exception raised")
         except HTTPFound, f:
-            self.assertEqual("http://example.com/login?"+urllib.urlencode({'username':"a_username",'reason':"All fields are required"}), f.location)
+            self.assertEqual(request.application_url + "/login?"+urllib.urlencode({'username':"a_username",'reason':strings.failure_reason_form_fields_cannot_be_empty}), f.location)
     
 
     
@@ -258,7 +250,7 @@ class UserManagementTests(unittest.TestCase):
         try:
             user_login_success(request)
         except HTTPFound, f:
-            self.assertEqual("http://example.com/login?"+urllib.urlencode({'username':"good_username",'reason':"Credentials incorrect"}), f.location)
+            self.assertEqual(request.application_url + "/login?"+urllib.urlencode({'username':"good_username",'reason':strings.failure_reason_incorrect_credentials}), f.location)
         except Exception, e:
             self.fail("Unexpected exception thrown " + str(e))
         else:
@@ -276,7 +268,7 @@ class UserManagementTests(unittest.TestCase):
         try:
             user_login_success(request)
         except HTTPFound, f:
-            self.assertEqual("http://example.com/login?"+urllib.urlencode({'username':"good_username",'reason':"Account has not been activated"}), f.location)
+            self.assertEqual(request.application_url + "/login?"+urllib.urlencode({'username':"good_username",'reason':strings.failure_reason_inactive_account}), f.location)
         except Exception, e:
             self.fail("Unexpected exception thrown " + str(e))
         else:
@@ -294,7 +286,7 @@ class UserManagementTests(unittest.TestCase):
         try:
             user_login_success(request)
         except HTTPFound, f:
-            self.assertEqual("http://example.com/login?"+urllib.urlencode({'username':"notauser",'reason':"Credentials incorrect"}), f.location)
+            self.assertEqual(request.application_url + "/login?"+urllib.urlencode({'username':"notauser",'reason':strings.failure_reason_incorrect_credentials}), f.location)
         except Exception, e:
             self.fail("Unexpected exception thrown: " + str(e))
         else:
@@ -314,9 +306,9 @@ class UserManagementTests(unittest.TestCase):
         
         self.assertEqual(patch_getUser.return_value, request.user)
         patch_security.assert_called_once_with(request, "good_username")
-        self.assertEqual("Login", value['pageTitle'])
-        self.assertEqual("Login Successful", value['header'])
-        self.assertEqual("You have successfully logged in.", value['message'])
+        self.assertEqual(strings.login_page_title, value['pageTitle'])
+        self.assertEqual(strings.login_page_success_header, value['header'])
+        self.assertEqual(strings.login_page_success_message, value['message'])
         
     def test_user_registration_view_should_display_correct_fields(self):
         request = DummyRequest()
@@ -325,7 +317,7 @@ class UserManagementTests(unittest.TestCase):
         request.GET['email'] = "email@institute.edu"
         request.GET['name'] = "myname"
         request.GET['institution'] = "institute"
-        request.GET['reason'] = "Passwords do not match"
+        request.GET['reason'] = "reason"
         
         value = user_registration_view(request)
         
@@ -333,7 +325,7 @@ class UserManagementTests(unittest.TestCase):
         self.assertEqual("email@institute.edu", value['email'])
         self.assertEqual("myname", value['name'])
         self.assertEqual("institute", value['institution'])
-        self.assertEqual("Passwords do not match", value['reason'])
+        self.assertEqual("reason", value['reason'])
 
     @patch('ptmscout.database.user.getUserByUsername')
     def test_user_registration_success_should_fail_and_redirect_when_empty_fields(self, patch_getUser):
@@ -350,7 +342,7 @@ class UserManagementTests(unittest.TestCase):
         try:
             user_registration_success(request)
         except HTTPFound, f:
-            self.assertEqual("http://example.com/register?"+urllib.urlencode({'username':"a_username", 'email': "email@institute.edu", 'name':"", 'institution':"institute",'reason':"Form fields cannot be empty"}), f.location)
+            self.assertEqual(request.application_url + "/register?"+urllib.urlencode({'username':"a_username", 'email': "email@institute.edu", 'name':"", 'institution':"institute",'reason':strings.failure_reason_form_fields_cannot_be_empty}), f.location)
         except Exception, e:
             self.fail("Unexpected exception thrown: " + str(e))
         else:
@@ -371,7 +363,7 @@ class UserManagementTests(unittest.TestCase):
         try:
             user_registration_success(request)
         except HTTPFound, f:
-            self.assertEqual("http://example.com/register?"+urllib.urlencode({'username':"a_username", 'email': "invalidemail", 'name':"myname", 'institution':"institute",'reason':"Email address is invalid"}), f.location)
+            self.assertEqual(request.application_url + "/register?"+urllib.urlencode({'username':"a_username", 'email': "invalidemail", 'name':"myname", 'institution':"institute",'reason':strings.failure_reason_email_not_valid}), f.location)
         except Exception, e:
             self.fail("Unexpected exception thrown: " + str(e))
         else:
@@ -392,7 +384,7 @@ class UserManagementTests(unittest.TestCase):
         try:
             user_registration_success(request)
         except HTTPFound, f:
-            self.assertEqual("http://example.com/register?"+urllib.urlencode({'username':"a_username", 'email': "email@institute.com", 'name':"myname", 'institution':"institute",'reason':"Email address must belong to .edu domain"}), f.location)
+            self.assertEqual(request.application_url + "/register?"+urllib.urlencode({'username':"a_username", 'email': "email@institute.com", 'name':"myname", 'institution':"institute",'reason':strings.failure_reason_email_not_academic}), f.location)
         except Exception, e:
             self.fail("Unexpected exception thrown: " + str(e))
         else:
@@ -413,7 +405,7 @@ class UserManagementTests(unittest.TestCase):
         try:
             user_registration_success(request)
         except HTTPFound, f:
-            self.assertEqual("http://example.com/register?"+urllib.urlencode({'username':"a_username", 'email': "email@institute.edu", 'name':"myname", 'institution':"institute",'reason':"Password confirmation does not match"}), f.location)
+            self.assertEqual(request.application_url + "/register?"+urllib.urlencode({'username':"a_username", 'email': "email@institute.edu", 'name':"myname", 'institution':"institute",'reason':strings.failure_reason_new_passwords_not_matching}), f.location)
         except Exception, e:
             self.fail("Unexpected exception thrown: " + str(e))
         else:
@@ -434,7 +426,7 @@ class UserManagementTests(unittest.TestCase):
         try:
             user_registration_success(request)
         except HTTPFound, f:
-            self.assertEqual("http://example.com/register?"+urllib.urlencode({'username':"a_username", 'email': "email@institute.edu", 'name':"myname", 'institution':"institute",'reason':"Password must be at least 7 characters in length"}), f.location)
+            self.assertEqual(request.application_url + "/register?"+urllib.urlencode({'username':"a_username", 'email': "email@institute.edu", 'name':"myname", 'institution':"institute",'reason':strings.failure_reason_password_too_short % (7)}), f.location)
         except Exception, e:
             self.fail("Unexpected exception thrown: " + str(e))
         else:
@@ -456,7 +448,7 @@ class UserManagementTests(unittest.TestCase):
         try:
             user_registration_success(request)
         except HTTPFound, f:
-            self.assertEqual("http://example.com/register?"+urllib.urlencode({'username':"a_username", 'email': "email@institute.edu", 'name':"myname", 'institution':"institute",'reason':"Username is already in use"}), f.location)
+            self.assertEqual(request.application_url + "/register?"+urllib.urlencode({'username':"a_username", 'email': "email@institute.edu", 'name':"myname", 'institution':"institute",'reason':strings.failure_reason_username_inuse}), f.location)
         except Exception, e:
             self.fail("Unexpected exception thrown: " + str(e))
         else:
@@ -487,8 +479,9 @@ class UserManagementTests(unittest.TestCase):
         
         self.assertTrue(patch_commit.called, "Database changed were not committed")
         
-        self.assertEqual("User Registration", result['pageTitle'])
-        self.assertEqual("A confirmation e-mail has been sent to the specified e-mail address. Please check your e-mail to complete your registration.", result['message'])
+        self.assertEqual(strings.user_registration_page_title, result['pageTitle'])
+        self.assertEqual(strings.user_registration_success_header, result['header'])
+        self.assertEqual(strings.user_registration_success_message, result['message'])
         
         
     def test_user_account_activation_should_fail_if_fields_not_specified(self):
@@ -499,9 +492,9 @@ class UserManagementTests(unittest.TestCase):
         
         result = user_account_activation(request)
         
-        self.assertEqual("Account Activation Failure", result['header'])
-        self.assertEqual("Account Activation", result['pageTitle'])
-        self.assertEqual("The specified account is not valid, please try <a href=\"http://example.com/register\">registering</a>", result['message'])
+        self.assertEqual(strings.account_activation_failed_header, result['header'])
+        self.assertEqual(strings.account_activation_page_title, result['pageTitle'])
+        self.assertEqual(strings.account_activation_failed_message % (request.application_url + "/register"), result['message'])
     
     @patch('ptmscout.database.user.getUserByUsername')
     def test_user_account_activation_should_fail_if_username_does_not_exist(self, patch_getUser):
@@ -513,9 +506,9 @@ class UserManagementTests(unittest.TestCase):
         
         result = user_account_activation(request)
         
-        self.assertEqual("Account Activation Failure", result['header'])
-        self.assertEqual("Account Activation", result['pageTitle'])
-        self.assertEqual("The specified account is not valid, please try <a href=\"http://example.com/register\">registering</a>", result['message'])
+        self.assertEqual(strings.account_activation_failed_header, result['header'])
+        self.assertEqual(strings.account_activation_page_title, result['pageTitle'])
+        self.assertEqual(strings.account_activation_failed_message % (request.application_url + "/register"), result['message'])
     
     @patch('ptmscout.database.user.getUserByUsername')
     def test_user_account_activation_should_fail_if_user_token_incorrect(self, patch_getUser):
@@ -527,9 +520,9 @@ class UserManagementTests(unittest.TestCase):
         
         result = user_account_activation(request)
         
-        self.assertEqual("Account Activation Failure", result['header'])
-        self.assertEqual("Account Activation", result['pageTitle'])
-        self.assertEqual("The specified account is not valid, please try <a href=\"http://example.com/register\">registering</a>", result['message'])
+        self.assertEqual(strings.account_activation_failed_header, result['header'])
+        self.assertEqual(strings.account_activation_page_title, result['pageTitle'])
+        self.assertEqual(strings.account_activation_failed_message % (request.application_url + "/register"), result['message'])
     
     @patch('ptmscout.utils.transactions.commit')
     @patch('ptmscout.database.user.User')
@@ -546,10 +539,10 @@ class UserManagementTests(unittest.TestCase):
         
         self.assertTrue(ptm_user.setActive.called, "User was not set as active")
         self.assertTrue(ptm_user.saveUser.called, "User was not saved")
-        self.assertTrue(patch_commit.called, "Database changed were not committed")
-        self.assertEqual("Account Activation Succeeded", result['header'])
-        self.assertEqual("Account Activation", result['pageTitle'])
-        self.assertEqual("Your account is now active. Please <a href=\"http://example.com/login\">login</a>", result['message'])
+        self.assertTrue(patch_commit.called, "Database changes were not committed")
+        self.assertEqual(strings.account_activation_success_header, result['header'])
+        self.assertEqual(strings.account_activation_page_title, result['pageTitle'])
+        self.assertEqual(strings.account_activation_success_message % (request.application_url+"/login"), result['message'])
     
     def test_salter(self):
         print crypto.saltedPassword("password", '41683edb7a')

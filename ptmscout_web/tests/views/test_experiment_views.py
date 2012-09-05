@@ -3,6 +3,7 @@ import unittest
 from pyramid.testing import DummyRequest
 from ptmscout.experiments import experiment_listing
 from mock import patch
+from ptmscout import strings
 
 class ExperimentViewTests(unittest.TestCase):
     def setUp(self):
@@ -19,6 +20,6 @@ class ExperimentViewTests(unittest.TestCase):
         result = experiment_listing(request)
         
         self.assertEqual([1,2,3,4,5], result['experiments'])
-        self.assertEqual("Home - Experiments", result['pageTitle'])
+        self.assertEqual(strings.experiments_page_title, result['pageTitle'])
         
         

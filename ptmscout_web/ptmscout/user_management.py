@@ -10,6 +10,7 @@ import re
 import config
 from ptmscout.utils import mail, transactions
 from ptmscout.database import DBSession
+import strings
 
 @view_config(route_name='account_management', renderer='templates/account.pt', permission='private')
 def manage_account(request):
@@ -18,7 +19,7 @@ def manage_account(request):
             'fullname': request.user.name,
             'email': request.user.email,
             'institution': request.user.institution,
-            'pageTitle': "Account Management",
+            'pageTitle': strings.account_management_page_title,
             'reason': reason}
 
 @view_config(route_name='change_password', permission='private')
@@ -28,15 +29,15 @@ def change_password(request):
     newpass2 = webutils.post(request, 'new_pass2', "")
     
     if oldpass == "" or newpass1 == "" or newpass2 == "":
-        raise HTTPFound(request.application_url + "/account?" + urllib.urlencode({'reason':"Form fields cannot be empty"}))
+        raise HTTPFound(request.application_url + "/account?" + urllib.urlencode({'reason': strings.failure_reason_form_fields_cannot_be_empty}))
     
     if newpass1 != newpass2:
-        raise HTTPFound(request.application_url + "/account?" + urllib.urlencode({'reason':"New password confirmation did not match"}))
+        raise HTTPFound(request.application_url + "/account?" + urllib.urlencode({'reason': strings.failure_reason_new_passwords_not_matching}))
     
     _, old_salted_pass = crypto.saltedPassword(oldpass, request.user.salt)
     
     if old_salted_pass != request.user.salted_password:
-        raise HTTPFound(request.application_url + "/account?" + urllib.urlencode({'reason':"Supplied password was incorrect"}))
+        raise HTTPFound(request.application_url + "/account?" + urllib.urlencode({'reason': strings.failure_reason_incorrect_password}))
     
     _, new_salted_pass = crypto.saltedPassword(newpass1, request.user.salt)
     request.user.salted_password = new_salted_pass
@@ -48,16 +49,16 @@ def change_password(request):
     
 @view_config(route_name='change_password_success', renderer='templates/information.pt', permission='private')
 def change_password_success(request):
-    return {'pageTitle': "Change Password",
-            'message': "Password successfully changed.",
-            'header': "Success"}
+    return {'pageTitle': strings.change_password_page_title,
+            'message': strings.change_password_success_message,
+            'header': strings.success_header}
 
 @view_config(route_name='forgot_password', renderer='templates/forgot_password.pt')
 def forgot_password(request):
     email = webutils.get(request, 'email', "")
     reason = webutils.get(request, 'reason', None)
     
-    return {'pageTitle': "Forgotten Password Retrieval",
+    return {'pageTitle': strings.forgotten_password_page_title,
             'email': email,
             'reason': reason}
 
@@ -66,7 +67,7 @@ def process_forgot_password(request):
     email = webutils.post(request, 'email', "")
     
     if email == "":
-        raise HTTPFound(request.application_url + "/forgot_password?" + urllib.urlencode({'email':email, 'reason':"Form fields cannot be empty"}))
+        raise HTTPFound(request.application_url + "/forgot_password?" + urllib.urlencode({'email':email, 'reason':strings.failure_reason_form_fields_cannot_be_empty}))
     
     new_password = crypto.randomString(5)
     
@@ -75,30 +76,20 @@ def process_forgot_password(request):
         _, ptm_user.salted_password = crypto.saltedPassword(new_password, ptm_user.salt)
         ptm_user.saveUser()
     except NoSuchUser:
-        raise HTTPFound(request.application_url + "/forgot_password?" + urllib.urlencode({'email':email, 'reason': "E-mail address does not match any user record"}))
+        raise HTTPFound(request.application_url + "/forgot_password?" + urllib.urlencode({'email':email, 'reason': strings.failure_reason_email_address_not_on_record}))
     
     login_url = request.application_url + "/login"
     account_url = request.application_url + "/account"
     
-    message = """%s,
-        
-        Your password in PTMScout has been reset, your new login credentials are:
-        Username: %s
-        Password: %s
-        
-        Please visit <a href="%s">PTMScout</a> to login.
-        After logging in, your can change your password <a href="%s">here</a>.
-        
-        -PTMScout Administrator
-        """ % (ptm_user.name, ptm_user.username, new_password, login_url, account_url)
+    message = strings.forgotten_password_email_message % (ptm_user.name, ptm_user.username, new_password, login_url, account_url)
     
-    mail.send_automail_message(request, [email], "PTMScout password reset", message)
+    mail.send_automail_message(request, [email], strings.forgotten_password_email_subject, message)
     
     transactions.commit()
     
-    return {'pageTitle': "Forgotten Password Retrieval",
-            'header': "Password Reset Success",
-            'message':"Your username and a temporary password have been sent to your e-mail address"}
+    return {'pageTitle': strings.forgotten_password_page_title,
+            'header': strings.forgotten_password_success_header,
+            'message': strings.forgotten_password_success_message}
 
 @view_config(route_name='register',renderer='templates/user_registration.pt')
 def user_registration_view(request):
@@ -114,16 +105,16 @@ def user_registration_view(request):
             'name':name,
             'institution':institution,
             'reason':reason,
-            'pageTitle': "User Registration"}
+            'pageTitle': strings.user_registration_page_title}
     
 @view_config(route_name='process_registration', renderer='templates/information.pt')
 def user_registration_success(request):
     result = __process_registration(request)
     if result == True:
         return {
-            'pageTitle': "User Registration",
-            'header': "Registration Successful",
-            'message': "A confirmation e-mail has been sent to the specified e-mail address. Please check your e-mail to complete your registration."}
+            'pageTitle': strings.user_registration_page_title,
+            'header': strings.user_registration_success_header,
+            'message': strings.user_registration_success_message}
     else:
         raise HTTPFound(request.application_url+"/register?"+urllib.urlencode(result))
 
@@ -137,7 +128,7 @@ def user_login(request):
     return {
             'username': username,
             'reason':reason,
-            'pageTitle': "Login"}
+            'pageTitle': strings.login_page_title}
 
 
 @view_config(route_name='process_login', renderer='templates/information.pt')
@@ -145,9 +136,9 @@ def user_login_success(request):
     result = __process_login(request)
     if result == True:
         return {
-                'pageTitle': "Login",
-                'header': "Login Successful",
-                'message': "You have successfully logged in."}
+                'pageTitle': strings.login_page_title,
+                'header': strings.login_page_success_header,
+                'message': strings.login_page_success_message}
     else:
         raise HTTPFound(request.application_url+"/login?"+urllib.urlencode(result))
 
@@ -157,9 +148,9 @@ def user_logout(request):
     request.user = None
     
     return {
-            'pageTitle': "Logout",
-            'header': "Logout Successful",
-            'message': "You have successfully logged out."}
+            'pageTitle': strings.logout_page_title,
+            'header': strings.logout_page_header,
+            'message': strings.logout_page_message}
     
     
 @view_config(route_name='activate_account', renderer='templates/information.pt')
@@ -184,16 +175,16 @@ def user_account_activation(request):
     
     transactions.commit()    
     
-    return {'pageTitle':"Account Activation",
-            'header':"Account Activation Succeeded",
-            'message':"Your account is now active. Please <a href=\""+request.application_url+"/login\">login</a>"}
+    return {'pageTitle': strings.account_activation_page_title,
+            'header': strings.account_activation_success_header,
+            'message': strings.account_activation_success_message % (request.application_url+"/login")}
 
 ## Internal Functions
 
 def __failed_account_activation(request):
-    return {'pageTitle':"Account Activation",
-            'header':"Account Activation Failure",
-            'message':"The specified account is not valid, please try <a href=\""+request.application_url+"/register\">registering</a>"}
+    return {'pageTitle':strings.account_activation_page_title,
+            'header':strings.account_activation_failed_header,
+            'message':strings.account_activation_failed_message % (request.application_url+"/register")}
 
 def __process_login(request):
     username = webutils.post(request, 'username', "")
@@ -202,7 +193,7 @@ def __process_login(request):
     resp_dict = {'username': username}
     
     if username == "" or password == "":
-        resp_dict['reason'] = "All fields are required"
+        resp_dict['reason'] = strings.failure_reason_form_fields_cannot_be_empty
         return resp_dict
     
     try:
@@ -214,13 +205,13 @@ def __process_login(request):
             raise NoSuchUser()
         
         if not ptm_user.active:
-            resp_dict['reason'] = "Account has not been activated"
+            resp_dict['reason'] = strings.failure_reason_inactive_account
             return resp_dict
         
         request.user = ptm_user
         request.response.headers.extend(security.remember(request, ptm_user.username))
     except NoSuchUser:
-        resp_dict['reason'] = "Credentials incorrect"
+        resp_dict['reason'] = strings.failure_reason_incorrect_credentials
         return resp_dict
     
     return True
@@ -237,42 +228,45 @@ def __process_registration(request):
     resp_dict = {'username': username, 'email':email, 'name':name, 'institution':institute}
     
     if username == "" or pass1 == "" or pass2 == "" or name == "" or email == "" or institute == "":
-        resp_dict['reason'] = "Form fields cannot be empty"
+        resp_dict['reason'] = strings.failure_reason_form_fields_cannot_be_empty
         return resp_dict
 
     try:
         _ptm_user = user.getUserByUsername(username)
-        resp_dict['reason'] = "Username is already in use"
+        resp_dict['reason'] = strings.failure_reason_username_inuse
         return resp_dict
     except NoSuchUser:
         pass
     
     
-    email_regex = re.compile("[a-z0-9\.\-\_]+@[a-z0-9\.\-\_]+\.([a-z]+)$", re.I)
+    email_regex = re.compile(strings.email_regex, re.I)
     
     matches = email_regex.match(email)
     if not matches:
-        resp_dict['reason'] = "Email address is invalid"
+        resp_dict['reason'] = strings.failure_reason_email_not_valid
         return resp_dict
 
     domain = matches.group(1)
     if domain != "edu":
-        resp_dict['reason'] = "Email address must belong to .edu domain"
+        resp_dict['reason'] = strings.failure_reason_email_not_academic
         return resp_dict
 
     if len(pass1) < config.MINIMUM_PASSWORD_LENGTH:
-        resp_dict['reason'] = "Password must be at least %d characters in length" % config.MINIMUM_PASSWORD_LENGTH
+        resp_dict['reason'] = strings.failure_reason_password_too_short % config.MINIMUM_PASSWORD_LENGTH
         return resp_dict
 
     if( pass1 != pass2 ):
-        resp_dict['reason'] = "Password confirmation does not match"
+        resp_dict['reason'] = strings.failure_reason_new_passwords_not_matching
         return resp_dict
 
     ptm_user = user.User(username, name, email, institute)
     ptm_user.createUser(pass1)
     ptm_user.saveUser()
     
-    mail.send_automail_message(request, [email], "PTMScout Account Activiation Details", "%s, \n\nThank you for choosing PTMScout for your research.\n\nYou can activate your new account by visiting <a href=\"%s/activate_account?username=%s&token=%s\">this link</a>.\n\nThanks,\n-The PTMScout Team" % (ptm_user.name, request.application_url, ptm_user.username, ptm_user.activation_token))
+    mail.send_automail_message(request, 
+    [email], 
+    strings.user_registration_email_subject, 
+    strings.user_registration_email_message % (ptm_user.name, request.application_url, ptm_user.username, ptm_user.activation_token))
     
     transactions.commit()
 
