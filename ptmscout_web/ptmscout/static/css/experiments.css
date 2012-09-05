@@ -1,0 +1,21 @@
+
+.experimenttable th {
+	background:blue;
+	color:white;
+}
+
+.experimenttable td {
+	font-size:13px;
+	vertical-align:top;
+}
+
+td.citation {
+	font-size:16px;
+}
+
+tr.odd {
+	background:white;
+}
+tr.even {
+	background:#9999cc;
+}

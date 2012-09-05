@@ -1,0 +1,34 @@
+.loginform {
+	margin-top:20px;
+	margin-bottom:20px;
+	margin-left:auto;
+	margin-right:auto;
+	width: 350px;
+}
+
+.loginform .fieldname {
+	width:150px;
+}
+
+.formcategory {
+	border:solid;
+	border-width:2px;
+	border-color:black;
+	font-weight:bold;
+	font-size:14pt;	
+}
+
+.formsubmission {
+	float:right;
+}
+
+.errorbox {
+	background:#FF3333;
+	padding:10px;
+}
+
+.centered {
+	margin-left: auto;
+	margin-right: auto;
+	width:60%;
+}

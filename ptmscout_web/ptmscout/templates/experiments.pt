@@ -1,7 +1,8 @@
 <div metal:use-macro="layout">
 	<div metal:fill-slot="header">
-		<script type="text/javascript" src="${request.static_url('ptmscout:static/jquery-1.8.1.js')}" ></script>
-		<script type="text/javascript" src="${request.static_url('ptmscout:static/experiments.js')}" ></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/jquery-1.8.1.js')}" ></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/experiments.js')}" ></script>
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/experiments.css')}" />
 	</div>
     <div metal:fill-slot="content">
     	<table width = "100%"><tr><td align="justify">PTMScout is a web application for viewing and analyzing data from mass spectrometry experiments and other datasets for post-translational protein modifications. The goal of PTMScout is to provide a useable interface for biologists to easily work with large datasets of post-translational measurements.</td></tr></table>

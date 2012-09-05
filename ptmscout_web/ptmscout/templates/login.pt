@@ -1,4 +1,7 @@
 <div metal:use-macro="layout">
+	<div metal:fill-slot="header">
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/forms.css')}" />
+	</div>
     <div metal:fill-slot="content">
     	<div class="loginform">
     		<div tal:condition="reason != None" class="errorbox">Error: ${reason}</div>
