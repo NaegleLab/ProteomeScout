@@ -28,6 +28,7 @@ def add_views(config):
     
     config.add_route('redirect_to_experiments','/')
     config.add_route('experiments','/experiments')
+    config.add_route('experiment','/experiments/{id}')
     config.add_route('upload', '/upload')
     
     config.add_route('login', '/login')
@@ -42,6 +43,8 @@ def add_views(config):
     config.add_route('process_forgot_password', '/retrieve_password')
     
     config.add_route('account_management', '/account')
+#    config.add_route('my_experiments', '/account/experiments')
+    
     config.add_route('change_password', '/change_password')
     config.add_route('change_password_success', '/change_password_success')
     

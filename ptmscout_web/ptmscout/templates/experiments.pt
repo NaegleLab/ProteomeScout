@@ -19,19 +19,19 @@
 		   		<tal:experiments tal:repeat="(i, experiment) enumerate(experiments)">
 					<tr tal:attributes="class 'experiment' + (' even' if i % 2 == 0 else ' odd');" >
 						<td><a tal:condition="len(experiment.children) > 0" class="expand" href="${request.application_url}/experiments" tal:attributes="id 'e'+str(experiment.id)">[+]</a></td>
-						<td><a tal:attributes="href '../cgi-bin/experiment.cgi?expid=' + str(experiment.id)" tal:content="experiment.name"></a></td>
-						<td><a tal:attributes="href '../cgi-bin/experiment.cgi?expid=' + str(experiment.id)" tal:content="experiment.description"></a></td>
-						<td><a tal:attributes="href '../cgi-bin/experiment.cgi?expid=' + str(experiment.id)" tal:content="experiment.author"></a></td>
+						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.name"></a></td>
+						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.description"></a></td>
+						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.author"></a></td>
 						<td class="citation" tal:content="experiment.getCitationString()"></td>
-						<td><a tal:attributes="href '../cgi-bin/experiment.cgi?expid=' + str(experiment.id)" tal:content="experiment.primaryModification"></a></td>
+						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.primaryModification"></a></td>
 					</tr>
 					<tr tal:repeat="child experiment.children" tal:attributes="class 'subexperiment' + (' even' if i % 2 == 0 else ' odd');id 'e'+str(experiment.id)" >
 						<td></td>
-						<td><a tal:attributes="href '../cgi-bin/experiment.cgi?expid=' + str(child.id)" tal:content="child.name"></a></td>
-						<td><a tal:attributes="href '../cgi-bin/experiment.cgi?expid=' + str(child.id)" tal:content="child.description"></a></td>
-						<td><a tal:attributes="href '../cgi-bin/experiment.cgi?expid=' + str(child.id)" tal:content="child.author"></a></td>
+						<td><a tal:attributes="href request.application_url + '/experiments/' + str(child.id)" tal:content="child.name"></a></td>
+						<td><a tal:attributes="href request.application_url + '/experiments/' + str(child.id)" tal:content="child.description"></a></td>
+						<td><a tal:attributes="href request.application_url + '/experiments/' + str(child.id)" tal:content="child.author"></a></td>
 						<td class="citation" tal:content="child.getCitationString()"></td>
-						<td><a tal:attributes="href '../cgi-bin/experiment.cgi?expid=' + str(child.id)" tal:content="child.primaryModification"></a></td>						
+						<td><a tal:attributes="href request.application_url + '/experiments/' + str(child.id)" tal:content="child.primaryModification"></a></td>						
 					</tr>
 				</tal:experiments>
 			</tbody>

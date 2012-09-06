@@ -9,9 +9,16 @@ def add_path_definitions(event):
     event['homeUrl'] = homeUrl
     event['documentationUrl'] = documentationUrl
     event['adminEmail'] = adminEmail 
-    event['layout'] =  site_layout()
+    event['parent_link'] = None
+    event['layout'] = site_layout()
+    event['experiment_header'] = experiment_template()
 
 def site_layout():
     renderer = get_renderer("templates/layout.pt")
     layout = renderer.implementation().macros['layout']
     return layout
+
+def experiment_template():
+    renderer = get_renderer("templates/experiment_header.pt")
+    legend = renderer.implementation().macros['experiment_header']
+    return legend

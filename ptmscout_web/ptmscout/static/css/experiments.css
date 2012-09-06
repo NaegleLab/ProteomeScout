@@ -1,3 +1,6 @@
+.experimenttable {
+	border-collapse: collapse;
+}
 
 .experimenttable th {
 	background:blue;
@@ -18,4 +21,8 @@ tr.odd {
 }
 tr.even {
 	background:#9999cc;
+}
+
+.restricted {
+	font-weight:bold;
 }

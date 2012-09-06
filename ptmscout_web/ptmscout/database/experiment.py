@@ -1,5 +1,6 @@
 from . import Base, DBSession
 from sqlalchemy import Column, Integer, VARCHAR, Text
+from ptmscout import config
 
 class Experiment(Base):
     __tablename__ = 'experiment'
@@ -52,7 +53,33 @@ class Experiment(Base):
         if self.pages != "" and self.pages != None:
             string += self.pages + "."
         return string
-
+    
+    def getLongCitationString(self):
+        cite_string = ""
+        if self.author !="":
+            cite_string += self.author + ". "
+        if self.journal != "":
+            cite_string += "<b>"+self.journal + "</b>. "
+        if self.pub_date != "":
+            cite_string += self.pub_date + ". "
+        if self.volume != None:
+            cite_string += "Vol " +str(self.volume)+". "
+        if self.pages != "":
+            cite_string += self.pages + "."
+        return cite_string
+    
+    def getUrl(self):
+        url = self.URL
+        if url == "NA":
+            url = None
+        
+        if url != None:
+            return url
+        elif self.PMID != None:
+            return config.pubmedUrl % (self.PMID)
+        
+        return None
+        
 class NoSuchExperiment(Exception):
     def __init__(self, eid):
         self.eid = eid

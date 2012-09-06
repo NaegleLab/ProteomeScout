@@ -18,6 +18,7 @@
 	    </span>
 	    <span tal:condition="request.user != None">
 	    	<a href='${request.application_url}/account'>Account: ${request.user.username}</a> |
+	    	<a href='${request.application_url}/account/experiments'>My Experiments</a> |
 		    <a href='${request.application_url}/logout'>Logout</a> |
 		    <a href='${request.application_url}/upload'>Upload Data</a> |
 	    </span>
@@ -30,7 +31,12 @@
 	
 	  <div id="header"><a href="${request.application_url}/"><img alt="PTMScout logo" src="${request.static_url('ptmscout:static/images/logo.jpg')}" title="Home" /></a></div>
 	
-	  <div id="breadcrumb">${pageTitle}</div>
+	  <div id="breadcrumb">
+	  	<tal:none tal:condition="parent_link != None">
+	  		<a tal:attributes="href parent_link" tal:content="parent_page"></a>&gt;
+	  	</tal:none>
+	  	${pageTitle}
+	  </div>
 	
 	  <div id="content" metal:define-slot="content"></div>
 	

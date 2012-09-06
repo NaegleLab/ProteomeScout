@@ -18,6 +18,7 @@ account_activation_failed_message = "The specified account is not valid, please 
 account_management_page_title = "Account Management"
 
 experiments_page_title = "Home - Experiments"
+experiment_page_title = "Experiment: %s"
 
 forgotten_password_page_title = "Forgotten Password Retrieval"
 forgotten_password_success_header = "Password Reset Success"
@@ -76,3 +77,6 @@ failure_reason_email_not_valid = "Email address is invalid"
 failure_reason_email_not_academic = "Email address must belong to .edu domain"
 failure_reason_password_too_short = "Password must be at least %d characters in length"
 failure_reason_email_address_not_on_record = "E-mail address does not match any user record"
+
+
+
