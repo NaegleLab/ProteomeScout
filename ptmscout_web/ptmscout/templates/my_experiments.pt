@@ -1,0 +1,46 @@
+<div metal:use-macro="layout">
+	<div metal:fill-slot="header">
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/jquery-1.8.1.js')}" ></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/experiments.js')}" ></script>
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/experiments.css')}" />
+	</div>
+    <div metal:fill-slot="content">
+    	<table class = "experimenttable">
+    		<tbody>
+		   		<tr>
+		   			<th>Experiment</th>
+		   			<th>Description</th>
+		   			<th>Author</th>
+		   			<th>Journal Info</th>
+		   			<th>Primary Modifications</th>
+		   			<th class="accesscontrol">Access Control</th>
+		   		</tr>
+		   		<tal:experiments tal:repeat="(i, experiment) enumerate(request.user.experiments)">
+					<tr tal:attributes="class 'experiment' + (' even' if i % 2 == 0 else ' odd');" >
+						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.name"></td>
+						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.description"></a></td>
+						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.author"></a></td>
+						<td class="citation" tal:content="experiment.getCitationString()"></td>
+						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.primaryModification"></a></td>
+						<td class="accesscontrol">
+							<table>
+								<tr>
+									<td>
+										<form tal:attributes="action request.application_url + 'account/experiments/' + str(experiment.id) + '/publish'" method="link">
+											<input type = "submit" value="Publish" />
+										</form>
+									</td>
+									<td>
+										<form tal:attributes="action request.application_url + 'account/experiments/' + str(experiment.id) + '/share'" method="link">
+											<input type = "submit" value="Change Permissions" />
+										</form>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</tal:experiments>
+			</tbody>
+		</table>    	
+    </div>
+</div>

@@ -4,7 +4,8 @@ from pyramid.testing import DummyRequest
 import unittest
 import urllib
 from mock import patch, Mock
-from ptmscout.user_management import manage_account, change_password, change_password_success
+from ptmscout.user_management import manage_account, change_password, change_password_success,\
+    manage_experiments
 import ptmscout.utils.crypto as crypto
 from ptmscout import strings
 
@@ -16,6 +17,13 @@ class UserManagementTests(unittest.TestCase):
 
     def tearDown(self):
         testing.tearDown()
+        
+    def test_my_experiments_should_show_experiments(self):
+        request = DummyRequest()
+        
+        info = manage_experiments(request)
+        
+        self.assertEqual(strings.my_experiments_page_title, info['pageTitle'])
         
     def test_manage_account_should_display_account_info(self):
         request = DummyRequest()

@@ -5,6 +5,10 @@ import utils.webutils as webutils
 from utils import crypto
 import strings
 
+@view_config(route_name='my_experiments', renderer='templates/my_experiments.pt', permission='private')
+def manage_experiments(request):
+    return {'pageTitle':strings.my_experiments_page_title}
+
 @view_config(route_name='account_management', renderer='templates/account.pt', permission='private')
 def manage_account(request):
     reason = webutils.get(request, 'reason', None)

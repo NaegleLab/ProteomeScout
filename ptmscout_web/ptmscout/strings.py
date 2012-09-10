@@ -37,6 +37,8 @@ After logging in, your can change your password <a href="%s">here</a>.
 -PTMScout Administrator
 """
 
+my_experiments_page_title = "My Experiments"
+
 login_page_title = "Login"
 login_page_success_header = "Login Successful"
 login_page_success_message = "You have successfully logged in."
