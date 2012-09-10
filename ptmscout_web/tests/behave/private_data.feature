@@ -7,6 +7,11 @@ Feature: Private Data
 		When I load a dataset and mark it private
 		Then I should be able to see the experiment
 		And other users should not be able to see the experiment
+		
+	Scenario: Private data does not appear in protein search
+		Given I have loaded a dataset and marked it private
+		When other users search for proteins in my dataset
+		Then my experimental data should not appear in the protein listing
 
 	Scenario: Share data
 		Given I want to share my data with another user
