@@ -78,6 +78,7 @@ def getUserByRequest(request):
             return getUserByUsername(username)
         except NoSuchUser:
             return None
+    return None
 
 def getUserById(uid):
     value = DBSession.query(User).filter_by(id=uid).first()

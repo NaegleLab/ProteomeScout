@@ -1,5 +1,5 @@
 from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 import database.experiment as experiment
 from ptmscout import strings
 
@@ -10,6 +10,13 @@ def redirect_to_experiments(request):
 @view_config(route_name='experiments', renderer='templates/experiments.pt')
 def experiment_listing(request):
     experiments = experiment.getExperimentTree()
+    
+    permitted_ids = []
+    if request.user != None:
+        permitted_ids = [exp.id for exp in request.user.experiments]
+        
+    experiments = [exp for exp in experiments if (exp.public == 1 or exp.id in permitted_ids)]
+    
     return {'pageTitle': strings.experiments_page_title,
             'experiments': experiments}
 
@@ -19,5 +26,13 @@ def view_experiment(request):
     
     ptm_exp = experiment.getExperimentById(experiment_id)
     
+    if not ptm_exp.public and request.user == None:
+        raise HTTPForbidden()
+    
+    if not ptm_exp.public and request.user != None:
+        permitted_ids = [exp.id for exp in request.user.experiments]
+        if ptm_exp.id not in permitted_ids:
+            raise HTTPForbidden() 
+        
     return {'pageTitle': strings.experiment_page_title % (ptm_exp.name),
             'experiment': ptm_exp}
