@@ -32,8 +32,8 @@ class User(Base):
     activation_token = Column(VARCHAR(50))
 
     experiments = relationship("Experiment",
-                                   secondary=permissions_table)
-    #                              backref="Users")
+                                   secondary=permissions_table,
+                                   backref="Users")
     
     def __init__(self, username="", name="", email="", institution=""):
         self.username = username
@@ -51,6 +51,9 @@ class User(Base):
     def createUser(self, password):
         self.salt, self.salted_password = crypto.saltedPassword(password)
         self.activation_token = crypto.generateActivationToken()
+        
+    def makeOwner(self, exp_id):
+        DBSession.execute("UPDATE permissions SET access_level='owner' WHERE user_id=%d and experiment_id=%d" % (self.id, exp_id))        
         
 class NoSuchUser(Exception):
     def __init__(self, uid=None, username=None, email=None):
