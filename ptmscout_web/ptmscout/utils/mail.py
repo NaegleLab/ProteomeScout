@@ -9,5 +9,5 @@ def send_automail_message(request, recipients, subject, message):
           sender=automailerEmail,
           recipients=recipients,
           body=message)
-    
-    mailer.send(message)
+
+    mailer.send_immediately(message)

@@ -129,11 +129,10 @@ class UserManagementTests(unittest.TestCase):
         self.assertEqual("someemail@institute.edu", info['email'])
         self.assertEqual("reason", info['reason'])
 
-    @patch('ptmscout.utils.transactions.commit')    
     @patch('ptmscout.database.user.getUserByEmail')
     @patch('ptmscout.utils.crypto.randomString')
     @patch('ptmscout.utils.mail.send_automail_message')
-    def test_process_forgot_password_should_display_success_reset_password_and_send_email_when_user_exists(self, patch_sendMail, patch_crypto, patch_getUser, patch_commit):
+    def test_process_forgot_password_should_display_success_reset_password_and_send_email_when_user_exists(self, patch_sendMail, patch_crypto, patch_getUser):
         user_email = "a_valid_email@institute.edu"
         ptm_user = createUserForTest("username", user_email, "password", 1)
         patch_getUser.return_value = ptm_user
@@ -158,7 +157,6 @@ class UserManagementTests(unittest.TestCase):
         patch_sendMail.assert_called_with(request, [user_email], 
                                           strings.forgotten_password_email_subject, password_reset_message)
         self.assertTrue(ptm_user.saveUser.called)
-        self.assertTrue(patch_commit.called)
         
     @patch('ptmscout.database.user.getUserByEmail')
     def test_process_forgot_password_should_display_error_when_email_not_provided(self, patch_getUser):
@@ -455,10 +453,9 @@ class UserManagementTests(unittest.TestCase):
             self.fail("Expected exception HTTPFound, no exception raised")
     
     @patch('ptmscout.utils.mail.send_automail_message')
-    @patch('ptmscout.utils.transactions.commit')
     @patch('ptmscout.database.user.User')
     @patch('ptmscout.database.user.getUserByUsername')
-    def test_user_registration_success_should_send_email_on_success_and_store_new_user(self, patch_getUser, patch_User, patch_commit, patch_automail):
+    def test_user_registration_success_should_send_email_on_success_and_store_new_user(self, patch_getUser, patch_User, patch_automail):
         patch_getUser.side_effect = dbuser.NoSuchUser(username="a_username")
         
         request = DummyRequest()
@@ -476,8 +473,6 @@ class UserManagementTests(unittest.TestCase):
         self.assertTrue(patch_automail.called, "User was not notified of account activation by e-mail")
         self.assertTrue(user_instance.saveUser.called, "User was not saved to database")
         self.assertTrue(user_instance.createUser.called, "User object not initialized before DB commit")
-        
-        self.assertTrue(patch_commit.called, "Database changed were not committed")
         
         self.assertEqual(strings.user_registration_page_title, result['pageTitle'])
         self.assertEqual(strings.user_registration_success_header, result['header'])
@@ -524,10 +519,9 @@ class UserManagementTests(unittest.TestCase):
         self.assertEqual(strings.account_activation_page_title, result['pageTitle'])
         self.assertEqual(strings.account_activation_failed_message % (request.application_url + "/register"), result['message'])
     
-    @patch('ptmscout.utils.transactions.commit')
     @patch('ptmscout.database.user.User')
     @patch('ptmscout.database.user.getUserByUsername')
-    def test_user_account_activation_should_succeed_if_all_parameters_correct(self, patch_getUser, patch_user, patch_commit):
+    def test_user_account_activation_should_succeed_if_all_parameters_correct(self, patch_getUser, patch_user):
         ptm_user = createUserForTest("username", "email", "password", 0)
         patch_getUser.return_value = ptm_user
         request = DummyRequest()
@@ -539,7 +533,6 @@ class UserManagementTests(unittest.TestCase):
         
         self.assertTrue(ptm_user.setActive.called, "User was not set as active")
         self.assertTrue(ptm_user.saveUser.called, "User was not saved")
-        self.assertTrue(patch_commit.called, "Database changes were not committed")
         self.assertEqual(strings.account_activation_success_header, result['header'])
         self.assertEqual(strings.account_activation_page_title, result['pageTitle'])
         self.assertEqual(strings.account_activation_success_message % (request.application_url+"/login"), result['message'])

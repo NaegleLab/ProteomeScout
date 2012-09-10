@@ -8,8 +8,7 @@ from database.user import NoSuchUser
 from pyramid import security
 import re
 import config
-from ptmscout.utils import mail, transactions
-from ptmscout.database import DBSession
+from ptmscout.utils import mail
 import strings
 
 @view_config(route_name='account_management', renderer='templates/account.pt', permission='private')
@@ -43,9 +42,7 @@ def change_password(request):
     request.user.salted_password = new_salted_pass
     request.user.saveUser()
     
-    transactions.commit()
-    
-    raise HTTPFound(request.application_url + "/change_password_success")
+    return HTTPFound(request.application_url + "/change_password_success")
     
 @view_config(route_name='change_password_success', renderer='templates/information.pt', permission='private')
 def change_password_success(request):
@@ -84,8 +81,6 @@ def process_forgot_password(request):
     message = strings.forgotten_password_email_message % (ptm_user.name, ptm_user.username, new_password, login_url, account_url)
     
     mail.send_automail_message(request, [email], strings.forgotten_password_email_subject, message)
-    
-    transactions.commit()
     
     return {'pageTitle': strings.forgotten_password_page_title,
             'header': strings.forgotten_password_success_header,
@@ -172,8 +167,6 @@ def user_account_activation(request):
     
     ptm_user.setActive()
     ptm_user.saveUser()
-    
-    transactions.commit()    
     
     return {'pageTitle': strings.account_activation_page_title,
             'header': strings.account_activation_success_header,
@@ -268,6 +261,4 @@ def __process_registration(request):
     strings.user_registration_email_subject, 
     strings.user_registration_email_message % (ptm_user.name, request.application_url, ptm_user.username, ptm_user.activation_token))
     
-    transactions.commit()
-
     return True
