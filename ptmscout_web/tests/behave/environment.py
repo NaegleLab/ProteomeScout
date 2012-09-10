@@ -7,8 +7,15 @@ def before_feature(context, feature):
     app = main({}, **settings)
     context.ptmscoutapp = TestApp(app)
 
+def before_scenario(context, feature):
+    pass
+
+def after_scenario(context, feature):
+    from ptmscout.database import DBSession
+    DBSession.rollback()
 
 def after_feature(context, feature):
     from ptmscout.database import DBSession
     del context.ptmscoutapp
     DBSession.remove()
+    
