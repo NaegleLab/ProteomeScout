@@ -3,7 +3,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.testing import DummyRequest
 import unittest
 import urllib
-from mock import patch, Mock
+from mock import patch
 import ptmscout.database.user as dbuser
 from ptmscout.user_registration import user_login, user_logout, user_login_success,\
     user_registration_view, user_registration_success, user_account_activation,\
@@ -47,6 +47,7 @@ class UserRegistrationTests(unittest.TestCase):
         self.assertEqual(strings.forgotten_password_page_title, info['pageTitle'])
         self.assertEqual(strings.forgotten_password_success_header, info['header'])
         self.assertEqual(strings.forgotten_password_success_message, info['message'])
+        self.assertEqual(request.application_url + "/login", info['redirect'])
         
         self.assertTrue(patch_sendMail.called)
         
@@ -110,6 +111,7 @@ class UserRegistrationTests(unittest.TestCase):
         self.assertEqual(strings.logout_page_title, value['pageTitle'])
         self.assertEqual(strings.logout_page_header, value['header'])
         self.assertEqual(strings.logout_page_message, value['message'])
+        self.assertEqual(request.application_url + "/experiments", value['redirect'])
         
     def test_login_should_display_error_with_reason_and_populate_username(self):
         request = DummyRequest()
@@ -208,6 +210,7 @@ class UserRegistrationTests(unittest.TestCase):
         self.assertEqual(strings.login_page_title, value['pageTitle'])
         self.assertEqual(strings.login_page_success_header, value['header'])
         self.assertEqual(strings.login_page_success_message, value['message'])
+        self.assertEqual(request.application_url + "/experiments", value['redirect'])
         
     def test_user_registration_view_should_display_correct_fields(self):
         request = DummyRequest()
@@ -378,6 +381,7 @@ class UserRegistrationTests(unittest.TestCase):
         self.assertEqual(strings.user_registration_page_title, result['pageTitle'])
         self.assertEqual(strings.user_registration_success_header, result['header'])
         self.assertEqual(strings.user_registration_success_message, result['message'])
+        self.assertEqual(request.application_url + "/login", result['redirect'])
         
         
     def test_user_account_activation_should_fail_if_fields_not_specified(self):
@@ -390,6 +394,7 @@ class UserRegistrationTests(unittest.TestCase):
         
         self.assertEqual(strings.account_activation_failed_header, result['header'])
         self.assertEqual(strings.account_activation_page_title, result['pageTitle'])
+        self.assertEqual(request.application_url + "/register", result['redirect'])
         self.assertEqual(strings.account_activation_failed_message % (request.application_url + "/register"), result['message'])
     
     @patch('ptmscout.database.user.getUserByUsername')
@@ -404,6 +409,7 @@ class UserRegistrationTests(unittest.TestCase):
         
         self.assertEqual(strings.account_activation_failed_header, result['header'])
         self.assertEqual(strings.account_activation_page_title, result['pageTitle'])
+        self.assertEqual(request.application_url + "/register", result['redirect'])
         self.assertEqual(strings.account_activation_failed_message % (request.application_url + "/register"), result['message'])
     
     @patch('ptmscout.database.user.getUserByUsername')
@@ -418,6 +424,7 @@ class UserRegistrationTests(unittest.TestCase):
         
         self.assertEqual(strings.account_activation_failed_header, result['header'])
         self.assertEqual(strings.account_activation_page_title, result['pageTitle'])
+        self.assertEqual(request.application_url + "/register", result['redirect'])
         self.assertEqual(strings.account_activation_failed_message % (request.application_url + "/register"), result['message'])
     
     @patch('ptmscout.database.user.User')
@@ -436,6 +443,7 @@ class UserRegistrationTests(unittest.TestCase):
         self.assertTrue(ptm_user.saveUser.called, "User was not saved")
         self.assertEqual(strings.account_activation_success_header, result['header'])
         self.assertEqual(strings.account_activation_page_title, result['pageTitle'])
+        self.assertEqual(request.application_url + "/login", result['redirect'])
         self.assertEqual(strings.account_activation_success_message % (request.application_url+"/login"), result['message'])
     
     def test_salter(self):

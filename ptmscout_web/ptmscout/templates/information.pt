@@ -1,6 +1,5 @@
 <div metal:use-macro="layout">
 	<div metal:fill-slot="header">
-		<meta http-equiv="refresh" content="3; url=experiments">'
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/info.css')}" />
 	</div>
     <div metal:fill-slot="content">

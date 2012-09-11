@@ -84,4 +84,5 @@ def change_password(request):
 def change_password_success(request):
     return {'pageTitle': strings.change_password_page_title,
             'message': strings.change_password_success_message,
-            'header': strings.success_header}
+            'header': strings.success_header,
+            'redirect': request.application_url + "/account"}

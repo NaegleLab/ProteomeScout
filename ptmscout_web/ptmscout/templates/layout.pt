@@ -3,6 +3,7 @@
   <head>
     <?python import ptmscout.config as config; ?>
     <title>${pageTitle}</title>
+    <meta tal:condition="redirect != None" http-equiv="refresh" content="3; url=${redirect}" />
   	<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/ptmscout.css')}" />
 	<div metal:define-slot="header"></div>
   </head>

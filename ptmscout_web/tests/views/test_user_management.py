@@ -189,6 +189,7 @@ class UserManagementTests(unittest.TestCase):
         self.assertEqual(strings.change_password_success_message, info['message'])
         self.assertEqual(strings.success_header, info['header'])
         self.assertEqual(strings.change_password_page_title, info['pageTitle'])
+        self.assertEqual(request.application_url + "/account", info['redirect'])
         
     def test_change_password_should_fail_if_passwords_not_supplied(self):
         request = DummyRequest()

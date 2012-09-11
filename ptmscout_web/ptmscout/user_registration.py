@@ -45,7 +45,8 @@ def process_forgot_password(request):
     
     return {'pageTitle': strings.forgotten_password_page_title,
             'header': strings.forgotten_password_success_header,
-            'message': strings.forgotten_password_success_message}
+            'message': strings.forgotten_password_success_message,
+            'redirect': request.application_url+  "/login"}
 
 
 @view_config(route_name='register',renderer='templates/user_registration.pt')
@@ -71,7 +72,8 @@ def user_registration_success(request):
         return {
             'pageTitle': strings.user_registration_page_title,
             'header': strings.user_registration_success_header,
-            'message': strings.user_registration_success_message}
+            'message': strings.user_registration_success_message,
+            'redirect': request.application_url + "/login"}
     else:
         raise HTTPFound(request.application_url+"/register?"+urllib.urlencode(result))
 
@@ -95,7 +97,8 @@ def user_login_success(request):
         return {
                 'pageTitle': strings.login_page_title,
                 'header': strings.login_page_success_header,
-                'message': strings.login_page_success_message}
+                'message': strings.login_page_success_message,
+                'redirect': request.application_url + "/experiments"}
     else:
         raise HTTPFound(request.application_url+"/login?"+urllib.urlencode(result))
 
@@ -107,7 +110,8 @@ def user_logout(request):
     return {
             'pageTitle': strings.logout_page_title,
             'header': strings.logout_page_header,
-            'message': strings.logout_page_message}
+            'message': strings.logout_page_message,
+            'redirect': request.application_url + "/experiments"}
     
     
 @view_config(route_name='activate_account', renderer='templates/information.pt')
@@ -130,16 +134,20 @@ def user_account_activation(request):
     ptm_user.setActive()
     ptm_user.saveUser()
     
+    url_redirect = request.application_url+"/login"
     return {'pageTitle': strings.account_activation_page_title,
             'header': strings.account_activation_success_header,
-            'message': strings.account_activation_success_message % (request.application_url+"/login")}
+            'message': strings.account_activation_success_message % (url_redirect),
+            'redirect': url_redirect}
 
 ## Internal Functions
 
 def __failed_account_activation(request):
+    url_redirect = request.application_url+"/register"
     return {'pageTitle':strings.account_activation_page_title,
             'header':strings.account_activation_failed_header,
-            'message':strings.account_activation_failed_message % (request.application_url+"/register")}
+            'message':strings.account_activation_failed_message % (url_redirect),
+            'redirect': url_redirect}
 
 def __process_login(request):
     username = webutils.post(request, 'username', "")
