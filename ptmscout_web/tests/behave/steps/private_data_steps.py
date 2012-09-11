@@ -1,6 +1,7 @@
 from behave import *
 from bot import Bot
 from assertions import assertDoesNotContain, assertContains
+from ptmscout import strings
 
 @given(u'I have loaded a dataset and marked it private')
 def create_owning_user_with_datasets(context):
@@ -43,12 +44,15 @@ def share_experiment_26(context):
 @when(u'I press the "publish" button on my experiments page')
 def publish_experiment_26(context):
     context.owner_user.login()
-    context.result = context.ptmscoutapp.get('/account/experiments/26', status=200)
-    forms = context.result.forms__get()
+    context.result = context.ptmscoutapp.get('/account/experiments', status=200)
     
-    context.result = forms['publish26'].submit()
-    context.result.form.submit()
-    context.result.mustcontain("You have successfully published this experiment.")
+    forms = context.result.forms__get()
+    context.result = context.ptmscoutapp.get(forms['publish26'].action, status=200)
+    context.result.mustcontain(strings.publish_experiment_confirm_message)
+    
+    forms = context.result.forms__get()
+    context.result = forms['confirm'].submit()
+    context.result.mustcontain(strings.publish_experiment_success_message)
     
     context.owner_user.logout()
 
@@ -105,4 +109,4 @@ def step_1(context):
 @then(u'everyone should be able to see my experiment')
 def step_2(context):
     context.result = context.ptmscoutapp.get('/experiments/26')
-    context.mustcontain("Time-resolved mass spectrometry of tyrosine phosphorylation sites")
+    context.result.mustcontain("Time-resolved mass spectrometry of tyrosine phosphorylation sites")
