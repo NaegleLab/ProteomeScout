@@ -1,0 +1,26 @@
+.usertable {
+	border-collapse: collapse;
+	border:solid;
+	border-color:black;
+	border-width:1px;
+	width:60%;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+.usertable th {
+	background:blue;
+	color:white;
+}
+
+.usertable td {
+	font-size:13px;
+	vertical-align:top;
+}
+
+.usertable tr.odd {
+	background:white;
+}
+.usertable tr.even {
+	background:#9999cc;
+}
