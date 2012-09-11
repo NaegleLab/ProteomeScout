@@ -1,0 +1,43 @@
+<div metal:use-macro="layout">
+	<div metal:fill-slot="header">
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/info.css')}" />
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/users.css')}" />
+	</div>
+    <div metal:fill-slot="content">
+    	<div id="experimentInfo" >
+		   	<fieldset>
+		   		<legend>Experiment</legend>
+		   		<a href="${experiment.getUrl()}" tal:condition="experiment.getUrl() != None">${experiment.name}</a>
+		   		<tal:expname tal:condition="experiment.getUrl() == None">${experiment.name}</tal:expname><br />
+				<tal:expcitation tal:content="structure experiment.getLongCitationString()"></tal:expcitation><br />
+			    <br /><br />
+			    ${experiment.description}
+			    <br /><br />
+			    Loaded: ${experiment.date}<br />
+		    </fieldset>
+		</div>    
+    	<div class = "infobox" tal:condition="confirm=='false'">
+    		<div class = "infoheader">Confirm</div>
+    		<p class = "infotext">${message}</p>
+    		<table>
+    			<tr>
+    				<td>
+			    		<form id="confirm" method="post" action="">
+			    			<input type="hidden" name="confirm" value="true" />
+			    			<input type="submit" value="Confirm" />
+			    		</form>
+		    		</td>
+		    		<td>
+			    		<form id="cancel" method="link" action="${request.application_url}/account/experiments">
+			    			<input type="submit" value="Cancel" />
+			    		</form>
+		    		</td>
+	    		</tr>
+    		</table>
+    	</div>
+    	<div class = "infobox" tal:condition="confirm=='true'">
+    		<div class = "infoheader">Success</div>
+    		<p class = "infotext">${message}</p>
+    	</div>
+    </div>
+</div>
