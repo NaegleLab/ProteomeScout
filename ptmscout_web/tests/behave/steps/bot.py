@@ -50,13 +50,9 @@ class Bot(object):
         
     def acquire_experiments(self, exp_ids):
         for exp_id in exp_ids:    
-            exp = experiment.getExperimentById(exp_id)
+            exp = experiment.getExperimentById(exp_id, self.user)
             exp.public = 0
             self.user.permissions.append(Permission(exp, 'owner'))
         
         self.user.saveUser()
-        
-        for exp_id in exp_ids:
-            self.user.makeOwner(exp_id)
-        
         

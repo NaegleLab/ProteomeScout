@@ -51,9 +51,6 @@ class User(Base):
     def allExperiments(self):
         return [ permission.experiment for permission in self.permissions ]
         
-    def makeOwner(self, exp_id):
-        DBSession.execute("UPDATE permissions SET access_level='owner' WHERE user_id=%d and experiment_id=%d" % (self.id, exp_id))        
-        
 class NoSuchUser(Exception):
     def __init__(self, uid=None, username=None, email=None):
         self.uid = uid

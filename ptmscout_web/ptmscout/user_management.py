@@ -12,10 +12,7 @@ def publish_experiment(request):
     confirm = webutils.post(request, 'confirm', "false")
     
     eid = int(request.matchdict['id'])
-    if eid not in [p.experiment_id for p in request.user.permissions]:
-        raise HTTPForbidden()
-    
-    exp = experiment.getExperimentById(eid)
+    exp = experiment.getExperimentById(eid, request.user)
     
     message = ""
     redirect = None
@@ -45,13 +42,8 @@ def manage_experiment_permissions(request):
     email = webutils.post(request, 'email', "").strip()
     
     expid = int(request.matchdict['id'])
+    exp = experiment.getExperimentById(expid, request.user)
     
-    permission_ids = [ p.experiment_id for p in request.user.permissions if p.access_level == 'owner']
-    
-    if expid not in permission_ids:
-        raise HTTPForbidden()
-    
-    exp = experiment.getExperimentById(expid)
     users = [ p.user for p in exp.permissions if p.user.id != request.user.id ]
     
     if(submitted == "1"):

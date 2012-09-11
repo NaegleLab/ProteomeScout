@@ -8,11 +8,11 @@ class PermissionsTestCase(DBTestCase):
         u = user.User("user","name","email","inst")
         u.createUser("password")
         
-        e = experiment.getExperimentById(1)
+        e = experiment.getExperimentById(1, None)
         
         p = permissions.Permission(e, 'owner')
         
         u.permissions.append(p)
         u.saveUser()
         
-        self.assertEqual(u.id, experiment.getExperimentById(1).permissions[0].user.id)
+        self.assertEqual(u.id, experiment.getExperimentById(1, u).permissions[0].user.id)

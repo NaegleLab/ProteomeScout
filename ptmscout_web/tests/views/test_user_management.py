@@ -19,22 +19,6 @@ class UserManagementTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-            
-    def test_publish_experiment_should_throw_forbidden(self):
-        request = DummyRequest()
-        ptm_user = createUserForTest("username", "email", "password", 1)
-        request.user = ptm_user
-        request.matchdict['id'] = "100"
-        
-        try:
-            publish_experiment(request)
-        except HTTPForbidden:
-            pass
-        except Exception, e:
-            self.fail("Unexpected exception: " + str(e))
-        else:
-            self.fail("Expected exception HTTPForbidden was not thrown")
-            
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_publish_experiment_should_show_success_already_public(self, patch_getExperiment):
         request = DummyRequest()
@@ -192,30 +176,6 @@ class UserManagementTests(unittest.TestCase):
         self.assertEqual(None, info['reason'])
 
     
-    def test_manage_experiment_permissions_throws_forbidden(self):
-        request = DummyRequest()
-        ptm_user = createUserForTest("username", "email", "password", 1)
-        request.user = ptm_user
-
-        exp1 = createMockExperiment(1, 0)
-        exp2 = createMockExperiment(2, 0)
-        exp3 = createMockExperiment(3, 0)
-        
-        ptm_user.permissions.append(createMockPermission(ptm_user, exp1, 'owner'))
-        ptm_user.permissions.append(createMockPermission(ptm_user, exp2, 'owner'))
-        ptm_user.permissions.append(createMockPermission(ptm_user, exp3, 'view'))
-        
-        request.matchdict['id'] = "%d" % (exp3.id)
-
-        try:
-            manage_experiment_permissions(request)
-        except HTTPForbidden:
-            pass
-        except Exception, e:
-            self.fail("Unexpected exception: " + str(e))
-        else:
-            self.fail("Expected exception HTTPForbidden to be thrown")
-        
     def test_my_experiments_should_show_experiments(self):
         request = DummyRequest()
         ptm_user = createUserForTest("username", "email", "password", 1)

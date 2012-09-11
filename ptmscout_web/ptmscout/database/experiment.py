@@ -1,7 +1,6 @@
 from . import Base, DBSession
 from sqlalchemy import Column, Integer, VARCHAR, Text
 from ptmscout import config
-from sqlalchemy.orm import relationship
 from ptmscout.database.permissions import Permission
 
 class Experiment(Base):
@@ -91,24 +90,46 @@ class Experiment(Base):
     def makePublic(self):
         self.public = 1
         
+    def checkPermissions(self, user):
+        if self.public == 1:
+            return True
+        
+        if user == None:
+            return False
+        
+        allowed_users = [p.user_id for p in self.permissions]
+        return user.id in allowed_users
+        
 class NoSuchExperiment(Exception):
     def __init__(self, eid):
         self.eid = eid
     
     def __str__(self):
         return "No such experiment: %d" % (self.eid)
+
+class ExperimentAccessForbidden(Exception):
+    def __init__(self, eid):
+        self.eid = eid
     
-def getExperimentById(experiment_id):
+    def __str__(self):
+        return "Current user does not have access privileges to experiment %d" % (self.eid)
+
+
+def getExperimentById(experiment_id, current_user):
     value = DBSession.query(Experiment).filter_by(id=experiment_id).first()
     if value == None:
         raise NoSuchExperiment(experiment_id)
+
+    if not value.checkPermissions(current_user):
+        raise ExperimentAccessForbidden(experiment_id)
+    
     return value
 
-def getAllExperiments():
-    return DBSession.query(Experiment).all()
+def getAllExperiments(current_user):
+    return [ exp for exp in  DBSession.query(Experiment).all() if exp.checkPermissions(current_user) ]
 
-def getExperimentTree():
-    experiments = getAllExperiments()
+def getExperimentTree(current_user):
+    experiments = getAllExperiments(current_user)
     for experiment in experiments:
         experiment.children = []
         
@@ -116,7 +137,8 @@ def getExperimentTree():
     experiment_tree = []
     for experiment in experiments:
         if experiment.experiment_id != 0:
-            experiment_dict[experiment.experiment_id].children.append(experiment)
+            if experiment.experiment_id in experiment_dict:
+                experiment_dict[experiment.experiment_id].children.append(experiment)
         else:
             experiment_tree.append(experiment)
     
