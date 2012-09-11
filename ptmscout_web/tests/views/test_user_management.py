@@ -8,7 +8,8 @@ from ptmscout.user_management import manage_account, change_password, change_pas
     manage_experiments
 import ptmscout.utils.crypto as crypto
 from ptmscout import strings
-from tests.views.mocking import createUserForTest
+from tests.views.mocking import createUserForTest, createMockExperiment,\
+    createMockPermission
 
 class UserManagementTests(unittest.TestCase):
     def setUp(self):
@@ -19,16 +20,27 @@ class UserManagementTests(unittest.TestCase):
         
     def test_my_experiments_should_show_experiments(self):
         request = DummyRequest()
+        ptm_user = createUserForTest("username", "email", "password", 1)
+        request.user = ptm_user
+
+        exp1 = createMockExperiment(1, 0)
+        exp2 = createMockExperiment(2, 0)
+        exp3 = createMockExperiment(3, 0)
+        
+        ptm_user.permissions.append(createMockPermission(ptm_user, exp1, 'owner'))
+        ptm_user.permissions.append(createMockPermission(ptm_user, exp2, 'owner'))
+        ptm_user.permissions.append(createMockPermission(ptm_user, exp3, 'view'))
         
         info = manage_experiments(request)
         
+        self.assertEqual([exp1, exp2], info['experiments'])
         self.assertEqual(strings.my_experiments_page_title, info['pageTitle'])
         
     def test_manage_account_should_display_account_info(self):
         request = DummyRequest()
         request.GET['reason'] = "reason"
         ptm_user = createUserForTest("username", "email", "password", 1)
-        request.user = ptm_user        
+        request.user = ptm_user
         
         info = manage_account(request)
         self.assertEqual(strings.account_management_page_title, info['pageTitle'])

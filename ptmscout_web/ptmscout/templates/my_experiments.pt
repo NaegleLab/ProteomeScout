@@ -15,7 +15,7 @@
 		   			<th>Primary Modifications</th>
 		   			<th class="accesscontrol">Access Control</th>
 		   		</tr>
-		   		<tal:experiments tal:repeat="(i, experiment) enumerate(request.user.experiments)">
+		   		<tal:experiments tal:repeat="(i, experiment) enumerate(experiments)">
 					<tr tal:attributes="class 'experiment' + (' even' if i % 2 == 0 else ' odd');" >
 						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.name"></td>
 						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.description"></a></td>

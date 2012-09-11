@@ -16,6 +16,7 @@ def createUserForTest(username, email, password, active):
     mock.activation_token = crypto.generateActivationToken()
     mock.id = TEST_USER_ID
     mock.active = active
+    mock.permissions = []
     return mock
 
 def createMockExperiment(eid, public, parent_id=0):

@@ -7,7 +7,10 @@ import strings
 
 @view_config(route_name='my_experiments', renderer='templates/my_experiments.pt', permission='private')
 def manage_experiments(request):
-    return {'pageTitle':strings.my_experiments_page_title}
+    users_experiments = [ p.experiment for p in request.user.permissions if p.access_level=='owner' ]
+    
+    return {'pageTitle':strings.my_experiments_page_title,
+            'experiments': users_experiments}
 
 @view_config(route_name='account_management', renderer='templates/account.pt', permission='private')
 def manage_account(request):
