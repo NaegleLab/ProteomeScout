@@ -4,9 +4,9 @@ from pyramid.testing import DummyRequest
 from ptmscout.experiments import experiment_listing, view_experiment
 from mock import patch, Mock
 from ptmscout import strings
-from ptmscout.database.experiment import Experiment
 from tests.views.test_user_management import createUserForTest
 from pyramid.httpexceptions import HTTPForbidden
+from tests.views.mocking import createMockExperiment, createMockPermission
 
 class ExperimentViewTests(unittest.TestCase):
     def setUp(self):
@@ -18,15 +18,9 @@ class ExperimentViewTests(unittest.TestCase):
     @patch('ptmscout.database.experiment.getExperimentTree')
     def test_experiment_listing(self, patch_getExperimentTree):
         request = DummyRequest()
-        exp1 = Experiment()
-        exp2 = Experiment()
-        exp3 = Experiment()
-        exp1.id = 1
-        exp2.id = 2
-        exp3.id = 3
-        exp1.public = 1
-        exp2.public = 1
-        exp3.public = 0
+        exp1 = createMockExperiment(1,1)
+        exp2 = createMockExperiment(2,1)
+        exp3 = createMockExperiment(3,0)
         
         patch_getExperimentTree.return_value = [exp1,exp2]
         request.user = None
@@ -39,16 +33,12 @@ class ExperimentViewTests(unittest.TestCase):
     @patch('ptmscout.database.experiment.getExperimentTree')
     def test_experiment_listing_should_filter_experiments_without_proper_permissions(self, patch_getExperimentTree):
         request = DummyRequest()
-        exp1 = Experiment()
-        exp2 = Experiment()
-        exp1.id = 1
-        exp2.id = 2
-        exp1.public = 0
-        exp2.public = 0
+        exp1 = createMockExperiment(1,0)
+        exp2 = createMockExperiment(2,0)
         
         request.user = createUserForTest("user", "email", "password", 1)
-        request.user.experiments = []
-        request.user.experiments.append(exp1)
+        request.user.permissions = []
+        request.user.permissions.append(createMockPermission(request.user, exp1))
         
         patch_getExperimentTree.return_value = [exp1, exp2]
         
@@ -86,7 +76,7 @@ class ExperimentViewTests(unittest.TestCase):
         
         request = DummyRequest()
         request.user = createUserForTest("user", "email", "password", 1)
-        request.user.experiments = [mock_experiment]
+        request.user.permissions = [createMockPermission(request.user, mock_experiment)]
         request.matchdict['id'] = 1 
         
         parameters = view_experiment(request)
@@ -127,7 +117,7 @@ class ExperimentViewTests(unittest.TestCase):
         
         request = DummyRequest()
         request.user = createUserForTest("user", "email", "password", 1)
-        request.user.experiments = []
+        request.user.permissions = []
         request.matchdict['id'] = 1 
         
         try:

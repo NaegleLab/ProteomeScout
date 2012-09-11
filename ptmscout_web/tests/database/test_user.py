@@ -2,6 +2,7 @@ from tests.DBTestCase import DBTestCase
 import ptmscout.database.user as dbuser
 from ptmscout.database.user import User, NoSuchUser, getUserById
 from ptmscout.database.experiment import Experiment
+from ptmscout.database.permissions import Permission
 
 
 class UserTestCase(DBTestCase):
@@ -29,16 +30,17 @@ class UserTestCase(DBTestCase):
             user.createUser("password")
             user.active=1
         
-        users[0].experiments.append(experiments[0])
-        users[0].experiments.append(experiments[1])
         
-        users[1].experiments.append(experiments[1])
-        users[1].experiments.append(experiments[2])
+        users[0].permissions.append(Permission(experiments[0]))
+        users[0].permissions.append(Permission(experiments[1]))
+        
+        users[1].permissions.append(Permission(experiments[1]))
+        users[1].permissions.append(Permission(experiments[2]))
         
         [user.saveUser() for user in users]
         
-        self.assertEqual([experiments[0].id, experiments[1].id], [exp.id for exp in getUserById(100).experiments])
-        self.assertEqual([experiments[1].id, experiments[2].id], [exp.id for exp in getUserById(101).experiments])
+        self.assertEqual([experiments[0].id, experiments[1].id], [p.experiment.id for p in getUserById(100).permissions])
+        self.assertEqual([experiments[1].id, experiments[2].id], [p.experiment.id for p in getUserById(101).permissions])
         
         
         

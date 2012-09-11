@@ -10,10 +10,9 @@ from ptmscout.user_registration import user_login, user_logout, user_login_succe
     process_forgot_password, forgot_password
 import ptmscout.utils.crypto as crypto
 from ptmscout import strings
+from tests.views.mocking import createUserForTest
 
-class UserManagementTests(unittest.TestCase):
-    TEST_USER_ID = 17
-    
+class UserRegistrationTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
 
@@ -443,14 +442,3 @@ class UserManagementTests(unittest.TestCase):
         print crypto.saltedPassword("password", '41683edb7a')
         print crypto.saltedPassword("secret", '41683edb7a')
         
-def createUserForTest(username, email, password, active):
-    mock = Mock()
-    mock.username = username
-    mock.name = "A User"
-    mock.email = email
-    mock.institution = "institution"
-    mock.salt, mock.salted_password = crypto.saltedPassword(password)  
-    mock.activation_token = crypto.generateActivationToken()
-    mock.id = UserManagementTests.TEST_USER_ID
-    mock.active = active
-    return mock

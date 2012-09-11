@@ -13,7 +13,7 @@ def experiment_listing(request):
     
     permitted_ids = []
     if request.user != None:
-        permitted_ids = [exp.id for exp in request.user.experiments]
+        permitted_ids = [p.experiment_id for p in request.user.permissions]
         
     experiments = [exp for exp in experiments if (exp.public == 1 or exp.id in permitted_ids)]
     
@@ -30,7 +30,7 @@ def view_experiment(request):
         raise HTTPForbidden()
     
     if not ptm_exp.public and request.user != None:
-        permitted_ids = [exp.id for exp in request.user.experiments]
+        permitted_ids = [p.experiment_id for p in request.user.permissions]
         if ptm_exp.id not in permitted_ids:
             raise HTTPForbidden() 
         

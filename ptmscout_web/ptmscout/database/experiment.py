@@ -1,6 +1,7 @@
 from . import Base, DBSession
 from sqlalchemy import Column, Integer, VARCHAR, Text
 from ptmscout import config
+from sqlalchemy.orm import relationship
 
 class Experiment(Base):
     __tablename__ = 'experiment'

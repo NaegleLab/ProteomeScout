@@ -1,6 +1,7 @@
 from ptmscout.database import user, experiment
 from mock import patch
 import re
+from ptmscout.database.permissions import Permission
 
 class Bot(object):
     def __init__(self, app):
@@ -41,7 +42,7 @@ class Bot(object):
         for exp_id in exp_ids:    
             exp = experiment.getExperimentById(exp_id)
             exp.public = 0
-            self.user.experiments.append(exp)
+            self.user.permissions.append(Permission(exp))
         
         self.user.saveUser()
         

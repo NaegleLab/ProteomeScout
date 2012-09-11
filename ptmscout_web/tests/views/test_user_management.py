@@ -8,10 +8,9 @@ from ptmscout.user_management import manage_account, change_password, change_pas
     manage_experiments
 import ptmscout.utils.crypto as crypto
 from ptmscout import strings
+from tests.views.mocking import createUserForTest
 
 class UserManagementTests(unittest.TestCase):
-    TEST_USER_ID = 17
-    
     def setUp(self):
         self.config = testing.setUp()
 
@@ -113,16 +112,3 @@ class UserManagementTests(unittest.TestCase):
             self.fail("Unexpected exception thrown: " + str(e))
         else:
             self.fail("Expected exception HTTPFound, no exception raised")
-
-        
-def createUserForTest(username, email, password, active):
-    mock = Mock()
-    mock.username = username
-    mock.name = "A User"
-    mock.email = email
-    mock.institution = "institution"
-    mock.salt, mock.salted_password = crypto.saltedPassword(password)  
-    mock.activation_token = crypto.generateActivationToken()
-    mock.id = UserManagementTests.TEST_USER_ID
-    mock.active = active
-    return mock

@@ -2,15 +2,8 @@ from . import Base, DBSession
 from sqlalchemy import Column, Integer, VARCHAR, TIMESTAMP
 import ptmscout.utils.crypto as crypto 
 from pyramid import security
-from sqlalchemy.schema import ForeignKey, Table
-from sqlalchemy.types import Enum
 from sqlalchemy.orm import relationship
 
-permissions_table = Table('permissions', Base.metadata, 
-                      Column('user_id', Integer(10), ForeignKey('users.id')),
-                      Column('experiment_id', Integer(10), ForeignKey('experiment.id')),
-                      Column('access_level', Enum(['view', 'owner']))
-                    )
 
 class User(Base):
     __tablename__ = 'users'
@@ -31,9 +24,7 @@ class User(Base):
     active = Column(Integer(1), default=0)
     activation_token = Column(VARCHAR(50))
 
-    experiments = relationship("Experiment",
-                                   secondary=permissions_table,
-                                   backref="Users")
+    permissions = relationship("Permission", backref="user")
     
     def __init__(self, username="", name="", email="", institution=""):
         self.username = username
@@ -51,6 +42,14 @@ class User(Base):
     def createUser(self, password):
         self.salt, self.salted_password = crypto.saltedPassword(password)
         self.activation_token = crypto.generateActivationToken()
+        
+    def myExperiments(self):
+        return [ permission.experiment \
+                    for permission in self.permissions \
+                        if permission.access_level == 'owner' ]
+        
+    def allExperiments(self):
+        return [ permission.experiment for permission in self.permissions ]
         
     def makeOwner(self, exp_id):
         DBSession.execute("UPDATE permissions SET access_level='owner' WHERE user_id=%d and experiment_id=%d" % (self.id, exp_id))        
