@@ -5,7 +5,8 @@ import unittest
 import urllib
 from mock import patch, Mock
 from ptmscout.user_management import manage_account, change_password, change_password_success,\
-    manage_experiments, manage_experiment_permissions, publish_experiment
+    manage_experiments, manage_experiment_permissions, publish_experiment,\
+    privatize_experiment
 import ptmscout.utils.crypto as crypto
 from ptmscout import strings
 from tests.views.mocking import createUserForTest, createMockExperiment,\
@@ -19,8 +20,9 @@ class UserManagementTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
+
     @patch('ptmscout.database.experiment.getExperimentById')
-    def test_publish_experiment_should_show_success_already_public(self, patch_getExperiment):
+    def test_privatize_experiment_should_show_success_already_private(self, patch_getExperiment):
         request = DummyRequest()
         ptm_user = createUserForTest("username", "email", "password", 1)
         request.user = ptm_user
@@ -28,7 +30,73 @@ class UserManagementTests(unittest.TestCase):
         exp1 = createMockExperiment(1, 0)
         ptm_user.permissions.append(createMockPermission(ptm_user, exp1, 'owner'))
         request.matchdict['id'] = "%d" % (exp1.id)
-        exp1.public = 1
+        exp1.public = 0
+        
+        patch_getExperiment.return_value = exp1
+        
+        info = privatize_experiment(request)
+        
+        self.assertEqual("true", info['confirm'])
+        self.assertEqual(strings.privatize_experiment_page_title, info['pageTitle'])
+        self.assertEqual(strings.privatize_experiment_already_message, info['message'])
+        self.assertEqual(exp1, info['experiment'])
+        self.assertEqual(request.application_url + "/account/experiments", info['redirect'])
+        
+        
+    @patch('ptmscout.database.experiment.getExperimentById')
+    def test_privatize_experiment_should_check_confirmation(self, patch_getExperiment):
+        request = DummyRequest()
+        ptm_user = createUserForTest("username", "email", "password", 1)
+        request.user = ptm_user
+        
+        exp1 = createMockExperiment(1, 1)
+        ptm_user.permissions.append(createMockPermission(ptm_user, exp1, 'owner'))
+        request.matchdict['id'] = "%d" % (exp1.id)
+        
+        patch_getExperiment.return_value = exp1
+        
+        info = privatize_experiment(request)
+        
+        self.assertEqual("false", info['confirm'])
+        self.assertEqual(strings.privatize_experiment_page_title, info['pageTitle'])
+        self.assertEqual(strings.privatize_experiment_confirm_message, info['message'])
+        self.assertEqual(exp1, info['experiment'])
+        self.assertEqual(None, info['redirect'])
+    
+    @patch('ptmscout.database.experiment.getExperimentById')
+    def test_privatize_experiment_should_change_public_flag(self, patch_getExperiment):    
+        request = DummyRequest()
+        ptm_user = createUserForTest("username", "email", "password", 1)
+        request.user = ptm_user
+        
+        exp1 = createMockExperiment(1, 1)
+        ptm_user.permissions.append(createMockPermission(ptm_user, exp1, 'owner'))
+        request.matchdict['id'] = "%d" % (exp1.id)
+        request.POST['confirm'] = "true"
+        
+        patch_getExperiment.return_value = exp1
+        
+        info = privatize_experiment(request)
+        
+        exp1.makePrivate.assert_called_once()
+        exp1.saveExperiment.assert_called_once()
+        
+        self.assertEqual("true", info['confirm'])
+        self.assertEqual(strings.privatize_experiment_page_title, info['pageTitle'])
+        self.assertEqual(strings.privatize_experiment_success_message, info['message'])
+        self.assertEqual(exp1, info['experiment'])
+        self.assertEqual(request.application_url + "/account/experiments", info['redirect'])
+    
+
+    @patch('ptmscout.database.experiment.getExperimentById')
+    def test_publish_experiment_should_show_success_already_public(self, patch_getExperiment):
+        request = DummyRequest()
+        ptm_user = createUserForTest("username", "email", "password", 1)
+        request.user = ptm_user
+        
+        exp1 = createMockExperiment(1, 1)
+        ptm_user.permissions.append(createMockPermission(ptm_user, exp1, 'owner'))
+        request.matchdict['id'] = "%d" % (exp1.id)
         
         patch_getExperiment.return_value = exp1
         

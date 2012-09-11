@@ -90,6 +90,9 @@ class Experiment(Base):
     def makePublic(self):
         self.public = 1
         
+    def makePrivate(self):
+        self.public = 0
+        
     def checkPermissions(self, user):
         if self.public == 1:
             return True

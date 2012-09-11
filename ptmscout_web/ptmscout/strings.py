@@ -51,6 +51,11 @@ publish_experiment_confirm_message = "Are you sure you want to publish this data
 publish_experiment_success_message = "You have successfully published this experiment."
 publish_experiment_already_message = "Experiment has already been published."
 
+privatize_experiment_page_title = "Set Experiment Private"
+privatize_experiment_confirm_message = "Are you sure you want to make this data private?"
+privatize_experiment_success_message = "You have successfully made this experiment private."
+privatize_experiment_already_message = "Experiment has already been made private."
+
 share_experiment_page_title = "Share Experiment"
 
 upload_page_title = "Upload"
