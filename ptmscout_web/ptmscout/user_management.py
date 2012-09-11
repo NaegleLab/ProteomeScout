@@ -7,6 +7,37 @@ import strings
 from ptmscout.database import experiment, user
 from ptmscout.database.user import NoSuchUser
 
+@view_config(route_name='publish_experiment', renderer='templates/publish_confirm.pt', permission='private')
+def publish_experiment(request):
+    confirm = webutils.post(request, 'confirm', "false")
+    
+    eid = int(request.matchdict['id'])
+    if eid not in [p.experiment_id for p in request.user.permissions]:
+        raise HTTPForbidden()
+    
+    exp = experiment.getExperimentById(eid)
+    
+    message = ""
+    redirect = None
+    
+    if exp.public == 1:
+        message = strings.publish_experiment_already_message
+        confirm='true'
+        redirect = request.application_url + "/account/experiments"
+    elif confirm == "false":
+        message = strings.publish_experiment_confirm_message
+    else:
+        exp.makePublic()
+        exp.saveExperiment()
+        message = strings.publish_experiment_success_message
+        redirect = request.application_url + "/account/experiments"
+    
+    return {'confirm': confirm,
+            'experiment': exp,
+            'message': message,
+            'redirect': redirect,
+            'pageTitle': strings.publish_experiment_page_title}
+
 @view_config(route_name='share_experiment', renderer='templates/share.pt', permission='private')
 def manage_experiment_permissions(request):
     reason = None
