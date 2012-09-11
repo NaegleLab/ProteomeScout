@@ -37,8 +37,6 @@ After logging in, your can change your password <a href="%s">here</a>.
 -PTMScout Administrator
 """
 
-my_experiments_page_title = "My Experiments"
-
 login_page_title = "Login"
 login_page_success_header = "Login Successful"
 login_page_success_message = "You have successfully logged in."
@@ -46,6 +44,12 @@ login_page_success_message = "You have successfully logged in."
 logout_page_title = "Logout"
 logout_page_header = "Logout Successful"
 logout_page_message = "You have successfully logged out."
+
+my_experiments_page_title = "My Experiments"
+publish_experiment_page_title = "Publish Experiment"
+publish_experiment_confirm_message = "Are you sure you want to publish this data?"
+publish_experiment_success_message = "You have successfully published this experiment."
+publish_experiment_already_message = "Experiment has already been published."
 
 share_experiment_page_title = "Share Experiment"
 
@@ -83,5 +87,9 @@ failure_reason_password_too_short = "Password must be at least %d characters in 
 failure_reason_email_address_not_on_record = "E-mail address does not match any user record"
 
 
+
+
+
+    
 
 
