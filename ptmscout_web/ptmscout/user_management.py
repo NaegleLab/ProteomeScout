@@ -1,9 +1,44 @@
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from pyramid.view import view_config
 import urllib
 import utils.webutils as webutils
 from utils import crypto
 import strings
+from ptmscout.database import experiment, user
+from ptmscout.database.user import NoSuchUser
+
+@view_config(route_name='share_experiment', renderer='templates/share.pt', permission='private')
+def manage_experiment_permissions(request):
+    reason = None
+    submitted = webutils.post(request, 'submitted', "0")
+    email = webutils.post(request, 'email', "").strip()
+    
+    expid = int(request.matchdict['id'])
+    
+    permission_ids = [ p.experiment_id for p in request.user.permissions if p.access_level == 'owner']
+    
+    if expid not in permission_ids:
+        raise HTTPForbidden()
+    
+    exp = experiment.getExperimentById(expid)
+    users = [ p.user for p in exp.permissions if p.user.id != request.user.id ]
+    
+    if(submitted == "1"):
+        if email == "":
+            reason = strings.failure_reason_form_fields_cannot_be_empty
+        else:
+            try:
+                new_user = user.getUserByEmail(email)
+                users.append(new_user)
+                exp.grantPermission(new_user, 'view')
+                exp.saveExperiment()
+            except NoSuchUser:
+                reason = strings.failure_reason_email_address_not_on_record
+        
+    return {'pageTitle':strings.share_experiment_page_title,
+            'users':users,
+            'experiment':exp,
+            'reason':reason}
 
 @view_config(route_name='my_experiments', renderer='templates/my_experiments.pt', permission='private')
 def manage_experiments(request):

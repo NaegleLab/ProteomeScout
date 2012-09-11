@@ -47,6 +47,8 @@ logout_page_title = "Logout"
 logout_page_header = "Logout Successful"
 logout_page_message = "You have successfully logged out."
 
+share_experiment_page_title = "Share Experiment"
+
 upload_page_title = "Upload"
 upload_page_header = "Data Upload"
 
@@ -79,6 +81,7 @@ failure_reason_email_not_valid = "Email address is invalid"
 failure_reason_email_not_academic = "Email address must belong to .edu domain"
 failure_reason_password_too_short = "Password must be at least %d characters in length"
 failure_reason_email_address_not_on_record = "E-mail address does not match any user record"
+
 
 
 
