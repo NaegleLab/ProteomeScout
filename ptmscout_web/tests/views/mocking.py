@@ -4,9 +4,10 @@ from ptmscout.database.user import User
 from ptmscout.database.experiment import Experiment
 from ptmscout.database.permissions import Permission
 
-TEST_USER_ID = 17
+TEST_USER_ID = 2
 
 def createUserForTest(username, email, password, active):
+    global TEST_USER_ID
     mock = Mock(spec=User)
     mock.username = username
     mock.name = "A User"
@@ -15,6 +16,7 @@ def createUserForTest(username, email, password, active):
     mock.salt, mock.salted_password = crypto.saltedPassword(password)  
     mock.activation_token = crypto.generateActivationToken()
     mock.id = TEST_USER_ID
+    TEST_USER_ID += 1
     mock.active = active
     mock.permissions = []
     return mock
