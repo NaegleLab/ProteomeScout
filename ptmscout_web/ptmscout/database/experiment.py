@@ -88,6 +88,9 @@ class Experiment(Base):
         
         self.permissions.append(p)
         
+    def makePublic(self):
+        self.public = 1
+        
 class NoSuchExperiment(Exception):
     def __init__(self, eid):
         self.eid = eid
