@@ -2,10 +2,6 @@ from behave import *
 from bot import Bot
 from assertions import assertDoesNotContain, assertContains
 
-@given(u'I have logged in with my username and password')
-def login_the_active_user(context):
-    context.active_user.login()
-
 @given(u'I have loaded a dataset and marked it private')
 def create_owning_user_with_datasets(context):
     owner_user = Bot(context.ptmscoutapp)
@@ -19,10 +15,6 @@ def create_owning_user_with_datasets(context):
 
 
 
-@when(u'I load a dataset and mark it private')
-def load_private_dataset(context):
-    assert True
-    
 @when(u'other users search for proteins in my dataset')
 def user_search_for_ack1_and_homo_sapiens(context):
     context.active_user.login()
@@ -57,17 +49,32 @@ def publish_experiment_26(context):
     context.result = forms['publish26'].submit()
     context.result.form.submit()
     context.result.mustcontain("You have successfully published this experiment.")
-
+    
+    context.owner_user.logout()
 
 
 
 @then(u'I should be able to see the experiment')
 def owner_can_see_experiment(context):
-    assert True
+    context.owner_user.login()
     
+    context.result = context.ptmscoutapp.get('/experiments', status=200)
+    context.result.mustcontain("Time-resolved mass spectrometry of tyrosine phosphorylation sites")
+    context.result.mustcontain("Effects of HER2 overexpression on cell signaling networks governing proliferation and migration")
+    
+    context.result = context.ptmscoutapp.get('/experiments/26', status=200)
+    context.result.mustcontain("Time-resolved mass spectrometry of tyrosine phosphorylation sites")
+    
+    context.owner_user.logout()
+        
 @then(u'other users should not be able to see the experiment')
 def other_users_cannot_see_experiment(context):
-    assert True
+    context.result = context.ptmscoutapp.get('/experiments', status=200)
+    assertDoesNotContain("Time-resolved mass spectrometry of tyrosine phosphorylation sites", context.result.normal_body)
+    assertDoesNotContain("Effects of HER2 overexpression on cell signaling networks governing proliferation and migration", context.result.normal_body)
+    
+    context.result = context.ptmscoutapp.get('/experiments/26', status=200)
+    context.result.mustcontain("Forbidden")
 
 @then(u'they should receive a 403 forbidden')
 def error_403_forbidden(context):
@@ -75,25 +82,27 @@ def error_403_forbidden(context):
     
 @then(u'my experimental data should not appear in the protein listing')
 def ack1_exp_data_not_on_search_page(context):
-    assertContains("Y284", context.result.normal_body)
-    assertContains("Y518", context.result.normal_body)
+    context.result.mustcontain("Y284")
+    context.result.mustcontain("Y518")
     assertDoesNotContain("Y857", context.result.normal_body)
     assertDoesNotContain("Y858", context.result.normal_body)
     
 @then(u'my experimental data should not appear in the protein summary')
 def ack1_exp_data_not_on_protein_page(context):
-    assertContains("Y284", context.result.normal_body)
-    assertContains("Y518", context.result.normal_body)
+    context.result.mustcontain("Y284")
+    context.result.mustcontain("Y518")
     assertDoesNotContain("Y857", context.result.normal_body)
     assertDoesNotContain("Y858", context.result.normal_body)
-    assertContains("Quantitative analysis of EGFRvIII cellular signaling networks reveals a combinatorial therapeutic strategy for glioblastoma", context.result.normal_body)
+    context.result.mustcontain("Quantitative analysis of EGFRvIII cellular signaling networks reveals a combinatorial therapeutic strategy for glioblastoma")
     assertDoesNotContain("Time-resolved mass spectrometry of tyrosine phosphorylation sites", context.result.normal_body)
     assertDoesNotContain("Effects of HER2 overexpression on cell signaling networks governing proliferation and migration", context.result.normal_body)
     
 @then(u'that user can now see my specific dataset')
 def step_1(context):
     user_lookup_experiment_26(context)
+    context.mustcontain("Time-resolved mass spectrometry of tyrosine phosphorylation sites")
 
 @then(u'everyone should be able to see my experiment')
 def step_2(context):
-    user_lookup_experiment_26(context)
+    context.result = context.ptmscoutapp.get('/experiments/26')
+    context.mustcontain("Time-resolved mass spectrometry of tyrosine phosphorylation sites")

@@ -38,6 +38,12 @@ class Bot(object):
         
         self.user = user.getUserByUsername(self.username)
         
+    def logout(self):
+        response = self.app.get('/logout', status=200)
+        response.mustcontain("You have successfully logged out.")
+        
+        self.user = None
+        
     def acquire_experiments(self, exp_ids):
         for exp_id in exp_ids:    
             exp = experiment.getExperimentById(exp_id)
