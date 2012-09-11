@@ -34,7 +34,7 @@ def user_lookup_experiment_26(context):
 def share_experiment_26(context):
     context.owner_user.login()
     context.result = context.ptmscoutapp.get('/account/experiments/26/share', status=200)
-    form = context.form
+    form = context.result.forms[0]
     
     form.set('email', context.active_user.email)
     context.result = form.submit()
@@ -100,7 +100,7 @@ def ack1_exp_data_not_on_protein_page(context):
 @then(u'that user can now see my specific dataset')
 def step_1(context):
     user_lookup_experiment_26(context)
-    context.mustcontain("Time-resolved mass spectrometry of tyrosine phosphorylation sites")
+    context.result.mustcontain("Time-resolved mass spectrometry of tyrosine phosphorylation sites")
 
 @then(u'everyone should be able to see my experiment')
 def step_2(context):

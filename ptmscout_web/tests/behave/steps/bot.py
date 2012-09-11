@@ -48,7 +48,7 @@ class Bot(object):
         for exp_id in exp_ids:    
             exp = experiment.getExperimentById(exp_id)
             exp.public = 0
-            self.user.permissions.append(Permission(exp))
+            self.user.permissions.append(Permission(exp, 'owner'))
         
         self.user.saveUser()
         
