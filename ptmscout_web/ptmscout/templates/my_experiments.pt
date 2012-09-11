@@ -26,12 +26,12 @@
 							<table>
 								<tr>
 									<td>
-										<form tal:attributes="action request.application_url + '/account/experiments/' + str(experiment.id) + '/publish'" method="link">
+										<form tal:attributes="id 'publish'+str(experiment.id);action request.application_url + '/account/experiments/' + str(experiment.id) + '/publish'" method="link">
 											<input type = "submit" value="Publish" />
 										</form>
 									</td>
 									<td>
-										<form tal:attributes="action request.application_url + '/account/experiments/' + str(experiment.id) + '/share'" method="link">
+										<form tal:attributes="id 'share'+str(experiment.id);action request.application_url + '/account/experiments/' + str(experiment.id) + '/share'" method="link">
 											<input type = "submit" value="Change Permissions" />
 										</form>
 									</td>
