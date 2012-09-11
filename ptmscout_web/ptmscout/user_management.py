@@ -24,7 +24,7 @@ def privatize_experiment(request):
     elif confirm == "false":
         message = strings.privatize_experiment_confirm_message
     else:
-        exp.makePublic()
+        exp.makePrivate()
         exp.saveExperiment()
         message = strings.privatize_experiment_success_message
         redirect = request.application_url + "/account/experiments"

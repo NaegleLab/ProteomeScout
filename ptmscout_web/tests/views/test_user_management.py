@@ -78,8 +78,8 @@ class UserManagementTests(unittest.TestCase):
         
         info = privatize_experiment(request)
         
-        exp1.makePrivate.assert_called_once()
-        exp1.saveExperiment.assert_called_once()
+        self.assert_(exp1.makePrivate.called)
+        self.assert_(exp1.saveExperiment.called)
         
         self.assertEqual("true", info['confirm'])
         self.assertEqual(strings.privatize_experiment_page_title, info['pageTitle'])
