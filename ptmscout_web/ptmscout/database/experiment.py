@@ -2,6 +2,7 @@ from . import Base, DBSession
 from sqlalchemy import Column, Integer, VARCHAR, Text
 from ptmscout import config
 from sqlalchemy.orm import relationship
+from ptmscout.database.permissions import Permission
 
 class Experiment(Base):
     __tablename__ = 'experiment'
@@ -80,6 +81,12 @@ class Experiment(Base):
             return config.pubmedUrl % (self.PMID)
         
         return None
+    
+    def grantPermission(self, user, level):
+        p = Permission(self, level)
+        p.user = user
+        
+        self.permissions.append(p)
         
 class NoSuchExperiment(Exception):
     def __init__(self, eid):
