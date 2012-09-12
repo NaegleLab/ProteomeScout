@@ -3,6 +3,7 @@ ptmscout_backend/NCBI_DB
 ptmscout_backend/ptmscout_source/lib/globalVars.pm
 ptmscout_frontend/cgi-bin/createdDirs
 ptmscout_frontend/cgi-bin/includes/secureDB.py
+ptmscout_frontend/cgi-bin/imageScripts/mpl
 ptmscout_frontend/cgi-bin/pathname.py
 ptmscout_frontend/cgi-bin/tempFiles
 ptmscout_backend/HMMFASTA_TEMPFILE
