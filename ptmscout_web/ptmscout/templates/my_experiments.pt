@@ -22,7 +22,7 @@
 						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.author"></a></td>
 						<td class="citation" tal:content="experiment.getCitationString()"></td>
 						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.primaryModification"></a></td>
-						<td class="accesscontrol">
+						<td class="accesscontrol" tal:condition="experiment.public == 0">
 							<table>
 								<tr>
 									<td>
@@ -37,6 +37,11 @@
 									</td>
 								</tr>
 							</table>
+						</td>
+						<td class="accesscontrol" tal:condition="experiment.public == 1">
+							<form tal:attributes="id 'unpublish'+str(experiment.id);action request.application_url + '/account/experiments/' + str(experiment.id) + '/unpublish'" method="link">
+								<input type = "submit" value="Make Private" />
+							</form>
 						</td>
 					</tr>
 				</tal:experiments>
