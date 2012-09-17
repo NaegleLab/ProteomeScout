@@ -3,6 +3,7 @@ from bot import Bot
 from assertions import assertDoesNotContain, assertContains
 from ptmscout import strings
 from mock import patch
+from ptmscout.database import permissions
 
 @given(u'I have loaded a dataset and marked it private')
 def create_owning_user_with_datasets(context):
@@ -18,7 +19,7 @@ def create_owning_user_with_datasets(context):
 def create_and_invite_unregistered_user(context):
     create_owning_user_with_datasets(context)
     invite_unregistered_user(context)
-    
+    check_invite_email_sent(context)
 
 @when(u'I enter an email address for an unregistered user in "Share dataset"')
 def invite_unregistered_user(context):
@@ -31,8 +32,10 @@ def invite_unregistered_user(context):
     form.set('email', context.invited_email)
     context.result = form.submit()
     
+    context.result = context.result.follow()
+    
     context.form = context.result.forms[0]
-    context.result.mustcontain(strings.user_invite_confirm)
+    context.result.mustcontain(strings.user_invite_confirm % (context.invited_email))
 
 
 @when(u'that user registers with the email address from the invitation')
@@ -84,8 +87,8 @@ def publish_experiment_26(context):
     context.owner_user.logout()
 
 
-@patch('ptmscout.utils.mail.send_automail_message')
 @then(u'the unregistered user receives an invitation email')
+@patch('ptmscout.utils.mail.send_automail_message')
 def check_invite_email_sent(context, patch_mail):
     context.result = context.form.submit()
     context.result.mustcontain(strings.user_invited % context.invited_email)
