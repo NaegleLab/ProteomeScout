@@ -62,7 +62,8 @@ def user_lookup_experiment_26(context):
     context.result = context.ptmscoutapp.get('/experiments/26')
 
 @when(u'I enter another user email address in "Share dataset"')
-def share_experiment_26(context):
+@patch('ptmscout.utils.mail.send_automail_message')
+def share_experiment_26(context, patch_mail):
     context.owner_user.login()
     context.result = context.ptmscoutapp.get('/account/experiments/26/share', status=200)
     form = context.result.forms[0]
@@ -70,6 +71,8 @@ def share_experiment_26(context):
     form.set('email', context.active_user.email)
     context.result = form.submit()
     context.result.mustcontain(context.active_user.email)
+    
+    assert patch_mail.called
 
 @when(u'I press the "publish" button on my experiments page')
 def publish_experiment_26(context):

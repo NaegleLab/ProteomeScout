@@ -240,10 +240,11 @@ class UserManagementTests(unittest.TestCase):
         else:
             self.fail("Expected exception: HTTPFound")
     
-        
+    
+    @patch('ptmscout.utils.mail.send_automail_message')
     @patch('ptmscout.database.user.getUserByEmail')
     @patch('ptmscout.database.experiment.getExperimentById')
-    def test_manage_experiment_adds_user_on_form_submission(self, patch_getExperiment, patch_getUser):
+    def test_manage_experiment_adds_user_on_form_submission(self, patch_getExperiment, patch_getUser, patch_sendMail):
         request = DummyRequest()
         ptm_user = createUserForTest("username", "email", "password", 1)
         request.user = ptm_user
@@ -266,6 +267,11 @@ class UserManagementTests(unittest.TestCase):
         patch_getUser.return_value = new_user
 
         info = manage_experiment_permissions(request)
+        
+        patch_mail_result = str(patch_sendMail.call_args).replace("\\n", "\n").replace("\\'", "'")
+        self.assertIn(strings.user_invite_email_subject % ptm_user.name, patch_mail_result)
+        self.assertIn(strings.user_invite_email_message % (new_user.name, ptm_user.name, exp1.name, request.application_url + "/login"), patch_mail_result)
+        self.assertTrue(patch_sendMail.called)
         
         self.assertEqual([user1, new_user], info['users'])
         self.assertEqual(exp1, info['experiment'])

@@ -114,6 +114,9 @@ def manage_experiment_permissions(request):
             try:
                 new_user = user.getUserByEmail(email)
                 users.append(new_user)
+                
+                mail.send_automail_message(request, [email], strings.user_invite_email_subject % (request.user.name), strings.user_invite_email_message % (new_user.name, request.user.name, exp.name, request.application_url + "/login"))
+                
                 exp.grantPermission(new_user, 'view')
                 exp.saveExperiment()
             except NoSuchUser:

@@ -78,7 +78,7 @@ user_invite_email_message = """
 
 User %s has invited you to view their dataset '%s', available through PTMScout.
 
-Please <a href=\"%s\">register here</a> to access and view this data.
+Please <a href=\"%s\">visit</a> to access and view this data.
 
 Thanks,
 -The PTMScout Team
