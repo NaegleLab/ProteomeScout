@@ -26,6 +26,7 @@ def createMockExperiment(eid, public, parent_id=0):
     mock.id = eid
     mock.public = public
     mock.parent_id = parent_id
+    mock.name = "Experiment Name"
     return mock
 
 def createMockPermission(user, experiment, access_level='view'):
