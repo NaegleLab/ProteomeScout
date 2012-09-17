@@ -1,0 +1,48 @@
+import unittest
+from pyramid.testing import DummyRequest
+from ptmscout.proteins import protein_modifications_view
+from ptmscout import strings
+from tests.views.mocking import createMockProtein, createUserForTest,\
+    createMockModification, createMockExperiment, createMockPhosphopep
+from mock import patch
+
+
+
+class TestProteinViews(unittest.TestCase):
+    
+    @patch('ptmscout.database.modifications.getModificationsByProtein')
+    @patch('ptmscout.database.protein.getProteinById')
+    def test_protein_modifications_view_should_show_modifications_for_protein(self, patch_getProtein, patch_getMods):
+        request = DummyRequest()
+
+        mock_prot = createMockProtein()
+        request.matchdict['id'] = str(mock_prot.id)
+        patch_getProtein.return_value = mock_prot
+        
+        mock_user = createUserForTest("username", "email", "password", 1)
+        request.user = mock_user
+        
+        mock_mod = createMockModification(mock_prot.id, 24)
+        mock_mod.experiment = createMockExperiment(2, 0, 0)
+        
+        mock_mod2 = createMockModification(mock_prot.id, 25)
+        mock_mod2.experiment = createMockExperiment(3, 0, 0)
+        
+        p1 = createMockPhosphopep(mock_prot.id)
+        mock_mod.phosphopeps.append(p1)
+        mock_mod2.phosphopeps.append(p1)
+        
+        p1.getName.return_value = "mock_pep_name"
+        p1.getPeptide.return_value = "mock_peptide"
+        
+        mod_list = [mock_mod, mock_mod2]
+        patch_getMods.return_value = mod_list 
+        
+        result = protein_modifications_view(request)
+        
+        patch_getProtein.assert_called_with(mock_prot.id)
+        patch_getMods.assert_called_with(mock_prot.id, mock_user)
+        
+        self.assertEqual(strings.protein_modification_sites_page_title, result['pageTitle'])
+        self.assertEqual(mock_prot, result['protein'])
+        self.assertEqual([{'name':"mock_pep_name",'peptide':"mock_peptide",'experiments':[mock_mod.experiment, mock_mod2.experiment]}], result['modification_sites'])
