@@ -44,6 +44,7 @@ def add_views(config):
     
     config.add_route('account_management', '/account')
     config.add_route('my_experiments', '/account/experiments')
+    config.add_route('invite_experiment', '/account/experiments/{id}/invite')
     config.add_route('share_experiment', '/account/experiments/{id}/share')
     config.add_route('publish_experiment', '/account/experiments/{id}/publish')
     config.add_route('privatize_experiment', '/account/experiments/{id}/unpublish')
