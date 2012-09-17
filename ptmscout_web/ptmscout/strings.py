@@ -61,7 +61,9 @@ share_experiment_page_title = "Share Experiment"
 upload_page_title = "Upload"
 upload_page_header = "Data Upload"
 
+user_invite_page_title = "Invite User"
 user_invite_confirm = "User %s is not a registered user, are you sure you wish to invite this user?"
+user_invite_email_required = "Email address is required"
 user_invited = "An invitation to view your dataset has been sent to %s."
 user_invite_email_subject = "PTMScout user %s has invited you to share a dataset"
 user_invite_email_message = """
@@ -111,6 +113,8 @@ failure_reason_email_address_not_on_record = "E-mail address does not match any 
 
 
     
+
+
 
 
 
