@@ -6,7 +6,7 @@ import urllib
 from mock import patch, Mock
 from ptmscout.user_management import manage_account, change_password, change_password_success,\
     manage_experiments, manage_experiment_permissions, publish_experiment,\
-    privatize_experiment
+    privatize_experiment, confirm_invite_user
 import ptmscout.utils.crypto as crypto
 from ptmscout import strings
 from tests.views.mocking import createUserForTest, createMockExperiment,\
@@ -19,8 +19,63 @@ class UserManagementTests(unittest.TestCase):
 
     def tearDown(self):
         testing.tearDown()
+    
+    @patch('ptmscout.database.experiment.getExperimentById')
+    def test_confirm_invite_should_check_confirmation(self, patch_getExperiment):
+        request = DummyRequest()
+        ptm_user = createUserForTest("username", "email", "password", 1)
+        request.user = ptm_user
+        
+        exp1 = createMockExperiment(1, 1)
+        ptm_user.permissions.append(createMockPermission(ptm_user, exp1, 'owner'))
+        request.matchdict['id'] = "%d" % (exp1.id)
+        invited_email = "inviteduser@institute.edu"
+        request.GET['email'] = invited_email
+                
+        patch_getExperiment.return_value = exp1
+        
+        info = confirm_invite_user(request)
+        
+        self.assertEqual("false", info['confirm'])
+        self.assertEqual(strings.user_invite_page_title, info['pageTitle'])
+        self.assertEqual(strings.user_invite_confirm % (invited_email), info['message'])
+        self.assertEqual(exp1, info['experiment'])
+        self.assertEqual(None, info['redirect'])
 
-
+    @patch('ptmscout.database.permissions.Invitation')
+    @patch('ptmscout.utils.mail.send_automail_message')
+    @patch('ptmscout.database.experiment.getExperimentById')
+    def test_confirm_invite_should_send_invitation(self, patch_getExperiment, patch_mail, patch_invite):
+        request = DummyRequest()
+        ptm_user = createUserForTest("username", "email", "password", 1)
+        request.user = ptm_user
+        
+        exp1 = createMockExperiment(1, 1)
+        ptm_user.permissions.append(createMockPermission(ptm_user, exp1, 'owner'))
+        request.matchdict['id'] = "%d" % (exp1.id)
+        request.POST['confirm'] = "true"
+        
+        invited_email = "inviteduser@institute.edu"
+        request.GET['email'] = invited_email
+                
+        patch_getExperiment.return_value = exp1
+        
+        info = confirm_invite_user(request)
+        
+        inst = patch_invite.return_value
+        inst.saveInvitation.assert_called_with()
+        
+        expected_email_body = strings.user_invite_email_message % (invited_email, ptm_user.name, exp1.name, request.application_url + "/register?email=" + invited_email)
+        expected_email_body = expected_email_body.replace("\n", "\\n").replace("'","\\'")
+        
+        self.assertIn(strings.user_invite_email_subject % (ptm_user.name), str(patch_mail.call_args))
+        self.assertIn(expected_email_body, str(patch_mail.call_args))
+        self.assertEqual("true", info['confirm'])
+        self.assertEqual(strings.user_invite_page_title, info['pageTitle'])
+        self.assertEqual(strings.user_invited % (invited_email), info['message'])
+        self.assertEqual(exp1, info['experiment'])
+        self.assertEqual(request.application_url + "/account/experiments", info['redirect'])
+    
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_privatize_experiment_should_show_success_already_private(self, patch_getExperiment):
         request = DummyRequest()
@@ -155,7 +210,7 @@ class UserManagementTests(unittest.TestCase):
     
     @patch('ptmscout.database.user.getUserByEmail')
     @patch('ptmscout.database.experiment.getExperimentById')
-    def test_manage_experiment_fails_to_add_user_if_no_such_user(self, patch_getExperiment, patch_getUser):
+    def test_manage_experiment_redirects_to_invite_if_no_such_user(self, patch_getExperiment, patch_getUser):
         request = DummyRequest()
         ptm_user = createUserForTest("username", "email", "password", 1)
         request.user = ptm_user
@@ -171,19 +226,21 @@ class UserManagementTests(unittest.TestCase):
         exp1.permissions = [createMockPermission(ptm_user, exp1, 'owner'),
                             createMockPermission(user1, exp1, 'view')]
         
-        
         request.POST['submitted'] = "1"
         request.POST['email'] = "emailaddr"
         
         patch_getUser.side_effect = NoSuchUser()
-        
-        info = manage_experiment_permissions(request)
-        
-        self.assertEqual([user1], info['users'])
-        self.assertEqual(exp1, info['experiment'])
-        self.assertEqual(strings.share_experiment_page_title, info['pageTitle'])
-        self.assertEqual(strings.failure_reason_email_address_not_on_record, info['reason'])
+
+        try:
+            manage_experiment_permissions(request)
+        except HTTPFound, f:
+            self.assertEqual(request.application_url + "/account/experiments/" + str(exp1.id) + "/invite?email=emailaddr", f.location)
+        except Exception, e:
+            self.fail("Unexpected exception thrown: " + str(e))
+        else:
+            self.fail("Expected exception: HTTPFound")
     
+        
     @patch('ptmscout.database.user.getUserByEmail')
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_manage_experiment_adds_user_on_form_submission(self, patch_getExperiment, patch_getUser):
