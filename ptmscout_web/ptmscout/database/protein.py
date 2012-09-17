@@ -3,6 +3,7 @@ from sqlalchemy.schema import Column, ForeignKey, UniqueConstraint, Table
 from sqlalchemy.types import Integer, TEXT, VARCHAR, Enum, Text, Float
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import null
+from ptmscout import strings, config
 
 go_association_table = Table('protein_GO', Base.metadata,
     Column('protein_id', Integer(10), ForeignKey('protein.id')),
@@ -18,6 +19,9 @@ class GeneOntology(Base):
     term = Column(Text)
     version = Column(VARCHAR(10), default='0')
     UniqueConstraint('aspect', 'GO', name="uniqueEntry")
+    
+#    def getURL(self):
+#        return config.accession_urls['GO'] % (self.GO)
 
 class Accession(Base):
     __tablename__='acc'
@@ -25,6 +29,17 @@ class Accession(Base):
     type = Column(VARCHAR(30))
     value = Column(VARCHAR(45))
     protein_id = Column(Integer(10), ForeignKey('protein.id'))
+    
+    def getType(self):
+        return strings.accession_type_strings[self.type]
+    
+    def getURL(self):
+        if self.type in config.accession_urls:
+            return config.accession_urls[self.type] % (self.value)
+        return None
+        
+    def getAccessionName(self):
+        return self.value
     
 class Domain(Base):    
     __tablename__='domain'
@@ -52,7 +67,6 @@ class Protein(Base):
     domains = relationship("Domain")
     
     def __init__(self):
-        print "Got protein: ", id
         pass
     
     def saveProtein(self):
