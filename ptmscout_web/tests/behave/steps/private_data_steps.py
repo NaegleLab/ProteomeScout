@@ -2,6 +2,7 @@ from behave import *
 from bot import Bot
 from assertions import assertDoesNotContain, assertContains
 from ptmscout import strings
+from mock import patch
 
 @given(u'I have loaded a dataset and marked it private')
 def create_owning_user_with_datasets(context):
@@ -13,8 +14,34 @@ def create_owning_user_with_datasets(context):
     
     context.owner_user = owner_user
 
+@given(u'a user has been invited to view a private dataset')
+def create_and_invite_unregistered_user(context):
+    create_owning_user_with_datasets(context)
+    invite_unregistered_user(context)
+    
+
+@when(u'I enter an email address for an unregistered user in "Share dataset"')
+def invite_unregistered_user(context):
+    context.owner_user.login()
+    context.result = context.ptmscoutapp.get('/account/experiments/26/share', status=200)
+    form = context.result.forms[0]
+    
+    context.invited_email = "invited@institute.edu"
+    
+    form.set('email', context.invited_email)
+    context.result = form.submit()
+    
+    context.form = context.result.forms[0]
+    context.result.mustcontain(strings.user_invite_confirm)
 
 
+@when(u'that user registers with the email address from the invitation')
+def invited_user_registers(context):
+    context.active_user = Bot(context.ptmscoutapp)
+    context.active_user.email = context.invited_email
+    
+    context.active_user.register()
+    context.active_user.activate()
 
 @when(u'other users search for proteins in my dataset')
 def user_search_for_ack1_and_homo_sapiens(context):
@@ -57,6 +84,16 @@ def publish_experiment_26(context):
     context.owner_user.logout()
 
 
+@patch('ptmscout.utils.mail.send_automail_message')
+@then(u'the unregistered user receives an invitation email')
+def check_invite_email_sent(context, patch_mail):
+    context.result = context.form.submit()
+    context.result.mustcontain(strings.user_invited % context.invited_email)
+    
+    assertContains(context.invited_email, str(patch_mail.call_args))
+    assertContains(context.owner_user.fullname, str(patch_mail.call_args))
+    assert patch_mail.called
+    
 
 @then(u'I should be able to see the experiment')
 def owner_can_see_experiment(context):

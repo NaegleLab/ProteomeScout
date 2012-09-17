@@ -16,6 +16,16 @@ Feature: Private Data
 		Given I have loaded a dataset and marked it private
 		When I enter another user email address in "Share dataset"
 		Then that user can now see my specific dataset
+		
+	Scenario: Share data and invite user
+		Given I have loaded a dataset and marked it private
+		When I enter an email address for an unregistered user in "Share dataset"
+		Then the unregistered user receives an invitation email
+	
+	Scenario: Invited user registers for an account
+		Given a user has been invited to view a private dataset
+		When that user registers with the email address from the invitation
+		Then that user can now see my specific dataset
 
 	Scenario: Publish data
 		Given I have loaded a dataset and marked it private
