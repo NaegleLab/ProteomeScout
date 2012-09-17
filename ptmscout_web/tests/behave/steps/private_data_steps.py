@@ -126,14 +126,12 @@ def error_403_forbidden(context):
     
 @then(u'my experimental data should not appear in the protein listing')
 def ack1_exp_data_not_on_search_page(context):
-    context.result.mustcontain("Y284")
     context.result.mustcontain("Y518")
     assertDoesNotContain("Y857", context.result.normal_body)
     assertDoesNotContain("Y858", context.result.normal_body)
     
 @then(u'my experimental data should not appear in the protein summary')
 def ack1_exp_data_not_on_protein_page(context):
-    context.result.mustcontain("Y284")
     context.result.mustcontain("Y518")
     assertDoesNotContain("Y857", context.result.normal_body)
     assertDoesNotContain("Y858", context.result.normal_body)
