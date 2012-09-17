@@ -359,7 +359,7 @@ class UserRegistrationTests(unittest.TestCase):
     @patch('ptmscout.utils.mail.send_automail_message')
     @patch('ptmscout.database.user.User')
     @patch('ptmscout.database.user.getUserByUsername')
-    def test_user_registration_success_should_send_email_on_success_and_store_new_user(self, patch_getUser, patch_User, patch_automail):
+    def test_user_registration_success_should_send_email_on_success_store_new_user_and_process_invitations(self, patch_getUser, patch_User, patch_automail):
         patch_getUser.side_effect = dbuser.NoSuchUser(username="a_username")
         
         request = DummyRequest()
@@ -374,6 +374,7 @@ class UserRegistrationTests(unittest.TestCase):
         result = user_registration_success(request)
         
         user_instance = patch_User.return_value
+        user_instance.processInvitations.assert_called_with()
         self.assertTrue(patch_automail.called, "User was not notified of account activation by e-mail")
         self.assertTrue(user_instance.saveUser.called, "User was not saved to database")
         self.assertTrue(user_instance.createUser.called, "User object not initialized before DB commit")
@@ -382,7 +383,6 @@ class UserRegistrationTests(unittest.TestCase):
         self.assertEqual(strings.user_registration_success_header, result['header'])
         self.assertEqual(strings.user_registration_success_message, result['message'])
         self.assertEqual(request.application_url + "/login", result['redirect'])
-        
         
     def test_user_account_activation_should_fail_if_fields_not_specified(self):
         request = DummyRequest()
@@ -445,8 +445,3 @@ class UserRegistrationTests(unittest.TestCase):
         self.assertEqual(strings.account_activation_page_title, result['pageTitle'])
         self.assertEqual(request.application_url + "/login", result['redirect'])
         self.assertEqual(strings.account_activation_success_message % (request.application_url+"/login"), result['message'])
-    
-    def test_salter(self):
-        print crypto.saltedPassword("password", '41683edb7a')
-        print crypto.saltedPassword("secret", '41683edb7a')
-        

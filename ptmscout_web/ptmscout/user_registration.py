@@ -224,6 +224,9 @@ def __process_registration(request):
 
     ptm_user = user.User(username, name, email, institute)
     ptm_user.createUser(pass1)
+    
+    ptm_user.processInvitations()
+    
     ptm_user.saveUser()
     
     mail.send_automail_message(request, 
