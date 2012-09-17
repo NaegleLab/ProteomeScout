@@ -3,6 +3,7 @@ import ptmscout.database.user as dbuser
 from ptmscout.database.user import User, NoSuchUser, getUserById
 from ptmscout.database.experiment import Experiment
 from ptmscout.database.permissions import Permission
+from ptmscout.database import permissions
 
 
 class UserTestCase(DBTestCase):
@@ -107,3 +108,27 @@ class UserTestCase(DBTestCase):
             self.fail("Unexpected exception: " + str(e))
         else:
             self.fail("Expected exception NoSuchUser was not thrown")
+            
+    def test_processInvitations_should_query_for_invites_and_add_experiments_to_permissions(self):
+        inviter = User("inviter", "inviter's name", "inviter@someschool.edu", "some school")
+        inviter.createUser("password")
+        inviter.saveUser()
+        
+        new_user = User("newguy", "new guy's name", "newguy@someschool.edu", "some school")
+        new_user.createUser("password")
+        new_user.saveUser()
+        
+        invites = [permissions.Invitation(new_user.email, 26, inviter.id), 
+                   permissions.Invitation(new_user.email, 28, inviter.id)]
+        
+        [ i.saveInvitation() for i in invites ]
+        self.session.flush()
+        
+        new_user.processInvitations()
+        new_user.saveUser()
+        
+        user = getUserById(new_user.id)
+        
+        allowed_exp_ids = [ p.experiment.id for p in user.permissions ]
+        
+        self.assertEqual([26,28], allowed_exp_ids)

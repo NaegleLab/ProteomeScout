@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, VARCHAR, TIMESTAMP
 import ptmscout.utils.crypto as crypto 
 from pyramid import security
 from sqlalchemy.orm import relationship
-
+from ptmscout.database import permissions
 
 class User(Base):
     __tablename__ = 'users'
@@ -31,6 +31,7 @@ class User(Base):
         self.name = name
         self.email = email
         self.institution = institution
+        self.permissions = []
         
     def saveUser(self):
         DBSession.add(self)
@@ -50,6 +51,18 @@ class User(Base):
         
     def allExperiments(self):
         return [ permission.experiment for permission in self.permissions ]
+
+    
+    def processInvitations(self):
+        invites = permissions.getInvitationsForUser(self.email)
+        
+        for invite in invites:
+            np = permissions.Permission(invite.experiment)
+            np.user_id = self.id
+            self.permissions.append(np)
+        
+    
+    
         
 class NoSuchUser(Exception):
     def __init__(self, uid=None, username=None, email=None):
