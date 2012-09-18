@@ -63,6 +63,31 @@ class TestProteinViews(unittest.TestCase):
         self.assertEqual(None, result['selected_species'])
         self.assertEqual([], result['proteins'])
         self.assertEqual({}, result['modifications'])
+        self.assertEqual(False, result['submitted'])
+        
+    @patch('ptmscout.database.protein.getAllSpecies')
+    def test_protein_search_view_should_not_submit_search_if_protein_field_empty(self, patch_getSpecies):
+        request = DummyRequest()
+        request.POST['submitted'] = "true"
+        request.POST['acc_search'] = ""
+        request.POST['stringency'] = "2"
+        request.POST['species'] = "homo sapiens"
+        
+        species_list = [Species('mus musculus'), Species('homo sapiens')]
+        patch_getSpecies.return_value = species_list
+        
+        result = protein_search_view(request)
+        
+        patch_getSpecies.assert_called_with()
+        self.assertEqual(strings.protein_search_page_title, result['pageTitle'])
+        self.assertEqual(['mus musculus', 'homo sapiens'], result['species_list'])
+        
+        self.assertEqual("", result['acc_search'])
+        self.assertEqual("2", result['stringency'])
+        self.assertEqual("homo sapiens", result['selected_species'])
+        self.assertEqual([], result['proteins'])
+        self.assertEqual({}, result['modifications'])
+        self.assertEqual(True, result['submitted'])
     
     @patch('ptmscout.database.modifications.getModificationsByProtein')
     @patch('ptmscout.database.protein.getProteinsByAccession')
@@ -114,3 +139,4 @@ class TestProteinViews(unittest.TestCase):
         
         self.assertEqual(protein_list, result['proteins'])
         self.assertEqual({p1.id: parsed_peps}, result['modifications'])
+        self.assertEqual(True, result['submitted'])

@@ -30,14 +30,14 @@ def protein_view(request):
 
 @view_config(route_name='protein_search', renderer='templates/protein_search.pt')
 def protein_search_view(request):
-    submitted = webutils.post(request, 'submitted', False)
-    acc_search = webutils.post(request, 'acc_search', None)
-    stringency = webutils.post(request, 'stringency', None)
+    submitted = bool(webutils.post(request, 'submitted', False))
+    acc_search = webutils.post(request, 'acc_search', "")
+    stringency = webutils.post(request, 'stringency', "1")
     selected_species = webutils.post(request, 'species', None)
     
     proteins = []
     protein_mods={}
-    if(bool(submitted)):
+    if(submitted and acc_search != ""):
         proteins = protein.getProteinsByAccession([acc_search], species=selected_species)
         
         for p in proteins:
@@ -61,4 +61,5 @@ def protein_search_view(request):
             'stringency':stringency,
             'selected_species':selected_species,
             'proteins':proteins,
-            'modifications':protein_mods}
+            'modifications':protein_mods,
+            'submitted': submitted}

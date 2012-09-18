@@ -57,3 +57,7 @@ tr.even {
 tr.odd {
 	background:#CCC;
 }
+
+.errortext {
+	color:red;
+}
