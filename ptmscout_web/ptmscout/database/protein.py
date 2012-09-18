@@ -2,7 +2,7 @@ from ptmscout.database import Base, DBSession
 from sqlalchemy.schema import Column, ForeignKey, UniqueConstraint, Table
 from sqlalchemy.types import Integer, TEXT, VARCHAR, Enum, Text, Float
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql.expression import null
+from sqlalchemy.sql.expression import null, or_
 from ptmscout import strings, config
 
 go_association_table = Table('protein_GO', Base.metadata,
@@ -82,11 +82,11 @@ class Protein(Base):
         DBSession.add(self)
 
 class NoSuchProtein(Exception):
-    def __init__(self, pid):
-        self.pid = pid
+    def __init__(self, prot):
+        self.prot = prot
     
     def __str__(self):
-        return "No such protein: %d" % (self.pid)
+        return "No such protein: %s" % (str(self.prot))
 
 def getProteinById(pid):
     value = DBSession.query(Protein).filter_by(id=pid).first()
@@ -96,5 +96,16 @@ def getProteinById(pid):
     
     return value
 
+def getProteinsByAccession(accessions, species=None):
+    if species == None:
+        q = DBSession.query(Protein).join(Protein.accessions).filter(or_(Protein.acc_gene.in_(accessions), Accession.value.in_(accessions)))
+    else:
+        q = DBSession.query(Protein).join(Protein.accessions).join(Protein.species).filter(or_(Protein.acc_gene.in_(accessions), Accession.value.in_(accessions)), Species.name == species)
+    
+    return q.all()
+
 def getSpeciesByName(name):
     return DBSession.query(Species).filter_by(name=name).first()
+
+def getAllSpecies():
+    return DBSession.query(Species).all()

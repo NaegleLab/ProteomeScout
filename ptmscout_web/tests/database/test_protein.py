@@ -19,7 +19,7 @@ class ProteinTest(DBTestCase):
             pid = 10000000
             protein.getProteinById(pid)
         except NoSuchProtein, nsp:
-            self.assertEqual(pid, nsp.pid)
+            self.assertEqual(pid, nsp.prot)
         except Exception, e:
             self.fail("Unexpected exception: " + str(e))
         else:
@@ -69,8 +69,24 @@ class ProteinTest(DBTestCase):
             self.fail("Unexpected exception occurred: " + str(e))
         else:
             self.fail("Expected IntegrityError on last DB operation")
-            
+    
+    def test_getProteinsByAccession(self):
+        expected_ids = [27866, 35546, 10367, 30840, 19946, 17551, 35433]
         
+        prots = protein.getProteinsByAccession(["ACK1"])
+        
+        self.assertEqual(sorted(expected_ids), sorted([ prot.id for prot in prots ]))
+    
+    def test_getProteinsByAccession_filter_species(self):
+        expected_ids = [35546, 10367]
+        
+        
+        prots = protein.getProteinsByAccession(["ACK1"], "homo sapiens")
+        
+        self.assertEqual(sorted(expected_ids), sorted([ prot.id for prot in prots ]))
+                
+             
+    
     def test_proteins_should_be_associated_with_correct_domains(self):
         prot = protein.getProteinById(100)
         
