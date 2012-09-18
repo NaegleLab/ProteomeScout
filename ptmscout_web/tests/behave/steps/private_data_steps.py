@@ -49,7 +49,14 @@ def invited_user_registers(context):
 @when(u'other users search for proteins in my dataset')
 def user_search_for_ack1_and_homo_sapiens(context):
     context.active_user.login()
-    context.result = context.ptmscoutapp.post('/proteins', {'protein':"ACK1", 'stringency':1, 'species':"homo sapiens"}, status=200)
+    context.result = context.ptmscoutapp.get('/proteins', status=200)
+    form = context.result.form
+    
+    form.set('acc_search', "ACK1")
+    form.set('stringency',1)
+    form.set('species',"homo sapiens")
+    
+    context.result = form.submit()
 
 @when(u'other users lookup proteins that have data in my dataset')
 def user_lookup_ack1_homo_sapiens(context):
