@@ -32,6 +32,8 @@ def add_views(config):
     config.add_route('upload', '/upload')
     
     config.add_route('protein_mod_sites', '/proteins/{id}/modifications')
+    config.add_route('protein_main', '/proteins/{id}')
+    config.add_route('protein_search', '/proteins')
     
     config.add_route('login', '/login')
     config.add_route('process_login', '/process_login')
