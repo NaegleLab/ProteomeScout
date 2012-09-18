@@ -11,7 +11,7 @@
 	<div id="menu">
 	  <div style="float:left; text-align:left">
 	    <a href="${request.application_url}/experiments">Experiments</a> |
-        <a href='${request.application_url}/${homeUrl}/browse/prosearch.cgi'>Proteins</a>
+        <a href='${request.application_url}/proteins'>Proteins</a>
 	  </div>
 	  <div style="float:right;text-align:right">
 	    <span tal:condition="request.user == None">
