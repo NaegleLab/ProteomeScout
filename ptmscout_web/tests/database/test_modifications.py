@@ -1,5 +1,5 @@
 from tests.DBTestCase import DBTestCase
-from ptmscout.database.protein import Protein
+from ptmscout.database.protein import Protein, Species, getSpeciesByName
 from ptmscout.database.experiment import Experiment, getExperimentById
 from ptmscout.database.modifications import Phosphopep, Modification,\
     getModificationsByProtein
@@ -14,7 +14,7 @@ class TestModifications(DBTestCase):
         
         p = Protein()
         p.sequence = "ABCDEFG"
-        p.species = "homo sapiens"
+        p.species = getSpeciesByName("homo sapiens")
         p.acc_gene = "ZOMG"
         p.name = "zomg this is a protein"
         p.date = "12-1986"

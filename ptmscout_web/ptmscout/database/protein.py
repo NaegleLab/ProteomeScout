@@ -11,6 +11,14 @@ go_association_table = Table('protein_GO', Base.metadata,
     Column('version', VARCHAR(10))
 )
 
+class Species(Base):
+    __tablename__='species'
+    id = Column(Integer(10), primary_key=True, autoincrement=True)
+    name = Column(VARCHAR(100), unique=True)
+    
+    def __init__(self, name):
+        self.name = name
+
 class GeneOntology(Base):
     __tablename__='GO'
     id = Column(Integer(10), primary_key=True, autoincrement=True)
@@ -57,14 +65,15 @@ class Protein(Base):
     __tablename__='protein'
     id = Column(Integer(10), primary_key=True, autoincrement=True)
     sequence = Column(TEXT)
-    species = Column(VARCHAR(100))
     acc_gene = Column(VARCHAR(30))
     name = Column(VARCHAR(100))
     date = Column(VARCHAR(7))
+    species_id = Column(Integer(10), ForeignKey('species.id'))
     
     accessions = relationship("Accession")
     GO_terms = relationship("GeneOntology", secondary=go_association_table)
     domains = relationship("Domain")
+    species = relationship("Species")
     
     def __init__(self):
         pass
@@ -86,3 +95,6 @@ def getProteinById(pid):
         raise NoSuchProtein(pid)
     
     return value
+
+def getSpeciesByName(name):
+    return DBSession.query(Species).filter_by(name=name).first()
