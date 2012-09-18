@@ -16,3 +16,44 @@
   text-indent: 0.2em;
   border-bottom: 2px solid #333399;
 }
+
+.search_results {
+    margin-top: 1em;
+    margin-bottom: 1em;
+
+    margin-left:auto;
+    margin-right: auto;
+    width:90%;
+}
+
+.result_count {
+	margin-left:auto;
+	margin-right:auto;
+	width:200px;
+}
+
+.search_results table {
+	border-collapse: collapse;
+	width:95%;
+	margin-left:auto;
+	margin-right:auto;
+	border:solid;
+	border-width:1px;
+	border-color:black;	
+}
+
+.search_results td{
+	padding-bottom:10px;
+}
+
+.search_results th{
+	background:#CCC;
+}
+
+tr.even {
+	background:#FFF;
+}
+
+tr.odd {
+	background:#CCC;
+}
