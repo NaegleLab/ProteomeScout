@@ -78,4 +78,7 @@ def createMockPhosphopep(pid):
     mock.site_type = site_types[random.randint(0,3)]
     mock.pfam_site = "pfam1"
     
+    mock.getName.return_value = mock.site_type + str(mock.site_pos)
+    mock.getPeptide.return_value = mock.pep_aligned
+    
     return mock
