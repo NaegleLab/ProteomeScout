@@ -13,7 +13,7 @@
 	   			<label>Name:</label> ${protein.name}
 	   		</div>
 	   		<div>
-	   			<label>Species:</label> ${protein.species}
+	   			<label>Species:</label> ${protein.species.name}
 	   		</div>
 	   		<div> 
 		   		<label>Accessions:</label>
