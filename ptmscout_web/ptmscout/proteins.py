@@ -13,8 +13,8 @@ def protein_modifications_view(request):
     for MS in modifications.getModificationsByProtein(pid, request.user):
         for pep in MS.phosphopeps:
             pep_tuple = (pep.getName(), pep.getPeptide())
-            exps = mod_sites.get(pep_tuple, [])
-            exps.append(MS.experiment)
+            exps = mod_sites.get(pep_tuple, set())
+            exps.add(MS.experiment)
             mod_sites[pep_tuple] = exps
             
     mod_sites = [ {'name':name, 'peptide':pep, 'experiments':exps} for ((name, pep), exps) in mod_sites.items() ]
@@ -22,3 +22,4 @@ def protein_modifications_view(request):
     return {'protein': prot,
             'pageTitle': strings.protein_modification_sites_page_title,
             'modification_sites': mod_sites}
+
