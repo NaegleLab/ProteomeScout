@@ -4,7 +4,7 @@ from ptmscout import main
 
 class InfoFunctionalTests(unittest.TestCase):
     def setUp(self):
-        settings = { 'sqlalchemy.url': "mysql+mysqldb://ptmscout_web:ptmscout1@localhost:3306/ptmscout" }
+        settings = { 'sqlalchemy.url': "mysql+mysqldb://ptmscout_web:ptmscout1@localhost:3306/ptmscout_dev" }
         app = main({}, **settings)
         self.ptmscoutapp = TestApp(app)
         
@@ -18,4 +18,9 @@ class InfoFunctionalTests(unittest.TestCase):
     
     def test_terms_renderer(self):
         self.ptmscoutapp.get('/terms', status=200)
+        
+    def test_integrated_protein_views(self):
+        self.ptmscoutapp.get('/proteins/35546/modifications')
+        self.ptmscoutapp.get('/proteins/35546/expression')
+        
     
