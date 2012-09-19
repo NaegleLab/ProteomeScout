@@ -18,7 +18,8 @@ def protein_modifications_view(request):
             exps.add(MS.experiment)
             mod_sites[pep_tuple] = exps
             
-    mod_sites = [ {'name':name, 'peptide':pep, 'experiments':exps} for ((name, pep), exps) in mod_sites.items() ]
+    mod_sites = [{'name':name, 'peptide':pep, 'experiments':exps} for (name, pep), exps in mod_sites.items()]
+    mod_sites = sorted( mod_sites, key=lambda item: item['name'] )
     
     return {'protein': prot,
             'pageTitle': strings.protein_modification_sites_page_title,
