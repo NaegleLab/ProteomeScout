@@ -36,6 +36,9 @@ def protein_search_view(request):
     stringency = webutils.post(request, 'stringency', "1")
     selected_species = webutils.post(request, 'species', None)
     
+    if(selected_species == 'all'):
+        selected_species = None
+    
     proteins = []
     protein_mods={}
     if(submitted and acc_search != ""):
