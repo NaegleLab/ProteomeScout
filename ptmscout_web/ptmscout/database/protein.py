@@ -70,7 +70,7 @@ class Protein(Base):
     date = Column(VARCHAR(7))
     species_id = Column(Integer(10), ForeignKey('species.id'))
     
-    accessions = relationship("Accession")
+    accessions = relationship("Accession", order_by=Accession.type)
     GO_terms = relationship("GeneOntology", secondary=go_association_table)
     domains = relationship("Domain")
     species = relationship("Species")

@@ -80,7 +80,6 @@ class ProteinTest(DBTestCase):
     def test_getProteinsByAccession_filter_species(self):
         expected_ids = [35546, 10367]
         
-        
         prots = protein.getProteinsByAccession(["ACK1"], "homo sapiens")
         
         self.assertEqual(sorted(expected_ids), sorted([ prot.id for prot in prots ]))
@@ -95,3 +94,9 @@ class ProteinTest(DBTestCase):
         domains = set([ d.label for d in prot.domains ])
         self.assertEqual( set(['Mpv17_PMP22']), domains )
         
+    def test_accessions_should_be_sorted_by_types(self):
+        prot = protein.getProteinById(10367)
+        
+        types = [acc.type for acc in prot.accessions]
+        
+        self.assertEqual(sorted(types), types)
