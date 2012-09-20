@@ -49,4 +49,4 @@ class ExpressionProbeset(Base):
     species = relationship("Species")
     
     samples = relationship(ExpressionSample, lazy='subquery')
-    accessions = relationship(ExpressionAccession)
+    accessions = relationship(ExpressionAccession, lazy='subquery')
