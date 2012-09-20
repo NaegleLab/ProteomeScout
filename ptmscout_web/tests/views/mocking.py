@@ -3,9 +3,11 @@ from ptmscout.utils import crypto
 from ptmscout.database.user import User
 from ptmscout.database.experiment import Experiment
 from ptmscout.database.permissions import Permission
-from ptmscout.database.protein import Protein
+from ptmscout.database.protein import Protein, Species
 import random
 from ptmscout.database.modifications import Modification, Phosphopep
+from ptmscout.database.gene_expression import ExpressionProbeset,\
+    ExpressionSample, ExpressionCollection, ExpressionTissue
 
 TEST_USER_ID = 2
 
@@ -50,7 +52,10 @@ def createMockProtein():
     mock.name = "prot_" + str(id)
     mock.acc_gene = "PR" + str(id)
     mock.date="12-1986"
-    mock.species="homo sapiens"
+    mock.species_id=46
+    mock.species = mock(spec=Species)
+    mock.species.id = 46
+    mock.species.name = "homo sapiens"
     mock.sequence="ABCDEFGHIJKLMNOP" 
     return mock
     
@@ -82,3 +87,40 @@ def createMockPhosphopep(pid):
     mock.getPeptide.return_value = mock.pep_aligned
     
     return mock
+
+def createMockProbe():
+    mock = Mock(spec=ExpressionProbeset)
+    
+    mock.id = random.randint(0, 100000)
+    mock.probeset_id = str(mock.id) + "_s_at"
+    st = ['gnf1h', 'gnf1m', 'HG-U133A']
+    mock.genechip = st[random.randint(0, 2)]
+    
+    mock.species = mock(spec=Species)
+    mock.species.id = 46
+    mock.species.name = "homo sapiens"
+    
+    mock.name = "Some probeset"
+    mock.samples = []
+    mock.accessions = []
+    return mock
+    
+def createMockExpSample(probe_id, collection_id, collection, tissue_id, tissue):
+    mock = Mock(spec=ExpressionSample)
+    
+    mock.id = random.randint(0, 100000)
+    mock.probeset_id = probe_id
+
+    mock.collection_id = collection_id
+    mock.collection = Mock(spec=ExpressionCollection)
+    mock.collection.id = collection_id
+    mock.collection.name = collection
+    
+    mock.tissue_id = tissue_id
+    mock.tissue = Mock(spec=ExpressionTissue)
+    mock.tissue.id = tissue_id
+    mock.tissue.name = tissue
+    
+    mock.value = random.random()
+    return mock
+    
