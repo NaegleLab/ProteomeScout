@@ -10,3 +10,11 @@ from zope.sqlalchemy.datamanager import mark_changed
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 Base = declarative_base()
+
+from experiment import *
+from permissions import *
+from user import *
+
+from modifications import *
+from gene_expression import *
+from protein import *

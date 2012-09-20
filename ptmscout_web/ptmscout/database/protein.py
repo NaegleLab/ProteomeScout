@@ -8,8 +8,12 @@ from ptmscout import strings, config
 go_association_table = Table('protein_GO', Base.metadata,
     Column('protein_id', Integer(10), ForeignKey('protein.id')),
     Column('GO_id', Integer(10), ForeignKey('GO.id')),
-    Column('version', VARCHAR(10))
-)
+    Column('version', VARCHAR(10)))
+
+expression_association_table = Table('protein_expression', Base.metadata,
+    Column('id', Integer(10), primary_key=True, autoincrement=True),
+    Column('protein_id', Integer(10), ForeignKey('protein.id')),
+    Column('probeset_id', Integer(10), ForeignKey('expression_ann.probeset_id')))
 
 class Species(Base):
     __tablename__='species'
@@ -22,7 +26,7 @@ class Species(Base):
 class GeneOntology(Base):
     __tablename__='GO'
     id = Column(Integer(10), primary_key=True, autoincrement=True)
-    aspect = Column('aspect', Enum(['F','P','C']), default=null)
+    aspect = Column(Enum(['F','P','C']), default=null)
     GO = Column(VARCHAR(10))
     term = Column(Text)
     version = Column(VARCHAR(10), default='0')
@@ -74,6 +78,7 @@ class Protein(Base):
     GO_terms = relationship("GeneOntology", secondary=go_association_table)
     domains = relationship("Domain")
     species = relationship("Species")
+    expression_probes = relationship("ExpressionProbeset", secondary=expression_association_table)
     
     def __init__(self):
         pass
