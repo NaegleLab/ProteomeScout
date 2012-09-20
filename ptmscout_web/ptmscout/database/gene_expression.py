@@ -44,10 +44,6 @@ class ExpressionProbeset(Base):
     probeset_id = Column(VARCHAR(45), unique=True, index=True)
     genechip    = Column(Enum('gnf1h', 'gnf1m', 'HG-U133A'), default='gnf1h')
     species_id  = Column(Integer(10), ForeignKey('species.id'))
-    symbol      = Column(VARCHAR(45), index=True)
-    refseq      = Column(Text)
-    uniprot     = Column(Text)
-    aliases     = Column(Text)
     name        = Column(Text)
     
     species = relationship("Species")
