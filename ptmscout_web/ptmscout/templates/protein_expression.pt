@@ -27,7 +27,6 @@
 						<option tal:repeat="collection collections" tal:attributes="value collection" tal:content="collection"></option>
 					</select>
 				</span>
-				<input id="update_expression" type="button" value="Display" />				
 			</div>
 
 			<div class="expression_data">
