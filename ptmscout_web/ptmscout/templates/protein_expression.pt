@@ -1,0 +1,38 @@
+<div metal:use-macro="layout">
+	<div metal:fill-slot="header">
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/proteins.css')}" />
+	</div>
+	<div metal:fill-slot="content">
+		<div metal:use-macro="protein_header"></div>
+
+		<div class="section">
+			<h6>
+				Expression Data comes from the Genomics Institute Of The Novartis
+				Research Institute <a target="_blank" href="http://symatlas.gnf.org/">SymAtlas Project</a>
+			</h6>
+			<h6>
+				<a href="${request.static_url('ptmscout:static/disclaimer.html')}" target="_blank">GNF SymAtlas Copyright</a>
+			</h6>
+			<div class="expression_form">
+				<span class="expression_form_entry">
+					Probeset ID: 
+					<select id="expression_probeid">
+						<option tal:repeat="probe_id probe_ids" tal:attributes="value probe_id" tal:content="probe_id"></option>
+					</select>
+				</span>
+				<span class="expression_form_entry">
+					Data Type: 
+					<select id="expression_collection">
+						<option value="all">all</option>
+						<option tal:repeat="collection collections" tal:attributes="value collection" tal:content="collection"></option>
+					</select>
+				</span>
+				<input id="update_expression" type="button" value="Display" />				
+			</div>
+
+			<div class="expression_data">
+				<div tal:repeat="data expression_data" tal:content="'%s,%s,%s,%s' % (data['probeset'],data['collection'],data['tissue'],data['value'])"></div>			
+			</div>			
+		</div>
+	</div>
+</div>
