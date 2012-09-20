@@ -61,8 +61,9 @@ privatize_experiment_confirm_message = "Are you sure you want to make this data 
 privatize_experiment_success_message = "You have successfully made this experiment private."
 privatize_experiment_already_message = "Experiment has already been made private."
 
-protein_search_page_title = "Protein Search"
+protein_expression_page_title = "Protein Expression"
 protein_modification_sites_page_title = "Protein Modification Sites"
+protein_search_page_title = "Protein Search"
 
 share_experiment_page_title = "Share Experiment"
 
@@ -115,7 +116,3 @@ failure_reason_email_not_valid = "Email address is invalid"
 failure_reason_email_not_academic = "Email address must belong to .edu domain"
 failure_reason_password_too_short = "Password must be at least %d characters in length"
 failure_reason_email_address_not_on_record = "E-mail address does not match any user record"
-
-
-
-
