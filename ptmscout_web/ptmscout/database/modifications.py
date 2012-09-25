@@ -34,6 +34,7 @@ class Modification(Base):
     
     experiment = relationship("Experiment")
     phosphopeps = relationship("Phosphopep", secondary=MS_phosphopep)
+    data = relationship("ExperimentData")
 
 
 def getModificationsByProtein(pid, user):

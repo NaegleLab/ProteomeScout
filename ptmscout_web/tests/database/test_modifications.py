@@ -1,6 +1,7 @@
 from tests.DBTestCase import DBTestCase
-from ptmscout.database.protein import Protein, Species, getSpeciesByName
-from ptmscout.database.experiment import Experiment, getExperimentById
+from ptmscout.database.protein import Protein, getSpeciesByName
+from ptmscout.database.experiment import Experiment, getExperimentById,\
+    ExperimentData
 from ptmscout.database.modifications import Phosphopep, Modification,\
     getModificationsByProtein
 from ptmscout.database.user import User, getUserById
@@ -107,6 +108,31 @@ class TestModifications(DBTestCase):
         
         self.session.flush()
         
+        d1 = ExperimentData()
+        d1.type = "time(min)"
+        d1.MS_id = mod1.id
+        d1.priority = 1
+        d1.label = 0
+        d1.value = 10
+        
+        d2 = ExperimentData()
+        d2.type = "time(min)"
+        d2.MS_id = mod1.id
+        d2.priority = 2
+        d2.label = 1
+        d2.value = 20
+        
+        d3 = ExperimentData()
+        d3.type = "time(min)"
+        d3.MS_id = mod1.id
+        d3.priority = 3
+        d3.label = 10
+        d3.value = 30
+        
+        mod1.data.append(d1)
+        mod1.data.append(d2)
+        mod1.data.append(d3)
+        
         mod1.phosphopeps.append(p1)
         mod2.phosphopeps.append(p2)
         mod3.phosphopeps.append(p3)
@@ -119,3 +145,6 @@ class TestModifications(DBTestCase):
         
         phosphopep_ids = [ p.id for m in modifications for p in m.phosphopeps ]
         self.assertEqual([p1.id, p2.id], phosphopep_ids)
+        
+        self.assertEqual(['time(min)']*3, [d.type for d in modifications[0].data])
+        self.assertEqual([0,1,10], sorted([d.label for d in modifications[0].data]))

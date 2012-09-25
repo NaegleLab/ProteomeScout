@@ -2,6 +2,25 @@ from . import Base, DBSession
 from sqlalchemy import Column, Integer, VARCHAR, Text
 from ptmscout import config
 from ptmscout.database.permissions import Permission
+from sqlalchemy.dialects.mysql.base import TINYINT
+from sqlalchemy.schema import ForeignKey
+from sqlalchemy.types import Float
+from sqlalchemy.sql.expression import null
+
+class ExperimentData(Base):
+    __tablename__ = 'data'
+    id = Column(Integer(10), primary_key=True, autoincrement=True)
+    
+    type = Column(VARCHAR(20), default='time')
+    run = Column(VARCHAR(20), default='average')
+    label = Column(VARCHAR(45), default='')
+    
+    priority = Column(Integer(10), default=0)
+    value = Column(Float, default=null)
+    
+    NA = Column(TINYINT(1), default=0)
+    MS_id = Column(Integer(10), ForeignKey('MS.id'))
+
 
 class Experiment(Base):
     __tablename__ = 'experiment'
