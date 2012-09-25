@@ -3,6 +3,15 @@ from pyramid.view import view_config
 from ptmscout.database import protein, modifications
 from ptmscout.utils import webutils
 
+@view_config(route_name='protein_data', renderer='templates/protein_data.pt')
+def protein_experiment_data_view(request):
+    pid = int(request.matchdict['id'])
+    prot = protein.getProteinById(pid)
+    
+    return {'pageTitle': strings.protein_data_page_title,
+            'protein': prot}
+    
+
 @view_config(route_name='protein_GO', renderer='templates/protein_ontology.pt')
 def protein_gene_ontology_view(request):
     pid = int(request.matchdict['id'])

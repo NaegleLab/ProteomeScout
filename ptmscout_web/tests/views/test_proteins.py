@@ -1,7 +1,8 @@
 import unittest
 from pyramid.testing import DummyRequest
 from ptmscout.proteins import protein_modifications_view, protein_search_view,\
-    protein_expression_view, protein_gene_ontology_view
+    protein_expression_view, protein_gene_ontology_view,\
+    protein_experiment_data_view
 from ptmscout import strings
 from tests.views.mocking import createMockProtein, createUserForTest,\
     createMockModification, createMockExperiment, createMockPhosphopep,\
@@ -12,6 +13,21 @@ from ptmscout.database.protein import Species
 
 
 class TestProteinViews(unittest.TestCase):
+    
+    @patch('ptmscout.database.protein.getProteinById')
+    def test_protein_data_view_get_experiment_data_for_protein(self, patch_getProtein):
+        request = DummyRequest()
+
+        mock_prot = createMockProtein()
+        request.matchdict['id'] = str(mock_prot.id)
+        patch_getProtein.return_value = mock_prot
+        
+        result = protein_experiment_data_view(request)
+        
+        patch_getProtein.assert_called_with(mock_prot.id)
+        
+        self.assertEqual(strings.protein_data_page_title, result['pageTitle'])
+        self.assertEqual(mock_prot, result['protein'])
     
     @patch('ptmscout.database.protein.getProteinById')
     def test_protein_GO_view_should_get_gene_ontology_info_for_protein(self, patch_getProtein):

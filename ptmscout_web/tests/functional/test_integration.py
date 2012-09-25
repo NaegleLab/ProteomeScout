@@ -20,6 +20,7 @@ class InfoFunctionalTests(unittest.TestCase):
         self.ptmscoutapp.get('/terms', status=200)
         
     def test_integrated_protein_views(self):
+        self.ptmscoutapp.get('/proteins/35546/data')
         self.ptmscoutapp.get('/proteins/35546/modifications')
         self.ptmscoutapp.get('/proteins/35546/expression')
         self.ptmscoutapp.get('/proteins/35546/GO')

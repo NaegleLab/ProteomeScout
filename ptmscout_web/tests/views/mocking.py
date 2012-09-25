@@ -69,10 +69,10 @@ def createMockGO(go_type):
     if(go_type not in ['F','P','C']):
         raise ValueError("Bad GO type: " + str(go_type))
     
-    mock.aspect = type
+    mock.aspect = go_type
     
-    mock.GO = "GO:" + str(id)
-    mock.term = "Some term " + str(id)
+    mock.GO = "GO:" + str(gid)
+    mock.term = "Some term " + str(gid)
     mock.version = "1.2"
     
     return mock
