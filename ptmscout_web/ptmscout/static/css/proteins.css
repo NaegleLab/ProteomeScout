@@ -122,3 +122,19 @@ tr.odd {
 .errortext {
 	color:red;
 }
+
+.experiment_data .data {
+	border-top-style:solid;
+}
+
+.experiment_data {
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:10px;
+	margin-bottom:10px;
+	padding:10px;
+	width:40%;
+	border:solid;
+	border-width:1px;
+	border-color:black;
+}

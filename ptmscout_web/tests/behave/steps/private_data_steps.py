@@ -63,6 +63,11 @@ def user_lookup_ack1_homo_sapiens(context):
     context.active_user.login()
     context.result = context.ptmscoutapp.get('/proteins/35546/modifications', status=200)
 
+@when(u'other users access experimental data for proteins that have data in my dataset')
+def user_lookup_ack1_homo_sapiens_data(context):
+    context.active_user.login()
+    context.result = context.ptmscoutapp.get('/proteins/35546/data', status=200)
+
 @when(u'other users attempt to access my experiment directly')
 def user_lookup_experiment_26(context):
     context.active_user.login()

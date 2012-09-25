@@ -37,6 +37,11 @@ Feature: Private Data
 		When other users search for proteins in my dataset
 		Then my experimental data should not appear in the protein listing
 		
+	Scenario: Private data does not appear in protein experimental data
+		Given I have loaded a dataset and marked it private
+		When other users access experimental data for proteins that have data in my dataset
+		Then my experimental data should not appear in the protein summary
+		
 	Scenario: Private data does not appear on protein summary pages
 		Given I have loaded a dataset and marked it private
 		When other users lookup proteins that have data in my dataset

@@ -1,7 +1,7 @@
 from mock import Mock
 from ptmscout.utils import crypto
 from ptmscout.database.user import User
-from ptmscout.database.experiment import Experiment
+from ptmscout.database.experiment import Experiment, ExperimentData
 from ptmscout.database.permissions import Permission
 from ptmscout.database.protein import Protein, Species, GeneOntology
 import random
@@ -31,7 +31,7 @@ def createMockExperiment(eid, public, parent_id=0):
     mock.id = eid
     mock.public = public
     mock.parent_id = parent_id
-    mock.name = "Experiment Name"
+    mock.name = "Experiment Name" + str(eid)
     return mock
 
 def createMockPermission(user, experiment, access_level='view'):
@@ -85,6 +85,7 @@ def createMockModification(pid, expid):
     mock.experiment_id = expid
     mock.phosphopep = "ABCDEF"
     mock.phosphopeps = []
+    mock.data = []
     
     return mock
 
@@ -105,6 +106,31 @@ def createMockPhosphopep(pid):
     mock.getPeptide.return_value = mock.pep_aligned
     
     return mock
+
+def createMockData(num, run, mod_id):
+    rval = []
+    
+    labels = [0,1,5,10,20,50,100,200,500]
+    
+    for i in xrange(0, num):
+        mock = Mock(spec=ExperimentData)
+        
+        mock.id = random.randint(0, 100000)
+        
+        mock.type = 'time'
+        mock.run = run
+        mock.label = labels[i] 
+        
+        mock.priority = i+1
+        mock.value = random.random();
+        
+        mock.NA = 0
+        mock.MS_id = mod_id
+        
+        rval.append(mock)
+    
+    random.shuffle(rval)
+    return rval
 
 def createMockProbe():
     mock = Mock(spec=ExpressionProbeset)
