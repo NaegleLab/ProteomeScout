@@ -14,7 +14,7 @@
 				<div class="data" tal:repeat="data experiment['data']">
 					<div class="run" tal:content="data['run']"></div>
 					<div class="phosphopeps" tal:content="','.join(data['phosphopeps'])"></div>
-					<div tal:repeat="row data['values']" tal:content="','.join(row)"></div>
+					<div class="datapoint" tal:repeat="row data['values']" tal:content="','.join(row)"></div>
 				</div>
 				
 				<div class="chart"></div>
