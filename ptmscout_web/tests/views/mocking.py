@@ -3,7 +3,7 @@ from ptmscout.utils import crypto
 from ptmscout.database.user import User
 from ptmscout.database.experiment import Experiment
 from ptmscout.database.permissions import Permission
-from ptmscout.database.protein import Protein, Species
+from ptmscout.database.protein import Protein, Species, GeneOntology
 import random
 from ptmscout.database.modifications import Modification, Phosphopep
 from ptmscout.database.gene_expression import ExpressionProbeset,\
@@ -47,8 +47,8 @@ def createMockPermission(user, experiment, access_level='view'):
 def createMockProtein():
     mock = Mock(spec=Protein)
     
-    id = random.randint(0,100000)
-    mock.id = id
+    pid = random.randint(0,100000)
+    mock.id = pid
     mock.name = "prot_" + str(id)
     mock.acc_gene = "PR" + str(id)
     mock.date="12-1986"
@@ -57,6 +57,24 @@ def createMockProtein():
     mock.species.id = 46
     mock.species.name = "homo sapiens"
     mock.sequence="ABCDEFGHIJKLMNOP" 
+    mock.GO_terms = []
+    return mock
+
+def createMockGO(go_type):
+    mock = Mock(spec=GeneOntology)
+    
+    gid = random.randint(0,100000)
+    mock.id = gid
+    
+    if(go_type not in ['F','P','C']):
+        raise ValueError("Bad GO type: " + str(go_type))
+    
+    mock.aspect = type
+    
+    mock.GO = "GO:" + str(id)
+    mock.term = "Some term " + str(id)
+    mock.version = "1.2"
+    
     return mock
     
 def createMockModification(pid, expid):

@@ -1,3 +1,15 @@
+.GO_list {
+	margin-top:15px;
+}
+
+.GO_id {
+	
+}
+
+.GO_term {
+	margin-left:20px;
+}
+
 .expression_form {
 	background-color: #ccccff;
 	border: 1px gray solid;

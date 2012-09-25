@@ -1,17 +1,45 @@
 import unittest
 from pyramid.testing import DummyRequest
 from ptmscout.proteins import protein_modifications_view, protein_search_view,\
-    protein_expression_view
+    protein_expression_view, protein_gene_ontology_view
 from ptmscout import strings
 from tests.views.mocking import createMockProtein, createUserForTest,\
     createMockModification, createMockExperiment, createMockPhosphopep,\
-    createMockProbe, createMockExpSample
+    createMockProbe, createMockExpSample, createMockGO
 from mock import patch
 from ptmscout.database.protein import Species
 
 
 
 class TestProteinViews(unittest.TestCase):
+    
+    @patch('ptmscout.database.protein.getProteinById')
+    def test_protein_GO_view_should_get_gene_ontology_info_for_protein(self, patch_getProtein):
+        request = DummyRequest()
+
+        mock_prot = createMockProtein()
+        request.matchdict['id'] = str(mock_prot.id)
+        patch_getProtein.return_value = mock_prot
+        
+        mock_prot.GO_terms.append(createMockGO('P'))
+        mock_prot.GO_terms.append(createMockGO('C'))
+        mock_prot.GO_terms.append(createMockGO('P'))
+        mock_prot.GO_terms.append(createMockGO('F'))
+        mock_prot.GO_terms.append(createMockGO('C'))
+        mock_prot.GO_terms.append(createMockGO('P'))
+        mock_prot.GO_terms.append(createMockGO('C'))
+        mock_prot.GO_terms.append(createMockGO('F'))
+        
+        result = protein_gene_ontology_view(request)
+        
+        patch_getProtein.assert_called_with(mock_prot.id)
+        
+        self.assertEqual(strings.protein_ontology_page_title, result['pageTitle'])
+        self.assertEqual(mock_prot, result['protein'])
+        self.assertEqual(2, len(result['F_terms']))
+        self.assertEqual(3, len(result['P_terms']))
+        self.assertEqual(3, len(result['C_terms']))
+        
     
     @patch('ptmscout.database.protein.getProteinById')
     def test_protein_expression_view_should_get_expression_data_for_protein_from_request_probeset(self, patch_getProtein):

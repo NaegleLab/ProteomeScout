@@ -31,6 +31,7 @@ def add_views(config):
     config.add_route('experiment','/experiments/{id}')
     config.add_route('upload', '/upload')
     
+    config.add_route('protein_GO', '/proteins/{id}/GO')
     config.add_route('protein_expression', '/proteins/{id}/expression')
     config.add_route('protein_mod_sites', '/proteins/{id}/modifications')
     config.add_route('protein_main', '/proteins/{id}')
