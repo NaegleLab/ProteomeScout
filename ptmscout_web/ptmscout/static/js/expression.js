@@ -48,7 +48,7 @@ function maximumPt(selected_data) {
 
 function split(array, peices) {
 	size = array.length / peices;
-	
+					
 	if(size * peices < array.length) size += 1;
 	
 	np = [];
@@ -64,7 +64,7 @@ function split(array, peices) {
 	}
 	
 	if(np.length > 0){
-		rval.push(np);
+		rval.push(np);																																																																										
 	}
 	
 	return rval;
@@ -100,7 +100,7 @@ function generateExpressionChart(data, maxLevel) {
 	
 	var x = d3.scale.linear()
 		.domain([0, maxLevel])
-		.range([200, width]);
+		.range([150, width-50]);
 	
 	var y = d3.scale.ordinal()
 	    .domain(data)
@@ -119,7 +119,7 @@ function generateExpressionChart(data, maxLevel) {
 		.data(data)
 	  .enter().append("text")
 	    .attr("class", "expression_float")
-	    .attr("x", x(0) + 10)
+	    .attr("x", function(d) { return x(d[0]) + 10; })
 	    .attr("y", function(d) { return y(d) + y.rangeBand() / 2;})
 	    .attr("dx", -3) // padding-right
 	    .attr("dy", ".35em") // vertical-align: middle
@@ -135,4 +135,11 @@ function generateExpressionChart(data, maxLevel) {
 	     .attr("dy", ".35em") // vertical-align: middle
 	     .attr("text-anchor", "end") // text-align: right
 	     .text(function(d) { return d[1]; });
+	
+	chart.append("line")
+		 .attr("x1", x(0))
+		 .attr("x2", x(0))
+	     .attr("y1", 0)
+	     .attr("y2", height)
+	     .style("stroke", "#000");
 }
