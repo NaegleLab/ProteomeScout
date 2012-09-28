@@ -131,7 +131,7 @@ tr.odd {
 	margin-right:auto;
 	margin-top:50px;
 	margin-bottom:50px;
-	width:40%;
+	width:750px;
 }
 
 .experiment_data .run {
@@ -139,6 +139,7 @@ tr.odd {
 }
 
 .experiment_data {
+	text-align:center;
 }
 
 .experiment_title {
@@ -149,7 +150,6 @@ tr.odd {
 .chart {
 	margin-left:auto;
 	margin-right:auto;
-	width:720px;
 }
 
 .chart svg {

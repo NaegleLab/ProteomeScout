@@ -34,7 +34,7 @@ function addLegend(graph, legendEntries, xpos, ypos, width, marker) {
 		.attr("class", "bg")
 		.attr("x", 0)
 		.attr("y", 0)
-		.attr("width", width)
+		.attr("width", width - 5)
 		.attr("height", height);
 	
 	legend.selectAll("text.entry")
