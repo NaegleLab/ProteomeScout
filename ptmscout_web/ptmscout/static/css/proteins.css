@@ -20,7 +20,6 @@
 
 .expression_data {
 	display:none;
-
 }
 
 .expression_form_entry {
@@ -123,18 +122,97 @@ tr.odd {
 	color:red;
 }
 
-.experiment_data .data {
-	border-top-style:solid;
+.experiment {
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:50px;
+	margin-bottom:50px;
+	width:40%;
+}
+
+.experiment_data .run {
+	display:none; 
 }
 
 .experiment_data {
+}
+
+.experiment_title {
+	padding:10px;
+	border:solid 1px black;
+}
+
+.chart {
 	margin-left:auto;
 	margin-right:auto;
-	margin-top:10px;
-	margin-bottom:10px;
-	padding:10px;
-	width:40%;
-	border:solid;
-	border-width:1px;
-	border-color:black;
+	width:720px;
+}
+
+.chart svg {
+/*	border:solid 1px grey; */
+}
+
+.chart .series {
+	fill:none;
+	stroke-width:2px;
+	opacity:0.8;
+}
+
+.chart .point {
+	fill:none;
+	stroke-width:1px;
+	stroke:black;
+}
+
+.chart .tick {
+	font-size:9pt;
+}
+
+.chart .tick line {
+	fill:black;
+	stroke:black;
+}
+
+.chart .axis {
+	fill:black;
+	stroke:black;
+	stroke-width:1px;
+}
+
+.chart .title {
+	fill:black;
+	font-size:14pt;
+	text-anchor:middle;
+}
+
+.chart .label {
+	fill:black;
+	font-size:12pt;
+	text-anchor:middle;
+}
+
+.chart .legend .bg {
+	fill:white;
+	stroke:black;
+	stroke-width:1px;
+}
+
+.chart .legend .entry {
+	fill:black;
+	font-size:9pt;
+	text-anchor:left;
+}
+
+.chart .legend rect {
+	stroke:lightgray;
+	stroke-width:1px;	
+}
+
+.chart .errorbar line {
+	stroke-width:1px;
+}
+
+.chart .bar {
+	stroke:lightgray;
+	stroke-width:1px;
 }
