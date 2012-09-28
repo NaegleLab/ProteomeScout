@@ -37,6 +37,7 @@
 					</tr>
 				</table>			
 			</div>
+			<div class="errortext" tal:condition="len(expression_data) == 0">There is no expression data for this species and/or protein</div>
 			<div class="expression_data">
 				<div tal:repeat="data expression_data" tal:content="'%s,%s,%s,%s' % (data['probeset'],data['collection'],data['tissue'],data['value'])"></div>			
 			</div>			
