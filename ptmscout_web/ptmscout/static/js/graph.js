@@ -56,7 +56,17 @@ function addLegend(graph, legendEntries, xpos, ypos, width, marker) {
 				.attr("y1", function(d,i) {return (i+1) * h - h/2; })
 				.attr("y2", function(d,i) {return (i+1) * h - h/2; })
 				.attr("stroke", function(d){ return d.color });
+		
+		legend.selectAll("circle.marker")
+				.data(legendEntries)
+			.enter().append("circle")
+				.attr("class", "marker")
+				.attr("r", 2)
+				.attr("cx", 15)
+				.attr("cy", function(d,i) {return (i+1) * h - h/2; })
+				.style("stroke", function(d,i) { return d.color } );
 	}
+	
 	if(marker == "square"){
 		legend.selectAll("rect.marker")
 			.data(legendEntries)
@@ -80,9 +90,10 @@ function addTimeSeries(graph, name, pts, xaxis, yaxis, color) {
 		.data(pts)
 	.enter().append('circle')
 		.attr("class", "point")
-		.attr("r", 3)
+		.attr("r", 2)
 		.attr("cx", function(d) { return xaxis( parseFloat(d.x) ) })
-		.attr("cy", function(d) { return yaxis( parseFloat(d.y) ) });
+		.attr("cy", function(d) { return yaxis( parseFloat(d.y) ) })
+		.style("stroke", color);
 	
 	graph.selectAll('path.'+name)
 		.data([pts])
@@ -92,22 +103,44 @@ function addTimeSeries(graph, name, pts, xaxis, yaxis, color) {
     	.style("stroke", color);
 }
 
-function addBarSeries(graph, name, pts, xaxis, yaxis, color) {
+function addBarSeries(graph, name, pts, xaxis, yaxis, color, i, num) {
+	if(typeof(i) === 'undefined')
+		i = 1;
+	if(typeof(num) === 'undefined')
+		num = 1;
+	
+	 
+	
 	xsize = Array.max(xaxis.range()) - Array.min(xaxis.range());
 	barw = xsize / (2 * xaxis.domain().length) - 5;
+	
+	offset = i * 2 * barw / num;
 	
 	graph.selectAll('rect.'+name)
 			.data(pts)
 		.enter().append('rect')
 			.attr("class", "bar")
-			.attr("x", function(d) { return xaxis(d.x) - barw })
+			.attr("x", function(d) { return xaxis(d.x) - barw + offset })
 			.attr("y", function(d) { return yaxis(d.y) })
-			.attr("width", function(d) { return 2 * barw })
+			.attr("width", function(d) { return 2 * (barw / num) })
 			.attr("height", function(d) { return yaxis(0) - yaxis(d.y) })
 			.style("fill", color);
 }
 
-function addErrorBars(graph, name, errorbars, xaxis, yaxis, color) {
+function addErrorBars(graph, name, errorbars, xaxis, yaxis, color, i, num) {
+	if(typeof(i) === 'undefined')
+		i = 0;
+	if(typeof(num) === 'undefined')
+		num = 1;
+	
+	offset = 0;
+	
+	if(num > 1){
+		xsize = Array.max(xaxis.range()) - Array.min(xaxis.range());
+		barw = xsize / (2 * xaxis.domain().length) - 5;
+		offset = i * 2 * barw / num + barw / num - barw;
+	}
+	
 	ebar = 
 		graph.selectAll('g.'+name)
 				.data(errorbars)
@@ -116,29 +149,32 @@ function addErrorBars(graph, name, errorbars, xaxis, yaxis, color) {
 				.attr("transform", function(d) { return "translate({0},{1})".format(xaxis( d.x ), yaxis( d.y )) });
 	
 	ebar.append("line")
-		.attr("x1", 0)
-		.attr("x2", 0)
+		.attr("class", "bar")
+		.attr("x1", offset)
+		.attr("x2", offset)
 		.attr("y1", function(d){ return yaxis(d.y + d.s) - yaxis(d.y) })
 		.attr("y2", function(d){ return yaxis(d.y - d.s) - yaxis(d.y) })
 		.style("stroke", color);
 		
 	ebar.append("line")
-		.attr("x1", -5)
-		.attr("x2", 5)
+		.attr("class", "end")
+		.attr("x1", -5 + offset)
+		.attr("x2", 5 + offset)
 		.attr("y1", function(d){ return yaxis(d.y + d.s) - yaxis(d.y) })
 		.attr("y2", function(d){ return yaxis(d.y + d.s) - yaxis(d.y) })
 		.style("stroke", color);
 	
 	ebar.append("line")
-		.attr("x1", -5)
-		.attr("x2", 5)
+		.attr("class", "end")
+		.attr("x1", -5 + offset)
+		.attr("x2", 5 + offset)
 		.attr("y1", function(d){ return yaxis(d.y - d.s) - yaxis(d.y) })
 		.attr("y2", function(d){ return yaxis(d.y - d.s) - yaxis(d.y) })
 		.style("stroke", color);
 	
 }
 
-function addAxes(graph, xlabels, ylabels, xaxis, yaxis) {
+function addAxes(graph, title, xlabels, ylabels, xaxis, yaxis, rotate) {
 	
 	xrange = xaxis.range()
 	yrange = yaxis.range()
@@ -190,23 +226,32 @@ function addAxes(graph, xlabels, ylabels, xaxis, yaxis) {
 		.attr('x1', 0)
 		.attr('x2', 0);
 	
-	ticks.append('svg:text')
-		.text(function(d) { return d; })
-		.attr('text-anchor', 'end')
-		.attr('dy', 12)
-		.attr('dx', 4);
-}
-
-function addAxisTitle(graph, title, xaxis, yaxis) {
-	xrange = xaxis.range()
+	titleoffset = 30
+	if(rotate){
+		ticks.append('svg:g')
+			.attr("transform", "rotate(90)")
+			.append('svg:text')
+				.text(function(d) { return d; })
+				.attr('text-anchor', 'start')
+				.attr('dy', 4)
+				.attr('dx', 4);
+		
+		titleoffset = 60;
+	}
+	else{
+		ticks.append('svg:text')
+			.text(function(d) { return d; })
+			.attr('text-anchor', 'end')
+			.attr('dy', 12)
+			.attr('dx', 4);
+	}
 	
 	xm = ( Array.max(xrange) + Array.min(xrange) ) / 2
-	
 	graph.append('svg:text')
 		.text(title)
 		.attr('class', "label")
 		.attr('x', xm)
-		.attr('y', yaxis(0) + 25 )
+		.attr('y', yaxis(0) + titleoffset )
 		.attr('dy', 6);
 }
 
@@ -216,8 +261,7 @@ function createGraph(parent, title, w, h, margin) {
 			.append("span")
 			.append("svg")
 			.attr("width", w)
-			.attr("height", h)
-			.attr("margin", margin);
+			.attr("height", h);
 
 	graph.append('svg:text')
 		.text(title)

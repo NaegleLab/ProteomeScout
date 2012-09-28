@@ -11,7 +11,11 @@ function processDataPoint(dp, points, stddev) {
 	y = columns[1];
 	type = columns[2];
 	
-	if(type == "stddev"){
+	if(y=="None"){
+		return;
+	}
+	
+	if(type.indexOf("stddev")>=0){
 		ypos = -1;
 		
 		for(j = 0; j < points.length; j++) {
@@ -128,9 +132,7 @@ function createTimeSeriesGraph(experiment_data, run) {
 		legendEntries.push({'name':name, 'color':colors(i)});
 	}
 	
-	addAxes(graph, Array.unique(xticks), yaxis.ticks(7), xaxis, yaxis);
-	addAxisTitle(graph, run.axis, xaxis, yaxis);
-	
+	addAxes(graph, run.axis, Array.unique(xticks), yaxis.ticks(7), xaxis, yaxis, false);
 	addLegend(graph, legendEntries, w-margin-lwidth, margin, lwidth, "line");
 }
 
@@ -145,9 +147,15 @@ function getArray(run, property) {
 }
 
 function createBarGraph(experiment_data, run) {
-	var w = 350;
-	var h = 400;
+	
+	var w = 250 + 100 * run.series.length;
+	
+	if(w > 720)
+		w = 720;
+	
+	var h = 440;
 	var margin = 40;
+	var bmargin = 80;
 	var ceiling = 1.15;
 	var lwidth = 100;
 	var colors = d3.scale.category20();
@@ -162,7 +170,7 @@ function createBarGraph(experiment_data, run) {
 	ymax = getMaxValue(run, "y") * ceiling;
 	
 	xaxis = d3.scale.ordinal().domain(xvals).rangeBands([margin, w-margin]);
-	yaxis = d3.scale.linear().domain([0, ymax]).range([h-margin, margin]);
+	yaxis = d3.scale.linear().domain([0, ymax]).range([h-bmargin, margin]);
 	
 	legendEntries = [];
 	
@@ -183,14 +191,12 @@ function createBarGraph(experiment_data, run) {
 		}
 		name = run.series[i].peps
 		
-		addBarSeries(graph, name, pts, xaxis, yaxis, colors(i));
-		addErrorBars(graph, name, stddev, xaxis, yaxis, "#000");
+		addBarSeries(graph, name, pts, xaxis, yaxis, colors(i), i, run.series.length);
+		addErrorBars(graph, name, stddev, xaxis, yaxis, "#000", i, run.series.length);
 		
 		legendEntries.push({'name':name, 'color':colors(i)});
 	}
 	
-	addAxes(graph, xvals, yaxis.ticks(7), xaxis, yaxis);
-	addAxisTitle(graph, run.axis, xaxis, yaxis);
-	
+	addAxes(graph, run.axis, xvals, yaxis.ticks(7), xaxis, yaxis, true);
 	addLegend(graph, legendEntries, w-margin-lwidth, margin, lwidth, "square");
 }

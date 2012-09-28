@@ -135,7 +135,7 @@ tr.odd {
 }
 
 .experiment_data .run {
-	display:none; 
+	display:none;
 }
 
 .experiment_data {
@@ -165,7 +165,6 @@ tr.odd {
 .chart .point {
 	fill:none;
 	stroke-width:1px;
-	stroke:black;
 }
 
 .chart .tick {
@@ -196,7 +195,7 @@ tr.odd {
 }
 
 .chart .legend .bg {
-	fill:white;
+	fill:none;
 	stroke:black;
 	stroke-width:1px;
 }
@@ -207,13 +206,18 @@ tr.odd {
 	text-anchor:left;
 }
 
+.chart .legend circle {
+	fill:none;
+	stroke-width:1px;
+}
+
 .chart .legend rect {
 	stroke:lightgray;
 	stroke-width:1px;	
 }
 
 .chart .errorbar line {
-	stroke-width:1px;
+	stroke-width:2px;
 }
 
 .chart .bar {
