@@ -1,18 +1,57 @@
-import unittest
-from pyramid.testing import DummyRequest
-from ptmscout.proteins import protein_modifications_view, protein_search_view,\
-    protein_expression_view, protein_gene_ontology_view,\
-    protein_experiment_data_view
-from ptmscout import strings
-from tests.views.mocking import createMockProtein, createUserForTest,\
-    createMockModification, createMockExperiment, createMockPhosphopep,\
-    createMockProbe, createMockExpSample, createMockGO, createMockData
 from mock import patch
+from ptmscout import strings
 from ptmscout.database.protein import Species
+from ptmscout.proteins import protein_modifications_view, protein_search_view, \
+    protein_expression_view, protein_gene_ontology_view, \
+    protein_experiment_data_view
+from pyramid.testing import DummyRequest
+from tests.views.mocking import createMockProtein, createUserForTest, \
+    createMockModification, createMockExperiment, createMockPhosphopep, \
+    createMockProbe, createMockExpSample, createMockGO, createMockData
+import unittest
 
 
 
 class TestProteinViews(unittest.TestCase):
+    
+    @patch('ptmscout.database.modifications.getModificationsByProtein')
+    @patch('ptmscout.database.protein.getProteinById')
+    def test_protein_data_view_should_not_include_experiments_without_data(self, patch_getProtein, patch_getMods):
+        request = DummyRequest()
+
+        mock_prot = createMockProtein()
+        request.matchdict['id'] = str(mock_prot.id)
+        patch_getProtein.return_value = mock_prot
+        
+        mock_user = createUserForTest("username", "email", "password", 1)
+        request.user = mock_user
+        
+        mock_mod = createMockModification(mock_prot.id, 24)
+        exp = createMockExperiment(2, 0, 0)
+        mock_mod.experiment = exp
+        
+        mock_mod2 = createMockModification(mock_prot.id, 25)
+        exp2 = createMockExperiment(3, 0, 0)
+        mock_mod2.experiment = exp2
+        
+        pep1 = createMockPhosphopep(mock_prot.id)
+        pep2 = createMockPhosphopep(mock_prot.id)
+        pep3 = createMockPhosphopep(mock_prot.id)
+        mock_mod.phosphopeps.append(pep1)
+        mock_mod2.phosphopeps.append(pep2)
+        mock_mod2.phosphopeps.append(pep3)
+
+        mod_list = [mock_mod, mock_mod2]
+        patch_getMods.return_value = mod_list 
+        
+        result = protein_experiment_data_view(request)
+        
+        patch_getProtein.assert_called_with(mock_prot.id)
+        
+        self.assertEqual(strings.protein_data_page_title, result['pageTitle'])
+        self.assertEqual(mock_prot, result['protein'])
+        
+        self.assertEqual([], result['experiment_data'])
     
     @patch('ptmscout.database.modifications.getModificationsByProtein')
     @patch('ptmscout.database.protein.getProteinById')

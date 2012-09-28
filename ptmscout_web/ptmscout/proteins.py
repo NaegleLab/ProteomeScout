@@ -37,7 +37,7 @@ def protein_experiment_data_view(request):
         ms_data.extend(sorted_data)
         experiment_data[exp_key] = ms_data
     
-    output_data = [ {'id': eid, 'title':name, 'data':experiment_data[(eid,name)]} for (eid, name) in experiment_data ]
+    output_data = [ {'id': eid, 'title':name, 'data':experiment_data[(eid,name)]} for (eid, name) in experiment_data if len(experiment_data[(eid,name)]) > 0]
     
     return {'pageTitle': strings.protein_data_page_title,
             'protein': prot,
