@@ -1,6 +1,6 @@
 <div metal:define-macro="protein_list">
+	<div tal:condition="submitted" class="result_count">${len(proteins)} results</div>
 	<div tal:condition="len(proteins) > 0" class="protein_list">
-		<div class="result_count">${len(proteins)} results</div>
 		<table>
 			<thead>
 				<tr align="left" class="header">
