@@ -29,6 +29,7 @@ def add_views(config):
     config.add_route('redirect_to_experiments','/')
     config.add_route('experiments','/experiments')
     config.add_route('experiment','/experiments/{id}')
+    config.add_route('experiment_browse','/experiments/{id}/browse')
     config.add_route('upload', '/upload')
     
     config.add_route('protein_data', '/proteins/{id}/data')
