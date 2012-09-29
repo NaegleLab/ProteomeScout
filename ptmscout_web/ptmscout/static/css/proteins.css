@@ -81,7 +81,7 @@
 	margin-bottom:20px;
 }
 
-.search_results {
+.protein_list {
     margin-top: 1em;
     margin-bottom: 1em;
 
@@ -96,7 +96,7 @@
 	width:200px;
 }
 
-.search_results table {
+.protein_list table {
 	border-collapse: collapse;
 	width:95%;
 	margin-left:auto;
@@ -106,11 +106,11 @@
 	border-color:black;	
 }
 
-.search_results td{
+.protein_list td{
 	padding-bottom:10px;
 }
 
-.search_results th{
+.protein_list th{
 	background:#CCC;
 }
 

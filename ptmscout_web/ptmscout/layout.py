@@ -13,6 +13,7 @@ def add_path_definitions(event):
     event['layout'] = site_layout()
     event['experiment_header'] = experiment_template()
     event['protein_header'] = protein_template()
+    event['protein_list'] = protein_list_template()
     event['redirect'] = None
 
 def site_layout():
@@ -28,4 +29,9 @@ def experiment_template():
 def protein_template():
     renderer = get_renderer("templates/protein_header.pt")
     legend = renderer.implementation().macros['protein_header']
+    return legend
+
+def protein_list_template():
+    renderer = get_renderer("templates/protein_list.pt")
+    legend = renderer.implementation().macros['protein_list']
     return legend

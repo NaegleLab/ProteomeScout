@@ -33,35 +33,8 @@
 				<input type="submit" value="Search">
 			</fieldset>
 		</form>
-
-		<div tal:condition="len(proteins) > 0" class="search_results">
-			<div class="result_count">${len(proteins)} results</div>
-			<table>
-				<thead>
-					<tr align="left" class="header">
-						<th>Protein</th>
-						<th>Species</th>
-						<th>Site</th>
-						<th>Aligned Sequence</th>
-						<th>Predictions</th>
-					</tr>
-				</thead>
-
-				<tbody>
-					<tr valign="top" tal:repeat="(r, protein) enumerate(proteins)" tal:attributes="class 'row ' + 'even' if r % 2 == 0 else 'odd';" >
-						<td><a tal:attributes="href request.application_url + '/proteins/' + str(protein.id)" tal:content="protein.acc_gene"></a></td>
-						<td tal:content="protein.species.name"></td>
-						<td>
-							<div tal:repeat="phosphopep modifications[protein.id]" class="phosphopep_data" tal:content="phosphopep['site']"></div>
-						</td>
-						<td>
-							<div tal:repeat="phosphopep modifications[protein.id]" class="phosphopep_data" tal:content="phosphopep['peptide']"></div>
-						</td>
-						<td>---</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+		
+		<div metal:use-macro="protein_list"></div>
 	</div>
 </div>
 	
