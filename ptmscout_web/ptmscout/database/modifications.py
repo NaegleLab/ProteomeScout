@@ -2,6 +2,7 @@ from ptmscout.database import Base, DBSession
 from sqlalchemy.schema import Column, ForeignKey, Table
 from sqlalchemy.types import Integer, VARCHAR, CHAR
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql.expression import and_
 
 MS_phosphopep = Table('MS_phosphopep', Base.metadata,
                       Column('id', Integer(10), primary_key=True),
@@ -33,6 +34,8 @@ class Modification(Base):
     phosphopep = Column(VARCHAR(150))
     
     experiment = relationship("Experiment")
+    protein = relationship("Protein")
+    
     phosphopeps = relationship("Phosphopep", secondary=MS_phosphopep)
     data = relationship("ExperimentData")
 
@@ -40,4 +43,10 @@ class Modification(Base):
 def getModificationsByProtein(pid, user):
     modifications = DBSession.query(Modification).filter_by(protein_id=pid).all()
     return [ mod for mod in modifications if mod.experiment.checkPermissions(user) ]
-    
+
+def getModificationsByExperiment(eid, user, pids = None):
+    if(pids != None):
+        modifications = DBSession.query(Modification).filter(and_(Modification.experiment_id==eid, Modification.protein_id.in_(pids))).all()
+    else:
+        modifications = DBSession.query(Modification).filter_by(experiment_id=eid).all()
+    return [ mod for mod in modifications if mod.experiment.checkPermissions(user) ]
