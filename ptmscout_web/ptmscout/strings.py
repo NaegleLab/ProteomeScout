@@ -24,6 +24,7 @@ account_management_page_title = "Account Management"
 
 experiments_page_title = "Home - Experiments"
 experiment_page_title = "Experiment: %s"
+experiment_browse_page_title = "Browsing Experiment: %s"
 
 forgotten_password_page_title = "Forgotten Password Retrieval"
 forgotten_password_success_header = "Password Reset Success"
