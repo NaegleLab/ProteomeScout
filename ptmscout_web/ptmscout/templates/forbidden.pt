@@ -5,7 +5,7 @@
     <div metal:fill-slot="content">
     	<div class = "infobox">
     		<div class = "forbiddenheader">Forbidden</div>
-	    	<p class = "infotext">You do not have permission to access this resource. Please <a href = "${request.application_url}/login">log in</a></p>
+	    	<p class = "infotext">You do not have permission to access this resource. <span tal:condition="request.user == None">Please try <a href = "${request.application_url}/login">logging in</a></span></p>
     	</div>
     </div>
 </div>
