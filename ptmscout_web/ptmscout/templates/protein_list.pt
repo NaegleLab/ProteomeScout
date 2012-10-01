@@ -8,7 +8,7 @@
 					<th>Species</th>
 					<th>Site</th>
 					<th>Aligned Sequence</th>
-					<th>Predictions</th>
+					<th tal:condition="include_predictions">Predictions</th>
 				</tr>
 			</thead>
 
@@ -22,7 +22,15 @@
 					<td>
 						<div tal:repeat="phosphopep modifications[protein.id]" class="phosphopep_data" tal:content="phosphopep['peptide']"></div>
 					</td>
-					<td>---</td>
+					<td tal:condition="include_predictions" class="predictions">
+						<tal:empty tal:repeat="source scansites[protein.id]">
+						<div class="source" tal:content="source"></div>
+						<div tal:repeat="prediction scansites[protein.id][source]">
+							<span class="name" tal:content="prediction[0]"></span>
+							<span class="value" tal:content="'%.2f' % (prediction[1])"></span>
+						</div>
+						</tal:empty>						
+					</td>
 				</tr>
 			</tbody>
 		</table>

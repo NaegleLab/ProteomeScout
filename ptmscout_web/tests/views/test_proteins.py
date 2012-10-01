@@ -221,6 +221,7 @@ class TestProteinViews(unittest.TestCase):
         self.assertEqual(['mus musculus', 'homo sapiens'], result['species_list'])
         self.assertEqual(None, result['selected_species'])
         self.assertEqual([], result['proteins'])
+        self.assertEqual(False, result['include_predictions'])
         self.assertEqual({}, result['modifications'])
         self.assertEqual(False, result['submitted'])
         
@@ -245,6 +246,7 @@ class TestProteinViews(unittest.TestCase):
         self.assertEqual("2", result['stringency'])
         self.assertEqual("homo sapiens", result['selected_species'])
         self.assertEqual([], result['proteins'])
+        self.assertEqual(False, result['include_predictions'])
         self.assertEqual({}, result['modifications'])
         self.assertEqual(True, result['submitted'])
     
@@ -297,5 +299,6 @@ class TestProteinViews(unittest.TestCase):
         parsed_peps = [{'site':pep.getName(), 'peptide':pep.getPeptide()} for pep in sorted_peps]
         
         self.assertEqual(protein_list, result['proteins'])
+        self.assertEqual(False, result['include_predictions'])
         self.assertEqual({p1.id: parsed_peps}, result['modifications'])
         self.assertEqual(True, result['submitted'])

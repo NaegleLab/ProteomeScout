@@ -41,3 +41,19 @@ tr.even {
 .restricted {
 	font-weight:bold;
 }
+
+.predictions .source {
+	text-align:left;
+	font-weight:bold;
+}
+
+.predictions .name {
+	float:left;
+	width:200px;
+	margin-left:10px;
+}
+
+.predictions .prediction_table .value{
+	width:50px;
+	text-align:right;
+}

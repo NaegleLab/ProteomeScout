@@ -1,6 +1,6 @@
 from ptmscout.database import Base, DBSession
-from sqlalchemy.schema import Column, ForeignKey, Table
-from sqlalchemy.types import Integer, VARCHAR, CHAR
+from sqlalchemy.schema import Column, ForeignKey, Table, UniqueConstraint
+from sqlalchemy.types import Integer, VARCHAR, CHAR, Float
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import and_
 
@@ -9,6 +9,15 @@ MS_phosphopep = Table('MS_phosphopep', Base.metadata,
                       Column('MS_id', Integer(10), ForeignKey('MS.id')),
                       Column('phosphopep_id', Integer(10), ForeignKey('phosphopep.id')))
 
+class ScansitePrediction(Base):
+    __tablename__ = 'phosphopep_prediction'
+    id = Column(Integer(10), autoincrement=True, primary_key=True)
+    source = Column(VARCHAR(40), default='scansite')
+    value = Column(VARCHAR(20))
+    score = Column(Float)
+    phosphopep_id = Column(Integer(10), ForeignKey('phosphopep.id'))
+    
+    UniqueConstraint('source', 'value', 'phosphopep_id', name="UNIQUE_pepId_source_value")
 
 class Phosphopep(Base):
     __tablename__ = 'phosphopep'
@@ -19,6 +28,8 @@ class Phosphopep(Base):
     site_type = Column(CHAR(1))
     pfam_site = Column(VARCHAR(45))
     protein_id = Column(Integer(10), ForeignKey('protein.id'))
+    
+    predictions = relationship(ScansitePrediction)
     
     def getPeptide(self):
         return self.pep_aligned

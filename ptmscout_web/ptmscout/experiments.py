@@ -36,6 +36,7 @@ def browse_experiment(request):
     
     proteins = []
     mods = {}
+    predictions = {}
     
     if(not submitted or len(acc_search) > 0):
         
@@ -60,8 +61,27 @@ def browse_experiment(request):
         proteins = sorted( [ prots[pid] for pid in prots ], key=lambda prot: prot.acc_gene )
         
         for pid in mods:
+            predictions[pid] = []
+            if len(mods[pid])==1:
+                for pep in mods[pid]:
+                    predictions[pid].extend(pep.predictions)
+            
             mods[pid] = [ {'site':pep.getName(), 'peptide':pep.getPeptide()} for pep in mods[pid] ]
             mods[pid] = sorted( mods[pid], key=lambda pep: pep['site'] )
+            
+        for pid in predictions:
+            pid_predictions = predictions[pid]
+            predictions[pid] = {}
+            
+            for scansite in pid_predictions:
+                predictions[pid][scansite.source] = []
+                
+            for scansite in pid_predictions:
+                predictions[pid][scansite.source].append((scansite.value, scansite.score)) 
+                
+            for source in predictions[pid]:
+                predictions[pid][source] = sorted(predictions[pid][source], key=lambda item: item[0])           
+            
     
     return {'acc_search': acc_search,
             'stringency': stringency,
@@ -69,4 +89,6 @@ def browse_experiment(request):
             'submitted': submitted,
             'pageTitle': strings.experiment_browse_page_title % (ptm_exp.name),
             'proteins': proteins,
+            'include_predictions': True,
+            'scansites': predictions,
             'modifications': mods}

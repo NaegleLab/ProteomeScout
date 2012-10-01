@@ -151,5 +151,6 @@ def protein_search_view(request):
             'stringency':stringency,
             'selected_species':selected_species,
             'proteins':proteins,
+            'include_predictions': False,
             'modifications':protein_mods,
             'submitted': submitted}
