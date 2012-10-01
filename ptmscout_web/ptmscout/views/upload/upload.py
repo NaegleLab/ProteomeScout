@@ -1,8 +1,8 @@
 from pyramid.view import view_config
-from ptmscout.layout import site_layout
-import strings
+from ptmscout.views.layout import site_layout
+from ptmscout.config import strings
 
-@view_config(route_name='upload', renderer='templates/information.pt', permission='private')
+@view_config(route_name='upload', renderer='ptmscout:templates/info/information.pt', permission='private')
 def user_upload(request):    
     return {'layout': site_layout(),
             'pageTitle': strings.upload_page_title,

@@ -1,30 +1,8 @@
-from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPFound
-import database.experiment as experiment
-from ptmscout import strings
+from ptmscout.config import strings
+from ptmscout.database import experiment, protein, modifications
 from ptmscout.utils import webutils
-from ptmscout.database import modifications, protein
-
-@view_config(route_name='redirect_to_experiments')
-def redirect_to_experiments(request):
-    return HTTPFound(request.application_url + "/experiments")
-
-@view_config(route_name='experiments', renderer='templates/experiments.pt')
-def experiment_listing(request):
-    experiments = experiment.getExperimentTree(request.user)
-    
-    return {'pageTitle': strings.experiments_page_title,
-            'experiments': experiments}
-
-@view_config(route_name='experiment', renderer='templates/experiment_home.pt')
-def view_experiment(request):
-    experiment_id = request.matchdict['id']
-    ptm_exp = experiment.getExperimentById(experiment_id, request.user)
-        
-    return {'pageTitle': strings.experiment_page_title % (ptm_exp.name),
-            'experiment': ptm_exp}
-
-@view_config(route_name='experiment_browse', renderer='templates/experiment_browse.pt')
+from pyramid.view import view_config
+@view_config(route_name='experiment_browse', renderer='ptmscout:templates/experiments/experiment_browse.pt')
 def browse_experiment(request):
     submitted = webutils.post(request, 'submitted', False)
     acc_search = webutils.post(request, 'acc_search', "").strip()

@@ -1,5 +1,4 @@
 from pyramid.config import Configurator
-
 from sqlalchemy import engine_from_config
 from database import DBSession
 from pyramid.authentication import AuthTktAuthenticationPolicy
@@ -10,7 +9,7 @@ from pyramid.security import (
     Allow,
     Authenticated,
     )
-from ptmscout.errors import forbidden_view
+from ptmscout.views.errors import forbidden_view
 from pyramid.exceptions import Forbidden
 
 class RootFactory(object):

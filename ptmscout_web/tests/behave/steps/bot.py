@@ -2,7 +2,7 @@ from ptmscout.database import user, experiment
 from mock import patch
 import re
 from ptmscout.database.permissions import Permission
-from ptmscout import strings
+from ptmscout.config import strings
 
 class Bot(object):
     def __init__(self, app):

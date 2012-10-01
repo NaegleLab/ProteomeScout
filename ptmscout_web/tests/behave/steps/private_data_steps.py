@@ -1,7 +1,7 @@
 from behave import *
 from bot import Bot
 from assertions import assertDoesNotContain, assertContains
-from ptmscout import strings
+from ptmscout.config import strings
 from mock import patch
 from ptmscout.database import permissions
 

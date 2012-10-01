@@ -1,54 +1,20 @@
+from mock import patch
+from ptmscout.config import strings
+from ptmscout.views.experiment.browse_view import browse_experiment
 from pyramid import testing
-import unittest
 from pyramid.testing import DummyRequest
-from ptmscout.experiments import experiment_listing, view_experiment,\
-    browse_experiment
-from mock import patch, Mock
-from ptmscout import strings
-from tests.views.test_user_management import createUserForTest
-from tests.views.mocking import createMockExperiment, \
-    createMockProtein, createMockModification, createMockPhosphopep,\
-    createMockScansite
+from tests.views.mocking import createMockExperiment, createMockProtein, \
+    createMockModification, createMockPhosphopep, createMockScansite,\
+    createMockUser
+import unittest
 
-class ExperimentViewTests(unittest.TestCase):
+class ExperimentBrowseViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
 
     def tearDown(self):
         testing.tearDown()
-    
-    @patch('ptmscout.database.experiment.getExperimentTree')
-    def test_experiment_listing(self, patch_getExperimentTree):
-        request = DummyRequest()
-        exp1 = createMockExperiment(1,1)
-        exp2 = createMockExperiment(2,1)
         
-        patch_getExperimentTree.return_value = [exp1,exp2]
-        request.user = None
-        
-        result = experiment_listing(request)
-        
-        patch_getExperimentTree.assert_called_once_with(request.user)
-        self.assertEqual([exp1,exp2], result['experiments'])
-        self.assertEqual(strings.experiments_page_title, result['pageTitle'])
-    
-    @patch('ptmscout.database.experiment.getExperimentById')
-    def test_experiment_view(self, patch_getExperiment):
-        mock_experiment = Mock('ptmscout.database.experiment.Experiment')
-        patch_getExperiment.return_value = mock_experiment
-        
-        mock_experiment.name = "experiment name"
-        
-        request = DummyRequest()
-        request.user = None
-        request.matchdict['id'] = 1 
-        
-        parameters = view_experiment(request)
-        
-        patch_getExperiment.assert_called_once_with(1, request.user)
-        self.assertEqual(mock_experiment, parameters['experiment'])
-        self.assertEqual(strings.experiment_page_title % ("experiment name"), parameters['pageTitle'])
-    
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_experiment_browse_view_should_show_error_when_search_acc_gene_empty(self, patch_getExperiment):
         mock_experiment = createMockExperiment(1, 0, 0)
@@ -87,13 +53,14 @@ class ExperimentViewTests(unittest.TestCase):
         
         request = DummyRequest()
         
-        ptm_user = createUserForTest("username", "email", "password", 1)
+        ptm_user = createMockUser("username", "email", "password", 1)
         request.user = ptm_user
         
         p1 = createMockProtein()
         p2 = createMockProtein()
         
         protein_list = sorted([p1, p2], key=lambda item: item.acc_gene)
+        p1,p2 = protein_list
         patch_getProteins.return_value = protein_list
 
         m1 = createMockModification(p1.id, 1)

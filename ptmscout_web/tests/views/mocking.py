@@ -12,7 +12,7 @@ from ptmscout.database.gene_expression import ExpressionProbeset,\
 
 TEST_USER_ID = 2
 
-def createUserForTest(username, email, password, active):
+def createMockUser(username, email, password, active):
     global TEST_USER_ID
     mock = Mock(spec=User)
     mock.username = username

@@ -119,3 +119,7 @@ failure_reason_email_not_valid = "Email address is invalid"
 failure_reason_email_not_academic = "Email address must belong to .edu domain"
 failure_reason_password_too_short = "Password must be at least %d characters in length"
 failure_reason_email_address_not_on_record = "E-mail address does not match any user record"
+
+
+error_resource_not_found_page_title = "Resource Error"
+error_protein_not_found_message = "No protein resource exists with the specified ID"

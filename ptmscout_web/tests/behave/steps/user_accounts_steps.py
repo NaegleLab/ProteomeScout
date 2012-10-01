@@ -1,7 +1,8 @@
 from bot import Bot
 from mock import patch
 import re
-from ptmscout import strings
+from ptmscout.config import strings
+
 @given(u'I want to create an account and I have a .edu email address')
 def setup_variables(context):
     context.active_user = Bot(context.ptmscoutapp)
