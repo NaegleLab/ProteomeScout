@@ -6,11 +6,9 @@ from ptmscout.experiments import experiment_listing, view_experiment,\
 from mock import patch, Mock
 from ptmscout import strings
 from tests.views.test_user_management import createUserForTest
-from pyramid.httpexceptions import HTTPForbidden
-from tests.views.mocking import createMockExperiment, createMockPermission,\
+from tests.views.mocking import createMockExperiment, \
     createMockProtein, createMockModification, createMockPhosphopep,\
     createMockScansite
-from ptmscout.database.protein import Species
 
 class ExperimentViewTests(unittest.TestCase):
     def setUp(self):

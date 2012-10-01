@@ -1,5 +1,5 @@
 from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPFound, HTTPForbidden
+from pyramid.httpexceptions import HTTPFound
 import database.experiment as experiment
 from ptmscout import strings
 from ptmscout.utils import webutils
