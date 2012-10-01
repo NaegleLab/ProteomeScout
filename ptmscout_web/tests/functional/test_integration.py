@@ -30,6 +30,7 @@ class InfoFunctionalTests(unittest.TestCase):
     def test_integrated_experiment_views(self):
         self.ptmscoutapp.get('/experiments', status=200)
         self.ptmscoutapp.get('/experiments/26')
+        self.ptmscoutapp.get('/experiments/26/summary')
         self.ptmscoutapp.get('/experiments/26/browse')
         self.ptmscoutapp.post('/experiments/26/browse', {'submitted':"true", 'acc_search':"ACK1", 'stringency':"1"})
         

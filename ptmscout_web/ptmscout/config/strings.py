@@ -24,6 +24,7 @@ account_management_page_title = "Account Management"
 
 experiments_page_title = "Home - Experiments"
 experiment_page_title = "Experiment: %s"
+experiment_summary_page_title = "Summary Experiment: %s"
 experiment_browse_page_title = "Browsing Experiment: %s"
 
 forgotten_password_page_title = "Forgotten Password Retrieval"
@@ -123,3 +124,4 @@ failure_reason_email_address_not_on_record = "E-mail address does not match any 
 
 error_resource_not_found_page_title = "Resource Error"
 error_protein_not_found_message = "No protein resource exists with the specified ID"
+
