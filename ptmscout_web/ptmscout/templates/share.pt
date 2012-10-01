@@ -1,0 +1,61 @@
+<div metal:use-macro="layout">
+	<div metal:fill-slot="header">
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/forms.css')}" />
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/users.css')}" />
+	</div>
+    <div metal:fill-slot="content">
+		<div id="experimentInfo" >
+		   	<fieldset>
+		   		<legend>Experiment</legend>
+		   		<a href="${experiment.getUrl()}" tal:condition="experiment.getUrl() != None">${experiment.name}</a>
+		   		<tal:expname tal:condition="experiment.getUrl() == None">${experiment.name}</tal:expname><br />
+				<tal:expcitation tal:content="structure experiment.getLongCitationString()"></tal:expcitation><br />
+			    <br /><br />
+			    ${experiment.description}
+			    <br /><br />
+			    Loaded: ${experiment.date}<br />
+		    </fieldset>
+		</div>
+		
+    	<div class="loginform">
+	    	<div tal:condition="reason != None" class="errorbox">Error: ${reason}</div>
+	        <form method="POST" action="${request.application_url}/account/experiments/${experiment.id}/share">
+	        	<input type="hidden" name="submitted" value="1" />
+	        	<input type="hidden" name="mode" value="add" />
+	    		<div class="formcategory">Share your dataset:</div>
+	        	<table>
+	        		<tr>
+	        			<td class="fieldname">E-mail Address:</td>
+	        			<td><input type="text" value="" name="email" /></td>
+	        		</tr>
+	        	</table>
+	        	<div class="formsubmission"><input type="submit" value="Share Dataset" /></div>
+	        </form>
+       	</div>
+       	<table class="usertable">
+       		<tbody>
+       			<tr>
+       				<th>User</th>
+       				<th>Name</th>
+       				<th>E-mail</th>
+       				<th></th>
+       			</tr>
+       			<tal:experiments tal:repeat="(i, user) enumerate(users)">
+					<tr tal:attributes="class 'user' + (' even' if i % 2 == 0 else ' odd');" >
+						<td tal:content="user.username"></td>
+						<td tal:content="user.name"></td>
+						<td tal:content="user.email"></td>
+						<td>
+							<form method="link" action="${request.application_url}/account/experiments/${experiment.id}/share/">
+							<input type="hidden" name="submitted" value="1" />
+	        				<input type="hidden" name="mode" value="remove" />
+	        				<input type="hidden" name="uid" tal:attributes="value str(user.id)" />
+							<input type="submit" value="Remove" />
+							</form>
+						</td>
+					</tr>
+				</tal:experiments>
+			</tbody>
+       	</table>
+	</div>
+</div>

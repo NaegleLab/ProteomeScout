@@ -1,0 +1,344 @@
+body {
+  margin: 0px;
+  padding: 0px;
+  margin-left: 5em;
+  margin-right: 5em;
+  background-color: #333399;
+}
+
+tr th {
+ text-align:left;
+}
+a img {
+ border:none;
+}
+
+dd {
+  margin-bottom: 1em;
+}
+
+#page {
+  margin-left: auto;
+  margin-right: auto;
+  background-color: white;
+  border: 2px solid #5555DD;
+}
+#menu {
+  background-color: #333399;
+  color: white;
+  height: 1.2em;
+  margin-left: auto;
+  margin-right: auto;
+}
+#menu a {
+  color: white;
+}
+#header {
+}
+#breadcrumb {
+  text-indent: 0.2em;
+  border-top: 2px solid #333399;
+  border-bottom: 2px solid #333399;
+}
+#experimentMenu {
+  text-indent: 0.2em;
+  border-bottom: 2px solid #333399;
+}
+#experimentInfo {
+  margin-top: 1em;
+  margin-bottom: 1em;
+ 
+  margin-left:auto;
+  margin-right: auto;
+
+  text-align: center;
+}
+#leftmenu {
+  background: #99CCFF;
+  float: left;
+  width: 20%;
+  height: 500px;
+  
+}
+#rightcol {
+  background: white;
+  float: right;
+  width: 20%;
+  height: 500px;
+}
+#content {
+  bottom: 0;	
+  text-indent: 0.2em;  
+}
+
+#footer {
+  
+  margin-top: 1em;
+  clear: both;
+  width: 100%;
+  text-align: center;
+  font-size: 10pt;
+  background-color: #99CCFF;
+  color: black;
+  bottom: 0;
+  
+
+}
+#content2 {
+ width: 95%;
+ background-color: #99ccff;
+ border-style: solid;
+ border-color: black;
+ margin-left: auto;
+ margin-right: auto;
+}
+
+/** 
+Don't delete these - despite being called test, they are used
+for popups when you mouse-over a protein
+*/
+#test{
+  background: white;
+  z-index: 4;
+  position: absolute;
+  visibility: hidden;
+  border-style: solid;
+  border-color: red;
+}
+.test{
+  background: white;
+  z-index: 4;
+  position: absolute;
+  visibility: hidden;
+  border-style: solid;
+  border-color: red;
+}
+
+.rightborder {
+border-right: 1px solid #99CCFF;
+}
+.leftborder {
+border-left: 1px solid #99CCFF;
+border-style: none;
+} 
+.bottomborder {
+border-bottom: 1px solid #99CCFF;
+border-style: solid;
+} 
+p.blocktext {
+        margin-left: auto;
+	margin-right: auto;
+	
+}
+.menutext {
+  font-size: 14pt;
+  width: 100%;
+  height: 20%;
+} 
+
+hr { border: 0 }
+ 
+fieldset {
+  width: 75%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+div#loading {
+  width: 95%;
+  margin-right: auto;
+  margin-left: auto;
+  border: 1px solid #dddddd;
+  text-align: center;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+
+table#filterExpTable th {
+  border-bottom: 1px solid #ddd;
+  border-top: 1px solid #ddd;
+}
+
+label {
+  font-weight: bold;
+}
+
+div.nested_content {
+ width: 95%;
+ margin-left: auto;
+ marg	in-right: auto;
+}
+
+div.metadata_search {
+  border: 1px solid gray
+  padding: 0.2em;
+}
+
+p.search_reset {
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+div.subset_search fieldset {
+  width: 95%;
+  border-color: black;
+  margin-bottom: 1em;
+}
+
+legend {
+ font-weight: bold;
+}
+
+table#cluster_table {
+  width: 90%;
+  margin-left: 2em;
+  margin-right: auto;
+}
+
+table#cluster_table td {
+  border: 1px solid gray;
+}
+
+img.help {
+  vertical-align:text-top;
+}
+
+
+div#test
+{
+  
+}
+
+
+ul.no_bullet {
+  list-style-type: none; 
+  padding: 0;
+  margin-left: 0.5em;
+}
+
+
+/** Stuff for the protein details page */
+table#gene_ontology_breakdown {
+  border: 1px solid black;   
+  width: 100%;
+}
+
+table#gene_ontology_breakdown th {
+  background-color: black;
+  color: white; 
+}
+
+table#gene_ontology_breakdown * {
+ text-indent: 0.2em;
+}
+
+
+div.protein_navigation {
+  margin-bottom: 1em; 
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table#peptide_table {
+  width: 95%;
+  border: 1px solid black;   
+  max-width: 1024px;
+}
+
+table#peptide_table th {
+  background-color: black;
+  color: white; 
+}
+table#peptide_table th,td {
+ padding-left: 0.5em;
+ padding-right: 0.5em;
+}
+table#peptide_table td {
+ border: 1px solid black;
+}
+
+table#peptide_table li {
+  margin-bottom: 0.5em;
+}
+
+table#peptide_table tr.odd {
+  background-color: #DDDDDD;
+}
+
+
+div#canvas 
+{
+  height: 400px;
+  top: 0px;
+}
+/** End stuff for the protein details page */
+
+/** Stuff for drawing sections of a page */
+div.section {
+ width: 95%;
+ margin-left: auto;
+ margin-right: auto;
+}
+/** End Stuff for drawing sections of a page */
+
+
+/** Stuff for the ambiguity page */
+
+table#protein_ambiguity {
+  width: 95%;
+  border: 1px solid black;    
+}
+
+table#protein_ambiguity th {
+  background-color: black;
+  color: white; 
+}
+table#protein_ambiguity th,td {
+ padding-left: 0.5em;
+ padding-right: 0.5em;
+}
+table#protein_ambiguity td {
+ border: 1px solid black;
+}
+
+
+div.go_spacer
+{
+  height: 2em;
+  text-align:center;
+}
+
+/** End for the ambiguity page */
+
+
+/** Overrides until the protein ambiguity page / images are displaying */
+body {
+  margin: 0px;
+  padding: 0px;
+  margin-left: 5em;
+  margin-right: 5em;
+  background-color: white;
+}
+
+#page {
+  margin-left: auto;
+  margin-right: auto;
+  background-color: white;
+  border: 1px solid gray;
+}
+#menu {
+  background-color: white;
+  color: blue;
+  height: 1.4em;
+  margin-left: auto;
+  margin-right: auto;
+}
+#menu a {
+  color: blue;
+}
+/** End overrides */

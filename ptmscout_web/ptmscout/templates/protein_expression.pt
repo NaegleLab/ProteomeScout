@@ -1,0 +1,46 @@
+<div metal:use-macro="layout">
+	<div metal:fill-slot="header">
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/proteins.css')}" />
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js" ></script>
+		<script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/expression.js')}" ></script>
+	</div>
+	<div metal:fill-slot="content">
+		<div metal:use-macro="protein_header"></div>
+
+		<div class="section">
+			<h6>
+				Expression Data comes from the Genomics Institute Of The Novartis
+				Research Institute <a target="_blank" href="http://symatlas.gnf.org/">SymAtlas Project</a>
+			</h6>
+			<h6>
+				<a href="${request.static_url('ptmscout:static/disclaimer.html')}" target="_blank">GNF SymAtlas Copyright</a>
+			</h6>
+			<div class="expression_form">
+				<span class="expression_form_entry">
+					Probeset ID: 
+					<select id="expression_probeid">
+						<option tal:repeat="probe_id probe_ids" tal:attributes="value probe_id" tal:content="probe_id"></option>
+					</select>
+				</span>
+				<span class="expression_form_entry">
+					Collection: 
+					<select id="expression_collection">
+						<option value="all">all</option>
+						<option tal:repeat="collection collections" tal:attributes="value collection" tal:content="collection"></option>
+					</select>
+				</span>
+			</div>
+			<div class="expression_chart">
+				<table>
+					<tr>
+					</tr>
+				</table>			
+			</div>
+			<div class="errortext" tal:condition="len(expression_data) == 0">There is no expression data for this species and/or protein</div>
+			<div class="expression_data">
+				<div tal:repeat="data expression_data" tal:content="'%s,%s,%s,%s' % (data['probeset'],data['collection'],data['tissue'],data['value'])"></div>			
+			</div>			
+		</div>
+	</div>
+</div>

@@ -1,0 +1,59 @@
+.infobox {
+	border:solid;
+	border-width:1px;
+	border-color:black;
+	background:#99CCFF;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:20px;
+	margin-bottom:20px;
+	width: 600px;
+
+}
+
+.forbiddenheader{
+	padding:10px;
+	background:#EE1133;
+	font-size:18pt;
+	font-weight:bold;
+}
+
+.infoheader {
+	padding:10px;
+	background:#77AADD;
+	font-size:18pt;
+	font-weight:bold;
+}
+
+.infotext {
+	padding:20px;
+}
+
+.infobox table {
+	margin-left:auto;
+	margin-right:auto;
+}
+
+div.error, 
+div.feedback
+{
+text-align:center;
+  border: 2px solid #ccc;
+  margin-left: auto;
+  margin-right: auto;
+  width:75%;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+div.error {
+  color:red;
+}
+
+div.feedback {
+  
+}
+
+.validation_error {
+  color: red;
+}

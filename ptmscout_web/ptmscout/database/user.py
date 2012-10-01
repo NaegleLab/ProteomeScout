@@ -1,16 +1,110 @@
-from sqlalchemy import Column, Integer, Text
+from . import Base, DBSession
+from sqlalchemy import Column, Integer, VARCHAR, TIMESTAMP
+import ptmscout.utils.crypto as crypto 
+from pyramid import security
+from sqlalchemy.orm import relationship
+from ptmscout.database import permissions
 
-class PTMUser(object):
+class User(Base):
     __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
-    username = Column(Text, unique=True)
-    salted_password = Column(Text)
-    name = Column(Text)
-    email = Column(Text, unique=True)
-    institution = Column(Text)
+    id = Column(Integer(10), primary_key=True, autoincrement=True)
     
-    def init(self, username, name, email, institution):
-        pass
+    # credentials
+    username = Column(VARCHAR(30), unique=True)
+    salted_password = Column(VARCHAR(64))
+    salt = Column(VARCHAR(10))
     
+    # user data
+    name = Column(VARCHAR(50))
+    email = Column(VARCHAR(50), unique=True)
+    institution = Column(VARCHAR(100))
+    date_created = Column(TIMESTAMP)
+    
+    # activation data
+    active = Column(Integer(1), default=0)
+    activation_token = Column(VARCHAR(50))
+
+    permissions = relationship("Permission", backref="user")
+    
+    def __init__(self, username="", name="", email="", institution=""):
+        self.username = username
+        self.name = name
+        self.email = email
+        self.institution = institution
+        self.permissions = []
+        
+    def saveUser(self):
+        DBSession.add(self)
+        DBSession.flush()
+        
+    def setActive(self):
+        self.active = 1
+        
     def createUser(self, password):
-        pass
+        self.salt, self.salted_password = crypto.saltedPassword(password)
+        self.activation_token = crypto.generateActivationToken()
+        
+    def myExperiments(self):
+        return [ permission.experiment \
+                    for permission in self.permissions \
+                        if permission.access_level == 'owner' ]
+        
+    def allExperiments(self):
+        return [ permission.experiment for permission in self.permissions ]
+
+    
+    def processInvitations(self):
+        invites = permissions.getInvitationsForUser(self.email)
+        
+        for invite in invites:
+            np = permissions.Permission(invite.experiment)
+            np.user_id = self.id
+            self.permissions.append(np)
+        
+    
+    
+        
+class NoSuchUser(Exception):
+    def __init__(self, uid=None, username=None, email=None):
+        self.uid = uid
+        self.username = username
+        self.email = email
+    def __str__(self):
+        value = ""
+        if self.uid != None:
+            value = str(self.uid)
+        if self.username != None:
+            value = str(self.username)
+        if self.email != None:
+            value = str(self.email)
+        
+        return "Could not find user %s" % value
+
+def getUserByRequest(request):
+    username = security.authenticated_userid(request)
+    if username is not None:
+        try:
+            return getUserByUsername(username)
+        except NoSuchUser:
+            return None
+    return None
+
+def getUserById(uid):
+    value = DBSession.query(User).filter_by(id=uid).first()
+    if value == None:
+        raise NoSuchUser(uid=uid)
+    return value
+    
+def getUserByUsername(username):
+    value = DBSession.query(User).filter_by(username=username).first()
+    if value == None:
+        raise NoSuchUser(username=username)
+    return value
+
+def getUserByEmail(email):
+    value = DBSession.query(User).filter_by(email=email).first()
+    if value == None:
+        raise NoSuchUser(email=email)
+    return value
+    
+    

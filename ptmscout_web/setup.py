@@ -10,6 +10,10 @@ requires = [
     'pyramid',
     'pyramid_debugtoolbar',
     'waitress',
+    'SQLAlchemy',
+    'transaction',
+    'pyramid_tm',
+    'zope.sqlalchemy'
     ]
 
 setup(name='ptmscout',
@@ -31,7 +35,7 @@ setup(name='ptmscout',
       zip_safe=False,
       install_requires=requires,
       tests_require=requires,
-      test_suite="ptmscout",
+      test_suite="tests",
       entry_points = """\
       [paste.app_factory]
       main = ptmscout:main

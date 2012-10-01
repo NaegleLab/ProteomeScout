@@ -1,0 +1,36 @@
+<div metal:use-macro="layout">
+	<div metal:fill-slot="header">
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/experiments.css')}" />
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/proteins.css')}" />
+	</div>
+	<div metal:fill-slot="content">
+		<div metal:use-macro="experiment_header"></div>
+		
+		
+			<fieldset>
+				<legend>Search</legend>
+				<form class="search_form" name="search" method="POST" action="">
+					<input type="hidden" name="submitted" value="true">
+					<p>
+						<label for="acc_search">Protein:</label> 
+						<input type="text" name="acc_search" value="${acc_search}">
+						<span tal:condition="submitted and acc_search == ''" class="errortext">This term is required</span>
+					</p>
+					<p>
+						<label for="stringency">Prediction Stringency:</label> <br />
+						
+						<input type="radio" name="stringency" value="1" tal:attributes="checked stringency == '1'"/> Low <br /> 
+						<input type="radio" name="stringency" value="2" tal:attributes="checked stringency == '2'"/> Medium <br />
+						<input type="radio" name="stringency" value="3" tal:attributes="checked stringency == '3'"/> High <br />
+			
+					</p>
+					<input type="submit" value="Search" />
+					<a href=""><input type="button" value="Clear Form" /></a>
+				</form>
+			</fieldset>
+
+		
+		<div metal:use-macro="protein_list"></div>
+	</div>
+</div>
+	
