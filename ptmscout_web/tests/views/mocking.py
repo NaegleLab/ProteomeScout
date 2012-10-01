@@ -5,7 +5,7 @@ from ptmscout.database.experiment import Experiment, ExperimentData
 from ptmscout.database.permissions import Permission
 from ptmscout.database.protein import Protein, Species, GeneOntology
 import random
-from ptmscout.database.modifications import Modification, Phosphopep,\
+from ptmscout.database.modifications import MeasuredPeptide, Phosphopep,\
     ScansitePrediction
 from ptmscout.database.gene_expression import ExpressionProbeset,\
     ExpressionSample, ExpressionCollection, ExpressionTissue
@@ -79,7 +79,7 @@ def createMockGO(go_type):
     return mock
     
 def createMockModification(pid, expid):
-    mock = Mock(spec=Modification)
+    mock = Mock(spec=MeasuredPeptide)
     
     mock.id = random.randint(0,100000)
     mock.protein_id = pid

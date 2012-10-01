@@ -20,7 +20,7 @@ def protein_search_view(request):
         proteins = protein.getProteinsByAccession([acc_search], species=selected_species)
         
         for p in proteins:
-            mods = modifications.getModificationsByProtein(p.id, request.user)
+            mods = modifications.getMeasuredPeptidesByProtein(p.id, request.user)
             for mod in mods:
                 peps = protein_mods.get(p.id, set())
                 [ peps.add(pep) for pep in mod.phosphopeps ]

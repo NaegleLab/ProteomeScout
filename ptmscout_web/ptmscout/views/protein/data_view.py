@@ -9,7 +9,7 @@ def protein_experiment_data_view(request):
     
     experiment_data = {}
     
-    mods = modifications.getModificationsByProtein(pid, request.user)
+    mods = modifications.getMeasuredPeptidesByProtein(pid, request.user)
     
     for mod in mods:
         exp_key = (mod.experiment.id, mod.experiment.name)

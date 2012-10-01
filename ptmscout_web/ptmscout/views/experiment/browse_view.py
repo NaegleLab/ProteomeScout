@@ -20,9 +20,9 @@ def browse_experiment(request):
         
         if(submitted):
             protein_list = protein.getProteinsByAccession([acc_search])
-            mod_list = modifications.getModificationsByExperiment(ptm_exp.id, request.user, [p.id for p in protein_list])
+            mod_list = modifications.getMeasuredPeptidesByExperiment(ptm_exp.id, request.user, [p.id for p in protein_list])
         else:
-            mod_list = modifications.getModificationsByExperiment(ptm_exp.id, request.user)
+            mod_list = modifications.getMeasuredPeptidesByExperiment(ptm_exp.id, request.user)
         
         prots = {}
         

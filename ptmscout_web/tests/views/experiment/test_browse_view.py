@@ -99,7 +99,7 @@ class ExperimentBrowseViewTests(unittest.TestCase):
         
         return request, p1, p2, mock_experiment, pep1, pep2, pep3, pep4, s1, s2, s3, protein_list
 
-    @patch('ptmscout.database.modifications.getModificationsByExperiment')
+    @patch('ptmscout.database.modifications.getMeasuredPeptidesByExperiment')
     @patch('ptmscout.database.protein.getProteinsByAccession')
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_experiment_browse_view_when_searching(self, patch_getExperiment, patch_getProteins, patch_getMods):
@@ -129,7 +129,7 @@ class ExperimentBrowseViewTests(unittest.TestCase):
         self.assertEqual({p1.id: {}, p2.id: {'scansite':[(s3.value, s3.score)], 'scansite_kinase':[(s2.value, s2.score)]}}, result['scansites'])
         self.assertEqual(True, result['submitted'])
         
-    @patch('ptmscout.database.modifications.getModificationsByExperiment')
+    @patch('ptmscout.database.modifications.getMeasuredPeptidesByExperiment')
     @patch('ptmscout.database.protein.getProteinsByAccession')
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_experiment_browse_view_when_no_search_parameters(self, patch_getExperiment, patch_getProteins, patch_getMods):

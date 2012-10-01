@@ -2,8 +2,8 @@ from tests.DBTestCase import DBTestCase
 from ptmscout.database.protein import Protein, getSpeciesByName
 from ptmscout.database.experiment import Experiment, getExperimentById,\
     ExperimentData
-from ptmscout.database.modifications import Phosphopep, Modification,\
-    getModificationsByProtein
+from ptmscout.database.modifications import Phosphopep, MeasuredPeptide,\
+    getMeasuredPeptidesByProtein
 from ptmscout.database.user import User, getUserById
 
 
@@ -88,19 +88,19 @@ class TestModifications(DBTestCase):
         self.session.add(p2)
         self.session.add(p3)
         
-        mod1 = Modification()
+        mod1 = MeasuredPeptide()
         mod1.experiment_id = exp.id
         mod1.protein_id = p.id
         mod1.phosphopep = "blag"
         self.session.add(mod1)
         
-        mod2 = Modification()
+        mod2 = MeasuredPeptide()
         mod2.experiment_id = exp.id
         mod2.protein_id = p.id
         mod2.phosphopep = "blag2"        
         self.session.add(mod2)
         
-        mod3 = Modification()
+        mod3 = MeasuredPeptide()
         mod3.experiment_id = exp2.id
         mod3.protein_id = p.id
         mod3.phosphopep = "blag3"        
@@ -141,7 +141,7 @@ class TestModifications(DBTestCase):
         self.session.add(mod3)
         self.session.flush()
         
-        modifications = getModificationsByProtein(p.id, u)
+        modifications = getMeasuredPeptidesByProtein(p.id, u)
         
         phosphopep_ids = [ p.id for m in modifications for p in m.phosphopeps ]
         self.assertEqual([p1.id, p2.id], phosphopep_ids)

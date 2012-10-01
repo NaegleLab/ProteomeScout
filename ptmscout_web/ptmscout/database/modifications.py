@@ -37,7 +37,7 @@ class Phosphopep(Base):
     def getName(self):
         return self.site_type + str(self.site_pos)
 
-class Modification(Base):
+class MeasuredPeptide(Base):
     __tablename__ = 'MS'
     id = Column(Integer(10), primary_key=True, autoincrement=True)
     experiment_id = Column(Integer(10), ForeignKey('experiment.id'))
@@ -51,13 +51,13 @@ class Modification(Base):
     data = relationship("ExperimentData")
 
 
-def getModificationsByProtein(pid, user):
-    modifications = DBSession.query(Modification).filter_by(protein_id=pid).all()
+def getMeasuredPeptidesByProtein(pid, user):
+    modifications = DBSession.query(MeasuredPeptide).filter_by(protein_id=pid).all()
     return [ mod for mod in modifications if mod.experiment.checkPermissions(user) ]
 
-def getModificationsByExperiment(eid, user, pids = None):
+def getMeasuredPeptidesByExperiment(eid, user, pids = None):
     if(pids != None):
-        modifications = DBSession.query(Modification).filter(and_(Modification.experiment_id==eid, Modification.protein_id.in_(pids))).all()
+        modifications = DBSession.query(MeasuredPeptide).filter(and_(MeasuredPeptide.experiment_id==eid, MeasuredPeptide.protein_id.in_(pids))).all()
     else:
-        modifications = DBSession.query(Modification).filter_by(experiment_id=eid).all()
+        modifications = DBSession.query(MeasuredPeptide).filter_by(experiment_id=eid).all()
     return [ mod for mod in modifications if mod.experiment.checkPermissions(user) ]

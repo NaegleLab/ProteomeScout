@@ -15,7 +15,7 @@ class TestProteinDataViews(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
         
-    @patch('ptmscout.database.modifications.getModificationsByProtein')
+    @patch('ptmscout.database.modifications.getMeasuredPeptidesByProtein')
     @patch('ptmscout.database.protein.getProteinById')
     def test_protein_data_view_should_not_include_experiments_without_data(self, patch_getProtein, patch_getMods):
         request = DummyRequest()
@@ -54,7 +54,7 @@ class TestProteinDataViews(unittest.TestCase):
         
         self.assertEqual([], result['experiment_data'])
     
-    @patch('ptmscout.database.modifications.getModificationsByProtein')
+    @patch('ptmscout.database.modifications.getMeasuredPeptidesByProtein')
     @patch('ptmscout.database.protein.getProteinById')
     def test_protein_data_view_get_experiment_data_for_protein(self, patch_getProtein, patch_getMods):
         request = DummyRequest()

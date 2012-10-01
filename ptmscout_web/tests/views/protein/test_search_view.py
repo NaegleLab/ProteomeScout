@@ -58,7 +58,7 @@ class TestProteinSearchViews(unittest.TestCase):
         self.assertEqual({}, result['modifications'])
         self.assertEqual(True, result['submitted'])
     
-    @patch('ptmscout.database.modifications.getModificationsByProtein')
+    @patch('ptmscout.database.modifications.getMeasuredPeptidesByProtein')
     @patch('ptmscout.database.protein.getProteinsByAccession')
     @patch('ptmscout.database.protein.getAllSpecies')
     def test_protein_search_view_should_process_search_form(self, patch_getSpecies, patch_getProteins, patch_getMods):

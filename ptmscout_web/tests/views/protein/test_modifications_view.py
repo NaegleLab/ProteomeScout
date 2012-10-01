@@ -14,7 +14,7 @@ class TestProteinModificationViews(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
         
-    @patch('ptmscout.database.modifications.getModificationsByProtein')
+    @patch('ptmscout.database.modifications.getMeasuredPeptidesByProtein')
     @patch('ptmscout.database.protein.getProteinById')
     def test_protein_modifications_view_should_show_modifications_for_protein(self, patch_getProtein, patch_getMods):
         request = DummyRequest()
