@@ -40,15 +40,18 @@ class TestPredictionViews(UnitTestCase):
         p1 = createMockProtein()
         m1 = createMockMeasurement(p1.id, expid)
         m2 = createMockMeasurement(p1.id, expid)
+        m3 = createMockMeasurement(p1.id, expid)
         
         pep1 = createMockPhosphopep(p1.id)
         pep2 = createMockPhosphopep(p1.id)
         pep3 = createMockPhosphopep(p1.id)
+        pep4 = createMockPhosphopep(p1.id)
         
         m1.phosphopeps.extend([pep1, pep2])
         m2.phosphopeps.extend([pep2, pep3])
+        m3.phosphopeps.append(pep4)
         
-        measurements = [m1,m2]
+        measurements = [m1,m2,m3]
         
         pred1 = createMockScansite(pep1.id)
         pred2 = createMockScansite(pep1.id)
@@ -86,19 +89,19 @@ class TestPredictionViews(UnitTestCase):
         formatted_predictions = {}
         
         fstring = strings.prediction_type_map[predictions[0].source]         
-        data = [(predictions[0].value, 2)]
+        data = [(predictions[0].value, 2), ("None", 1)]
         jsondump = base64.b64encode(json.dumps(data))
         formatted_predictions[fstring] = {'json':jsondump, 'table':data}
         
         fstring = strings.prediction_type_map[predictions[1].source]
-        data = [(predictions[1].value, 2)]
+        data = [(predictions[1].value, 2), ("None", 1)]
         jsondump = base64.b64encode(json.dumps(data))
         formatted_predictions[fstring] = {'json':jsondump, 'table':data}
         
-        data = [(predictions[4].value, 1)]
+        data = [("None", 2), (predictions[4].value, 1)]
         jsondump = base64.b64encode(json.dumps(data))
         formatted_predictions[predictions[4].source] = {'json':jsondump, 'table':data}
-        
+
         result = format_predictions(measurements)
         
         self.assertEqual(formatted_predictions, result)

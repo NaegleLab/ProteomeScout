@@ -30,10 +30,20 @@ def format_predictions(measurements):
         measureset.add(m)
         formatted_predictions[scansite.source][scansite.value] = measureset
         
-    for source in formatted_predictions:
+    allmeasures = set(measurements)
+    keyset = formatted_predictions.keys()[:]
+    
+    for source in keyset:
+        
+        total = set()
         for value in formatted_predictions[source]:
+            [ total.add(m) for m in formatted_predictions[source][value] ]
             formatted_predictions[source][value] = len(formatted_predictions[source][value])
             
+        diffset = allmeasures - total
+        
+        formatted_predictions[source]["None"] = len(diffset)
+        
         formatted_predictions[source] = sorted(formatted_predictions[source].items(), key=lambda item: -item[1])
         table = formatted_predictions[source]
         
