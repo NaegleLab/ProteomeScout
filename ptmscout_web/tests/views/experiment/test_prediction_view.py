@@ -4,7 +4,7 @@ from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockProtein, createMockMeasurement,\
     createMockPhosphopep, createMockExperiment, createMockScansite
 from ptmscout.views.experiment.prediction_view import prediction_view,\
-    format_predictions
+    format_predictions, filter_predictions
 from ptmscout.config import strings
 from mock import patch
 import base64
@@ -17,6 +17,21 @@ class TestPredictionViews(UnitTestCase):
         
     def tearDown(self):
         testing.tearDown()
+    
+    def test_filter_predictions(self):
+        pred1 = createMockScansite(1)
+        pred2 = createMockScansite(1)
+        pred3 = createMockScansite(1)
+        
+        pred1.score = 3
+        pred2.score = 0.2
+        pred3.score = 0.1
+        
+        pred3.value = "~~~"
+        
+        result = filter_predictions([pred1,pred2,pred3])
+        
+        self.assertEqual([pred2], result)
         
 
     def createMockMeasurements(self, expid):
