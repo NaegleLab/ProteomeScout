@@ -111,14 +111,3 @@ table.experiment_summary td.listing {
 	padding:10px;
 	border:solid 1px black;
 }
-
-.section_group .seqdata {
-	display:none;
-}
-
-.section_group .seqchart {
-	margin-top:10px;
-	margin-left:auto;
-	margin-right:auto;
-	margin-bottom:10px;
-}

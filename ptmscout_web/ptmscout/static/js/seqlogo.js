@@ -23,22 +23,12 @@ function createSeqlogo(node, data, w, h){
 				.data(function(d){ return d.f; })
 			.enter().append("g")
 				.attr("class", "residue")
-				.attr("transform", function(d, i) { return "translate(0, {0})scale(2.0,{1})".format( (d[2] / total * h) + 10 , d[1] / total * h / 15) });
+				.attr("transform", function(d, i) { return "translate(0, {0})scale(2.0,{1})".format( (d[2] / total * h) + 10 , d[1] / total * h / 20) });
 		
-/*	
-	entry.append("rect")
-			.attr("x", 0)
-			.attr("y", 0)
-			.attr("width", column_width / 2.0)
-			.attr("height", function(d) { return 15 })
-			.style("fill", function(d, i) { return colors(i) })
-	*/
 	entry.append("text")
 			.attr("x", 0)
-			.attr("y", 15)
-			.style("font-size", "23px")
+			.attr("y", 20)
+			.style("font-size", "30px")
 			.style("fill", function(d, i) { return colors(i) })
 			.text(function(d){ return d[0] });
-
-	
 }
