@@ -67,7 +67,7 @@ def summarize_measurements(measurements):
             summary['by_type']['phosphorylation'] = type_count+1
             
             mods = summary['modifications']
-            summary['modifications'] = mods+1 
+            summary['modifications'] = mods+1
             
         measured = summary['measured']
         summary['measured'] = measured+1
@@ -78,7 +78,7 @@ def summarize_measurements(measurements):
     
     return summary
 
-@view_config(route_name='experiment_summary', renderer='ptmscout:/templates/experiments/experiment_summary.pt')
+@view_config(route_name='experiment_summary', renderer='ptmscout:templates/experiments/experiment_summary.pt')
 def experiment_summary_view(request):
     eid = request.matchdict['id']
     exp = experiment.getExperimentById(eid, request.user)
