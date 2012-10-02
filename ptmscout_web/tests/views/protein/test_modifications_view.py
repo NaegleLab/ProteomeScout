@@ -4,7 +4,7 @@ from ptmscout.views.protein.modifications_view import protein_modifications_view
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockProtein, createMockUser, \
-    createMockModification, createMockExperiment, createMockPhosphopep
+    createMockMeasurement, createMockExperiment, createMockPhosphopep
 import unittest
 
 class TestProteinModificationViews(unittest.TestCase):
@@ -26,10 +26,10 @@ class TestProteinModificationViews(unittest.TestCase):
         mock_user = createMockUser("username", "email", "password", 1)
         request.user = mock_user
         
-        mock_mod = createMockModification(mock_prot.id, 24)
+        mock_mod = createMockMeasurement(mock_prot.id, 24)
         mock_mod.experiment = createMockExperiment(2, 0, 0)
         
-        mock_mod2 = createMockModification(mock_prot.id, 25)
+        mock_mod2 = createMockMeasurement(mock_prot.id, 25)
         mock_mod2.experiment = createMockExperiment(3, 0, 0)
         
         p1 = createMockPhosphopep(mock_prot.id)

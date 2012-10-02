@@ -3,7 +3,7 @@ from ptmscout.config import strings
 from ptmscout.views.protein.data_view import protein_experiment_data_view
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockProtein, createMockUser, \
-    createMockModification, createMockExperiment, createMockPhosphopep, \
+    createMockMeasurement, createMockExperiment, createMockPhosphopep, \
     createMockData
 import unittest
 from pyramid import testing
@@ -27,11 +27,11 @@ class TestProteinDataViews(unittest.TestCase):
         mock_user = createMockUser("username", "email", "password", 1)
         request.user = mock_user
         
-        mock_mod = createMockModification(mock_prot.id, 24)
+        mock_mod = createMockMeasurement(mock_prot.id, 24)
         exp = createMockExperiment(2, 0, 0)
         mock_mod.experiment = exp
         
-        mock_mod2 = createMockModification(mock_prot.id, 25)
+        mock_mod2 = createMockMeasurement(mock_prot.id, 25)
         exp2 = createMockExperiment(3, 0, 0)
         mock_mod2.experiment = exp2
         
@@ -66,11 +66,11 @@ class TestProteinDataViews(unittest.TestCase):
         mock_user = createMockUser("username", "email", "password", 1)
         request.user = mock_user
         
-        mock_mod = createMockModification(mock_prot.id, 24)
+        mock_mod = createMockMeasurement(mock_prot.id, 24)
         exp = createMockExperiment(2, 0, 0)
         mock_mod.experiment = exp
         
-        mock_mod2 = createMockModification(mock_prot.id, 25)
+        mock_mod2 = createMockMeasurement(mock_prot.id, 25)
         exp2 = createMockExperiment(3, 0, 0)
         mock_mod2.experiment = exp2
         

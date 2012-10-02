@@ -4,7 +4,7 @@ from ptmscout.views.experiment.browse_view import browse_experiment
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockExperiment, createMockProtein, \
-    createMockModification, createMockPhosphopep, createMockScansite,\
+    createMockMeasurement, createMockPhosphopep, createMockScansite,\
     createMockUser
 import unittest
 
@@ -63,9 +63,9 @@ class ExperimentBrowseViewTests(unittest.TestCase):
         p1,p2 = protein_list
         patch_getProteins.return_value = protein_list
 
-        m1 = createMockModification(p1.id, 1)
-        m2 = createMockModification(p1.id, 4)
-        m3 = createMockModification(p2.id, 6)
+        m1 = createMockMeasurement(p1.id, 1)
+        m2 = createMockMeasurement(p1.id, 4)
+        m3 = createMockMeasurement(p2.id, 6)
         m1.protein = p1
         m2.protein = p1
         m3.protein = p2

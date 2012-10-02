@@ -4,7 +4,7 @@ from ptmscout.database.protein import Species
 from ptmscout.views.protein.search_view import protein_search_view
 from pyramid import testing
 from pyramid.testing import DummyRequest
-from tests.views.mocking import createMockProtein, createMockModification, \
+from tests.views.mocking import createMockProtein, createMockMeasurement, \
     createMockPhosphopep, createMockUser
 import unittest
 
@@ -71,8 +71,8 @@ class TestProteinSearchViews(unittest.TestCase):
         species_list = [Species('mus musculus'), Species('homo sapiens')]
         p1 = createMockProtein()
         protein_list = [p1]
-        m1 = createMockModification(p1.id, 1)
-        m2 = createMockModification(p1.id, 4)
+        m1 = createMockMeasurement(p1.id, 1)
+        m2 = createMockMeasurement(p1.id, 4)
         
         pep1 = createMockPhosphopep(p1.id)
         pep2 = createMockPhosphopep(p1.id)

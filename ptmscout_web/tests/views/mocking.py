@@ -78,7 +78,7 @@ def createMockGO(go_type):
     
     return mock
     
-def createMockModification(pid, expid):
+def createMockMeasurement(pid, expid):
     mock = Mock(spec=MeasuredPeptide)
     
     mock.id = random.randint(0,100000)
