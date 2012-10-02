@@ -125,3 +125,6 @@ failure_reason_email_address_not_on_record = "E-mail address does not match any 
 error_resource_not_found_page_title = "Resource Error"
 error_protein_not_found_message = "No protein resource exists with the specified ID"
 
+prediction_type_map = {'scansite': "Scansite",
+                       'scansite_bind': "Scansite Bind",
+                       'scansite_kinase': "Scansite Kinase"}
