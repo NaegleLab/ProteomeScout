@@ -2,17 +2,14 @@ import unittest
 from webtest.app import TestApp
 from ptmscout import main
 from ptmscout.config import strings
+from tests.PTMScoutTestCase import IntegrationTestCase
 
-class InfoFunctionalTests(unittest.TestCase):
+class InfoFunctionalTests(IntegrationTestCase):
     def setUp(self):
-        settings = { 'sqlalchemy.url': "mysql+mysqldb://ptmscout_web:ptmscout1@localhost:3306/ptmscout_dev" }
-        app = main({}, **settings)
-        self.ptmscoutapp = TestApp(app)
+        self.setUpIntegrationTest()
         
     def tearDown(self):
-        from ptmscout.database import DBSession
-        del self.ptmscoutapp
-        DBSession.remove()
+        self.tearDownIntegrationTest()
 
     def test_about_renderer(self):
         self.ptmscoutapp.get('/about', status=200)
