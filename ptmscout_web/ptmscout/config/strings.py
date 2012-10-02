@@ -26,6 +26,7 @@ experiments_page_title = "Home - Experiments"
 experiment_page_title = "Experiment: %s"
 experiment_summary_page_title = "Experiment Summary: %s"
 experiment_browse_page_title = "Browsing Experiment: %s"
+experiment_prediction_page_title = "Experiment Predictions: %s"
 
 forgotten_password_page_title = "Forgotten Password Retrieval"
 forgotten_password_success_header = "Password Reset Success"

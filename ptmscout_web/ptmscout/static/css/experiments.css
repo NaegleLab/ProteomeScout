@@ -110,4 +110,31 @@ table.experiment_summary td.listing {
 	font-weight:bold;
 	padding:10px;
 	border:solid 1px black;
+	margin-bottom:10px;
+}
+
+.prediction_table {
+	float:left;
+	width:275px;
+}
+
+.prediction_table table{
+	width:100%;
+	border:solid 1px black;
+	border-collapse:collapse;
+}
+
+.prediction_table th {
+	color:white;
+	background:black;
+	padding-left:10px;
+	padding-right:10px;
+}
+
+.prediction_table .value {
+	text-align:right;
+}
+
+.prediction_chart {
+	float:right;
 }
