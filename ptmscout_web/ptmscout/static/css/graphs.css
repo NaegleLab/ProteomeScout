@@ -7,71 +7,71 @@
 	margin-right:auto;
 }
 
-.chart .series {
+.graph .series {
 	fill:none;
 	stroke-width:2px;
 	opacity:0.8;
 }
 
-.chart .point {
+.graph .point {
 	fill:none;
 	stroke-width:1px;
 }
 
-.chart .tick {
+.graph .tick {
 	font-size:9pt;
 }
 
-.chart .tick line {
+.graph .tick line {
 	fill:black;
 	stroke:black;
 }
 
-.chart .axis {
+.graph .axis {
 	fill:black;
 	stroke:black;
 	stroke-width:1px;
 }
 
-.chart .title {
+.graph .title {
 	fill:black;
 	font-size:14pt;
 	text-anchor:middle;
 }
 
-.chart .label {
+.graph .label {
 	fill:black;
 	font-size:12pt;
 	text-anchor:middle;
 }
 
-.chart .legend .bg {
+.graph .legend .bg {
 	fill:none;
 	stroke:black;
 	stroke-width:1px;
 }
 
-.chart .legend .entry {
+.graph .legend .entry {
 	fill:black;
 	font-size:9pt;
 	text-anchor:left;
 }
 
-.chart .legend circle {
+.graph .legend circle {
 	fill:none;
 	stroke-width:1px;
 }
 
-.chart .legend rect {
+.graph .legend rect {
 	stroke:lightgray;
 	stroke-width:1px;	
 }
 
-.chart .errorbar line {
+.graph .errorbar line {
 	stroke-width:2px;
 }
 
-.chart .bar {
+.graph .bar {
 	stroke:lightgray;
 	stroke-width:1px;
 }

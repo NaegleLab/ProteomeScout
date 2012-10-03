@@ -6,6 +6,8 @@
 		<script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/utils.js')}" ></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/graph.js')}" ></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/base64.js')}" ></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/export.svg.js')}" ></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/protein_data.js')}" ></script>
 	</div>
 	<div metal:fill-slot="content">
