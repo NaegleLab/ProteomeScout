@@ -12,6 +12,7 @@ def add_views(config):
     config.add_route('redirect_to_experiments','/')
     config.add_route('experiments','/experiments')
     config.add_route('experiment','/experiments/{id}')
+    config.add_route('experiment_pfam','/experiments/{id}/pfam')
     config.add_route('experiment_predictions','/experiments/{id}/predictions')
     config.add_route('experiment_summary','/experiments/{id}/summary')
     config.add_route('experiment_browse','/experiments/{id}/browse')
