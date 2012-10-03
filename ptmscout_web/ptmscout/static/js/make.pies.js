@@ -1,4 +1,6 @@
 $(document).ready(function() {
+	var num = 1;
+	
 	d3.selectAll(".data_chart")
 		.each(function() {
 			json_base64 = 
@@ -17,6 +19,9 @@ $(document).ready(function() {
 				ndata.push(data[i])
 			}
 			
-			createPieChart(d3.select(this), ndata, 450, 400);
+			var div = d3.select(this).append('div');
+			createPieChart(div, ndata, 450, 400);
+			addExport(div, d3.select(this));
+			num+=1;
 		});
 });
