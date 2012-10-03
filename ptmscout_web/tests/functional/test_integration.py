@@ -5,12 +5,6 @@ from ptmscout.config import strings
 from tests.PTMScoutTestCase import IntegrationTestCase
 
 class InfoFunctionalTests(IntegrationTestCase):
-    def setUp(self):
-        self.setUpIntegrationTest()
-        
-    def tearDown(self):
-        self.tearDownIntegrationTest()
-
     def test_about_renderer(self):
         self.ptmscoutapp.get('/about', status=200)
     
