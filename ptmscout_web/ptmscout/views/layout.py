@@ -11,6 +11,7 @@ def add_path_definitions(event):
     event['adminEmail'] = adminEmail 
     event['parent_link'] = None
     event['layout'] = site_layout()
+    event['experiment'] = None
     event['experiment_header'] = experiment_template()
     event['protein_header'] = protein_template()
     event['protein_list'] = protein_list_template()
