@@ -2,18 +2,16 @@ from mock import patch
 from ptmscout.config import strings
 from ptmscout.database.protein import Species
 from ptmscout.views.protein.search_view import protein_search_view
-from pyramid import testing
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockProtein, createMockMeasurement, \
     createMockPhosphopep, createMockUser
-import unittest
+from tests.PTMScoutTestCase import UnitTestCase, IntegrationTestCase
 
-class TestProteinSearchViews(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-
-    def tearDown(self):
-        testing.tearDown()
+class TestProteinSearchViewIntegration(IntegrationTestCase):
+    def test_integration(self):
+                self.ptmscoutapp.get('/proteins', {'acc_search':"ACK1", 'stringency':"2", 'submitted':"1", 'species':"all"}, status=200)
+                
+class TestProteinSearchViews(UnitTestCase):
         
     @patch('ptmscout.database.protein.getAllSpecies')
     def test_protein_search_view_should_get_species_list_and_show_search_forms(self, patch_getSpecies):
