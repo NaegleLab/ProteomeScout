@@ -24,7 +24,7 @@
 		<div class="section_group" tal:repeat="(source, data) predictions.items()">
 			<div class="title" tal:content="source"></div>
 			<div class="body">
-				<div class="prediction_table">
+				<div class="data_table">
 					<table>
 						<tr>
 							<th>Prediction</th>
@@ -36,7 +36,7 @@
 						</tr>
 					</table>
 				</div>
-				<div class="prediction_chart chart">
+				<div class="data_chart chart">
 					<div class="data" tal:content="data.json"></div>
 					
 				</div>

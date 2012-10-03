@@ -53,7 +53,7 @@ tr.even {
 	margin-left:10px;
 }
 
-.predictions .prediction_table .value{
+.predictions .data_table .value{
 	width:50px;
 	text-align:right;
 }
@@ -113,28 +113,28 @@ table.experiment_summary td.listing {
 	margin-bottom:10px;
 }
 
-.prediction_table {
+.data_table {
 	float:left;
 	width:275px;
 }
 
-.prediction_table table{
+.data_table table{
 	width:100%;
 	border:solid 1px black;
 	border-collapse:collapse;
 }
 
-.prediction_table th {
+.data_table th {
 	color:white;
 	background:black;
 	padding-left:10px;
 	padding-right:10px;
 }
 
-.prediction_table .value {
+.data_table .value {
 	text-align:right;
 }
 
-.prediction_chart {
+.data_chart {
 	float:right;
 }
