@@ -1,6 +1,12 @@
 function createSeqlogo(node, data, w, h){
-	chart = 
-		node.append("svg")
+	chartContainer = 
+		node
+			.append('div');
+	
+	chart =
+		chartContainer
+			.append("svg")
+			.attr("class", "seqlogo")
 			.attr("width", w)
 			.attr("height", h+20);
 	
@@ -33,4 +39,6 @@ function createSeqlogo(node, data, w, h){
 	    .style("font-size", 13.5 * (ch / 10) + "px")
 	    .style("fill", function(d, i) { return colors(i) })
 	    .text(function(d) { return d[0] });
+    
+    addExport(chartContainer, node);
 }
