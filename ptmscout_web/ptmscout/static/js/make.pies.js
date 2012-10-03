@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	d3.selectAll(".prediction_chart")
+	d3.selectAll(".data_chart")
 		.each(function() {
 			json_base64 = 
 				d3.select(this)

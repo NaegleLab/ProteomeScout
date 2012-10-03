@@ -9,7 +9,7 @@
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/utils.js')}" ></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/base64.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/piechart.js')}"></script>
-		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/predictions.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/make.pies.js')}"></script>
 	</div>
 	<div metal:fill-slot="content">
 		<div metal:use-macro="experiment_header">
