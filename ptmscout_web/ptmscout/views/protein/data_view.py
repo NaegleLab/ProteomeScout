@@ -1,15 +1,10 @@
 from ptmscout.config import strings
 from ptmscout.database import protein, modifications
 from pyramid.view import view_config
+from ptmscout.utils import webutils
 
-@view_config(route_name='protein_data', renderer='ptmscout:templates/proteins/protein_data.pt')
-def protein_experiment_data_view(request):
-    pid = int(request.matchdict['id'])
-    prot = protein.getProteinById(pid)
-    
+def format_protein_data(mods):
     experiment_data = {}
-    
-    mods = modifications.getMeasuredPeptidesByProtein(pid, request.user)
     
     for mod in mods:
         exp_key = (mod.experiment.id, mod.experiment.name)
@@ -36,8 +31,22 @@ def protein_experiment_data_view(request):
         ms_data.extend(sorted_data)
         experiment_data[exp_key] = ms_data
     
-    output_data = [ {'id': eid, 'title':name, 'data':experiment_data[(eid,name)]} for (eid, name) in experiment_data if len(experiment_data[(eid,name)]) > 0]
+    return [ {'id': eid, 'title':name, 'data':experiment_data[(eid,name)]} for (eid, name) in experiment_data if len(experiment_data[(eid,name)]) > 0]
+
+@view_config(route_name='protein_data', renderer='ptmscout:templates/proteins/protein_data.pt')
+def protein_experiment_data_view(request):
+    pid = int(request.matchdict['id'])
+    prot = protein.getProteinById(pid)
     
+    experiment_id = webutils.get(request, 'experiment_id', None)
+    
+    if experiment_id == None:
+        mods = modifications.getMeasuredPeptidesByProtein(pid, request.user)
+    else:
+        mods = modifications.getMeasuredPeptidesByExperiment(int(experiment_id), request.user, [pid])
+    
+    output_data = format_protein_data(mods)
+        
     return {'pageTitle': strings.protein_data_page_title,
             'protein': prot,
             'experiment_data':output_data}
