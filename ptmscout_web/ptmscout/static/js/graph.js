@@ -237,8 +237,8 @@ function addAxes(graph, title, xlabels, ylabels, xaxis, yaxis, rotate) {
 function createGraph(parent, title, w, h, margin) {
 	graph = 
 		parent 
-			.append("span")
 			.append("svg")
+			.attr("class", "graph")
 			.attr("width", w)
 			.attr("height", h);
 
