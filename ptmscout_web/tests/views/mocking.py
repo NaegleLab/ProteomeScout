@@ -3,7 +3,7 @@ from ptmscout.utils import crypto
 from ptmscout.database.user import User
 from ptmscout.database.experiment import Experiment, ExperimentData
 from ptmscout.database.permissions import Permission
-from ptmscout.database.protein import Protein, Species, GeneOntology
+from ptmscout.database.protein import Protein, Species, GeneOntology, Domain
 import random
 from ptmscout.database.modifications import MeasuredPeptide, Phosphopep,\
     ScansitePrediction
@@ -181,3 +181,26 @@ def createMockScansite(pep_id):
     mock.phophopep_id = pep_id
     
     return mock
+
+def createMockDomain(pid):
+    mock = Mock(spec=Domain)
+    
+    mock.id = random.randint(0, 100000)
+    
+    mock.label = "some_label"+str(mock.id)
+    mock.start = random.randint(0, 10000)
+    mock.stop = random.randint(mock.start+1, 10000)
+    
+    mock.p_value = random.random()
+    
+    mock.source = 'pfam'
+    mock.params = 'pval=1e-05'
+    
+    mock.protein_id = pid
+    mock.version = 23
+    
+    return mock
+     
+    
+    
+    
