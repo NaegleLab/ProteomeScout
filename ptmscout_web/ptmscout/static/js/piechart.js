@@ -23,7 +23,8 @@ function createPieChart(node, data, w, h, mouseover) {
 	}
 	total = dx;
 	
-	radius = mindim * 0.5;
+	outlineSize = 3;
+	radius = mindim * 0.5 - outlineSize;
 	
 	angle = function(d, percentage) {
 		return 2 * Math.PI * ((d.dx + d.x*percentage) / total);
@@ -34,7 +35,13 @@ function createPieChart(node, data, w, h, mouseover) {
 	     .endAngle(function(d) { return angle(d, 1.0)})
 	     .innerRadius(0)
 	     .outerRadius(radius);
-	 
+	
+	origin.append("circle")
+			.attr("class", "outline")
+			.attr("cx", 0)
+			.attr("cy", 0)
+			.attr("r", radius + outlineSize);
+	
 	origin.selectAll("path.category")
 			.data(data)
 		.enter().append("path")

@@ -84,3 +84,7 @@
 	fill:black;
 	font-size:10pt;
 }
+
+.piechart .outline {
+	fill:lightgray;
+}
