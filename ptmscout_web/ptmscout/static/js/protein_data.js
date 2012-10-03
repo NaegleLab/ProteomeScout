@@ -90,20 +90,22 @@ function getMaxValue(run, property) {
 }
 
 function createTimeSeriesGraph(experiment_data, run) {
-	var w = 350;
+	var w = 475;
 	var h = 400;
 	var margin = 40;
+	var rmargin = 130;
 	var ceiling = 1.15;
-	var lwidth = 100;
+	var lwidth = 125;
 	var colors = d3.scale.category20();
 	
-	parent = d3.select(experiment_data).select(".chart");
+	container = d3.select(experiment_data).select(".chart").append("span");
+	parent = container.append("span");
 	graph = createGraph(parent, run.name, w, h, margin);
 	
 	xmax = getMaxValue(run, "label");
 	ymax = getMaxValue(run, "y") * ceiling;
 	
-	xaxis = d3.scale.linear().domain([0, xmax]).range([margin, w-margin]);
+	xaxis = d3.scale.linear().domain([0, xmax]).range([margin, w-rmargin]);
 	yaxis = d3.scale.linear().domain([0, ymax]).range([h-margin, margin]);
 	
 	legendEntries = [];
@@ -133,7 +135,8 @@ function createTimeSeriesGraph(experiment_data, run) {
 	}
 	
 	addAxes(graph, run.axis, Array.unique(xticks), yaxis.ticks(7), xaxis, yaxis, false);
-	addLegend(graph, legendEntries, w-margin-lwidth, margin, lwidth, "line");
+	addLegend(graph, legendEntries, w-lwidth, margin, lwidth, "line");
+	addExport(parent, container);
 }
 
 function getArray(run, property) {
@@ -147,29 +150,32 @@ function getArray(run, property) {
 }
 
 function createBarGraph(experiment_data, run) {
-	
-	var w = 250 + 100 * run.series.length;
-	
-	if(w > 720)
-		w = 720;
-	
 	var h = 440;
 	var margin = 40;
+	var rmargin = 130;
 	var bmargin = 80;
 	var ceiling = 1.15;
-	var lwidth = 100;
+	var lwidth = 125;
 	var colors = d3.scale.category20();
-	
-	parent = d3.select(experiment_data).select(".chart");
-	graph = createGraph(parent, run.name, w, h, margin);
-	
+
 	xvals = Array.unique(getArray(run, "label"));
 	xvals.unshift("");
 	xvals.push(" ");
 	
+	defaultBarWidth = 30;
+	
+	var w = margin + rmargin + defaultBarWidth * run.series.length * xvals.length;
+	
+	if(w > 750)
+		w = 750;
+	
+	parent = d3.select(experiment_data).select(".chart");
+	graph = createGraph(parent, run.name, w, h, margin);
+	
+	
 	ymax = getMaxValue(run, "y") * ceiling;
 	
-	xaxis = d3.scale.ordinal().domain(xvals).rangeBands([margin, w-margin]);
+	xaxis = d3.scale.ordinal().domain(xvals).rangePoints([margin, w-rmargin]);
 	yaxis = d3.scale.linear().domain([0, ymax]).range([h-bmargin, margin]);
 	
 	legendEntries = [];
@@ -198,5 +204,6 @@ function createBarGraph(experiment_data, run) {
 	}
 	
 	addAxes(graph, run.axis, xvals, yaxis.ticks(7), xaxis, yaxis, true);
-	addLegend(graph, legendEntries, w-margin-lwidth, margin, lwidth, "square");
+	addLegend(graph, legendEntries, w-lwidth, margin, lwidth, "square");
+	addExport(parent, d3.select(experiment_data));
 }
