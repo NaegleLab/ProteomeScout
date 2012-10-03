@@ -58,5 +58,6 @@
 	    </div>
       </div>
 	</div>
+	<div style="display:none" id="graph_css_export_url">${request.static_url('ptmscout:static/css/graphs.css')}</div>
   </body>
 </html>
