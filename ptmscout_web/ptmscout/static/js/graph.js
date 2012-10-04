@@ -1,25 +1,4 @@
-Array.max = function( array ){
-    return Math.max.apply( Math, array );
-};
-Array.min = function( array ){
-    return Math.min.apply( Math, array );
-};
 
-Array.unique = function( array ){
-	return array.filter(function(itm,i,a){
-			return i==a.indexOf(itm);
-		});
-};
-
-String.prototype.format = function() {
-	  var args = arguments;
-	  return this.replace(/{(\d+)}/g, function(match, number) { 
-	    return typeof args[number] != 'undefined'
-	      ? args[number]
-	      : match
-	    ;
-	  });
-	};
 
 function addLegend(graph, legendEntries, xpos, ypos, width, marker) {
 	h = 20;
@@ -258,8 +237,8 @@ function addAxes(graph, title, xlabels, ylabels, xaxis, yaxis, rotate) {
 function createGraph(parent, title, w, h, margin) {
 	graph = 
 		parent 
-			.append("span")
 			.append("svg")
+			.attr("class", "graph")
 			.attr("width", w)
 			.attr("height", h);
 

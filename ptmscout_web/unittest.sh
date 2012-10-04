@@ -18,5 +18,5 @@ then
 
     echo "Success!"
 else
-    PYTHONPATH=/data/ptmscout/ptmscout_web /data/pyramid/bin/python -m unittest $1
+    PYTHONPATH=/data/ptmscout/ptmscout_web /data/pyramid/bin/python -m unittest $@
 fi

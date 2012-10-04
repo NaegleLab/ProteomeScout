@@ -41,3 +41,112 @@ tr.even {
 .restricted {
 	font-weight:bold;
 }
+
+.predictions .source {
+	text-align:left;
+	font-weight:bold;
+}
+
+.predictions .name {
+	float:left;
+	width:200px;
+	margin-left:10px;
+}
+
+.predictions .data_table .value{
+	width:50px;
+	text-align:right;
+}
+
+table.summary_quantity {
+	width:200px;
+	margin-top:10px;
+	margin-bottom:20px;
+}
+
+.summary_quantity .field {
+	float:left;
+	width:150px;
+	font-weight:bold;
+}
+
+.summary_quantity .value {
+	text-align:right;
+}
+
+table.experiment_summary {
+	margin-left:auto;
+	margin-right:auto;
+	width:600px;
+	border-collapse:collapse;
+	border: solid 1px black;
+}
+
+table.experiment_summary th {
+	background:black;
+	color:white;
+}
+
+table.experiment_summary td.listing {
+	vertical-align:top;
+	border-left: solid 1px black;
+	border-right: solid 1px black;
+}
+
+
+.section_group {
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:50px;
+	margin-bottom:50px;
+	width:750px;
+}
+
+.section_group .body {
+	text-align:center;
+}
+
+.section_group .title {
+	font-weight:bold;
+	padding:10px;
+	border:solid 1px black;
+	margin-bottom:10px;
+}
+
+.data_table {
+	float:left;
+	width:275px;
+}
+
+.data_table table{
+	width:100%;
+	border:solid 1px black;
+	border-collapse:collapse;
+}
+
+.data_table th {
+	color:white;
+	background:black;
+	padding-left:10px;
+	padding-right:10px;
+}
+
+.data_table .value {
+	text-align:right;
+}
+
+.data_chart {
+	float:right;
+}
+
+
+.seqdata {
+	display:none;
+}
+
+.seqchart {
+	margin-top:10px;
+	margin-left:auto;
+	margin-right:auto;
+	margin-bottom:10px;
+}

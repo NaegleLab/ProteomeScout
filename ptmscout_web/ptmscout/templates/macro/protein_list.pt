@@ -1,0 +1,40 @@
+<div metal:define-macro="protein_list">
+	<div tal:condition="submitted" class="result_count">${len(proteins)} results</div>
+	<div tal:condition="len(proteins) > 0" class="protein_list">
+		<table>
+			<thead>
+				<tr align="left" class="header">
+					<th>Protein</th>
+					<th>Species</th>
+					<th>Site</th>
+					<th>Aligned Sequence</th>
+					<th tal:condition="include_predictions">Predictions</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr valign="top" tal:repeat="(r, protein) enumerate(proteins)" tal:attributes="class 'row ' + 'even' if r % 2 == 0 else 'odd';" >
+					<td>
+						<a tal:attributes="href request.application_url + '/proteins/' + str(protein.id) + ('/data?experiment_id=%d' % experiment.id if experiment != None else '')" tal:content="protein.acc_gene"></a>
+					</td>
+					<td tal:content="protein.species.name"></td>
+					<td>
+						<div tal:repeat="phosphopep modifications[protein.id]" class="phosphopep_data" tal:content="phosphopep['site']"></div>
+					</td>
+					<td>
+						<div tal:repeat="phosphopep modifications[protein.id]" class="phosphopep_data" tal:content="phosphopep['peptide']"></div>
+					</td>
+					<td tal:condition="include_predictions" class="predictions">
+						<tal:empty tal:repeat="source scansites[protein.id]">
+						<div class="source" tal:content="source"></div>
+						<div tal:repeat="prediction scansites[protein.id][source]">
+							<span class="name" tal:content="prediction[0]"></span>
+							<span class="value" tal:content="'%.2f' % (prediction[1])"></span>
+						</div>
+						</tal:empty>						
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

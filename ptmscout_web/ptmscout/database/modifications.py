@@ -1,6 +1,6 @@
 from ptmscout.database import Base, DBSession
-from sqlalchemy.schema import Column, ForeignKey, Table
-from sqlalchemy.types import Integer, VARCHAR, CHAR
+from sqlalchemy.schema import Column, ForeignKey, Table, UniqueConstraint
+from sqlalchemy.types import Integer, VARCHAR, CHAR, Float
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import and_
 
@@ -9,6 +9,15 @@ MS_phosphopep = Table('MS_phosphopep', Base.metadata,
                       Column('MS_id', Integer(10), ForeignKey('MS.id')),
                       Column('phosphopep_id', Integer(10), ForeignKey('phosphopep.id')))
 
+class ScansitePrediction(Base):
+    __tablename__ = 'phosphopep_prediction'
+    id = Column(Integer(10), autoincrement=True, primary_key=True)
+    source = Column(VARCHAR(40), default='scansite')
+    value = Column(VARCHAR(20))
+    score = Column(Float)
+    phosphopep_id = Column(Integer(10), ForeignKey('phosphopep.id'))
+    
+    UniqueConstraint('source', 'value', 'phosphopep_id', name="UNIQUE_pepId_source_value")
 
 class Phosphopep(Base):
     __tablename__ = 'phosphopep'
@@ -20,13 +29,15 @@ class Phosphopep(Base):
     pfam_site = Column(VARCHAR(45))
     protein_id = Column(Integer(10), ForeignKey('protein.id'))
     
+    predictions = relationship(ScansitePrediction)
+    
     def getPeptide(self):
         return self.pep_aligned
     
     def getName(self):
         return self.site_type + str(self.site_pos)
 
-class Modification(Base):
+class MeasuredPeptide(Base):
     __tablename__ = 'MS'
     id = Column(Integer(10), primary_key=True, autoincrement=True)
     experiment_id = Column(Integer(10), ForeignKey('experiment.id'))
@@ -40,13 +51,13 @@ class Modification(Base):
     data = relationship("ExperimentData")
 
 
-def getModificationsByProtein(pid, user):
-    modifications = DBSession.query(Modification).filter_by(protein_id=pid).all()
+def getMeasuredPeptidesByProtein(pid, user):
+    modifications = DBSession.query(MeasuredPeptide).filter_by(protein_id=pid).all()
     return [ mod for mod in modifications if mod.experiment.checkPermissions(user) ]
 
-def getModificationsByExperiment(eid, user, pids = None):
+def getMeasuredPeptidesByExperiment(eid, user, pids = None):
     if(pids != None):
-        modifications = DBSession.query(Modification).filter(and_(Modification.experiment_id==eid, Modification.protein_id.in_(pids))).all()
+        modifications = DBSession.query(MeasuredPeptide).filter(and_(MeasuredPeptide.experiment_id==eid, MeasuredPeptide.protein_id.in_(pids))).all()
     else:
-        modifications = DBSession.query(Modification).filter_by(experiment_id=eid).all()
+        modifications = DBSession.query(MeasuredPeptide).filter_by(experiment_id=eid).all()
     return [ mod for mod in modifications if mod.experiment.checkPermissions(user) ]

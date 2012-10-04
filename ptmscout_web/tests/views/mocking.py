@@ -3,15 +3,16 @@ from ptmscout.utils import crypto
 from ptmscout.database.user import User
 from ptmscout.database.experiment import Experiment, ExperimentData
 from ptmscout.database.permissions import Permission
-from ptmscout.database.protein import Protein, Species, GeneOntology
+from ptmscout.database.protein import Protein, Species, GeneOntology, Domain
 import random
-from ptmscout.database.modifications import Modification, Phosphopep
+from ptmscout.database.modifications import MeasuredPeptide, Phosphopep,\
+    ScansitePrediction
 from ptmscout.database.gene_expression import ExpressionProbeset,\
     ExpressionSample, ExpressionCollection, ExpressionTissue
 
 TEST_USER_ID = 2
 
-def createUserForTest(username, email, password, active):
+def createMockUser(username, email, password, active):
     global TEST_USER_ID
     mock = Mock(spec=User)
     mock.username = username
@@ -49,8 +50,8 @@ def createMockProtein():
     
     pid = random.randint(0,100000)
     mock.id = pid
-    mock.name = "prot_" + str(id)
-    mock.acc_gene = "PR" + str(id)
+    mock.name = "prot_" + str(pid)
+    mock.acc_gene = "PR" + str(pid)
     mock.date="12-1986"
     mock.species_id=46
     mock.species = mock(spec=Species)
@@ -77,8 +78,8 @@ def createMockGO(go_type):
     
     return mock
     
-def createMockModification(pid, expid):
-    mock = Mock(spec=Modification)
+def createMockMeasurement(pid, expid):
+    mock = Mock(spec=MeasuredPeptide)
     
     mock.id = random.randint(0,100000)
     mock.protein_id = pid
@@ -104,6 +105,8 @@ def createMockPhosphopep(pid):
     
     mock.getName.return_value = mock.site_type + str(mock.site_pos)
     mock.getPeptide.return_value = mock.pep_aligned
+    
+    mock.predictions = []
     
     return mock
 
@@ -167,4 +170,37 @@ def createMockExpSample(probe_id, collection_id, collection, tissue_id, tissue):
     
     mock.value = random.random()
     return mock
+    
+def createMockScansite(pep_id):
+    mock = Mock(spec=ScansitePrediction)
+    
+    mock.id = random.randint(0, 100000)
+    mock.source = "somesource" + str(mock.id)
+    mock.value = "Some_Value" + str(mock.id)
+    mock.score = random.random()
+    mock.phophopep_id = pep_id
+    
+    return mock
+
+def createMockDomain(pid):
+    mock = Mock(spec=Domain)
+    
+    mock.id = random.randint(0, 100000)
+    
+    mock.label = "some_label"+str(mock.id)
+    mock.start = random.randint(0, 10000)
+    mock.stop = random.randint(mock.start+1, 10000)
+    
+    mock.p_value = random.random()
+    
+    mock.source = 'pfam'
+    mock.params = 'pval=1e-05'
+    
+    mock.protein_id = pid
+    mock.version = 23
+    
+    return mock
+     
+    
+    
     
