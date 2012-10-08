@@ -5,6 +5,10 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import null, or_
 from ptmscout.config import strings, settings
 
+go_hierarchy_table = Table('GO_hierarchy', Base.metadata,
+        Column('parent_id', Integer(10), ForeignKey('GO.id')),
+        Column('child_id', Integer(10), ForeignKey('GO.id')))
+
 go_association_table = Table('protein_GO', Base.metadata,
     Column('protein_id', Integer(10), ForeignKey('protein.id')),
     Column('GO_id', Integer(10), ForeignKey('GO.id')),
@@ -22,7 +26,7 @@ class Species(Base):
     
     def __init__(self, name):
         self.name = name
-
+        
 class GeneOntology(Base):
     __tablename__='GO'
     id = Column(Integer(10), primary_key=True, autoincrement=True)
@@ -31,6 +35,10 @@ class GeneOntology(Base):
     term = Column(Text)
     version = Column(VARCHAR(10), default='0')
     UniqueConstraint('aspect', 'GO', name="uniqueEntry")
+    
+    children = relationship("GeneOntology", secondary=go_hierarchy_table,
+                            primaryjoin=id==go_hierarchy_table.c.parent_id,
+                            secondaryjoin=id==go_hierarchy_table.c.child_id)
     
 #    def getURL(self):
 #        return settings.accession_urls['GO'] % (self.GO)
