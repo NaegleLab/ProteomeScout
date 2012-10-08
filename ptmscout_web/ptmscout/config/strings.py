@@ -28,6 +28,7 @@ experiment_summary_page_title = "Experiment Summary: %s"
 experiment_browse_page_title = "Browsing Experiment: %s"
 experiment_prediction_page_title = "Experiment Predictions: %s"
 experiment_pfam_page_title = "Experiment Protein Families: %s"
+experiment_GO_page_title = "Experiment GO Terms: %s"
 
 forgotten_password_page_title = "Forgotten Password Retrieval"
 forgotten_password_success_header = "Password Reset Success"
