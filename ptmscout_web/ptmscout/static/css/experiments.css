@@ -118,20 +118,20 @@ table.experiment_summary td.listing {
 	width:275px;
 }
 
-.data_table table{
+.data_table table, .GO_table table{
 	width:100%;
 	border:solid 1px black;
 	border-collapse:collapse;
 }
 
-.data_table th {
+.data_table th, .GO_table th {
 	color:white;
 	background:black;
 	padding-left:10px;
 	padding-right:10px;
 }
 
-.data_table .value {
+.data_table .value, .GO_table .value {
 	text-align:right;
 }
 
@@ -149,4 +149,30 @@ table.experiment_summary td.listing {
 	margin-left:auto;
 	margin-right:auto;
 	margin-bottom:10px;
+}
+
+.GO_map {
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:10px;
+	margin-bottom:10px;
+	
+	width:800px;
+}
+
+.number_col {
+	width:100px;	
+}
+
+.GO_table .table_title {
+	font-weight:bold;
+	margin-bottom:10px;
+}
+
+.GO_table {
+	margin-top:10px;
+	margin-bottom:30px;
+	margin-left:auto;
+	margin-right:auto;
+	width:800px;
 }

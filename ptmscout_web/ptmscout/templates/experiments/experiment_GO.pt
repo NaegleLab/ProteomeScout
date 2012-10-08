@@ -1,0 +1,80 @@
+<div metal:use-macro="layout">
+	<div metal:fill-slot="header">
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/experiments.css')}" />
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/graphs.css')}" />
+		
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js" ></script>
+		<script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>
+		
+	</div>
+	<div metal:fill-slot="content">
+		<div metal:use-macro="experiment_header">
+			<div id="experimentMenu" metal:fill-slot="menu">
+				<a href="${request.application_url}/experiments/${experiment.id}/summary">Summary</a>
+				| <a href="${request.application_url}/experiments/${experiment.id}/GO">GO Terms</a>
+				| <a href="${request.application_url}/experiments/${experiment.id}/pfam">Protein Families</a>
+				| <a href="${request.application_url}/experiments/${experiment.id}/predictions">Scansite Predictions</a>
+			</div>
+		</div>
+
+		<div class="GO_map">
+			<div class="data" tal:content="go_tree"></div>
+		</div>
+		
+		<div class="GO_table">
+			<div class="table_title">Molecular Functions</div>
+			<table>
+				<tr>
+					<th class="number_col">GO</th>
+					<th>Term</th>
+					<th class="value">Peptides</th>
+				</tr>
+				<tr tal:repeat="entry go_tables.molecular_function">
+					<td class="number_col">
+						<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + entry[0]"
+										target="_blank" tal:content="entry[0]"></a>
+					</td>
+					<td tal:content="entry[1]"></td>
+					<td class="number_col value" tal:content="entry[2]"></td>
+				</tr>
+			</table>
+		</div>
+		<div class="GO_table">
+			<div class="table_title">Cellular Components</div>
+			<table>
+				<tr>
+					<th class="number_col">GO</th>
+					<th>Term</th>
+					<th class="value">Peptides</th>
+				</tr>
+				<tr tal:repeat="entry go_tables.cellular_component">
+					<td class="number_col">
+						<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + entry[0]"
+										target="_blank" tal:content="entry[0]"></a>
+					</td>
+					<td tal:content="entry[1]"></td>
+					<td class="number_col value" tal:content="entry[2]"></td>
+				</tr>
+			</table>
+		</div>
+		<div class="GO_table">
+			<div class="table_title">Biological Processes</div>
+			<table>
+				<tr>
+					<th class="number_col">GO</th>
+					<th>Term</th>
+					<th class="value">Peptides</th>
+				</tr>
+				<tr tal:repeat="entry go_tables.biological_process">
+					<td class="number_col">
+						<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + entry[0]"
+										target="_blank" tal:content="entry[0]"></a>
+					</td>
+					<td tal:content="entry[1]"></td>
+					<td class="number_col value" tal:content="entry[2]"></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+		
