@@ -17,8 +17,6 @@ function createGOMap(json_data, container){
 	
 	var foreground_color = "#000";
 	var background_color = "#BBB";
-	var foreground_stroke = "none";
-	var background_stroke = "none";
 	
 	var view_limit = 60;
 	var id_size = 36;
@@ -72,38 +70,44 @@ function createGOMap(json_data, container){
 		return (2 * (scale(d.y + d.r) - scale(d.y)) / r * size);
 	};
 	
-	vis.selectAll("text.id")
-    		.data(nodes.reverse())
-    	.enter()
-    		.append("svg:text")
-	    		.attr("class", function(d) { return "id " + (d.children ? "parent" : "child"); })
-	    		.attr("x", function(d) { return d.x; })
-	    		.attr("y", function(d) { return d.y; })
-	    		.attr("dy", ".35em")
-	    		.attr("text-anchor", "middle")
-	    		.style("fill", function(d) { return isNodeForeground(d) ? foreground_color : background_color})
-	    		.style("stroke", function(d) { return isNodeForeground(d) ? foreground_stroke : background_stroke})
-	    		.style("opacity", function(d) { return isNodeVisible(d) ? 1 : 0; })
-	    		.style("font-size", function(d) { return getScaledSize(d, id_size) + "px" })
-	    		.text(function(d) { return d.GO; });
-
-	vis.selectAll("text.term")
-			.data(nodes)
-		.enter()
-			.append("svg:text")
-				.attr("class", function(d) { return "term " + (d.children ? "parent" : "child"); })
-	    		.attr("x", function(d) { return d.x; })
-	    		.attr("y", function(d) { return d.y; })
-	    		.attr("dy", function(d) { return getScaledSize(d, id_size) })
-	    		.attr("text-anchor", "middle")
-	    		.style("fill", function(d) { return isNodeForeground(d) ? foreground_color : background_color})
-	    		.style("stroke", function(d) { return isNodeForeground(d) ? foreground_stroke : background_stroke})
-	    		.style("opacity", function(d) { return isNodeVisible(d) ? 1 : 0; })
-	    		.style("font-size", function(d) { return getScaledSize(d, term_size) + "px" })
-	    		.text(function(d) { return d.term; });
-
-	d3.select("body").on("click", function() { zoom(root); });
+	nodes = nodes.reverse()
 	
+	vis.selectAll("g.label")
+    		.data(nodes)
+    	.enter().append("g")
+    		.attr("class", "label")
+    		.attr("transform", "translate(0,0)")
+    		.each(function(d){
+    			nodeclass = (d.children ? "parent" : "child");
+    			textcolor = isNodeForeground(d) ? foreground_color : background_color;
+    			textopacity = isNodeVisible(d) ? 1 : 0;
+    			
+    			d3.select(this)
+	    			.append("svg:text")
+			    		.attr("class", "id " + nodeclass )
+			    	    .attr("x", d.x)
+			    	    .attr("y", d.y)
+			    		.attr("dy", ".35em")
+			    		.attr("text-anchor", "middle")
+			    		.style("fill", textcolor)
+			    		.style("opacity", textopacity)
+			    		.style("font-size", getScaledSize(d, id_size) + "px")
+			    		.text(d.GO);
+    			
+    			d3.select(this)
+	    			.append("svg:text")
+						.attr("class", "term " + nodeclass)
+						.attr("x", d.x)
+			    	    .attr("y", d.y)
+			    		.attr("dy", getScaledSize(d, id_size))
+			    		.attr("text-anchor", "middle")
+			    		.style("fill", textcolor)
+			    		.style("opacity", textopacity)
+			    		.style("font-size", getScaledSize(d, term_size) + "px")
+			    		.text(d.term);
+    		});
+
+    d3.select("body").on("click", function() { zoom(root); });
 	
 	function zoom(d, i) {
 	  var k = r / d.r / 2;
@@ -117,12 +121,14 @@ function createGOMap(json_data, container){
 	      .attr("cx", function(d) { return x(d.x); })
 	      .attr("cy", function(d) { return y(d.y); })
 	      .attr("r", function(d) { return k * d.r; });
-	
+	  
+	  t.selectAll("g.label")
+	  	  .attr("transform", function(d) { "translate({0},{1})".format(x(d.x), y(d.y)) } );
+	  
 	  t.selectAll("text.id")
 	      .attr("x", function(d) { return x(d.x); })
 	      .attr("y", function(d) { return y(d.y); })
 	      .style("fill", function(d) { return isNodeForeground(d, parent) ? foreground_color : background_color})
-	      .style("stroke", function(d) { return isNodeForeground(d, parent) ? foreground_stroke : background_stroke})
 	      .style("opacity", function(d) { return isNodeVisible(d, k) ? 1 : 0; })
 	      .style("font-size", function(d) { return getScaledSize(d, id_size, y) + "px" });
 	  
@@ -131,7 +137,6 @@ function createGOMap(json_data, container){
 	      .attr("y", function(d) { return y(d.y); })
 	      .attr("dy", function(d) { return getScaledSize(d, id_size, y); })
 	      .style("fill", function(d) { return isNodeForeground(d, parent) ? foreground_color : background_color})
-	      .style("stroke", function(d) { return isNodeForeground(d, parent) ? foreground_stroke : background_stroke})
 	      .style("opacity", function(d) { return isNodeVisible(d, k) ? 1 : 0; })
 	      .style("font-size", function(d) { return getScaledSize(d, term_size, y) + "px" });
 
