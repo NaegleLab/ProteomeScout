@@ -39,8 +39,8 @@ class TestExperimentGOView(UnitTestCase):
         result = format_go_terms(measures)
         
         self.assertEqual({'molecular_function':[(g1.GO, g1.term, 1)],
-                          'biological_process':[(g2.GO, g2.term, 3)],
-                          'cellular_component':[(g4.GO, g4.term, 2), (g3.GO, g3.term, 1)]}, result)
+                          'biological_process':[(g2.GO, g2.term, 2)],
+                          'cellular_component':[(g4.GO, g4.term, 1), (g3.GO, g3.term, 1)]}, result)
     
     @patch('ptmscout.views.experiment.GO_view.build_go_annotation_tree')
     @patch('ptmscout.views.experiment.GO_view.format_go_terms')
