@@ -33,8 +33,6 @@ function createGOMap(json_data, container){
 	
 	root = {'GO':"", 'term':"GO annotations", 'value':json_data.total, 'children':[F_node, P_node, C_node]};
 	
-	console.log(root);
-	
 	node = root;
 
 	var nodes = pack.nodes(root);
