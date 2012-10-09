@@ -27,7 +27,7 @@
 				<tr>
 					<th class="number_col">GO</th>
 					<th>Term</th>
-					<th class="value">Peptides</th>
+					<th class="value">Proteins</th>
 				</tr>
 				<tr tal:repeat="entry go_tables.molecular_function">
 					<td class="number_col">
@@ -45,7 +45,7 @@
 				<tr>
 					<th class="number_col">GO</th>
 					<th>Term</th>
-					<th class="value">Peptides</th>
+					<th class="value">Proteins</th>
 				</tr>
 				<tr tal:repeat="entry go_tables.cellular_component">
 					<td class="number_col">
@@ -63,7 +63,7 @@
 				<tr>
 					<th class="number_col">GO</th>
 					<th>Term</th>
-					<th class="value">Peptides</th>
+					<th class="value">Proteins</th>
 				</tr>
 				<tr tal:repeat="entry go_tables.biological_process">
 					<td class="number_col">
