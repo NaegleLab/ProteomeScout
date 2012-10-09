@@ -9,6 +9,7 @@
 		
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/utils.js')}" ></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/base64.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/export.svg.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/go.map.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/experiment_go.js')}"></script>
 	</div>

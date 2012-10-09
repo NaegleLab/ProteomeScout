@@ -96,3 +96,31 @@
 .seqlogo .arial {
     font-family:"Arial", Helvetica, sans-serif;
 }
+
+.GO text {
+  fill: #000000;
+  font-size: 14px;
+  font-weight:bold;
+  pointer-events: none;
+}
+
+.GO circle {
+  fill: #ccc;
+  stroke: #999;
+  pointer-events: all;
+}
+
+.GO circle.parent {
+  fill: #1f77b4;
+  fill-opacity: .1;
+  stroke: steelblue;
+}
+
+.GO circle.parent:hover {
+  stroke: #ff7f0e;
+  stroke-width: .5px;
+}
+
+.GO circle.child {
+  pointer-events: none;
+}

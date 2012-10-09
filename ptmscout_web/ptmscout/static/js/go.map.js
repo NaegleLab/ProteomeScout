@@ -20,6 +20,7 @@ function createGOMap(json_data, container){
 	    .value(function(d) { return d.value; })
 	
 	var vis = container.append("svg:svg")
+		.attr("class", "GO")
 	    .attr("width", w)
 	    .attr("height", h)
 	  .append("svg:g")
@@ -55,7 +56,7 @@ function createGOMap(json_data, container){
     		.attr("y", function(d) { return d.y; })
     		.attr("dy", ".35em")
     		.attr("text-anchor", "middle")
-    		.style("opacity", function(d) { return d.r > 20 ? 1 : 0; })
+    		.style("opacity", function(d) { return d.children.length != 1 && d.r > 20 ? 1 : 0; })
     		.style("font-size", function(d) { return d.r / 10 })
     		.text(function(d) { return d.GO; });
 
@@ -78,7 +79,7 @@ function createGOMap(json_data, container){
 	  t.selectAll("text")
 	      .attr("x", function(d) { return x(d.x); })
 	      .attr("y", function(d) { return y(d.y); })
-	      .style("opacity", function(d) { return k * d.r > 20 && k * d.r <= r / 2 ? 1 : 0; })
+	      .style("opacity", function(d) { return d.children.length != 1 && k * d.r > 20 && k * d.r <= r / 2 ? 1 : 0; })
 	      .style("font-size", function(d) { return (y(d.y + d.r) - y(d.y - d.r)) / 20 });
 	
 	  node = d;

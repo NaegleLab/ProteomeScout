@@ -3,4 +3,6 @@ $(document).ready(function(){
 	data = JSON.parse(Base64.decode(json_base64));
 	container = d3.select(".GO_map").append("div");
 	createGOMap(data, container);
+	
+	addExport(container, d3.select(".GO_map"));
 });
