@@ -75,6 +75,7 @@ def createMockGO(go_type):
     mock.GO = "GO:" + str(gid)
     mock.term = "Some term " + str(gid)
     mock.version = "1.2"
+    mock.children = []
     
     return mock
     
