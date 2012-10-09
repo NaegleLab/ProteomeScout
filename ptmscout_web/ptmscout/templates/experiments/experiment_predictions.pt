@@ -10,6 +10,7 @@
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/base64.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/piechart.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/export.svg.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/table.minimizer.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/make.pies.js')}"></script>
 	</div>
 	<div metal:fill-slot="content">

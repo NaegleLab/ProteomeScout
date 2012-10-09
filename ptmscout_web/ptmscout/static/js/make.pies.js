@@ -1,6 +1,11 @@
 $(document).ready(function() {
 	var num = 1;
 	
+	d3.selectAll(".data_table")
+		.each(function(){
+			makeTableCollapsable(d3.select(this), 2, 11);
+		});
+	
 	d3.selectAll(".data_chart")
 		.each(function() {
 			json_base64 = 

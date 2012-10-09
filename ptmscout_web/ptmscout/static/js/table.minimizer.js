@@ -1,4 +1,7 @@
 function makeTableCollapsable(table_container, max_cols, max_rows){
+	if( table_container.selectAll("tr")[0].length <= max_rows ){
+		return;
+	}
 	hideExcessRows(table_container.selectAll("tr"), max_rows);
 	
 	table_container.select("table")
