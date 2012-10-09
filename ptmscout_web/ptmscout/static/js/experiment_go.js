@@ -4,7 +4,7 @@ $(document).ready(function(){
 	container = d3.select(".GO_map").append("div");
 	createGOMap(data, container);
 	
-	var max_row_display = 11;
+	var max_row_display = 10;
 	
 	addExport(container, d3.select(".GO_map"));
 	
