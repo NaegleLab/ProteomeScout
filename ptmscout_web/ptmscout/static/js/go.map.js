@@ -20,7 +20,7 @@ function createGOMap(json_data, container){
 	
 	var view_limit = 60;
 	var id_size = 36;
-	var term_size = 24;
+	var term_size = 28;
 	
 	var pack = d3.layout.pack()
 	    .size([r, r])
@@ -76,7 +76,6 @@ function createGOMap(json_data, container){
     		.data(nodes)
     	.enter().append("g")
     		.attr("class", "label")
-    		.attr("transform", "translate(0,0)")
     		.each(function(d){
     			nodeclass = (d.children ? "parent" : "child");
     			textcolor = isNodeForeground(d) ? foreground_color : background_color;
@@ -87,7 +86,6 @@ function createGOMap(json_data, container){
 			    		.attr("class", "id " + nodeclass )
 			    	    .attr("x", d.x)
 			    	    .attr("y", d.y)
-			    		.attr("dy", ".35em")
 			    		.attr("text-anchor", "middle")
 			    		.style("fill", textcolor)
 			    		.style("opacity", textopacity)
@@ -121,9 +119,6 @@ function createGOMap(json_data, container){
 	      .attr("cx", function(d) { return x(d.x); })
 	      .attr("cy", function(d) { return y(d.y); })
 	      .attr("r", function(d) { return k * d.r; });
-	  
-	  t.selectAll("g.label")
-	  	  .attr("transform", function(d) { "translate({0},{1})".format(x(d.x), y(d.y)) } );
 	  
 	  t.selectAll("text.id")
 	      .attr("x", function(d) { return x(d.x); })
