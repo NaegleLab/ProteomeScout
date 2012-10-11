@@ -20,12 +20,16 @@ class TestUploadView(UnitTestCase):
         
         result = user_upload(request)
         
-        expected_experiments = [{'method_calls': [], 'parent_id': 0, 'id': 2, 'name': 'Experiment Name2', 'public': 0}]
+        expected_experiments = [{'URL':'url', 'parent_id': 0, 'id': 2, 'name': 'Experiment Name2', 'public': 0}]
                 
         self.assertEqual(strings.upload_page_title, result['pageTitle'])
         
+        del result['user_experiments'][0]['method_calls']
+        decoded_data = json.loads(base64.b64decode(result['json_user_data']))
+        del decoded_data[0]['method_calls']
+        
         self.assertEqual(expected_experiments, result['user_experiments'])
-        self.assertEqual(expected_experiments, json.loads(base64.b64decode(result['json_user_data'])))
+        self.assertEqual(expected_experiments, decoded_data)
         
         
 class IntegrationTestUploadView(IntegrationTestCase):
