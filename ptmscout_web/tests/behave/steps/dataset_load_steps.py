@@ -28,8 +28,8 @@ def submit_correct_dataset(context):
     result = context.ptmscoutapp.get('/upload', status=200)
     context.form = result.form()
     
-    context.form.set('loadType', "new")
-    context.form.set('dataFile', "data/datasetLoad_correctDataset.txt")
+    context.form.set('load_type', "new")
+    context.form.set('data_file', "data/datasetLoad_correctDataset.txt")
     context.form.set('description', "This is a correct dataset")
     
     set_form_defaults(context)
@@ -40,8 +40,8 @@ def submit_incorrect_peptide_dataset(context):
     result = context.ptmscoutapp.get('/upload', status=200)
     context.form = result.form()
     
-    context.form.set('loadType', "new")
-    context.form.set('dataFile', "data/datasetLoad_pepMismatch.txt")
+    context.form.set('load_type', "new")
+    context.form.set('data_file', "data/datasetLoad_pepMismatch.txt")
     context.form.set('description', "This is a correct dataset")
     
     set_form_defaults(context)
@@ -52,8 +52,8 @@ def submit_incorrect_genpept_dataset(context):
     result = context.ptmscoutapp.get('/upload', status=200)
     context.form = result.form()
     
-    context.form.set('loadType', "new")
-    context.form.set('dataFile', "data/datasetLoad_badAcc.txt")
+    context.form.set('load_type', "new")
+    context.form.set('data_file', "data/datasetLoad_badAcc.txt")
     context.form.set('description', "This is a correct dataset")
     
     set_form_defaults(context)
@@ -64,8 +64,8 @@ def submit_dataset_with_multiple_peptide_columns(context):
     result = context.ptmscoutapp.get('/upload', status=200)
     context.form = result.form()
     
-    context.form.set('loadType', "new")
-    context.form.set('dataFile', "data/datasetLoad_moreThanOnePep.txt")
+    context.form.set('load_type', "new")
+    context.form.set('data_file', "data/datasetLoad_moreThanOnePep.txt")
     context.form.set('description', "This is a dataset with multiple peptide columns")
     
     set_form_defaults(context)
@@ -76,8 +76,8 @@ def submit_dataset_without_accession_column(context):
     result = context.ptmscoutapp.get('/upload', status=200)
     context.form = result.form()
     
-    context.form.set('loadType', "new")
-    context.form.set('dataFile', "data/datasetLoad_noAcc.txt")
+    context.form.set('load_type', "new")
+    context.form.set('data_file', "data/datasetLoad_noAcc.txt")
     context.form.set('description', "This is a dataset without an accession column")
     
     set_form_defaults(context)
