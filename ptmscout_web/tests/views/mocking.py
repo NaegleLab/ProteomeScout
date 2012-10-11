@@ -32,6 +32,8 @@ def createMockExperiment(eid, public, parent_id=0):
     mock.id = eid
     mock.public = public
     mock.parent_id = parent_id
+    mock.URL = "url"
+    mock.getUrl.return_value = mock.URL
     mock.name = "Experiment Name" + str(eid)
     return mock
 
