@@ -4,7 +4,7 @@ from ptmscout.config import settings as config
 from ptmscout.database.permissions import Permission
 from sqlalchemy.dialects.mysql.base import TINYINT
 from sqlalchemy.schema import ForeignKey
-from sqlalchemy.types import Float
+from sqlalchemy.types import Float, Enum
 from sqlalchemy.sql.expression import null
 
 class ExperimentData(Base):
@@ -50,8 +50,12 @@ class Experiment(Base):
     
     volume = Column(Integer(11))
     pages = Column(VARCHAR(20))
+    page_start = Column(VARCHAR(10))
+    page_end = Column(VARCHAR(10))
     journal = Column(VARCHAR(45))
     pub_date = Column(VARCHAR(20))
+    publication_year = Column(Integer(4))
+    publication_month = Column(Enum(['','january','february','march','april','may','june','july','august','september','october','november','december']))
     
     public = Column(Integer(1),default=0)
     

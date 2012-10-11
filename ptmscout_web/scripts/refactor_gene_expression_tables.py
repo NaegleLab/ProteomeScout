@@ -1,38 +1,9 @@
-from pyramid import testing
 from paste.deploy.loadwsgi import appconfig
-from sqlalchemy import engine_from_config
-from ptmscout.database import DBSession, Base  # base declarative object
+from ptmscout.database import DBSession  # base declarative object
 import os, sys
 from ptmscout.database import gene_expression as ge
 import traceback
-import unittest
-
-class DatabaseInitialization():
-    @classmethod
-    def setUpClass(cls):
-        cls.engine = engine_from_config(settings, prefix='sqlalchemy.')
-
-    def setUp(self):
-        self.connection = self.engine.connect()
-
-        # begin a non-ORM transaction
-        self.trans = self.connection.begin()
-
-        # bind an individual Session to the connection
-        DBSession.configure(bind=self.connection)
-        self.session = DBSession
-        Base.session = self.session
-
-    def rollback(self):
-        testing.tearDown()
-        self.trans.rollback()
-        self.session.close()
-
-    def tearDown(self):
-        testing.tearDown()
-        self.trans.commit()
-        self.session.close()
-        
+from DB_init import DatabaseInitialization
 
 def getExpressionTissues(table_name):
     result = DBSession.execute("SHOW COLUMNS FROM `%s`" % table_name)
@@ -47,7 +18,7 @@ if __name__ == '__main__':
     try:
         settings = appconfig(os.path.join('config:', 'data', 'ptmscout', 'ptmscout_web', 'development.ini'))
             
-        DatabaseInitialization.setUpClass()
+        DatabaseInitialization.setUpClass(settings)
         dbinit = DatabaseInitialization()
         dbinit.setUp()
         
