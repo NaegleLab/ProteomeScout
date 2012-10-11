@@ -29,6 +29,33 @@ experiment_browse_page_title = "Browsing Experiment: %s"
 experiment_prediction_page_title = "Experiment Predictions: %s"
 experiment_pfam_page_title = "Experiment Protein Families: %s"
 
+experiment_upload_finished_subject = "PTMScout experiment upload completed" 
+experiment_upload_finished_message = \
+"""PTMScout has finished processing the upload of your experiment: '%s'
+
+Upload Results:
+
+Peptides: %d
+Proteins: %d
+Errors: %d
+
+You may view the error log for this upload at %s.
+
+Thanks for using PTMScout,
+-The PTMScout Team"""
+
+experiment_upload_failed_page_title = "Upload Failed"
+experiment_upload_message_multiple_peptide_columns = "Data set has more than one peptide column. Check for the phrase 'pep' in all columns of the experiment header."
+
+experiment_upload_started_page_title = "Upload Started"
+experiment_upload_started_message = \
+"""Experiment upload process successfully started.
+
+An e-mail will be sent to you when the experiment upload is complete.
+ 
+Additionally, you may check the status of the upload by visiting <a href=\"%s\">this page</a>"""
+
+
 forgotten_password_page_title = "Forgotten Password Retrieval"
 forgotten_password_success_header = "Password Reset Success"
 forgotten_password_success_message = "Your username and a temporary password have been sent to your e-mail address"
@@ -130,3 +157,5 @@ error_protein_not_found_message = "No protein resource exists with the specified
 prediction_type_map = {'scansite': "Scansite",
                        'scansite_bind': "Scansite Bind",
                        'scansite_kinase': "Scansite Kinase"}
+
+

@@ -9,8 +9,7 @@ Feature: Dataset Load
 			| 17       | 16       | 0      |
 
 	Scenario: More than one pep
-		Given a dataset file with more than one peptide column
-		When I submit the dataset
+		Given a user submits a dataset file with more than one peptide column
 		Then the user should see an error that says "data set has more than one peptide column"
 		And the user should see the text "check for the phrase 'pep' in all columns of the experiment header"
 
