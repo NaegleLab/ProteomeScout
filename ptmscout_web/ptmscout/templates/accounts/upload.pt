@@ -1,6 +1,12 @@
 <div metal:use-macro="layout">
 	<div metal:fill-slot="header">
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/forms.css')}" />
+		
+				<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js" ></script>
+		
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/utils.js')}" ></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/base64.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/upload.form.js')}"></script>
 	</div>
     <div metal:fill-slot="content">
     	<form action="" method="post">
@@ -12,21 +18,21 @@
     				<tr>
 			    		<td class="fieldname">Upload type:</td>
 			    		<td>
-			    			<input type="radio" name="load_type" value="new" />New
-			    			<input type="radio" name="load_type" value="reload" />Reload
-			    			<input type="radio" name="load_type" value="extension" />Extension
+			    			<input id="new_dataset" type="radio" name="load_type" value="new" />New
+			    			<input id="reload_dataset" type="radio" name="load_type" value="reload" />Reload
+			    			<input id="extend_dataset" type="radio" name="load_type" value="extension" />Extension
 			    		</td>
 		    		</tr>
-		    		<tr>
+		    		<tr id="parent_exp">
 			    		<td class="fieldname">Parent Experiment:</td>
 			   			<td>
-			   				<select class="stretch" name="parent_experiment">
+			   				<select id="expselect" class="stretch" name="parent_experiment">
 			   					<option value=""></option>
 			   					<option tal:repeat="exp user_experiments" tal:attributes="value exp.id" tal:content="exp.name"></option>
 			   				</select>
 			   			</td>
 		   			</tr>
-		   			<tr>
+		   			<tr id="change_desc">
 			   			<td class="fieldname">Change description:</td>
 			   			<td>
 			   				<textarea cols="43" rows="5" name="change_description"></textarea>
@@ -44,7 +50,7 @@
 			   		<tr>
 			   			<td class="fieldname">Published:</td>
 			   			<td>
-			   				<select name="published">
+			   				<select id="pubselect" name="published">
 			   					<option value=""></option>
 			   					<option value="no">No</option>
 			   					<option value="yes">Yes</option>
@@ -53,28 +59,28 @@
 			   		</tr>
 			   		<tr>
 			   			<td class="fieldname">Author Contact E-mail:</td>
-			   			<td ><input type="text" name="author_contact" size="55"/></td>
+			   			<td><input type="text" name="author_contact" size="55"/></td>
 			   		</tr>
 		   			<tr>
-			   			<td class="fieldname">PubMed ID:</td>
+			   			<td class="fieldname">PubMed ID:*</td>
 			   			<td>
 			   				<input type="text" name="pmid" size="13" maxlength="12" />
 			   				<button id="load_pubmed">Load Pubmed Citation</button>
 			   			</td>
 		   			</tr>
 		   			<tr>
-			   			<td class="fieldname">URL:</td>
-			   			<td ><input type="text" name="url" size="55"/></td>
+			   			<td class="fieldname">URL:*</td>
+			   			<td><input type="text" name="URL" size="55"/></td>
 		   			</tr>
-		   			<tr>
+		   			<tr class="pubinfo">
 			   			<td class="fieldname">Authors:</td>
-			   			<td ><input type="text" name="authors" size="55"/></td>
+			   			<td><input type="text" name="authors" size="55"/></td>
 		   			</tr>
-		   			<tr>
+		   			<tr class="pubinfo">
 			   			<td class="fieldname">Journal:</td>
-			   			<td ><input type="text" name="journal" size="55"/></td>
+			   			<td><input type="text" name="journal" size="55"/></td>
 			   		</tr>
-			   		<tr>
+			   		<tr class="pubinfo">
 		   				<td class="fieldname">Publication Date:</td>
 			   			<td>
 			   				<select name="publication_month">
@@ -96,15 +102,15 @@
 			   				<input type="text" size="4" name="publication_year" maxlength="4"/>
 			   			</td>
 		   			</tr>
-		   			<tr>
+		   			<tr class="pubinfo">
 			   			<td class="fieldname">Volume:</td>
 			   			<td ><input type="text" name="volume" /></td>
 		   			</tr>
-		   			<tr>
+		   			<tr class="pubinfo">
 			   			<td class="fieldname">Pages:</td>
 			   			<td>
-			   				<input type="text" name="page_start" size="4" maxlength="4" /> to
-			   				<input type="text" name="page_end" size="4" maxlength="4" />
+			   				<input type="text" name="page_start" size="10" maxlength="10" /> to
+			   				<input type="text" name="page_end" size="10" maxlength="10" />
 			   			</td>
 		   			</tr>
 		   		</table>
@@ -127,7 +133,7 @@
 			   			</td>
 		   			</tr>
 		   			<tr>
-			   			<td class="fieldname">Notes:</td>
+			   			<td class="fieldname">Notes:*</td>
 			   			<td>
 			   				<textarea rows="5" cols="43" name="notes"></textarea>
 			   			</td>
@@ -139,7 +145,9 @@
 	   				I have read and agree to the <a href="${request.application_url}/terms" target="_blank">terms of use</a> 
 	   			</div>
 	   			
-	   			<div class="formsubmission"><input type="submit" value="Upload" /></div>	   			
+	   			<div class="formsubmission"><input type="submit" value="Upload" /></div>
+	   			<div class="clear"></div>	   			
+		    	<div class="formfooter">* denotes an optional field, all other fields are required</div>
 		    </div>
     	</form>
     </div>
