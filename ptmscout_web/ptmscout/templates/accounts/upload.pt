@@ -4,6 +4,7 @@
 	</div>
     <div metal:fill-slot="content">
     	<form action="" method="post">
+    		<input type="hidden" value="true" name="submitted" />
 	    	<div class="wideform">
 	    		<div class="formcategory">Experiment Upload Type</div>
     			<table>
@@ -133,7 +134,7 @@
 				
 				<div class="formagreement">
 	   				<input type="checkbox" name="terms_of_use" />
-	   				I have read and agree to the <a href="${request.application_url}/terms">terms of use</a> 
+	   				I have read and agree to the <a href="${request.application_url}/terms" target="_blank">terms of use</a> 
 	   			</div>
 	   			
 	   			<div class="formsubmission"><input type="submit" value="Upload" /></div>	   			
