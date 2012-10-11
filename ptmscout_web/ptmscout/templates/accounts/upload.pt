@@ -20,6 +20,7 @@
 			    		<td class="fieldname">Parent Experiment:</td>
 			   			<td>
 			   				<select class="stretch" name="parent_experiment">
+			   					<option value=""></option>
 			   					<option tal:repeat="(id, exp) user_experiments" tal:attributes="value id" tal:content="exp"></option>
 			   				</select>
 			   			</td>
@@ -27,7 +28,7 @@
 		   			<tr>
 			   			<td class="fieldname">Change description:</td>
 			   			<td>
-			   				<textarea cols="47" rows="5" name="change_description"></textarea>
+			   				<textarea cols="43" rows="5" name="change_description"></textarea>
 			   			</td>
 		   			</tr>
 	   			</table>
@@ -57,7 +58,7 @@
 			   			<td class="fieldname">PubMed ID:</td>
 			   			<td>
 			   				<input type="text" name="pmid" size="13" maxlength="12" />
-			   				<button id="load_pubmed">Load Citation</button>
+			   				<button id="load_pubmed">Load Pubmed Citation</button>
 			   			</td>
 		   			</tr>
 		   			<tr>
@@ -115,7 +116,7 @@
 			   			<td > <input type="file" name="data_file" /> </td>
 		   			</tr>
 		   			<tr>
-			   			<td class="fieldname">Accessions Ambiguous:</td>
+			   			<td class="fieldname">Contains mass-spec data with possibly ambiguous accessions:</td>
 			   			<td> 
 			   				<select name="ambiguous">
 			   					<option value=""></option>
@@ -127,7 +128,7 @@
 		   			<tr>
 			   			<td class="fieldname">Notes:</td>
 			   			<td>
-			   				<textarea rows="5" cols="50" name="notes"></textarea>
+			   				<textarea rows="5" cols="43" name="notes"></textarea>
 			   			</td>
 		   			</tr>
 				</table>

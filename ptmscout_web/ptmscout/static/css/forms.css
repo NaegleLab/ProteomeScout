@@ -10,7 +10,13 @@
 	width: 500px;
 }
 
-.fieldname {
+.wideform table {
+	table-layout:fixed;
+	width:100%;
+	border-collapse:collapse;
+}
+
+td.fieldname {
 	width:150px;
 }
 
