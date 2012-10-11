@@ -4,6 +4,7 @@
 	</div>
     <div metal:fill-slot="content">
     	<form action="" method="post">
+    		<div class="hidden" id="user_experiments">${json_user_data}</div>
     		<input type="hidden" value="true" name="submitted" />
 	    	<div class="wideform">
 	    		<div class="formcategory">Experiment Upload Type</div>
@@ -21,7 +22,7 @@
 			   			<td>
 			   				<select class="stretch" name="parent_experiment">
 			   					<option value=""></option>
-			   					<option tal:repeat="(id, exp) user_experiments" tal:attributes="value id" tal:content="exp"></option>
+			   					<option tal:repeat="exp user_experiments" tal:attributes="value exp.id" tal:content="exp.name"></option>
 			   				</select>
 			   			</td>
 		   			</tr>

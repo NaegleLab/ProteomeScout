@@ -4,6 +4,8 @@ from ptmscout.views.experiment.upload import user_upload
 from ptmscout.config import strings
 from tests.views.mocking import createMockUser, createMockPermission,\
     createMockExperiment
+import base64
+import json
 
 class TestUploadView(UnitTestCase):
     def test_view_should_get_users_experiments(self):
@@ -17,10 +19,13 @@ class TestUploadView(UnitTestCase):
         request.user.permissions = [p1,p2]
         
         result = user_upload(request)
+        
+        expected_experiments = [{'method_calls': [], 'parent_id': 0, 'id': 2, 'name': 'Experiment Name2', 'public': 0}]
                 
         self.assertEqual(strings.upload_page_title, result['pageTitle'])
-        self.assertEqual([(e1.id, e1.name)], result['user_experiments'])
         
+        self.assertEqual(expected_experiments, result['user_experiments'])
+        self.assertEqual(expected_experiments, json.loads(base64.b64decode(result['json_user_data'])))
         
         
 class IntegrationTestUploadView(IntegrationTestCase):

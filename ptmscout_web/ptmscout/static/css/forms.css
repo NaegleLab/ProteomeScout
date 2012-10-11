@@ -50,3 +50,7 @@ td.fieldname {
 .stretch {
 	width:100%;
 }
+
+.hidden {
+	display:none;
+}
