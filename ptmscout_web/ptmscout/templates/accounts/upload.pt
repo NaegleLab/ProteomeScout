@@ -1,0 +1,143 @@
+<div metal:use-macro="layout">
+	<div metal:fill-slot="header">
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/forms.css')}" />
+	</div>
+    <div metal:fill-slot="content">
+    	<form action="" method="post">
+	    	<div class="wideform">
+	    		<div class="formcategory">Experiment Upload Type</div>
+    			<table>
+    				<tr>
+			    		<td class="fieldname">Upload type:</td>
+			    		<td>
+			    			<input type="radio" name="load_type" value="new" />New
+			    			<input type="radio" name="load_type" value="reload" />Reload
+			    			<input type="radio" name="load_type" value="extension" />Extension
+			    		</td>
+		    		</tr>
+		    		<tr>
+			    		<td class="fieldname">Parent Experiment:</td>
+			   			<td>
+			   				<select class="stretch" name="parent_experiment">
+			   					<option tal:repeat="(id, exp) user_experiments" tal:attributes="value id" tal:content="exp"></option>
+			   				</select>
+			   			</td>
+		   			</tr>
+		   			<tr>
+			   			<td class="fieldname">Change description:</td>
+			   			<td>
+			   				<textarea cols="47" rows="5" name="change_description"></textarea>
+			   			</td>
+		   			</tr>
+	   			</table>
+	   			
+	   			
+	   			<div class="formcategory">Experiment Information</div>
+	   			<table>
+	   				<tr>	
+			   			<td class="fieldname">Experiment Name:</td>
+			   			<td ><input type="text" name="experiment_name" size="55"/></td>
+			   		</tr>
+			   		<tr>
+			   			<td class="fieldname">Published:</td>
+			   			<td>
+			   				<select name="published">
+			   					<option value=""></option>
+			   					<option value="no">No</option>
+			   					<option value="yes">Yes</option>
+			   				</select>
+			   			</td>
+			   		</tr>
+			   		<tr>
+			   			<td class="fieldname">Author Contact E-mail:</td>
+			   			<td ><input type="text" name="author_contact" size="55"/></td>
+			   		</tr>
+		   			<tr>
+			   			<td class="fieldname">PubMed ID:</td>
+			   			<td>
+			   				<input type="text" name="pmid" size="13" maxlength="12" />
+			   				<button id="load_pubmed">Load Citation</button>
+			   			</td>
+		   			</tr>
+		   			<tr>
+			   			<td class="fieldname">URL:</td>
+			   			<td ><input type="text" name="url" size="55"/></td>
+		   			</tr>
+		   			<tr>
+			   			<td class="fieldname">Authors:</td>
+			   			<td ><input type="text" name="authors" size="55"/></td>
+		   			</tr>
+		   			<tr>
+			   			<td class="fieldname">Journal:</td>
+			   			<td ><input type="text" name="journal" size="55"/></td>
+			   		</tr>
+			   		<tr>
+		   				<td class="fieldname">Publication Date:</td>
+			   			<td>
+			   				<select name="publication_month">
+			   					<option value=""></option>
+			   					<option value="january">N/a</option>
+			   					<option value="january">January</option>
+			   					<option value="january">February</option>
+			   					<option value="january">March</option>
+			   					<option value="january">April</option>
+			   					<option value="january">May</option>
+			   					<option value="january">June</option>
+			   					<option value="january">July</option>
+			   					<option value="january">August</option>
+			   					<option value="january">September</option>
+			   					<option value="january">October</option>
+			   					<option value="january">November</option>
+			   					<option value="january">December</option>
+			   				</select>
+			   				<input type="text" size="4" name="publication_year" maxlength="4"/>
+			   			</td>
+		   			</tr>
+		   			<tr>
+			   			<td class="fieldname">Volume:</td>
+			   			<td ><input type="text" name="volume" /></td>
+		   			</tr>
+		   			<tr>
+			   			<td class="fieldname">Pages:</td>
+			   			<td>
+			   				<input type="text" name="page_start" size="4" maxlength="4" /> to
+			   				<input type="text" name="page_end" size="4" maxlength="4" />
+			   			</td>
+		   			</tr>
+		   		</table>
+	   			
+	   			
+	   			<div class="formcategory">Experiment Data</div>
+	   			<table>
+	   				<tr>
+			   			<td class="fieldname">Data input file: </td>
+			   			<td > <input type="file" name="data_file" /> </td>
+		   			</tr>
+		   			<tr>
+			   			<td class="fieldname">Accessions Ambiguous:</td>
+			   			<td> 
+			   				<select name="ambiguous">
+			   					<option value=""></option>
+			   					<option value="no">No</option>
+			   					<option value="yes">Yes</option>
+			   				</select> 
+			   			</td>
+		   			</tr>
+		   			<tr>
+			   			<td class="fieldname">Notes:</td>
+			   			<td>
+			   				<textarea rows="5" cols="50" name="notes"></textarea>
+			   			</td>
+		   			</tr>
+				</table>
+				
+				<div class="formagreement">
+	   				<input type="checkbox" name="terms_of_use" />
+	   				I have read and agree to the <a href="${request.application_url}/terms">terms of use</a> 
+	   			</div>
+	   			
+	   			<div class="formsubmission"><input type="submit" value="Upload" /></div>	   			
+		    </div>
+    	</form>
+    </div>
+</div>
