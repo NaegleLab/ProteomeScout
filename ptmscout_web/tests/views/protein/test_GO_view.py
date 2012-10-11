@@ -6,6 +6,12 @@ from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockProtein, createMockGO
 import unittest
 
+from tests.PTMScoutTestCase import IntegrationTestCase
+
+class ProteinGOIntegrationTests(IntegrationTestCase):
+    def test_protein_GO(self):
+        self.ptmscoutapp.get('/proteins/35546/GO')
+        
 class TestProteinGOViews(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()

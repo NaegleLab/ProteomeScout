@@ -6,6 +6,12 @@ from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockProtein, createMockUser, \
     createMockMeasurement, createMockExperiment, createMockPhosphopep
 import unittest
+from tests.PTMScoutTestCase import IntegrationTestCase
+
+
+class TestProteinModificationViewsIntegration(IntegrationTestCase):
+    def test_integration(self):
+        self.ptmscoutapp.get('/proteins/35546/modifications')
 
 class TestProteinModificationViews(unittest.TestCase):
     def setUp(self):

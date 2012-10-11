@@ -10,6 +10,12 @@ from mock import patch
 import json
 import base64
 import math
+from tests.PTMScoutTestCase import IntegrationTestCase
+
+class SummaryViewIntegrationTests(IntegrationTestCase):
+    def test_view_integration(self):
+        self.ptmscoutapp.get('/experiments/26/summary')
+        self.ptmscoutapp.get('/experiments/26')
 
 class SummaryViewsTests(unittest.TestCase):
     def setUp(self):

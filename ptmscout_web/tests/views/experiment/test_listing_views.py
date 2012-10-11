@@ -5,6 +5,11 @@ from ptmscout.views.experiment.listings_view import experiment_listing, view_exp
 from mock import patch, Mock
 from ptmscout.config import strings
 from tests.views.mocking import createMockExperiment
+from tests.PTMScoutTestCase import IntegrationTestCase
+
+class ExperimentListingIntegrationTest(IntegrationTestCase):
+    def test_integration(self):
+        self.ptmscoutapp.get('/experiments', status=200)
 
 class ExperimentListingViewTests(unittest.TestCase):
     def setUp(self):

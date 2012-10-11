@@ -7,6 +7,14 @@ from tests.views.mocking import createMockExperiment, createMockProtein, \
     createMockMeasurement, createMockPhosphopep, createMockScansite,\
     createMockUser
 import unittest
+from tests.PTMScoutTestCase import IntegrationTestCase
+
+class ExperimentBrowseViewIntegrationTests(IntegrationTestCase):
+    def test_experiment_browse_view(self):
+        self.ptmscoutapp.get('/experiments/26/browse')
+        
+    def test_experiment_browse_search(self):
+        self.ptmscoutapp.post('/experiments/26/browse', {'submitted':"true", 'acc_search':"ACK1", 'stringency':"1"})
 
 class ExperimentBrowseViewTests(unittest.TestCase):
     def setUp(self):

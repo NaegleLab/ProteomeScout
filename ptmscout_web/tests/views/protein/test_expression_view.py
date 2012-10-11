@@ -6,6 +6,12 @@ from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockProtein, createMockProbe, \
     createMockExpSample
 import unittest
+from tests.PTMScoutTestCase import IntegrationTestCase
+
+class TestProteinExpressionViewsIntegration(IntegrationTestCase):
+    def test_integration(self):
+        self.ptmscoutapp.get('/proteins/35546/expression')
+
 
 class TestProteinExpressionViews(unittest.TestCase):
     def setUp(self):

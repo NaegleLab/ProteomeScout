@@ -11,18 +11,6 @@ class InfoFunctionalTests(IntegrationTestCase):
     def test_terms_renderer(self):
         self.ptmscoutapp.get('/terms', status=200)
         
-    def test_integrated_protein_views(self):
-        self.ptmscoutapp.get('/proteins/35546/modifications')
-        self.ptmscoutapp.get('/proteins/35546/expression')
-        self.ptmscoutapp.get('/proteins/35546/GO')
-        
-    def test_integrated_experiment_views(self):
-        self.ptmscoutapp.get('/experiments', status=200)
-        self.ptmscoutapp.get('/experiments/26')
-        self.ptmscoutapp.get('/experiments/26/summary')
-        self.ptmscoutapp.get('/experiments/26/browse')
-        self.ptmscoutapp.post('/experiments/26/browse', {'submitted':"true", 'acc_search':"ACK1", 'stringency':"1"})
-        
     def test_login_views(self):
         self.ptmscoutapp.get('/login')
         self.ptmscoutapp.get('/register')
@@ -38,5 +26,4 @@ class InfoFunctionalTests(IntegrationTestCase):
         
     def test_no_such_protein_should_give_info(self):
         response = self.ptmscoutapp.get('/proteins/20131234234')
-        
         response.mustcontain(strings.error_resource_not_found_page_title)
