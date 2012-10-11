@@ -28,6 +28,7 @@ class InfoFunctionalTests(IntegrationTestCase):
         self.ptmscoutapp.get('/register')
         
     def test_forbidden_should_invoke_on_unauthorized_access(self):
+        self.bot.logout()
         response = self.ptmscoutapp.get('/upload')
         response.mustcontain("forbidden")
         
