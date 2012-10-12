@@ -13,7 +13,7 @@ def set_form_defaults(context):
     context.form.set('author_contact', "author@institute.edu")
     context.form.set('authors', "S Guy, S O Person")
     context.form.set('journal', "Journal of serendipitous results")
-    context.form.set('publication_month', "December")
+    context.form.set('publication_month', "december")
     context.form.set('publication_year', "2011")
     context.form.set('volume', "236")
     context.form.set('page_start', "111")
@@ -25,8 +25,9 @@ def set_form_defaults(context):
 
 @given(u'a user submits a correctly formatted dataset of phosphorylation data')
 def submit_correct_dataset(context):
+    context.active_user.login()
     result = context.ptmscoutapp.get('/upload', status=200)
-    context.form = result.form()
+    context.form = result.form
     
     context.form.set('load_type', "new")
     context.form.set('data_file', "data/datasetLoad_correctDataset.txt")
@@ -37,8 +38,9 @@ def submit_correct_dataset(context):
 
 @given(u'a user submits a dataset that has an incorrect peptide to protein match')
 def submit_incorrect_peptide_dataset(context):
+    context.active_user.login()
     result = context.ptmscoutapp.get('/upload', status=200)
-    context.form = result.form()
+    context.form = result.form
     
     context.form.set('load_type', "new")
     context.form.set('data_file', "data/datasetLoad_pepMismatch.txt")
@@ -49,8 +51,9 @@ def submit_incorrect_peptide_dataset(context):
 
 @given(u'a user submits a dataset that has an accession that looks like a GenPept accession, but is not currently there')
 def submit_incorrect_genpept_dataset(context):
+    context.active_user.login()
     result = context.ptmscoutapp.get('/upload', status=200)
-    context.form = result.form()
+    context.form = result.form
     
     context.form.set('load_type', "new")
     context.form.set('data_file', "data/datasetLoad_badAcc.txt")
@@ -61,8 +64,9 @@ def submit_incorrect_genpept_dataset(context):
 
 @given(u'a user submits a dataset file with more than one peptide column')
 def submit_dataset_with_multiple_peptide_columns(context):
+    context.active_user.login()
     result = context.ptmscoutapp.get('/upload', status=200)
-    context.form = result.form()
+    context.form = result.form
     
     context.form.set('load_type', "new")
     context.form.set('data_file', "data/datasetLoad_moreThanOnePep.txt")
@@ -73,8 +77,9 @@ def submit_dataset_with_multiple_peptide_columns(context):
 
 @given(u'a user submits a dataset with no accession column')
 def submit_dataset_without_accession_column(context):
+    context.active_user.login()
     result = context.ptmscoutapp.get('/upload', status=200)
-    context.form = result.form()
+    context.form = result.form
     
     context.form.set('load_type', "new")
     context.form.set('data_file', "data/datasetLoad_noAcc.txt")
