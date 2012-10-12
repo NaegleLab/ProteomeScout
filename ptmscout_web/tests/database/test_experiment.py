@@ -65,11 +65,17 @@ class ExperimentTestCase(DBTestCase):
         exp = dbexperiment.getExperimentById(1, None)
         exp.public = 0
         exp.saveExperiment()
+        
+        exp2 = dbexperiment.getExperimentById(2, None)
+        exp2.ready = 0
+        exp2.saveExperiment()
+        
         experiments = dbexperiment.getAllExperiments(None)
         
         self.assertTrue(len(experiments) > 0)
         
         self.assertFalse( exp.id in [ e.id for e in experiments ] )
+        self.assertFalse( exp2.id in [ e.id for e in experiments ] )
         
     @patch('ptmscout.database.experiment.getAllExperiments')
     def test_getExperimentTree_should_build_experiment_tree(self, patch_getAllExperiments):
