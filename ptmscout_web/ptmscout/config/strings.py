@@ -139,13 +139,14 @@ Thanks,
 view_page_title = "PTMScout Terms of Use"
 
 failure_reason_experiment_header_no_peptide_column = "Data file did not contain a peptide column"
-failure_reason_experiment_header_multiple_peptide_column = "Data file contained multiple peptide columns"
+failure_reason_experiment_header_multiple_peptide_column = "Data file contained multiple peptide columns. Check for the phrase 'pep' in all columns of the experiment header."
 failure_reason_experiment_header_no_acc_column = "Data file did not contain an accession column"
+failure_reason_experiment_header_multiple_acc_columns = "Data file contained multiple accession columns"
 
 failure_reason_terms_of_use_not_accepted = "You must agree to the terms of use at the bottom of this form before submitting a dataset"
 failure_reason_field_value_not_valid = "Field '%s' has invalid value"
 failure_reason_field_must_be_numeric = "Field '%s' must be numeric"
-failure_reason_required_fields_cannot_be_empty = "Required form fields cannot be empty"
+failure_reason_required_fields_cannot_be_empty = "Required form field '%s' cannot be empty"
  
 failure_reason_form_fields_cannot_be_empty = "Form fields cannot be empty"
 failure_reason_new_passwords_not_matching = "Password confirmation did not match"
@@ -166,5 +167,7 @@ error_protein_not_found_message = "No protein resource exists with the specified
 prediction_type_map = {'scansite': "Scansite",
                        'scansite_bind': "Scansite Bind",
                        'scansite_kinase': "Scansite Kinase"}
+
+
 
 
