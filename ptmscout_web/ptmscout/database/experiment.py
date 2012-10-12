@@ -4,8 +4,9 @@ from ptmscout.config import settings as config
 from ptmscout.database.permissions import Permission
 from sqlalchemy.dialects.mysql.base import TINYINT
 from sqlalchemy.schema import ForeignKey
-from sqlalchemy.types import Float, Enum
+from sqlalchemy.types import Float, Enum, DateTime
 from sqlalchemy.sql.expression import null
+import datetime
 
 class ExperimentData(Base):
     __tablename__ = 'data'
@@ -29,7 +30,7 @@ class Experiment(Base):
     
     name = Column(Text)
     author = Column(Text)
-    date = Column(VARCHAR(45))
+    date = Column(DateTime)
     
     description = Column(Text)
     contact = Column(VARCHAR(45))
@@ -44,9 +45,8 @@ class Experiment(Base):
     experiment_id = Column(Integer(10))
     
     dataset = Column(Text)
-    submitter = Column(VARCHAR(50))
     
-    primaryModification = Column(VARCHAR(15))
+    primaryModification = Column(VARCHAR(15), default='')
     
     volume = Column(Integer(11))
     page_start = Column(VARCHAR(10))
@@ -55,10 +55,13 @@ class Experiment(Base):
     publication_year = Column(Integer(4))
     publication_month = Column(Enum(['','january','february','march','april','may','june','july','august','september','october','november','december']))
     
-    public = Column(Integer(1),default=0)
+    public = Column(Integer(1), default=0)
+    
+    ready = Column(Integer(1), default=0)
+    submitter_id = Column(Integer(10), ForeignKey('users.id'))
     
     def __init__(self):
-        pass
+        self.date = datetime.datetime.now()
 
     def saveExperiment(self):
         DBSession.add(self)
@@ -178,7 +181,7 @@ def getExperimentTree(current_user):
     experiment_dict = dict([(experiment.id, experiment) for experiment in experiments])
     experiment_tree = []
     for experiment in experiments:
-        if experiment.experiment_id != 0:
+        if experiment.experiment_id != None:
             if experiment.experiment_id in experiment_dict:
                 experiment_dict[experiment.experiment_id].children.append(experiment)
         else:
