@@ -4,7 +4,6 @@ from steps.bot import Bot
 
 def before_feature(context, feature):
     settings = { 'sqlalchemy.url': "mysql+mysqldb://ptmscout_web:ptmscout1@localhost:3306/ptmscout_dev" }
-    print "Starting test app"
     app = main({}, **settings)
     context.ptmscoutapp = TestApp(app)
 
