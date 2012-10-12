@@ -72,6 +72,10 @@
 			   			<td class="fieldname">URL:*</td>
 			   			<td><input type="text" name="URL" size="55"/></td>
 		   			</tr>
+		   				<td class="fieldname">Description:*</td>
+			   			<td><textarea name="description" rows="5" cols="42" ></textarea></td>
+		   			<tr>
+		   			</tr>
 		   			<tr class="pubinfo">
 			   			<td class="fieldname">Authors:</td>
 			   			<td><input type="text" name="authors" size="55"/></td>

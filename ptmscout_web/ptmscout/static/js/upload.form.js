@@ -1,6 +1,6 @@
 function setValues(exp){
 	if(exp === undefined){
-		exp = {'name':"",'contact':"",'author':"",'journal':"",'volume':"",'page_start':"",'page_end':"", 'publication_month':"", 'publication_year':""};
+		exp = {'description':"", 'name':"",'contact':"",'author':"",'journal':"",'volume':"",'page_start':"",'page_end':"", 'publication_month':"", 'publication_year':""};
 		published = ""
 	} else
 		published = (exp.published == 1 ? "yes" : "no");
@@ -9,6 +9,7 @@ function setValues(exp){
 	$('input[name="author_contact"]').val(exp.contact)
 	$('input[name="pmid"]').val(exp.PMID)
 	$('input[name="URL"]').val(exp.URL)
+	$('textarea[name="description"]').val(exp.description)
 	
 	$('select[name="published"] option[value="'+published+'"]').attr('selected','true')
 	
