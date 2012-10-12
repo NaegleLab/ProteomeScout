@@ -85,19 +85,19 @@
 			   			<td>
 			   				<select name="publication_month">
 			   					<option value=""></option>
-			   					<option value="january">N/a</option>
+			   					<option value="None">N/a</option>
 			   					<option value="january">January</option>
-			   					<option value="january">February</option>
-			   					<option value="january">March</option>
-			   					<option value="january">April</option>
-			   					<option value="january">May</option>
-			   					<option value="january">June</option>
-			   					<option value="january">July</option>
-			   					<option value="january">August</option>
-			   					<option value="january">September</option>
-			   					<option value="january">October</option>
-			   					<option value="january">November</option>
-			   					<option value="january">December</option>
+			   					<option value="february">February</option>
+			   					<option value="march">March</option>
+			   					<option value="april">April</option>
+			   					<option value="may">May</option>
+			   					<option value="june">June</option>
+			   					<option value="july">July</option>
+			   					<option value="august">August</option>
+			   					<option value="september">September</option>
+			   					<option value="october">October</option>
+			   					<option value="november">November</option>
+			   					<option value="december">December</option>
 			   				</select>
 			   				<input type="text" size="4" name="publication_year" maxlength="4"/>
 			   			</td>

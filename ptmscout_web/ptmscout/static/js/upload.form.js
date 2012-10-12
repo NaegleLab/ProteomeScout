@@ -48,6 +48,8 @@ $(document).ready(function(){
 
 	$('#new_dataset')
 		.click(function(){
+			setValues()
+			$('#expselect option[value=""]').attr('selected','true')
 			$('#parent_exp').css('display', "none");
 			$('#change_desc').css('display', "none");
 		});
