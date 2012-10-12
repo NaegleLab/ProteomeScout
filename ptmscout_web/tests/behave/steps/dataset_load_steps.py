@@ -122,7 +122,7 @@ def info_text_display(context, text):
 @then(u'the user should be sent an email with a link to the experiment which contains')
 @patch('ptmscout.utils.mail.send_automail_message')
 def experiment_uploaded_check_email(context, patch_mail):
-    result = context.form.submit()
+    result = context.form.submit().follow()
     
     result.mustcontain(strings.experiment_upload_started_page_title)
     result.mustcontain(strings.experiment_upload_started_message[0:-len("<a href=\"%s\">this page</a>")])
