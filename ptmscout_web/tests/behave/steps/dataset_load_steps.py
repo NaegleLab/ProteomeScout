@@ -30,7 +30,12 @@ def submit_correct_dataset(context):
     context.form = result.form
     
     context.form.set('load_type', "new")
-    context.form.set('data_file', "data/datasetLoad_correctDataset.txt")
+    
+    filename = "tests/behave/data/datasetLoad_correctDataset.txt"
+    f = open(filename, 'rb')
+    filecontents = f.read()
+    
+    context.form.set('data_file', (filename, filecontents))
     context.form.set('description', "This is a correct dataset")
     
     set_form_defaults(context)
@@ -43,7 +48,11 @@ def submit_incorrect_peptide_dataset(context):
     context.form = result.form
     
     context.form.set('load_type', "new")
-    context.form.set('data_file', "data/datasetLoad_pepMismatch.txt")
+    filename = "tests/behave/data/datasetLoad_pepMismatch.txt"
+    f = open(filename, 'rb')
+    filecontents = f.read()
+    
+    context.form.set('data_file', (filename, filecontents))
     context.form.set('description', "This is a correct dataset")
     
     set_form_defaults(context)
@@ -56,7 +65,11 @@ def submit_incorrect_genpept_dataset(context):
     context.form = result.form
     
     context.form.set('load_type', "new")
-    context.form.set('data_file', "data/datasetLoad_badAcc.txt")
+    filename = "tests/behave/data/datasetLoad_badAcc.txt"
+    f = open(filename, 'rb')
+    filecontents = f.read()
+    
+    context.form.set('data_file', (filename, filecontents))
     context.form.set('description', "This is a correct dataset")
     
     set_form_defaults(context)
@@ -69,7 +82,11 @@ def submit_dataset_with_multiple_peptide_columns(context):
     context.form = result.form
     
     context.form.set('load_type', "new")
-    context.form.set('data_file', "data/datasetLoad_moreThanOnePep.txt")
+    filename = "tests/behave/data/datasetLoad_moreThanOnePep.txt"
+    f = open(filename, 'rb')
+    filecontents = f.read()
+    
+    context.form.set('data_file', (filename, filecontents))
     context.form.set('description', "This is a dataset with multiple peptide columns")
     
     set_form_defaults(context)
@@ -82,7 +99,11 @@ def submit_dataset_without_accession_column(context):
     context.form = result.form
     
     context.form.set('load_type', "new")
-    context.form.set('data_file', "data/datasetLoad_noAcc.txt")
+    filename = "tests/behave/data/datasetLoad_noAcc.txt"
+    f = open(filename, 'rb')
+    filecontents = f.read()
+    
+    context.form.set('data_file', (filename, filecontents))
     context.form.set('description', "This is a dataset without an accession column")
     
     set_form_defaults(context)
