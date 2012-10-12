@@ -18,6 +18,7 @@ ptmscout_backend/pfam/swisspfam_rel23_subset
 ptmscout_web/build
 ptmscout_web/dist
 ptmscout_web/ptmscout.egg-info
+ptmscout_web/data
 .*\.pyc
 .*.project
 .*.pydevproject
