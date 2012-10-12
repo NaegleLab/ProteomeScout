@@ -5,6 +5,7 @@ from ptmscout.database.experiment import Experiment, getExperimentById,\
 from ptmscout.database.modifications import Phosphopep, MeasuredPeptide,\
     getMeasuredPeptidesByProtein
 from ptmscout.database.user import User, getUserById
+from sqlalchemy.sql.expression import null
 
 
 class TestModifications(DBTestCase):
@@ -24,30 +25,30 @@ class TestModifications(DBTestCase):
         
         exp = Experiment()
         exp.name = "A test experiment"
-        exp.experiment_id=0
+        exp.experiment_id=None
         exp.public = 0
         exp.author = ""
-        exp.date = ""
-        exp.published = ""
-        exp.ambiguity = ""
+        exp.published = 0
+        exp.ambiguity = 0
         exp.export = 0
         exp.dataset = ""
         exp.submitter = ""
         exp.primaryModification='Y,T'
+        exp.submitter_id = None
         exp.saveExperiment()
         
         exp2 = Experiment()
         exp2.name = "Another test experiment"
-        exp2.experiment_id=0
+        exp2.experiment_id=None
         exp2.public = 0
         exp2.author = ""
-        exp2.date = ""
-        exp2.published = ""
-        exp2.ambiguity = ""
+        exp2.published = 0
+        exp2.ambiguity = 0
         exp2.export = 0
         exp2.dataset = ""
         exp2.submitter = ""
         exp2.primaryModification='S'
+        exp2.submitter_id = None
         exp2.saveExperiment()
         
         self.session.flush()

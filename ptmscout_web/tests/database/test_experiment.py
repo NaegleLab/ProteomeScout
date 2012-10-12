@@ -57,11 +57,11 @@ class ExperimentTestCase(DBTestCase):
         experiments[4].id = 5
         experiments[5].id = 6
         
-        experiments[0].experiment_id = 0
-        experiments[1].experiment_id = 0
+        experiments[0].experiment_id = None
+        experiments[1].experiment_id = None
         experiments[2].experiment_id = 1
         experiments[3].experiment_id = 1
-        experiments[4].experiment_id = 0
+        experiments[4].experiment_id = None
         experiments[5].experiment_id = 2
         
         patch_getAllExperiments.return_value = experiments
