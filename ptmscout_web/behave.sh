@@ -1,1 +1,4 @@
-/data/pyramid/bin/behave tests/behave/$1 --tags ~@pending
+file=$1
+shift
+
+/data/pyramid/bin/behave tests/behave/$file --tags ~@pending $@
