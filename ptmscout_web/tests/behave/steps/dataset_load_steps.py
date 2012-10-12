@@ -23,6 +23,7 @@ def set_form_defaults(context):
     context.form.set('notes', "none")
     context.form.set('terms_of_use', "yes")
 
+
 @given(u'a user submits a correctly formatted dataset of phosphorylation data')
 def submit_correct_dataset(context):
     context.active_user.login()
@@ -39,7 +40,6 @@ def submit_correct_dataset(context):
     context.form.set('description', "This is a correct dataset")
     
     set_form_defaults(context)
-    
 
 @given(u'a user submits a dataset that has an incorrect peptide to protein match')
 def submit_incorrect_peptide_dataset(context):
@@ -53,7 +53,7 @@ def submit_incorrect_peptide_dataset(context):
     filecontents = f.read()
     
     context.form.set('data_file', (filename, filecontents))
-    context.form.set('description', "This is a correct dataset")
+    context.form.set('description', "This is a dataset with a bad peptide")
     
     set_form_defaults(context)
     
@@ -70,7 +70,7 @@ def submit_incorrect_genpept_dataset(context):
     filecontents = f.read()
     
     context.form.set('data_file', (filename, filecontents))
-    context.form.set('description', "This is a correct dataset")
+    context.form.set('description', "This is a dataset with a bad accession")
     
     set_form_defaults(context)
     
@@ -112,12 +112,10 @@ def submit_dataset_without_accession_column(context):
 @then(u'the user should see an error that says "{error_text}"')
 def error_text_display(context, error_text):
     context.result = context.form.submit()
-    
-    context.result.mustcontain(strings.experiment_upload_failed_page_title)
     context.result.mustcontain(error_text)
     
     
-@then(u'And the user should see the text "{text}"')
+@then(u'the user should see the text "{text}"')
 def info_text_display(context, text):
     context.result.mustcontain(text)
     
