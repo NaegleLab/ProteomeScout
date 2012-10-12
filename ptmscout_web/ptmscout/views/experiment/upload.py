@@ -11,8 +11,6 @@ def experiment_to_dict(exp):
         if key[0] != "_":
             expd[key] = exp.__dict__[key]
     
-    expd['URL'] = exp.getUrl()
-    
     return expd
 
 @view_config(route_name='upload', renderer='ptmscout:templates/accounts/upload.pt', permission='private')

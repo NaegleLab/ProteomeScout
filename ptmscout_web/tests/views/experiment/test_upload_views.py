@@ -20,7 +20,7 @@ class TestUploadView(UnitTestCase):
         
         result = user_upload(request)
         
-        expected_experiments = [{'URL':'url', 'parent_id': 0, 'id': 2, 'name': 'Experiment Name2', 'public': 0}]
+        expected_experiments = [{'URL':e1.URL, 'parent_id': 0, 'id': 2, 'name': 'Experiment Name2', 'public': 0}]
                 
         self.assertEqual(strings.upload_page_title, result['pageTitle'])
         
