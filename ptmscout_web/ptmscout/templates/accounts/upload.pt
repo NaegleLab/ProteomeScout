@@ -11,6 +11,7 @@
     <div metal:fill-slot="content">
     	<form action="" method="post">
     		<div class="hidden" id="user_experiments">${json_user_data}</div>
+    		<div class="hidden" id="populated_fields">${formfields}</div>
     		<input type="hidden" value="true" name="submitted" />
     		<div tal:condition="reason != None" class="errorbox">Error: ${reason}</div>
 	    	<div class="wideform">

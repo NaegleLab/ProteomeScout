@@ -21,7 +21,7 @@ def set_form_defaults(context):
     
     context.form.set('ambiguous', "no")
     context.form.set('notes', "none")
-    context.form.set('terms_of_use', "true")
+    context.form.set('terms_of_use', "yes")
 
 @given(u'a user submits a correctly formatted dataset of phosphorylation data')
 def submit_correct_dataset(context):
