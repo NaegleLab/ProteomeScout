@@ -4,24 +4,24 @@ import time
 from assertions import assertContains
 from mock import patch
 
-def set_form_defaults(context):
-    context.form.set('pmid', '')
-    context.form.set('URL', '')
+def set_form_defaults(form):
+    form.set('pmid', '')
+    form.set('URL', '')
     
-    context.form.set('published', "yes")
-    context.form.set('experiment_name', "Experiment with correct data")
-    context.form.set('author_contact', "author@institute.edu")
-    context.form.set('authors', "S Guy, S O Person")
-    context.form.set('journal', "Journal of serendipitous results")
-    context.form.set('publication_month', "december")
-    context.form.set('publication_year', "2011")
-    context.form.set('volume', "236")
-    context.form.set('page_start', "111")
-    context.form.set('page_end', "123")
+    form.set('published', "yes")
+    form.set('experiment_name', "Experiment with correct data")
+    form.set('author_contact', "author@institute.edu")
+    form.set('authors', "S Guy, S O Person")
+    form.set('journal', "Journal of serendipitous results")
+    form.set('publication_month', "december")
+    form.set('publication_year', "2011")
+    form.set('volume', "236")
+    form.set('page_start', "111")
+    form.set('page_end', "123")
     
-    context.form.set('ambiguous', "no")
-    context.form.set('notes', "none")
-    context.form.set('terms_of_use', "yes")
+    form.set('ambiguous', "no")
+    form.set('notes', "none")
+    form.set('terms_of_use', "yes")
 
 
 @given(u'a user submits a correctly formatted dataset of phosphorylation data')
@@ -39,7 +39,7 @@ def submit_correct_dataset(context):
     context.form.set('data_file', (filename, filecontents))
     context.form.set('description', "This is a correct dataset")
     
-    set_form_defaults(context)
+    set_form_defaults(context.form)
 
 @given(u'a user submits a dataset that has an incorrect peptide to protein match')
 def submit_incorrect_peptide_dataset(context):
@@ -55,7 +55,7 @@ def submit_incorrect_peptide_dataset(context):
     context.form.set('data_file', (filename, filecontents))
     context.form.set('description', "This is a dataset with a bad peptide")
     
-    set_form_defaults(context)
+    set_form_defaults(context.form)
     
 
 @given(u'a user submits a dataset that has an accession that looks like a GenPept accession, but is not currently there')
@@ -72,7 +72,7 @@ def submit_incorrect_genpept_dataset(context):
     context.form.set('data_file', (filename, filecontents))
     context.form.set('description', "This is a dataset with a bad accession")
     
-    set_form_defaults(context)
+    set_form_defaults(context.form)
     
 
 @given(u'a user submits a dataset file with more than one peptide column')
@@ -89,7 +89,7 @@ def submit_dataset_with_multiple_peptide_columns(context):
     context.form.set('data_file', (filename, filecontents))
     context.form.set('description', "This is a dataset with multiple peptide columns")
     
-    set_form_defaults(context)
+    set_form_defaults(context.form)
     
 
 @given(u'a user submits a dataset with no accession column')
@@ -106,7 +106,7 @@ def submit_dataset_without_accession_column(context):
     context.form.set('data_file', (filename, filecontents))
     context.form.set('description', "This is a dataset without an accession column")
     
-    set_form_defaults(context)
+    set_form_defaults(context.form)
     
 
 @then(u'the user should see an error that says "{error_text}"')
