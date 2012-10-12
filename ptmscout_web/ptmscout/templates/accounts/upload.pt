@@ -65,7 +65,7 @@
 			   			<td class="fieldname">PubMed ID:*</td>
 			   			<td>
 			   				<input type="text" name="pmid" size="13" maxlength="12" />
-			   				<button id="load_pubmed">Load Pubmed Citation</button>
+			   				<!-- <button id="load_pubmed">Load Pubmed Citation</button> -->
 			   			</td>
 		   			</tr>
 		   			<tr>
