@@ -159,6 +159,13 @@ class ExperimentAccessForbidden(Exception):
     def __str__(self):
         return "Current user does not have access privileges to experiment %d" % (self.eid)
 
+class ExperimentNotAvailable(Exception):
+    def __init__(self, eid):
+        self.eid = eid
+    
+    def __str__(self):
+        return "Experiment %d is still being processed for upload" % (self.eid)
+    
 
 def getExperimentById(experiment_id, current_user):
     value = DBSession.query(Experiment).filter_by(id=experiment_id).first()
@@ -167,6 +174,9 @@ def getExperimentById(experiment_id, current_user):
 
     if not value.checkPermissions(current_user):
         raise ExperimentAccessForbidden(experiment_id)
+    
+    if value.ready == 0:
+        raise ExperimentNotAvailable(experiment_id)
     
     return value
 

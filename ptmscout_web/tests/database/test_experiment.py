@@ -1,8 +1,9 @@
 from tests.DBTestCase import DBTestCase
 import ptmscout.database.experiment as dbexperiment
 from ptmscout.database.experiment import NoSuchExperiment, Experiment,\
-    getExperimentTree, ExperimentAccessForbidden
+    getExperimentTree, ExperimentAccessForbidden, ExperimentNotAvailable
 from mock import patch
+from ptmscout.database import user, permissions
 
 class ExperimentTestCase(DBTestCase):
     def test_getExperimentById_should_succeed_on_existing_experiment(self):
@@ -10,6 +11,30 @@ class ExperimentTestCase(DBTestCase):
         
         self.assertEqual("PhosphoSite: A bioinformatics resource dedicated to physiological protein phosphorylation.", experiment.name)
         self.assertEqual("http://www.phosphosite.org/", experiment.URL)
+    
+    def test_getExperimentById_should_throw_exception_when_experiment_is_currently_uploading(self):
+        try:
+            exp = dbexperiment.getExperimentById(1, None)
+            exp.public = 0
+            exp.ready = 0
+            exp.saveExperiment()
+            
+            ptmuser = user.getUserById(1)
+            
+            perm = permissions.Permission(exp)
+            perm.experiment_id = exp.id
+            perm.user_id = ptmuser.id
+            
+            ptmuser.permissions.append(perm)
+            
+            dbexperiment.getExperimentById(1, ptmuser)
+            
+        except ExperimentNotAvailable, f:
+            self.assertEqual(1, f.eid)
+        except Exception, e:
+            self.fail("Unexpected exception: " + str(e))
+        else:
+            self.fail("Expected exception ExperimentNotAvailable was not thrown")
     
     def test_getExperimentById_should_throw_exception_when_experiment_is_private(self):
         try:
