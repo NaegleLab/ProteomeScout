@@ -13,8 +13,8 @@
     		<div class="hidden" id="user_experiments">${json_user_data}</div>
     		<div class="hidden" id="populated_fields">${formfields}</div>
     		<input type="hidden" value="true" name="submitted" />
-    		<div tal:condition="reason != None" class="errorbox">Error: ${reason}</div>
 	    	<div class="wideform">
+    			<div tal:condition="reason != None" class="errorbox">Error: ${reason}</div>
 	    		<div class="formcategory">Experiment Upload Type</div>
     			<table>
     				<tr>
@@ -59,29 +59,29 @@
 			   				</select>
 			   			</td>
 			   		</tr>
-			   		<tr>
-			   			<td class="fieldname">Author Contact E-mail:</td>
-			   			<td><input type="text" name="author_contact" size="55"/></td>
-			   		</tr>
 		   			<tr>
+			   			<td class="fieldname">URL:*</td>
+			   			<td><input type="text" name="URL" size="55"/></td>
+		   			</tr>
+		   			<tr>
+		   				<td class="fieldname">Description:</td>
+			   			<td><textarea name="description" rows="5" cols="42" ></textarea></td>
+		   			</tr>
+		   			<tr class="pubinfo">
 			   			<td class="fieldname">PubMed ID:*</td>
 			   			<td>
 			   				<input type="text" name="pmid" size="13" maxlength="12" />
 			   				<!-- <button id="load_pubmed">Load Pubmed Citation</button> -->
 			   			</td>
 		   			</tr>
-		   			<tr>
-			   			<td class="fieldname">URL:*</td>
-			   			<td><input type="text" name="URL" size="55"/></td>
-		   			</tr>
-		   				<td class="fieldname">Description:</td>
-			   			<td><textarea name="description" rows="5" cols="42" ></textarea></td>
-		   			<tr>
-		   			</tr>
 		   			<tr class="pubinfo">
 			   			<td class="fieldname">Authors:</td>
 			   			<td><input type="text" name="authors" size="55"/></td>
 		   			</tr>
+		   			<tr class="pubinfo">
+			   			<td class="fieldname">Author Contact E-mail:</td>
+			   			<td><input type="text" name="author_contact" size="55"/></td>
+			   		</tr>
 		   			<tr class="pubinfo">
 			   			<td class="fieldname">Journal:</td>
 			   			<td><input type="text" name="journal" size="55"/></td>
