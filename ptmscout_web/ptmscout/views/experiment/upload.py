@@ -104,8 +104,8 @@ def save_datafile(request):
         output_file.write(data)
     output_file.close()
     
-    os.system("mac2unix %s" % os.path.join(settings.experiment_data_file_path, exp_file))
-    os.system("dos2unix %s" % os.path.join(settings.experiment_data_file_path, exp_file))
+    os.system("mac2unix -q %s" % os.path.join(settings.experiment_data_file_path, exp_file))
+    os.system("dos2unix -q %s" % os.path.join(settings.experiment_data_file_path, exp_file))
     
     error = verify_datafile(exp_file)
     

@@ -151,8 +151,8 @@ class TestUploadView(UnitTestCase):
         cwd = settings.ptmscout_path
         
         os.chdir(cwd)
-        os.system("mac2unix -n %s %s" % (os.path.join("tests", "behave", "data", filename), os.path.join(settings.experiment_data_file_path, tmp_file)))
-        os.system("dos2unix %s" % (os.path.join(settings.experiment_data_file_path, tmp_file)))
+        os.system("mac2unix -q -n %s %s" % (os.path.join("tests", "behave", "data", filename), os.path.join(settings.experiment_data_file_path, tmp_file)))
+        os.system("dos2unix -q %s" % (os.path.join(settings.experiment_data_file_path, tmp_file)))
         
         error = verify_datafile(tmp_file)
         
@@ -201,8 +201,8 @@ class TestUploadView(UnitTestCase):
         status, exp_file = save_datafile(request)
         
         os.chdir(os.sep.join(["tests", "behave", "data"]))
-        os.system("mac2unix -n %s tmp_test.conv" % (filename))
-        os.system("dos2unix tmp_test.conv")
+        os.system("mac2unix -q -n %s tmp_test.conv" % (filename))
+        os.system("dos2unix -q tmp_test.conv")
 
         tf = open("tmp_test.conv", 'rb')
         test_file = tf.read()
