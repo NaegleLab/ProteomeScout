@@ -60,7 +60,7 @@ def create_experiment_and_start_upload(field_dict, exp_file, current_user):
             nexp.PMID = int(field_dict['pmid'])
         
 
-    
+    nexp.grantPermission(current_user, 'owner')
     nexp.saveExperiment()
     return nexp.id
 

@@ -74,7 +74,7 @@ class TestUploadView(UnitTestCase):
         self.assertEqual(current_user.id, experiment_instance.submitter_id)
     
     @patch('ptmscout.database.experiment.Experiment')
-    def test_create_experiment_and_start_upload_should_leave_fields_blank_when_not_needed(self, patch_experiment):
+    def test_create_experiment_and_start_upload_should_leave_fields_blank_when_not_needed_and_set_user_permissions(self, patch_experiment):
         field_dict = self.create_field_dict()
         field_dict['load_type'] = 'new'
         field_dict['published'] = 'no'
@@ -84,6 +84,8 @@ class TestUploadView(UnitTestCase):
         result = create_experiment_and_start_upload(field_dict, exp_file, current_user)
         
         experiment_instance = patch_experiment.return_value
+        
+        experiment_instance.grantPermission.assert_called_once_with(current_user, 'owner')
         experiment_instance.saveExperiment.assert_called_once_with()
         
         self.assertEqual(0, experiment_instance.ready)
@@ -107,6 +109,8 @@ class TestUploadView(UnitTestCase):
         
         self.assertEqual(exp_file, experiment_instance.dataset)
         self.assertEqual(current_user.id, experiment_instance.submitter_id)
+        
+        
         
     @patch('ptmscout.database.experiment.Experiment')
     def test_create_experiment_and_start_upload_should_spawn_job(self, patch_experiment):
@@ -403,7 +407,7 @@ class TestUploadView(UnitTestCase):
         
         result = user_upload(request)
         
-        expected_experiments = [{'URL':e1.URL, 'parent_id': 0, 'id': 2, 'name': 'Experiment Name2', 'public': 0}]
+        expected_experiments = [{'ready':1, 'URL':e1.URL, 'parent_id': 0, 'id': 2, 'name': 'Experiment Name2', 'public': 0}]
                 
         self.assertEqual(strings.upload_page_title, result['pageTitle'])
         
