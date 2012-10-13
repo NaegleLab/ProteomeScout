@@ -23,7 +23,7 @@ class InfoFunctionalTests(IntegrationTestCase):
         
     def test_experiment_not_ready_should_notify_resource_not_ready(self):
         exp = experiment.getExperimentById(1, None)
-        exp.ready = 0
+        exp.status = 'loading'
         exp.saveExperiment()
         
         response = self.ptmscoutapp.get("/experiments/1")

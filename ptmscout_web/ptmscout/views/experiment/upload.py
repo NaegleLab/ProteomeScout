@@ -21,7 +21,7 @@ def create_experiment_and_start_upload(field_dict, exp_file, current_user):
     nexp.description = field_dict['description']
     
     nexp.dataset = exp_file
-    nexp.ready = 0
+    nexp.status='preload'
     
     nexp.published = 1 if field_dict['published'] == "yes" else 0
     nexp.ambiguity = 1 if field_dict['ambiguous'] == "yes" else 0

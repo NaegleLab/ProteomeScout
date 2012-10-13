@@ -27,7 +27,7 @@ def createMockUser(username, email, password, active):
     mock.permissions = []
     return mock
 
-def createMockExperiment(eid, public, parent_id=0):
+def createMockExperiment(eid, public, parent_id=0, status='loaded'):
     mock = Mock(spec=Experiment)
     mock.id = eid
     mock.public = public
@@ -35,7 +35,8 @@ def createMockExperiment(eid, public, parent_id=0):
     mock.URL = "url"
     mock.getUrl.return_value = mock.URL
     mock.name = "Experiment Name" + str(eid)
-    mock.ready = 1
+    mock.status = status
+    mock.ready.return_value = mock.status == 'loaded'
     return mock
 
 def createMockPermission(user, experiment, access_level='view'):

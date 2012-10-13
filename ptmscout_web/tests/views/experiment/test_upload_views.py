@@ -51,7 +51,7 @@ class TestUploadView(UnitTestCase):
         patch_getExperiment.assert_called_once_with(int(field_dict['parent_experiment']), current_user)
         experiment_instance.saveExperiment.assert_called_once_with()
         
-        self.assertEqual(0, experiment_instance.ready)
+        self.assertEqual('preload', experiment_instance.status)
         self.assertEqual(experiment_instance.id, result)
         self.assertEqual(field_dict['experiment_name'], experiment_instance.name)
         self.assertEqual(field_dict['author_contact'], experiment_instance.contact)
@@ -88,7 +88,7 @@ class TestUploadView(UnitTestCase):
         experiment_instance.grantPermission.assert_called_once_with(current_user, 'owner')
         experiment_instance.saveExperiment.assert_called_once_with()
         
-        self.assertEqual(0, experiment_instance.ready)
+        self.assertEqual('preload', experiment_instance.status)
         self.assertEqual(experiment_instance.id, result)
         self.assertEqual(field_dict['experiment_name'], experiment_instance.name)
         self.assertEqual(None, experiment_instance.contact)
@@ -123,7 +123,7 @@ class TestUploadView(UnitTestCase):
         experiment_instance = patch_experiment.return_value
         experiment_instance.saveExperiment.assert_called_once_with()
         
-        self.assertEqual(0, experiment_instance.ready)
+        self.assertEqual('preload', experiment_instance.status)
         self.assertEqual(experiment_instance.id, result)
         self.assertEqual(field_dict['experiment_name'], experiment_instance.name)
         self.assertEqual(field_dict['author_contact'], experiment_instance.contact)
@@ -407,7 +407,7 @@ class TestUploadView(UnitTestCase):
         
         result = user_upload(request)
         
-        expected_experiments = [{'ready':1, 'URL':e1.URL, 'parent_id': 0, 'id': 2, 'name': 'Experiment Name2', 'public': 0}]
+        expected_experiments = [{'status':'loaded', 'URL':e1.URL, 'parent_id': 0, 'id': 2, 'name': 'Experiment Name2', 'public': 0}]
                 
         self.assertEqual(strings.upload_page_title, result['pageTitle'])
         
