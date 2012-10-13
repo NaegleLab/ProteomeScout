@@ -22,7 +22,6 @@ class ExperimentData(Base):
     NA = Column(TINYINT(1), default=0)
     MS_id = Column(Integer(10), ForeignKey('MS.id'))
 
-
 class Experiment(Base):
     __tablename__ = 'experiment'
     
@@ -57,7 +56,7 @@ class Experiment(Base):
     
     public = Column(Integer(1), default=0)
     
-    ready = Column(Integer(1), default=0)
+    status = Column(Enum('preload','loading','loaded'), default='preload')
     submitter_id = Column(Integer(10), ForeignKey('users.id'))
     
     def __init__(self):
@@ -128,6 +127,9 @@ class Experiment(Base):
         p.user = user
         
         self.permissions.append(p)
+    
+    def ready(self):
+        return self.status == 'loaded'
         
     def makePublic(self):
         self.public = 1
@@ -175,13 +177,13 @@ def getExperimentById(experiment_id, current_user, check_ready=True):
     if not value.checkPermissions(current_user):
         raise ExperimentAccessForbidden(experiment_id)
     
-    if check_ready and value.ready == 0:
+    if check_ready and not value.ready():
         raise ExperimentNotAvailable(experiment_id)
     
     return value
 
 def getAllExperiments(current_user):
-    return [ exp for exp in  DBSession.query(Experiment).all() if exp.checkPermissions(current_user) and exp.ready == 1 ]
+    return [ exp for exp in  DBSession.query(Experiment).all() if exp.checkPermissions(current_user) and exp.ready() ]
 
 def getExperimentTree(current_user):
     experiments = getAllExperiments(current_user)

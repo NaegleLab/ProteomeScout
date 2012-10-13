@@ -16,7 +16,7 @@ class ExperimentTestCase(DBTestCase):
         try:
             exp = dbexperiment.getExperimentById(1, None)
             exp.public = 0
-            exp.ready = 0
+            exp.status = 'loading'
             exp.saveExperiment()
             
             ptmuser = user.getUserById(1)
@@ -67,7 +67,7 @@ class ExperimentTestCase(DBTestCase):
         exp.saveExperiment()
         
         exp2 = dbexperiment.getExperimentById(2, None)
-        exp2.ready = 0
+        exp2.status = 'preload'
         exp2.saveExperiment()
         
         experiments = dbexperiment.getAllExperiments(None)

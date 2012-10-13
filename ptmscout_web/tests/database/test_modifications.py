@@ -28,7 +28,7 @@ class TestModifications(DBTestCase):
         exp.experiment_id=None
         exp.public = 0
         exp.author = ""
-        exp.ready = 1
+        exp.status = 'loaded'
         exp.published = 0
         exp.ambiguity = 0
         exp.export = 0
@@ -43,7 +43,7 @@ class TestModifications(DBTestCase):
         exp2.experiment_id=None
         exp2.public = 0
         exp2.author = ""
-        exp2.ready = 1
+        exp2.status = 'loaded'
         exp2.published = 0
         exp2.ambiguity = 0
         exp2.export = 0
@@ -60,7 +60,7 @@ class TestModifications(DBTestCase):
         exp3.public = 0
         exp3.author = ""
         exp3.published = 0
-        exp3.ready = 0
+        exp3.status = 'loading'
         exp3.ambiguity = 0
         exp3.export = 0
         exp3.dataset = ""

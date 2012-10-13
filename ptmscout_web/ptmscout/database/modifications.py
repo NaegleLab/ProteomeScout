@@ -53,11 +53,11 @@ class MeasuredPeptide(Base):
 
 def getMeasuredPeptidesByProtein(pid, user):
     modifications = DBSession.query(MeasuredPeptide).filter_by(protein_id=pid).all()
-    return [ mod for mod in modifications if mod.experiment.checkPermissions(user) and mod.experiment.ready == 1 ]
+    return [ mod for mod in modifications if mod.experiment.checkPermissions(user) and mod.experiment.ready() ]
 
 def getMeasuredPeptidesByExperiment(eid, user, pids = None):
     if(pids != None):
         modifications = DBSession.query(MeasuredPeptide).filter(and_(MeasuredPeptide.experiment_id==eid, MeasuredPeptide.protein_id.in_(pids))).all()
     else:
         modifications = DBSession.query(MeasuredPeptide).filter_by(experiment_id=eid).all()
-    return [ mod for mod in modifications if mod.experiment.checkPermissions(user) and mod.experiment.ready == 1 ]
+    return [ mod for mod in modifications if mod.experiment.checkPermissions(user) and mod.experiment.ready() ]
