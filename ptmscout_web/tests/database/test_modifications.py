@@ -28,6 +28,7 @@ class TestModifications(DBTestCase):
         exp.experiment_id=None
         exp.public = 0
         exp.author = ""
+        exp.ready = 1
         exp.published = 0
         exp.ambiguity = 0
         exp.export = 0
@@ -42,6 +43,7 @@ class TestModifications(DBTestCase):
         exp2.experiment_id=None
         exp2.public = 0
         exp2.author = ""
+        exp2.ready = 1
         exp2.published = 0
         exp2.ambiguity = 0
         exp2.export = 0
@@ -51,9 +53,28 @@ class TestModifications(DBTestCase):
         exp2.submitter_id = None
         exp2.saveExperiment()
         
+
+        exp3 = Experiment()
+        exp3.name = "A third test experiment"
+        exp3.experiment_id=None
+        exp3.public = 0
+        exp3.author = ""
+        exp3.published = 0
+        exp3.ready = 0
+        exp3.ambiguity = 0
+        exp3.export = 0
+        exp3.dataset = ""
+        exp3.submitter = ""
+        exp3.primaryModification='S'
+        exp3.submitter_id = None
+        exp3.saveExperiment()
+        
         self.session.flush()
         
         exp.grantPermission(u, 'view')
+        exp.saveExperiment()
+        
+        exp3.grantPermission(u, 'owner')
         exp.saveExperiment()
         
         self.session.flush()
@@ -85,6 +106,14 @@ class TestModifications(DBTestCase):
         p3.pfam_site="SH3_1"
         p3.protein_id = p.id
         
+        p4 = Phosphopep()
+        p4.pep_tryps="blag4"
+        p4.pep_aligned="blag4"
+        p4.site_pos=1
+        p4.site_type='S'
+        p4.pfam_site="SH3_1"
+        p4.protein_id = p.id
+        
         self.session.add(p1)
         self.session.add(p2)
         self.session.add(p3)
@@ -106,6 +135,12 @@ class TestModifications(DBTestCase):
         mod3.protein_id = p.id
         mod3.phosphopep = "blag3"        
         self.session.add(mod3)
+        
+        mod4 = MeasuredPeptide()
+        mod4.experiment_id = exp3.id
+        mod4.protein_id = p.id
+        mod4.phosphopep = "blag4"        
+        self.session.add(mod4)
         
         self.session.flush()
         
@@ -137,6 +172,7 @@ class TestModifications(DBTestCase):
         mod1.phosphopeps.append(p1)
         mod2.phosphopeps.append(p2)
         mod3.phosphopeps.append(p3)
+        mod4.phosphopeps.append(p4)
         self.session.add(mod1)
         self.session.add(mod2)
         self.session.add(mod3)
