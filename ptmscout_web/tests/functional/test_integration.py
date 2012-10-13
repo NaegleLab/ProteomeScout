@@ -3,6 +3,7 @@ from webtest.app import TestApp
 from ptmscout import main
 from ptmscout.config import strings
 from tests.PTMScoutTestCase import IntegrationTestCase
+from ptmscout.database import experiment
 
 class InfoFunctionalTests(IntegrationTestCase):
     def test_about_renderer(self):
@@ -19,6 +20,14 @@ class InfoFunctionalTests(IntegrationTestCase):
         self.bot.logout()
         response = self.ptmscoutapp.get('/upload')
         response.mustcontain("forbidden")
+        
+    def test_experiment_not_ready_should_notify_resource_not_ready(self):
+        exp = experiment.getExperimentById(1, None)
+        exp.ready = 0
+        exp.saveExperiment()
+        
+        response = self.ptmscoutapp.get("/experiments/1")
+        response.mustcontain(strings.error_resource_not_ready_page_title)
         
     def test_no_such_experiment_should_invoke_forbidden(self):
         response = self.ptmscoutapp.get('/experiments/2000123')
