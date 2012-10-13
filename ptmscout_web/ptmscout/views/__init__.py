@@ -17,6 +17,7 @@ def add_views(config):
     config.add_route('experiment_summary','/experiments/{id}/summary')
     config.add_route('experiment_browse','/experiments/{id}/browse')
     config.add_route('upload', '/upload')
+    config.add_route('upload_status', '/upload/{id}')
     
     config.add_route('protein_data', '/proteins/{id}/data')
     config.add_route('protein_GO', '/proteins/{id}/GO')
