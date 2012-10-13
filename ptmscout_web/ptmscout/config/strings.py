@@ -44,16 +44,12 @@ You may view the error log for this upload at %s.
 Thanks for using PTMScout,
 -The PTMScout Team"""
 
-experiment_upload_failed_page_title = "Upload Failed"
-experiment_upload_message_multiple_peptide_columns = "Data set has more than one peptide column. Check for the phrase 'pep' in all columns of the experiment header."
+experiment_upload_confirm_page_title = "Confirm Submission"
+experiment_upload_confirm_message = "Experiment headers have parsed successfully. You may review warnings below. Are you sure you wish to proceed with the upload?"
 
 experiment_upload_started_page_title = "Upload Started"
 experiment_upload_started_message = \
-"""Experiment upload process successfully started.
-
-An e-mail will be sent to you when the experiment upload is complete.
- 
-Additionally, you may check the status of the upload by visiting <a href=\"%s\">this page</a>"""
+"""Experiment upload process successfully started. An e-mail will be sent to you when the experiment upload is complete. Additionally, you may check the status of the upload by visiting <a href=\"%s\">this page</a>"""
 
 
 forgotten_password_page_title = "Forgotten Password Retrieval"
@@ -170,4 +166,6 @@ prediction_type_map = {'scansite': "Scansite",
 
 
 
+error_resource_not_ready_page_title = "Resource not ready"
+error_resource_not_ready_message = "The resource you are trying to access is currently in processing. If you are the creator of this resource, please visit <a href=\"%s\">this page</a> to check on its status."
 
