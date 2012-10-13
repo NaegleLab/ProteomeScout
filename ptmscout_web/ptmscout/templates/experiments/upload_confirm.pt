@@ -34,7 +34,7 @@
     		</table>
     	</div>
     	<div class = "infobox" tal:condition="confirm=='true'">
-    		<div class = "infoheader">Success</div>
+    		<div class = "infoheader">Upload Started</div>
     		<p class = "infotext" tal:content="structure message"></p>
     	</div>
     </div>
