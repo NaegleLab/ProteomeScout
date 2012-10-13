@@ -167,7 +167,7 @@ class ExperimentNotAvailable(Exception):
         return "Experiment %d is still being processed for upload" % (self.eid)
     
 
-def getExperimentById(experiment_id, current_user):
+def getExperimentById(experiment_id, current_user, check_ready=True):
     value = DBSession.query(Experiment).filter_by(id=experiment_id).first()
     if value == None:
         raise NoSuchExperiment(experiment_id)
@@ -175,7 +175,7 @@ def getExperimentById(experiment_id, current_user):
     if not value.checkPermissions(current_user):
         raise ExperimentAccessForbidden(experiment_id)
     
-    if value.ready == 0:
+    if check_ready and value.ready == 0:
         raise ExperimentNotAvailable(experiment_id)
     
     return value
