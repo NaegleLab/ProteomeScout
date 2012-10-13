@@ -123,6 +123,9 @@ def info_text_display(context, text):
 @patch('ptmscout.utils.mail.send_automail_message')
 def experiment_uploaded_check_email(context, patch_mail):
     result = context.form.submit().follow()
+
+    #confirm the upload
+    result = result.form.submit()
     
     result.mustcontain(strings.experiment_upload_started_page_title)
     result.mustcontain(strings.experiment_upload_started_message[0:-len("<a href=\"%s\">this page</a>")])
@@ -139,7 +142,10 @@ def experiment_uploaded_check_email(context, patch_mail):
     assertContains("Errors: %s" % (errors), argstr)
     
 
-def asynchronous_assert_called(mock, limit=2):
-    while not mock.called:
-        time.sleep(0.1)        
+def asynchronous_assert_called(mock, limit=1):
+    slept_time = 0.0
+    while not mock.called and slept_time < limit:
+        time.sleep(0.1)
+        slept_time += 0.1    
     
+    assert mock.called, "Asynchronous call to %s timed out" % (str(mock))
