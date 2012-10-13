@@ -35,6 +35,7 @@ def createMockExperiment(eid, public, parent_id=0):
     mock.URL = "url"
     mock.getUrl.return_value = mock.URL
     mock.name = "Experiment Name" + str(eid)
+    mock.ready = 1
     return mock
 
 def createMockPermission(user, experiment, access_level='view'):
