@@ -20,6 +20,14 @@
 	vertical-align:top;
 }
 
+.experimenttable .status {
+	font-weight:bold;
+}
+
+.experimenttable .progress {
+	margin-left:10px;
+}
+
 .experimenttable .accesscontrol {
 	text-align:center;
 	border-left-style:solid;

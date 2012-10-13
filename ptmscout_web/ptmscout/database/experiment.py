@@ -56,6 +56,7 @@ class Experiment(Base):
     
     public = Column(Integer(1), default=0)
     
+    progress = Column(Float, default=0)
     status = Column(Enum('preload','loading','loaded'), default='preload')
     submitter_id = Column(Integer(10), ForeignKey('users.id'))
     

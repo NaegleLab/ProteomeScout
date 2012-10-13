@@ -10,6 +10,27 @@ from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockUser, createMockExperiment, \
     createMockPermission
 import unittest
+from tests.PTMScoutTestCase import IntegrationTestCase
+
+class MyExperimentsViewIntegrationTests(IntegrationTestCase):
+    def test_integration(self):
+        from ptmscout.database import experiment
+        
+        exp = experiment.getExperimentById(26, None, False)
+        exp.status = 'loading'
+        exp.progress = 10.2
+        exp.grantPermission(self.bot.user, 'owner')
+        exp.saveExperiment()
+        
+        self.bot.login()
+        
+        result = self.ptmscoutapp.get('/account/experiments')
+        
+        result.mustcontain(exp.name)
+        result.mustcontain('Status')
+        result.mustcontain('loading')
+        result.mustcontain('10.2')
+        
 
 class MyExperimentsViewTests(unittest.TestCase):
     def setUp(self):
@@ -17,7 +38,7 @@ class MyExperimentsViewTests(unittest.TestCase):
 
     def tearDown(self):
         testing.tearDown()
-            
+    
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_confirm_invite_should_check_confirmation(self, patch_getExperiment):
         request = DummyRequest()
