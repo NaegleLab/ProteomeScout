@@ -42,7 +42,7 @@ class TestUploadStatusView(UnitTestCase):
         f = upload_confirm_view(request)
         self.assertEqual(request.application_url + "/experiment/26", f.location)
 
-    @patch('ptmscout.utils.data.start_upload')        
+    @patch('ptmscout.utils.data.start_import')        
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_start_upload_view_should_start_job_and_display_confirmation(self, patch_getExperiment, patch_startUpload):
         request = DummyRequest()
