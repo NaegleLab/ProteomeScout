@@ -57,7 +57,7 @@ class TestUploadStatusView(UnitTestCase):
         result = upload_confirm_view(request)
         
         patch_getExperiment.assert_called_once_with(26, request.user, False)
-        patch_startUpload.assert_called_once_with(26)
+        patch_startUpload.assert_called_once_with(exp)
         
         self.assertEqual(strings.experiment_upload_started_page_title, result['pageTitle'])
         self.assertEqual(strings.experiment_upload_started_message % (request.application_url + "/account/experiments"), result['message'])

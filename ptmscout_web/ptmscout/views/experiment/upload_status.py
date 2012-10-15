@@ -27,7 +27,7 @@ def upload_confirm_view(request):
         raise UploadAlreadyStarted(eid)
     
     if confirm == "true":
-        data.start_upload(eid)
+        data.start_upload(exp)
         return {'pageTitle': strings.experiment_upload_started_page_title,
                 'message': strings.experiment_upload_started_message % (request.application_url + "/account/experiments"),
                 'experiment': exp,
