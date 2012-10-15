@@ -12,7 +12,7 @@ class UploadAlreadyStarted(Exception):
 def upload_already_started_view(request):
     return {'pageTitle': strings.experiment_upload_started_page_title,
             'header': strings.experiment_upload_started_page_title,
-            'message': strings.experiment_upload_started_message % (request.application_url)}
+            'message': strings.experiment_upload_started_message % (request.application_url + "/account/experiments")}
 
 @view_config(route_name='upload_status', renderer='ptmscout:/templates/experiments/upload_confirm.pt')
 def upload_confirm_view(request):
