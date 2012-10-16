@@ -8,6 +8,7 @@ from ptmscout.views.experiment.upload_status import upload_confirm_view,\
 from tests.views.mocking import createMockExperiment, createMockUser
 from mock import patch
 from pyramid.httpexceptions import HTTPFound
+import mock
 
 class TestUploadStatusView(UnitTestCase):
     
@@ -17,7 +18,7 @@ class TestUploadStatusView(UnitTestCase):
         request.matchdict['id'] = "26"
         request.user = createMockUser("username", "email", "password", 0) 
         
-        exp = createMockExperiment(26, 0, 0, 'loading')
+        exp = createMockExperiment(26, 0, None, 'loading')
         
         patch_getExperiment.return_value = exp
         
@@ -35,14 +36,14 @@ class TestUploadStatusView(UnitTestCase):
         request.matchdict['id'] = "26"
         request.user = createMockUser("username", "email", "password", 0) 
         
-        exp = createMockExperiment(26, 0, 0, 'loaded')
+        exp = createMockExperiment(26, 0, None, 'loaded')
         
         patch_getExperiment.return_value = exp
         
         f = upload_confirm_view(request)
         self.assertEqual(request.application_url + "/experiment/26", f.location)
 
-    @patch('ptmscout.utils.data.start_import')        
+    @patch('ptmworker.tasks.start_import')        
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_start_upload_view_should_start_job_and_display_confirmation(self, patch_getExperiment, patch_startUpload):
         request = DummyRequest()
@@ -50,14 +51,16 @@ class TestUploadStatusView(UnitTestCase):
         request.POST['confirm'] = "true"
         request.user = createMockUser("username", "email", "password", 0)
         
-        exp = createMockExperiment(26, 0, 0, 'preload')
+        patch_startUpload.apply_async.return_value = None
+        
+        exp = createMockExperiment(26, 0, None, 'preload')
         
         patch_getExperiment.return_value = exp
         
         result = upload_confirm_view(request)
         
         patch_getExperiment.assert_called_once_with(26, request.user, False)
-        patch_startUpload.assert_called_once_with(exp)
+        patch_startUpload.apply_async.assert_called_once_with(exp)
         
         self.assertEqual(strings.experiment_upload_started_page_title, result['pageTitle'])
         self.assertEqual(strings.experiment_upload_started_message % (request.application_url + "/account/experiments"), result['message'])
@@ -70,7 +73,7 @@ class TestUploadStatusView(UnitTestCase):
         request.matchdict['id'] = "26"
         request.user = createMockUser("username", "email", "password", 0) 
         
-        exp = createMockExperiment(26, 0, 0, 'preload')
+        exp = createMockExperiment(26, 0, None, 'preload')
         
         patch_getExperiment.return_value = exp
         

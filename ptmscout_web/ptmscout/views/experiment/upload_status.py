@@ -2,7 +2,8 @@ from pyramid.view import view_config
 from ptmscout.database import experiment
 from pyramid.httpexceptions import HTTPFound
 from ptmscout.config import strings
-from ptmscout.utils import webutils, data
+from ptmscout.utils import webutils
+from ptmworker import tasks
 
 class UploadAlreadyStarted(Exception):
     def __init__(self,eid):
@@ -27,7 +28,7 @@ def upload_confirm_view(request):
         raise UploadAlreadyStarted(eid)
     
     if confirm == "true":
-        data.start_import(exp)
+        tasks.start_import.apply_async(exp)
         return {'pageTitle': strings.experiment_upload_started_page_title,
                 'message': strings.experiment_upload_started_message % (request.application_url + "/account/experiments"),
                 'experiment': exp,
