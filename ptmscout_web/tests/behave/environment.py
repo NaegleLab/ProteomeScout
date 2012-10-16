@@ -9,7 +9,7 @@ def before_all(context):
     
     app = main({}, **settings)
     context.ptmscoutapp = TestApp(app)
-
+    
 def before_scenario(context, feature):
     context.active_user = Bot(context.ptmscoutapp)
     context.active_user.register()
