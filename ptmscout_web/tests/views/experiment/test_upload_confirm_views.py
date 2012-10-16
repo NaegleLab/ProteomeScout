@@ -3,12 +3,10 @@ from tests.behave.steps.dataset_load_steps import set_form_defaults
 from ptmscout.config import settings, strings
 import os
 from pyramid.testing import DummyRequest
-from ptmscout.views.experiment.upload_status import upload_confirm_view,\
+from ptmscout.views.experiment.upload_confirm import upload_confirm_view,\
     UploadAlreadyStarted
 from tests.views.mocking import createMockExperiment, createMockUser
 from mock import patch
-from pyramid.httpexceptions import HTTPFound
-import mock
 
 class TestUploadStatusView(UnitTestCase):
     
