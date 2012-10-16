@@ -27,7 +27,7 @@ def createMockUser(username, email, password, active):
     mock.permissions = []
     return mock
 
-def createMockExperiment(eid, public, parent_id=0, status='loaded'):
+def createMockExperiment(eid=random.randint(0,100000), public=0, parent_id=None, status='loaded'):
     mock = Mock(spec=Experiment)
     mock.id = eid
     mock.public = public
