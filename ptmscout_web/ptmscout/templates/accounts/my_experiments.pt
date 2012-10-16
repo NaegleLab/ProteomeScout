@@ -25,13 +25,13 @@
 						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.primaryModification"></a></td>
 						<td>
 							<span class="status" tal:content="experiment.status"></span>
-							<span class="progress" tal:condition="experiment.status=='loading'" tal:content="str(experiment.progress) + '%'"></span>
+							<span class="progress" tal:condition="experiment.status=='loading'" tal:content="str(experiment.progress()) + '%'"></span>
 						</td>
 						<td class="accesscontrol" tal:condition="experiment.public == 0">
 							<table>
 								<tr>
 									<td>
-										<form tal:attributes="id 'publish'+str(experiment.id);action request.application_url + '/account/experiments/' + str(experiment.id) + '/publish'" method="link">
+										<form tal:attributes="id 'publish'+str(experiment.id);action request.application_url + '/account/experiments/' + str(experiment.id) + '/publish'" method="link">											
 											<input type = "submit" value="Publish" />
 										</form>
 									</td>

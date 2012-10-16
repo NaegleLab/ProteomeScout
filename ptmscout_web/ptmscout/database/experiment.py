@@ -7,6 +7,7 @@ from sqlalchemy.schema import ForeignKey
 from sqlalchemy.types import Float, Enum, DateTime
 from sqlalchemy.sql.expression import null
 import datetime
+from ptmscout.utils import celeryutils
 
 class ExperimentData(Base):
     __tablename__ = 'data'
@@ -56,12 +57,17 @@ class Experiment(Base):
     
     public = Column(Integer(1), default=0)
     
-    progress = Column(Float, default=0)
+    import_process_id = Column(VARCHAR(40), default="")
     status = Column(Enum('preload','loading','loaded'), default='preload')
     submitter_id = Column(Integer(10), ForeignKey('users.id'))
     
     def __init__(self):
         self.date = datetime.datetime.now()
+
+    def progress(self):
+        if(self.status == 'loading' and self.import_process_id != ""):
+            celeryutils.get_percent_complete(self.import_process_id)
+        return "N/a"
 
     def saveExperiment(self):
         DBSession.add(self)

@@ -18,7 +18,6 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         
         exp = experiment.getExperimentById(26, None, False)
         exp.status = 'loading'
-        exp.progress = 10.2
         exp.grantPermission(self.bot.user, 'owner')
         exp.saveExperiment()
         
@@ -29,7 +28,7 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         result.mustcontain(exp.name)
         result.mustcontain('Status')
         result.mustcontain('loading')
-        result.mustcontain('10.2')
+        result.mustcontain('N/a')
         
 
 class MyExperimentsViewTests(unittest.TestCase):
