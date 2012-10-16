@@ -13,7 +13,8 @@ requires = [
     'SQLAlchemy',
     'transaction',
     'pyramid_tm',
-    'zope.sqlalchemy'
+    'zope.sqlalchemy',
+    'pyramid_celery'
     ]
 
 setup(name='ptmscout',
