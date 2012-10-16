@@ -13,8 +13,7 @@ class UserTestCase(DBTestCase):
             exp.id = 1000 + i
             exp.name = "experiment " + str(exp.id)
             exp.author = ""
-            exp.date = ""
-            exp.published = ""
+            exp.published = 0
             exp.ambiguity = 0
             exp.export = 0
             exp.experiment_id = None
