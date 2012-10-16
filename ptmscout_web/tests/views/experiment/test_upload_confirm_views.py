@@ -41,15 +41,13 @@ class TestUploadStatusView(UnitTestCase):
         f = upload_confirm_view(request)
         self.assertEqual(request.application_url + "/experiment/26", f.location)
 
-    @patch('ptmworker.tasks.start_import')        
+    @patch('ptmworker.tasks.start_import.apply_async')        
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_start_upload_view_should_start_job_and_display_confirmation(self, patch_getExperiment, patch_startUpload):
         request = DummyRequest()
         request.matchdict['id'] = "26"
         request.POST['confirm'] = "true"
         request.user = createMockUser("username", "email", "password", 0)
-        
-        patch_startUpload.apply_async.return_value = None
         
         exp = createMockExperiment(26, 0, None, 'preload')
         
@@ -58,7 +56,7 @@ class TestUploadStatusView(UnitTestCase):
         result = upload_confirm_view(request)
         
         patch_getExperiment.assert_called_once_with(26, request.user, False)
-        patch_startUpload.apply_async.assert_called_once_with(exp)
+        patch_startUpload.assert_called_once_with(exp)
         
         self.assertEqual(strings.experiment_upload_started_page_title, result['pageTitle'])
         self.assertEqual(strings.experiment_upload_started_message % (request.application_url + "/account/experiments"), result['message'])
@@ -97,7 +95,8 @@ class IntegrationTestUploadStatusView(IntegrationTestCase):
         result = self.ptmscoutapp.get("/upload/1", status=200)
         result.mustcontain(strings.experiment_upload_started_page_title)
     
-    def test_view_integration(self):
+    @patch('ptmworker.tasks.start_import.apply_async')
+    def test_view_integration(self, patch_startImport):
         self.bot.login()
         result = self.ptmscoutapp.get("/upload", status=200)
         
@@ -114,9 +113,9 @@ class IntegrationTestUploadStatusView(IntegrationTestCase):
         result.form.set('description', "This is a correct dataset")
         
         result = result.form.submit().follow()
-        
         result.mustcontain(strings.experiment_upload_confirm_message)
         
         result = result.form.submit()
-        
         result.mustcontain(strings.experiment_upload_started_message % ("http://localhost/account/experiments"))
+        
+        assert patch_startImport.called
