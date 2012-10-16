@@ -3,10 +3,12 @@ from pyramid import testing
 from ptmscout import main
 from webtest.app import TestApp
 from tests.behave.steps.bot import Bot
+from paste.deploy.loadwsgi import appconfig
+import os
 
 class IntegrationTestCase(unittest.TestCase):
     def setUp(self):
-        settings = { 'sqlalchemy.url': "mysql+mysqldb://ptmscout_web:ptmscout1@localhost:3306/ptmscout_dev" }
+        settings = appconfig('config:/' + os.path.join('data','ptmscout','ptmscout_web', 'test.ini'))
         app = main({}, **settings)
         self.ptmscoutapp = TestApp(app)
         self.bot = Bot(self.ptmscoutapp)

@@ -17,7 +17,7 @@ class UserTestCase(DBTestCase):
             exp.published = ""
             exp.ambiguity = 0
             exp.export = 0
-            exp.experiment_id = 0
+            exp.experiment_id = None
             exp.dataset = ""
             exp.submitter = ""
             exp.primaryModification = "Y"

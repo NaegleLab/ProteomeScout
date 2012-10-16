@@ -41,7 +41,7 @@ class Experiment(Base):
     errorLog = Column(VARCHAR(30))
     ambiguity = Column(Integer(1))
     export = Column(Integer(1))
-    experiment_id = Column(Integer(10))
+    experiment_id = Column(Integer(10), default=None)
     
     dataset = Column(Text)
     
