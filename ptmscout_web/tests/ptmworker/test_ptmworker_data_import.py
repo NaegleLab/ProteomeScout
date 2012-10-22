@@ -5,13 +5,28 @@ import os
 from ptmscout.database import experiment
 from ptmscout.config import settings
 from tests.views.mocking import createMockExperiment
+from ptmworker.tasks import finalize_import
 
 class PTMWorkDataImportTestCase(IntegrationTestCase):
     
+    def test_finalize_import_should_set_experiment_to_loaded_status(self):
+        exp = createMockExperiment()
+        exp.status = 'loading'
+        
+        res = tasks.finalize_import.apply_async((exp,))
+        res.get()
+        assert res.successful()
+        
+        exp.status = 'loaded'
+        exp.saveExperiment.assert_called_once_with()
+    
+    
+    
+    @patch('ptmworker.tasks.finalize_import')
     @patch('ptmworker.tasks.insert_run_data')
     @patch('ptmworker.tasks.load_peptide')
     @patch('ptmworker.tasks.load_proteins')
-    def test_start_import_should_generate_subtasks_for_input_file(self, patch_loadProtein, patch_loadPeptide, patch_load_run_data):
+    def test_start_import_should_generate_subtasks_for_input_file(self, patch_loadProtein, patch_loadPeptide, patch_load_run_data, patch_finalize):
         os.chdir(settings.ptmscout_path)
         
         exp = createMockExperiment()
@@ -27,6 +42,8 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         args = ""
         for i in xrange(0, len(patch_loadProtein.s.call_args_list)):
             args += str(patch_loadProtein.s.call_args_list[i])
+        
+        self.assertEqual(3, len( patch_loadProtein.s.call_args_list ))
         self.assertEqual( args.find('P07197'), args.rfind('P07197')) 
         
         assert call('P50914', 'AALLKApSPK') in patch_loadPeptide.s.call_args_list
@@ -36,6 +53,25 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         
         self.assertEquals(18, len(patch_load_run_data.s.call_args_list))
         
+        patch_finalize.s.assert_called_once_with(exp)
+        
         self.assertEqual(process_id, exp.import_process_id)
         self.assertEqual('loading', exp.status)
         exp.saveExperiment.assert_called_once_with()
+        
+    @patch('ptmworker.tasks.insert_run_data')
+    @patch('ptmworker.tasks.load_peptide')
+    @patch('ptmworker.tasks.load_proteins')
+    def test_start_import_should_generate_subtasks_for_input_file_should_work_when_exceeding_batch_size(self, patch_loadProtein, patch_loadPeptide, patch_load_run_data):
+        os.chdir(settings.ptmscout_path)
+        
+        exp = createMockExperiment()
+        exp.datafile = os.path.join("test", "test_dataset.txt")
+        
+        col_map = {'accession':0, 'peptide':2, 'run':3, 'data':range(4, 20)}
+        res = tasks.start_import.apply_async((exp, col_map, 5))
+        
+        process_id = res.get()
+        assert res.successful()
+        
+        self.assertEqual(4, len( patch_loadProtein.s.call_args_list ))

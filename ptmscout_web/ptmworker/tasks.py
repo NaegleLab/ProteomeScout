@@ -6,8 +6,11 @@ from celery.canvas import group, chain
 
 
 @task
-def finalize_import():
-    pass
+def finalize_import(exp):
+    exp.status = 'loaded'
+    exp.saveExperiment()
+    
+    return 0
 
 @task(rate_limit='3/s') 
 def load_proteins(accessions):
@@ -22,9 +25,7 @@ def insert_run_data(MSpeptide, series_header, run_name, series):
     pass
 
 @task
-def start_import(exp, column_map={}):
-    MAX_BATCH_SIZE = 1000
-    
+def start_import(exp, column_map={}, MAX_BATCH_SIZE = 1000):
     f = open(os.path.join(settings.experiment_data_file_path, exp.datafile), 'rb')
     header = f.readline().strip("\t")
     
@@ -87,7 +88,7 @@ def start_import(exp, column_map={}):
             acc_job_args = []
             pep_tasks = []
 
-    res = group(import_tasks).apply_async(link=finalize_import.s())
+    res = group(import_tasks).apply_async(link=finalize_import.s(exp))
     
     exp.import_process_id = res.id
     exp.status = 'loading'
