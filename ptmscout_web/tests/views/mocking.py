@@ -131,7 +131,6 @@ def createMockData(num, run, mod_id):
         mock.priority = i+1
         mock.value = random.random();
         
-        mock.NA = 0
         mock.MS_id = mod_id
         
         rval.append(mock)
