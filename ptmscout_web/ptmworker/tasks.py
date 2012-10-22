@@ -1,7 +1,9 @@
+import os
+import math
 from celery.task import task
 from ptmscout.config import settings
-import os
 from celery.canvas import group, chain
+
 
 @task
 def finalize_import():
@@ -54,9 +56,18 @@ def start_import(exp, column_map={}):
         runs[run] = series
         data_runs[(acc,pep)] = runs
     
+    
+    num_batches = max([3, int(math.ceil(len(accessions) / float(MAX_BATCH_SIZE)))])
+    BATCH_SIZES = [len(accessions) / num_batches] * num_batches
+    remainder = len(accessions) - sum(BATCH_SIZES)
+    
+    for i in xrange(0, remainder):
+        BATCH_SIZES[i] += 1
+    
     acc_job_args = []
     pep_tasks = []
         
+    batch = 0
     for acc in accessions:
         
         acc_job_args.append(acc)
@@ -70,14 +81,12 @@ def start_import(exp, column_map={}):
             pep_tasks.append(load_peptide.s(pep))
             pep_tasks.append( chain( load_peptide.s(acc, pep) | group(run_tasks) ) )
         
-        if len(acc_job_args) == MAX_BATCH_SIZE:
+        if len(acc_job_args) == BATCH_SIZES[batch]:
+            batch+=1
             import_tasks.append( chain( load_proteins.s(acc_job_args) | group(pep_tasks) ) )
             acc_job_args = []
             pep_tasks = []
 
-    if len(acc_job_args) > 0:
-        import_tasks.append( chain( load_proteins.s(acc_job_args) | group(pep_tasks) ) )
-            
     res = group(import_tasks).apply_async(link=finalize_import.s())
     
     exp.import_process_id = res.id

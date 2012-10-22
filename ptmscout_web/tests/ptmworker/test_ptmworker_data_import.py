@@ -24,8 +24,9 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         assert res.successful()
 
         assert patch_loadProtein.s.called
-        
-        args = str(patch_loadProtein.s.call_args_list[0])
+        args = ""
+        for i in xrange(0, len(patch_loadProtein.s.call_args_list)):
+            args += str(patch_loadProtein.s.call_args_list[i])
         self.assertEqual( args.find('P07197'), args.rfind('P07197')) 
         
         assert call('P50914', 'AALLKApSPK') in patch_loadPeptide.s.call_args_list
