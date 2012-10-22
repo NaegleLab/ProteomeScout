@@ -10,7 +10,7 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
     
     @patch('ptmworker.tasks.insert_run_data')
     @patch('ptmworker.tasks.load_peptide')
-    @patch('ptmworker.tasks.load_protein')
+    @patch('ptmworker.tasks.load_proteins')
     def test_start_import_should_generate_subtasks_for_input_file(self, patch_loadProtein, patch_loadPeptide, patch_load_run_data):
         os.chdir(settings.ptmscout_path)
         
@@ -23,18 +23,18 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         process_id = res.get()
         assert res.successful()
 
-        assert call('P07197') in patch_loadProtein.s.call_args_list
-        assert call('P27824') in patch_loadProtein.s.call_args_list
-        assert call('P50914') in patch_loadProtein.s.call_args_list
+        assert patch_loadProtein.s.called
         
-        assert call('AALLKApSPK') in patch_loadPeptide.s.call_args_list
-        assert call('AFVEDpSEDEDGAGEGGSSLLQK') in patch_loadPeptide.s.call_args_list
-        assert call('AITSLLGGGpSPK') in patch_loadPeptide.s.call_args_list
-        assert call('ELSNSPLRENpSFGSPLEFR') in patch_loadPeptide.s.call_args_list
+        args = str(patch_loadProtein.s.call_args_list[0])
+        self.assertEqual( args.find('P07197'), args.rfind('P07197')) 
+        
+        assert call('P50914', 'AALLKApSPK') in patch_loadPeptide.s.call_args_list
+        assert call('Q8N9T8', 'AFVEDpSEDEDGAGEGGSSLLQK') in patch_loadPeptide.s.call_args_list
+        assert call('Q6KC79', 'AITSLLGGGpSPK') in patch_loadPeptide.s.call_args_list
+        assert call('A0AUK8', 'ELSNSPLRENpSFGSPLEFR') in patch_loadPeptide.s.call_args_list
         
         self.assertEquals(18, len(patch_load_run_data.s.call_args_list))
         
-        self.assertEqual(1, len([ c for c in patch_loadProtein.s.call_args_list if c == call('P07197')]))
-        
         self.assertEqual(process_id, exp.import_process_id)
+        self.assertEqual('loading', exp.status)
         exp.saveExperiment.assert_called_once_with()
