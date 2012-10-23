@@ -20,8 +20,10 @@ class ExperimentData(Base):
     priority = Column(Integer(10), default=0)
     value = Column(Float, default=null)
     
-    NA = Column(TINYINT(1), default=0)
     MS_id = Column(Integer(10), ForeignKey('MS.id'))
+    
+    def save(self):
+        DBSession.add(self)
 
 class Experiment(Base):
     __tablename__ = 'experiment'
