@@ -52,6 +52,15 @@ class MeasuredPeptide(Base):
 
     def save(self):
         DBSession.add(self)
+        
+class NoSuchModification(Exception):
+    def __init__(self, pep_site, pep_type, protein_id):
+        self.site = pep_site
+        self.t = pep_type
+        self.protein_id = protein_id
+        
+    def __repr__(self):
+        return "No such peptide modification at site %d, residue: %s, protein: %d" % (self.site, self.t, self.protein_id)
 
 def getMeasuredPeptidesByProtein(pid, user):
     modifications = DBSession.query(MeasuredPeptide).filter_by(protein_id=pid).all()
@@ -63,3 +72,14 @@ def getMeasuredPeptidesByExperiment(eid, user, pids = None):
     else:
         modifications = DBSession.query(MeasuredPeptide).filter_by(experiment_id=eid).all()
     return [ mod for mod in modifications if mod.experiment.checkPermissions(user) and mod.experiment.ready() ]
+
+
+def getModificationBySite(pep_site, pep_type, prot_id):
+    mod = DBSession.query(Phosphopep).filter_by(site_pos=pep_site, site_type=pep_type, protein_id=prot_id).first()
+    
+    if mod == None: 
+        raise NoSuchModification(pep_site, pep_type, prot_id)
+    
+    return mod
+
+

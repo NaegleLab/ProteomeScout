@@ -4,6 +4,7 @@ from celery.task import task
 from ptmscout.config import settings
 from celery.canvas import group, chain
 from ptmscout.database import experiment, modifications
+from ptmscout.database.modifications import NoSuchModification
 
 
 @task
@@ -47,14 +48,17 @@ def load_peptide(protein_map, exp_id, accession, pep_seq):
         pep_aligned = prot_seq[pep_site-7:pep_site] + pep_seq[i] + prot_seq[pep_site+1:pep_site+8]
         pep_type = upper_case[i]
         
-        pep = modifications.Phosphopep()
-        
-        pep.pep_aligned = pep_aligned
-        pep.pep_tryps = pep_tryps
-        pep.site_pos = pep_site + 1
-        pep.site_type = pep_type
-        pep.protein_id = prot.id
-        pep.pfam_site = "~~~"
+        try:
+            pep = modifications.getModificationBySite(pep_site + 1, pep_type, prot.id)
+        except NoSuchModification:
+            pep = modifications.Phosphopep()
+            
+            pep.pep_aligned = pep_aligned
+            pep.pep_tryps = pep_tryps
+            pep.site_pos = pep_site + 1
+            pep.site_type = pep_type
+            pep.protein_id = prot.id
+            pep.pfam_site = "~~~"
         
         MS_pep.phosphopeps.append(pep)
         
