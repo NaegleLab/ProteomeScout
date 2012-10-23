@@ -3,6 +3,13 @@ Feature: Dataset Load
 	People should be able to load a dataset
 
 	@runme
+	Scenario: Load a correct PTM dataset with degenerate methylation names
+		  Given a user is loading a dataset 
+		  When modifications have varying specificities of naming
+		  Then the user should be sent an email 
+
+(What to say here that the degenMODTYPE will have 9 modified peptides loaded correctly..then use this in the view to show the specificity in the protein viewer)
+
 	Scenario: Correct Dataset
 		Given a user submits a correctly formatted dataset of phosphorylation data
         Then the user should be sent an email with a link to the experiment which contains:
@@ -14,9 +21,6 @@ Feature: Dataset Load
 		Then the user should see an error that says "Data file contained multiple peptide columns"
 		And the user should see the text "Check for the phrase 'pep' in all columns of the experiment header"
 
-	Scenario: No Acc
-		Given a user submits a dataset with no accession column
-		Then the user should see an error that says "Data file did not contain an accession column"
 
 	Scenario: Peptide Mismatch	
 		Given a user submits a dataset that has an incorrect peptide to protein match
