@@ -3,12 +3,15 @@ import math
 from celery.task import task
 from ptmscout.config import settings
 from celery.canvas import group, chain
+from ptmscout.database import experiment, modifications
 
 
 @task
 def finalize_import(exp):
+    from ptmscout.database import DBSession
     exp.status = 'loaded'
     exp.saveExperiment()
+    DBSession.flush()
     
     return 0
 
@@ -17,13 +20,66 @@ def load_proteins(accessions):
     pass
 
 @task
-def load_peptide(protein_map, accession, pep_seq):
-    pass
+def load_peptide(protein_map, exp_id, accession, pep_seq):
+    prot = protein_map[accession]
+    prot_seq = prot.sequence
+    upper_case = pep_seq.upper()
+    
+    index = prot_seq.find(upper_case)
+    
+    if index == -1:
+        raise Exception("Peptide sequence not found in protein")
+    
+    mod_sites = []
+    for j in xrange(0, len(pep_seq)):
+        if pep_seq[j] != upper_case[j]:
+            mod_sites.append(j)
+    
+    MS_pep = modifications.MeasuredPeptide()
+    MS_pep.experiment_id = exp_id
+    MS_pep.phosphopep = pep_seq
+    MS_pep.protein_id = prot.id
+    
+    
+    for i in mod_sites:
+        pep_site = i + index
+        pep_tryps   = upper_case[:i] + pep_seq[i] + upper_case[i+1:]
+        pep_aligned = prot_seq[pep_site-7:pep_site] + pep_seq[i] + prot_seq[pep_site+1:pep_site+8]
+        pep_type = upper_case[i]
+        
+        pep = modifications.Phosphopep()
+        
+        pep.pep_aligned = pep_aligned
+        pep.pep_tryps = pep_tryps
+        pep.site_pos = pep_site + 1
+        pep.site_type = pep_type
+        pep.protein_id = prot.id
+        pep.pfam_site = "~~~"
+        
+        MS_pep.phosphopeps.append(pep)
+        
+    MS_pep.save()
+    
+    return MS_pep
+    
 
 @task
 def insert_run_data(MSpeptide, series_header, run_name, series):
-    pass
-
+    for i in xrange(0, len(series_header)):
+        data = experiment.ExperimentData()
+        
+        _, t, x = series_header[i].split(":")
+        y = float(series[i])
+        
+        data.run = run_name
+        data.priority = i + 1
+        data.type = t
+        data.label = x
+        data.value = y
+        data.MS_id = MSpeptide.id
+        
+        data.save()
+        
 @task
 def start_import(exp, column_map={}, MAX_BATCH_SIZE = 1000):
     f = open(os.path.join(settings.experiment_data_file_path, exp.datafile), 'rb')
@@ -39,16 +95,16 @@ def start_import(exp, column_map={}, MAX_BATCH_SIZE = 1000):
     for line in f:
         data = line.split("\t")
         
-        acc = data[column_map['accession']]
+        acc = data[column_map['accession']].strip()
         accessions.add(acc)
         
-        pep = data[column_map['peptide']]
+        pep = data[column_map['peptide']].strip()
         peps = peptides.get(acc, set())
         peps.add(pep)
         peptides[acc] = peps 
         
         runs = data_runs.get((acc,pep), {})
-        run = data[column_map['run']]
+        run = data[column_map['run']].strip()
         series = []
         
         for c in column_map['data']:
@@ -80,7 +136,7 @@ def start_import(exp, column_map={}, MAX_BATCH_SIZE = 1000):
                 run_tasks.append(insert_run_data.s(series_headers, name, entry))
             
             pep_tasks.append(load_peptide.s(pep))
-            pep_tasks.append( chain( load_peptide.s(acc, pep) | group(run_tasks) ) )
+            pep_tasks.append( chain( load_peptide.s(exp.id, acc, pep) | group(run_tasks) ) )
         
         if len(acc_job_args) == BATCH_SIZES[batch]:
             batch+=1

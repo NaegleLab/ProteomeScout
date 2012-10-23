@@ -50,6 +50,8 @@ class MeasuredPeptide(Base):
     phosphopeps = relationship("Phosphopep", secondary=MS_phosphopep)
     data = relationship("ExperimentData")
 
+    def save(self):
+        DBSession.add(self)
 
 def getMeasuredPeptidesByProtein(pid, user):
     modifications = DBSession.query(MeasuredPeptide).filter_by(protein_id=pid).all()

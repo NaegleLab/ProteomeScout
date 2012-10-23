@@ -2,10 +2,9 @@ from tests.PTMScoutTestCase import IntegrationTestCase
 from mock import patch, call
 from ptmworker import tasks
 import os
-from ptmscout.database import experiment
+from ptmscout.database import experiment, modifications, protein
 from ptmscout.config import settings
 from tests.views.mocking import createMockExperiment
-from ptmworker.tasks import finalize_import
 
 class PTMWorkDataImportTestCase(IntegrationTestCase):
     
@@ -20,7 +19,102 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         exp.status = 'loaded'
         exp.saveExperiment.assert_called_once_with()
     
+    def test_load_peptide_should_fail_to_align_if_sequence_is_missing(self):
+        prot = protein.getProteinById(35546)
+        
+        # MQPEE GTGWL LELLS EVQLQ QYFLR LRDDL NVTRL--SHFEY VKNED LEKIG M--GRPG QRRLW EAVKRRKALCKRKSWMSKVFSGKRLEAEFPPHHSQSTFRKTSPAPGGPAGEGPLQSLTCLIGEKDLRLLEKLGDGSFGVVRRGEWDAPSGKTVSVAVKCLKPDVLSQPEAMDDFIREVNAMHSLDHRNLIRLYGVVLTPPMKMVTELAPLGSLLDRLRKHQGHFLLGTLSRYAVQVAEGMGYLESKRFIHRDLAARNLLLATRDLVKIGDFGLMRALPQNDDHYVMQEHRKVPFAWCAPESLKTRTFSHASDTWMFGVTLWEMFTYGQEPWIGLNGSQILHKIDKEGERLPRPEDCPQDIYNVMVQCWAHKPEDRPTFVALRDFLLEAQPTDMRALQDFEEPDKLHIQMNDVITVIEGRAENYWWRGQNTRTLCVGPFPRNVVTSVAGLSAQDISQPLQNSFIHTGHGDSDPRHCWGFPDRIDELYLGNPMDPPDLLSVELSTSRPPQHLGGVKKPTYDPVSEDQDPLSSDFKRLGLRKPGLPRGLWLAKPSARVPGTKASRGSGAEVTLIDFGEEPVVPALRPCPPSLAQLAMDACSLLDETPPQSPTRALPRPLHPTPVVDWDARPLPPPPAYDDVAQDEDDFEICSINSTLVGAGVPAGPSQGQTNYAFVPEQARPPPPLEDNLFLPPQGGGKPPSSAQTAEIFQALQQECMRQLQAPGSPAPSPSPGGDDKPQVPPRVPIPPRPTRPHVQLSPAPPGEEETSQWPGPASPPRVPPREPLSPQGSRTPSPLVPPGSSPLPPRLSSSPGKTMPTTQSFASDPKYATPQVIQAPGAGGPCILPIVRDGKKVSSTHYYLLPERPSYLERYQRFLREAQSPEEPTPLPVPLLLPPPSTPAPAAPTATVRPMPQAALDPKANFSTNNSNPGARPPPPRATARLPQRGCPGDGPEAGRPADKIQMAMVHGVTTEECQAALQCHGWSVQRAAQYLKVEQLFGLGLRPRGECHKVLEMFDWNLEQAGCHLLGSWGPAHHKR
+        m = {'gi|8922075': prot}
+        t = tasks.load_peptide.apply_async((m, 1, 'gi|8922075', 'AAAAAAAAAAAaAaAAAQRRL'))
+        try:
+            t.get()
+        except:
+            assert t.failed()
+        
     
+    def test_load_peptide_should_align_peptide_sequence_and_create_record(self):
+        from ptmscout.database import DBSession
+        
+        prot = protein.getProteinById(35546)
+        
+        # MQPEE GTGWL LELLS EVQLQ QYFLR LRDDL NVTRL--SHFEY VKNED LEKIG M--GRPG QRRLW EAVKRRKALCKRKSWMSKVFSGKRLEAEFPPHHSQSTFRKTSPAPGGPAGEGPLQSLTCLIGEKDLRLLEKLGDGSFGVVRRGEWDAPSGKTVSVAVKCLKPDVLSQPEAMDDFIREVNAMHSLDHRNLIRLYGVVLTPPMKMVTELAPLGSLLDRLRKHQGHFLLGTLSRYAVQVAEGMGYLESKRFIHRDLAARNLLLATRDLVKIGDFGLMRALPQNDDHYVMQEHRKVPFAWCAPESLKTRTFSHASDTWMFGVTLWEMFTYGQEPWIGLNGSQILHKIDKEGERLPRPEDCPQDIYNVMVQCWAHKPEDRPTFVALRDFLLEAQPTDMRALQDFEEPDKLHIQMNDVITVIEGRAENYWWRGQNTRTLCVGPFPRNVVTSVAGLSAQDISQPLQNSFIHTGHGDSDPRHCWGFPDRIDELYLGNPMDPPDLLSVELSTSRPPQHLGGVKKPTYDPVSEDQDPLSSDFKRLGLRKPGLPRGLWLAKPSARVPGTKASRGSGAEVTLIDFGEEPVVPALRPCPPSLAQLAMDACSLLDETPPQSPTRALPRPLHPTPVVDWDARPLPPPPAYDDVAQDEDDFEICSINSTLVGAGVPAGPSQGQTNYAFVPEQARPPPPLEDNLFLPPQGGGKPPSSAQTAEIFQALQQECMRQLQAPGSPAPSPSPGGDDKPQVPPRVPIPPRPTRPHVQLSPAPPGEEETSQWPGPASPPRVPPREPLSPQGSRTPSPLVPPGSSPLPPRLSSSPGKTMPTTQSFASDPKYATPQVIQAPGAGGPCILPIVRDGKKVSSTHYYLLPERPSYLERYQRFLREAQSPEEPTPLPVPLLLPPPSTPAPAAPTATVRPMPQAALDPKANFSTNNSNPGARPPPPRATARLPQRGCPGDGPEAGRPADKIQMAMVHGVTTEECQAALQCHGWSVQRAAQYLKVEQLFGLGLRPRGECHKVLEMFDWNLEQAGCHLLGSWGPAHHKR
+        m = {'gi|8922075': prot}
+        t = tasks.load_peptide.apply_async((m, 1, 'gi|8922075', 'SHFEYVKNEdLEKiGM'))
+        try:
+            MSpeptide = t.get()
+        except:
+            print t.traceback
+        
+        assert t.successful()
+        
+        self.assertEqual('SHFEYVKNEdLEKiGM', MSpeptide.phosphopep)
+        self.assertEqual(35546, MSpeptide.protein_id)
+        self.assertEqual(1, MSpeptide.experiment_id)
+        
+        DBSession.flush()
+        MSpep = DBSession.query(modifications.MeasuredPeptide).filter_by(id=MSpeptide.id).first()
+        
+        pep1, pep2 = MSpep.phosphopeps
+        
+        self.assertEqual('SHFEYVKNEdLEKIGM', pep1.pep_tryps)
+        self.assertEqual('FEYVKNEdLEKIGMG', pep1.pep_aligned)
+        self.assertEqual(45, pep1.site_pos)
+        self.assertEqual('D', pep1.site_type)
+
+        self.assertEqual('SHFEYVKNEDLEKiGM', pep2.pep_tryps)
+        self.assertEqual('KNEDLEKiGMGRPGQ', pep2.pep_aligned)
+        self.assertEqual(49, pep2.site_pos)
+        self.assertEqual('I', pep2.site_type)
+    
+    def test_insert_run_data_should_create_data_records_when_timeseries(self):
+        from ptmscout.database import DBSession
+        MS_peptide = modifications.MeasuredPeptide()
+        MS_peptide.experiment_id = 1
+        MS_peptide.protein_id = 35546
+        MS_peptide.phosphopep = 'ABCDEFG'
+        
+        DBSession.add(MS_peptide)
+        DBSession.flush()
+        
+        series_header = ['data:time(min):0','data:time(min):5','data:time(min):20', 'data:stddev(min):5', 'data:stddev(min):20']
+        series = [0,4,1,3,2]
+        
+        t = tasks.insert_run_data.apply_async((MS_peptide, series_header, "run1", series))
+        
+        t.get()
+        assert t.successful()
+        
+        DBSession.flush()
+        
+        result = DBSession.query(experiment.ExperimentData).filter_by(MS_id=MS_peptide.id).all()
+        result = sorted(result, key=lambda item: item.priority)
+        
+        self.assertEqual(5, len(result))
+        
+        self.assertEqual("run1", result[0].run)
+        self.assertEqual("time(min)", result[0].type)
+        self.assertEqual('0', result[0].label)
+        self.assertEqual(0, result[0].value)
+        
+        self.assertEqual("run1", result[1].run)
+        self.assertEqual("time(min)", result[1].type)
+        self.assertEqual('5', result[1].label)
+        self.assertEqual(4, result[1].value)
+
+        self.assertEqual("run1", result[2].run)
+        self.assertEqual("time(min)", result[2].type)
+        self.assertEqual('20', result[2].label)
+        self.assertEqual(1, result[2].value)
+
+        self.assertEqual("run1", result[3].run)
+        self.assertEqual("stddev(min)", result[3].type)
+        self.assertEqual('5', result[3].label)
+        self.assertEqual(3, result[3].value)
+
+        self.assertEqual("run1", result[4].run)
+        self.assertEqual("stddev(min)", result[4].type)
+        self.assertEqual('20', result[4].label)
+        self.assertEqual(2, result[4].value)
+        
     
     @patch('ptmworker.tasks.finalize_import')
     @patch('ptmworker.tasks.insert_run_data')
@@ -46,10 +140,10 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         self.assertEqual(3, len( patch_loadProtein.s.call_args_list ))
         self.assertEqual( args.find('P07197'), args.rfind('P07197')) 
         
-        assert call('P50914', 'AALLKApSPK') in patch_loadPeptide.s.call_args_list
-        assert call('Q8N9T8', 'AFVEDpSEDEDGAGEGGSSLLQK') in patch_loadPeptide.s.call_args_list
-        assert call('Q6KC79', 'AITSLLGGGpSPK') in patch_loadPeptide.s.call_args_list
-        assert call('A0AUK8', 'ELSNSPLRENpSFGSPLEFR') in patch_loadPeptide.s.call_args_list
+        assert call(exp.id, 'P50914', 'AALLKApSPK') in patch_loadPeptide.s.call_args_list
+        assert call(exp.id, 'Q8N9T8', 'AFVEDpSEDEDGAGEGGSSLLQK') in patch_loadPeptide.s.call_args_list
+        assert call(exp.id, 'Q6KC79', 'AITSLLGGGpSPK') in patch_loadPeptide.s.call_args_list
+        assert call(exp.id, 'A0AUK8', 'ELSNSPLRENpSFGSPLEFR') in patch_loadPeptide.s.call_args_list
         
         self.assertEquals(18, len(patch_load_run_data.s.call_args_list))
         

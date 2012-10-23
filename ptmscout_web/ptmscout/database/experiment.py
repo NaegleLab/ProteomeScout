@@ -21,6 +21,9 @@ class ExperimentData(Base):
     value = Column(Float, default=null)
     
     MS_id = Column(Integer(10), ForeignKey('MS.id'))
+    
+    def save(self):
+        DBSession.add(self)
 
 class Experiment(Base):
     __tablename__ = 'experiment'
