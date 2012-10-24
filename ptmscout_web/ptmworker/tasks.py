@@ -16,7 +16,7 @@ def finalize_import(exp):
     
     return 0
 
-@task(rate_limit='3/s') 
+@task
 def load_proteins(accessions):
     pass
 

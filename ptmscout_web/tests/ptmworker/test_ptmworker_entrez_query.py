@@ -21,3 +21,4 @@ class EntrezQueryTestCase(IntegrationTestCase):
         self.assertEqual(7, len(records))
         for acc in accessions:
             self.assertEqual(1, len(records[acc]))
+            print list(records[acc])[0]

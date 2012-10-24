@@ -2,6 +2,7 @@ from Bio import Entrez, SeqIO
 from ptmscout.config import settings
 from Bio import Medline
 
+@task(rate_limit='3/s', max_retries=5, default_retry_delay=1)
 def get_protein_records_by_accession(accessions):
     Entrez.email = settings.adminEmail
     search_handle = Entrez.esearch(db="protein", term=",".join(accessions), usehistory="y")
@@ -16,15 +17,18 @@ def get_protein_records_by_accession(accessions):
     record_iterator = SeqIO.parse(fetch_handle, "genbank")
     
     record_map = {}
-    for r in record_iterator:
-        for acc in r.annotations['accessions']:
-            records = record_map.get(acc, set())
-            records.add(r)
-            record_map[acc] = records
+    try:
+        for r in record_iterator:
+            for acc in r.annotations['accessions']:
+                records = record_map.get(acc, set())
+                records.add(r)
+                record_map[acc] = records
+    except IndexError:
+        pass
     
     return record_map
     
-
+@task(rate_limit='3/s', max_retries=5, default_retry_delay=1)
 def get_pubmed_record_by_id(pmid):
     Entrez.email = settings.adminEmail
     handle = Entrez.efetch(db="pubmed",id=pmid,rettype="medline",retmode="text")
