@@ -15,14 +15,6 @@ expression_association_table = Table('protein_expression', Base.metadata,
     Column('protein_id', Integer(10), ForeignKey('protein.id')),
     Column('probeset_id', Integer(10), ForeignKey('expression_ann.probeset_id')))
 
-class Species(Base):
-    __tablename__='species'
-    id = Column(Integer(10), primary_key=True, autoincrement=True)
-    name = Column(VARCHAR(100), unique=True)
-    
-    def __init__(self, name):
-        self.name = name
-
 class GeneOntology(Base):
     __tablename__='GO'
     id = Column(Integer(10), primary_key=True, autoincrement=True)
