@@ -37,7 +37,7 @@ function createSeqlogo(node, data, w, h){
 	    .attr("y", ch - (ch/50))
 	    .attr("class", "arial")
 	    .style("font-size", 13.5 * (ch / 10) + "px")
-	    .style("fill", function(d, i) { return colors(i) })
+	    .style("fill", function(d, i) { return colors(d[0]) })
 	    .text(function(d) { return d[0] });
     
     addExport(chartContainer, node);
