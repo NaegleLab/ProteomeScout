@@ -9,7 +9,6 @@ class SessionColumn(Base):
     id=Column(Integer(10), primary_key=True, autoincrement=True)
     session_id=Column(Integer(10), ForeignKey('sessions.id'))
     type=Column(Enum(['data','stddev','accession','peptide','species','modification','run', 'none']), default='none')
-    units=Column(VARCHAR(20), default='')
     label=Column(VARCHAR(10), default='')
     column_number=Column(Integer)
 
@@ -22,6 +21,7 @@ class Session(Base):
     load_type=Column(Enum(['new','reload','append','extension']))
     parent_experiment=Column(Integer(10), ForeignKey('experiment.id'))
     change_description=Column(Text)
+    units=Column(VARCHAR(20), default='')
     
     stage=Column(Enum(['config','metadata','confirm','complete']))
     experiment_id=Column(Integer(10), ForeignKey('experiment.id'))
