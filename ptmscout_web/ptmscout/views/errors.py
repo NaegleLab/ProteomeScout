@@ -5,6 +5,7 @@ from ptmscout.database.experiment import ExperimentAccessForbidden,\
     NoSuchExperiment, ExperimentNotAvailable
 from ptmscout.database.protein import NoSuchProtein
 from ptmscout.config import strings
+from ptmscout.database.upload import NoSuchSession, SessionAccessForbidden
 
 @view_config(context=IntegrityError, renderer='ptmscout:templates/info/information.pt')
 def internal_database_error_view(exc, request):
@@ -27,6 +28,17 @@ def redirect_no_such_protein(exc, request):
             'message':strings.error_protein_not_found_message,
             'redirect': request.application_url + "/proteins"}
 
+@view_config(context=NoSuchSession, renderer='ptmscout:templates/info/forbidden.pt')
+def redirect_no_such_session(exc, request):
+    return {'pageTitle': "Forbidden"}
+
+@view_config(context=SessionAccessForbidden, renderer='ptmscout:templates/info/forbidden.pt')
+def redirect_session_forbidden(exc, request):
+    return {'pageTitle': "Forbidden"}
+
+@view_config(context=NoSuchExperiment, renderer='ptmscout:templates/info/forbidden.pt')
+def redirect_no_such_experiment(exc, request):
+    return {'pageTitle': "Forbidden"}
 
 @view_config(context=ExperimentNotAvailable, renderer='ptmscout:templates/info/information.pt')
 def experiment_not_available(exc, request):

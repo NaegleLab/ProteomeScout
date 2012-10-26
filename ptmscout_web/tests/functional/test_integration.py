@@ -23,7 +23,15 @@ class InfoFunctionalTests(IntegrationTestCase):
         
         response = self.ptmscoutapp.get("/experiments/1")
         response.mustcontain(strings.error_resource_not_ready_page_title)
-        
+    
+    def test_no_such_session_should_invoke_forbidden(self):
+        response = self.ptmscoutapp.get('/upload/2000123/config')
+        response.mustcontain("forbidden")
+        response = self.ptmscoutapp.get('/upload/2000123/metadata')
+        response.mustcontain("forbidden")
+        response = self.ptmscoutapp.get('/upload/2000123/confirm')
+        response.mustcontain("forbidden")
+    
     def test_no_such_experiment_should_invoke_forbidden(self):
         response = self.ptmscoutapp.get('/experiments/2000123')
         response.mustcontain("forbidden")
