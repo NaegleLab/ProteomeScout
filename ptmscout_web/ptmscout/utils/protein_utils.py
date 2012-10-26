@@ -1,5 +1,6 @@
 import re
-
+from Bio.Seq import Seq
+from Bio.Alphabet import ProteinAlphabet
 
 def get_accession_type(acc):
     acc_type = None
@@ -22,3 +23,12 @@ def get_accession_type(acc):
         acc_type = 'ensembl'
         
     return acc_type
+
+def check_peptide_alphabet(pep):
+    amino_acids = set("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    
+    for residue in pep:
+        if residue not in amino_acids:
+            return False
+    
+    return True
