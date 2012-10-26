@@ -2,12 +2,13 @@ from behave import *
 import json
 from ptmscout.database import experiment, upload
 from ptmscout.config import strings
+from tests.behave.steps.assertions import assertEqual
 
-def create_column(cnum, ctype, cunits='', clabel=''):
+# ctype in set(['data','stddev','accession','peptide','species','modification','run', 'none'])
+def create_column(cnum, ctype, clabel=''):
     c = upload.SessionColumn()
     c.column_number = cnum
     c.type=ctype
-    c.units=cunits
     c.label=clabel
     return c
 
@@ -35,6 +36,7 @@ def setup_pre_existing_experiment_and_session(context):
     session.change_description = ''
     session.data_file = 'some_dataset'
     session.user_id = context.active_user.user.id
+    session.units = 'time(min)'
     session.stage = 'complete'
     
     c1 = create_column(0, 'accession')
@@ -42,10 +44,10 @@ def setup_pre_existing_experiment_and_session(context):
     c3 = create_column(3, 'peptide')
     c4 = create_column(4, 'run')
     
-    c5 = create_column(5, 'data', 'time(min)', '0')
-    c6 = create_column(6, 'data', 'time(min)', '30')
-    c7 = create_column(13, 'stddev', 'time(min)', '0')
-    c8 = create_column(14, 'stddev', 'time(min)', '30')
+    c5 = create_column(5, 'data', '0')
+    c6 = create_column(6, 'data', '30')
+    c7 = create_column(13, 'stddev', '0')
+    c8 = create_column(14, 'stddev', '30')
     
     session.columns.extend([c1,c2,c3,c4,c5,c6,c7,c8])
     session.save()
@@ -71,16 +73,15 @@ def load_data_file_with_no_run_column(context):
 
 @when(u'the dataset exists and new entries are being appended')
 def load_data_file_when_appending(context):
-    context.result = context.active_user.load_datafile('datasetLoad_correctDataset.txt', context.form, load_type='append', parent_experiment=str(context.preexisting_exp)).follow()
-
+    context.result = context.active_user.load_datafile('datasetLoad_correctDatasetNoHeader.txt', context.form, load_type='append', parent_experiment=str(context.preexisting_exp)).follow()
 
 @when(u'the user wants the dataset to replace another dataset')
 def load_data_file_when_replacing(context):
-    context.result = context.active_user.load_datafile('datasetLoad_correctDataset.txt', context.form, load_type='reload', parent_experiment=str(context.preexisting_exp)).follow()
+    context.result = context.active_user.load_datafile('datasetLoad_correctDatasetNoHeader.txt', context.form, load_type='reload', parent_experiment=str(context.preexisting_exp)).follow()
 
 @when(u'the user wants the dataset to extend another dataset')
 def load_data_file_when_extending(context):
-    context.result = context.active_user.load_datafile('datasetLoad_correctDataset.txt', context.form, load_type='extension', parent_experiment=str(context.preexisting_exp), change_description="Some set of changes are happening").follow()
+    context.result = context.active_user.load_datafile('datasetLoad_correctDatasetNoHeader.txt', context.form, load_type='extension', parent_experiment=str(context.preexisting_exp), change_description="Some set of changes are happening").follow()
 
 
 @when(u'non-alphabetic characters appear in some of the entries')
@@ -100,11 +101,41 @@ def load_data_when_unrecognized_headers(context):
 @when(u'the user submits a pubmed ID to fill out citation information')
 def query_pubmed_for_citation(context):
     context.result = context.ptmscoutapp.get('/pm_citation/12230038', status=200)
-    
+
+
+def assert_column_type(form, i, t, label=None):
+    assertEqual(t, form.get('column_%d_type' % (i)))
+    if label != None: 
+        assertEqual(label, form.get('column_%d_label' % (i)))
 
 @then(u'show the user column assignments and data column assignments with type and value fields')
 def check_fields_prepopulated_properly(context):
-    assert False
+    assert_column_type(context.result.form, 5, 'accession')
+    assert_column_type(context.result.form, 5, 'modification')
+    assert_column_type(context.result.form, 5, 'peptide')
+    assert_column_type(context.result.form, 5, 'run')
+    
+    assertEqual('time(min', context.result.form.get('data_units'))
+    
+    assert_column_type(context.result.form, 5, 'data', '0')
+    assert_column_type(context.result.form, 6, 'data', '30')
+    assert_column_type(context.result.form, 7, 'data', '60')
+    assert_column_type(context.result.form, 8, 'data', '120')
+    assert_column_type(context.result.form, 9, 'data', '240')
+    assert_column_type(context.result.form, 10, 'data', '480')
+    assert_column_type(context.result.form, 11, 'data', '960')
+    assert_column_type(context.result.form, 12, 'data', '1440')
+    
+    assert_column_type(context.result.form, 13, 'stddev', '0')
+    assert_column_type(context.result.form, 13, 'stddev', '30')
+    assert_column_type(context.result.form, 13, 'stddev', '60')
+    assert_column_type(context.result.form, 13, 'stddev', '120')
+    assert_column_type(context.result.form, 13, 'stddev', '240')
+    assert_column_type(context.result.form, 13, 'stddev', '480')
+    assert_column_type(context.result.form, 13, 'stddev', '960')
+    assert_column_type(context.result.form, 13, 'stddev', '1440')
+    
+    assertEqual('time(min)', context.result.form.get('data_units'))
 
 @then(u'show the user their headers')
 def check_fields_not_prepopulated_correct_header_titles_shown(context):
@@ -125,10 +156,30 @@ def check_errors_reported_bad_modification_for_amino_acid(context):
 def check_errors_reported_replicate_data(context):
     result = context.result.form.submit()
     result.mustcontain(strings.experiment_upload_warning_no_run_column)
+    
+@then(u'show the user that bad peptide strings have been detected')
+def check_errors_reported_bad_peptide_definition(context):
+    result = context.result.form.submit()
+    result.mustcontain(strings.experiment_upload_warning_peptide_column_contains_bad_peptide_strings)
 
 @then(u'pre-populate all fields of data loading with assignments from original dataset')
-def impl(context):
-    assert False
+def check_fields_prepopulated_properly_from_session_data(context):
+    assertEqual('accession', context.result.form.get('column_0_type')) 
+    assertEqual('modification', context.result.form.get('column_2_type')) 
+    assertEqual('peptide', context.result.form.get('column_3_type')) 
+    assertEqual('run', context.result.form.get('column_4_type'))
+    
+    assertEqual('data', context.result.form.get('column_5_type')) 
+    assertEqual('data', context.result.form.get('column_6_type'))
+    assertEqual('0', context.result.form.get('column_5_label'))
+    assertEqual('30', context.result.form.get('column_6_label'))
+    
+    assertEqual('stddev', context.result.form.get('column_13_type'))
+    assertEqual('stddev', context.result.form.get('column_14_type'))
+    assertEqual('0', context.result.form.get('column_13_label'))
+    assertEqual('30', context.result.form.get('column_14_label'))
+    
+    assertEqual('time(min)', context.result.form.get('data_units'))
 
     
 #{'STAT': 'MEDLINE', 'IP': '3', 'JT': 'Briefings in bioinformatics', 'DA': '20020916', 'FAU': ['Mangalam, Harry'], 'DP': '2002 Sep', 'OWN': 'NLM', 'PT': ['Journal Article'], 'LA': ['eng'], 'CRDT': ['2002/09/17 10:00'], 'DCOM': '20030606', 'LR': '20041117', 'PG': '296-302', 'TI': 'The Bio* toolkits--a brief overview.', 'PL': 'England', 'TA': 'Brief Bioinform', 'JID': '100912837', 'AB': 'Bioinformatics research is often difficult to do with commercial software. The Open Source BioPerl, BioPython and Biojava projects provide toolkits with multiple functionality that make it easier to create customised pipelines or analysis. This review briefly compares the quirks of the underlying languages and the functionality, documentation, utility and relative advantages of the Bio counterparts, particularly from the point of view of the beginning biologist programmer.', 'AD': 'tacg Informatics, Irvine, CA 92612, USA. hjm@tacgi.com', 'VI': '3', 'IS': '1467-5463 (Print) 1467-5463 (Linking)', 'AU': ['Mangalam H'], 'MHDA': '2003/06/07 05:00', 'MH': ['*Computational Biology', 'Computer Systems', 'Humans', 'Internet', '*Programming Languages', '*Software', 'User-Computer Interface'], 'EDAT': '2002/09/17 10:00', 'SO': 'Brief Bioinform. 2002 Sep;3(3):296-302.', 'SB': 'IM', 'PMID': '12230038', 'PST': 'ppublish'}
