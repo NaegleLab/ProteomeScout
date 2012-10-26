@@ -1,13 +1,11 @@
 from pyramid.view import view_config
-from ptmscout.database import experiment
-from pyramid.httpexceptions import HTTPFound
+from ptmscout.database import experiment, upload
 from ptmscout.config import strings
 from ptmscout.utils import webutils
 from ptmworker import tasks
 
 class UploadAlreadyStarted(Exception):
-    def __init__(self,eid):
-        self.eid = eid
+    pass
     
 @view_config(context=UploadAlreadyStarted, renderer='ptmscout:/templates/info/information.pt')
 def upload_already_started_view(request):
@@ -15,19 +13,20 @@ def upload_already_started_view(request):
             'header': strings.experiment_upload_started_page_title,
             'message': strings.experiment_upload_started_message % (request.application_url + "/account/experiments")}
 
-@view_config(route_name='upload_status', renderer='ptmscout:/templates/experiments/upload_confirm.pt')
+@view_config(route_name='upload_confirm', renderer='ptmscout:/templates/upload/upload_confirm.pt')
 def upload_confirm_view(request):
     confirm = webutils.post(request, "confirm", "false")
-    eid = int(request.matchdict['id'])
-    exp = experiment.getExperimentById(int(eid), request.user, False)
+    session_id = int(request.matchdict['id'])
     
-    if exp.ready():
-        return HTTPFound(request.application_url + "/experiment/" + str(eid))
-
-    if exp.status == 'loading':
-        raise UploadAlreadyStarted(eid)
+    session = upload.getSessionById(session_id, request.user)
     
+    if session.stage == 'complete':
+        raise UploadAlreadyStarted()
+    
+    exp = experiment.getExperimentById(session.experiment_id, request.user, False)
     if confirm == "true":
+        session.stage = 'complete'
+        session.save()
         tasks.start_import.apply_async(exp)
         return {'pageTitle': strings.experiment_upload_started_page_title,
                 'message': strings.experiment_upload_started_message % (request.application_url + "/account/experiments"),

@@ -43,6 +43,8 @@ You may view the error log for this upload at %s.
 
 Thanks for using PTMScout,
 -The PTMScout Team"""
+experiment_upload_configure_page_title = "Configure Experiment Data"
+experiment_upload_configure_message = "Please verify and assign designations for the column types present in your dataset. Some column types may have been automatically inferred from your headers."
 
 experiment_upload_confirm_page_title = "Confirm Submission"
 experiment_upload_confirm_message = "Experiment headers have parsed successfully. You may review warnings below. Are you sure you wish to proceed with the upload?"
@@ -134,6 +136,7 @@ Thanks,
 
 view_page_title = "PTMScout Terms of Use"
 
+failure_reason_experiment_file_not_enough_columns = "Not enough columns detected in data file. Verify that the file is TSV format and try again"
 failure_reason_experiment_header_no_peptide_column = "Data file did not contain a peptide column"
 failure_reason_experiment_header_multiple_peptide_column = "Data file contained multiple peptide columns. Check for the phrase 'pep' in all columns of the experiment header."
 failure_reason_experiment_header_no_acc_column = "Data file did not contain an accession column"
@@ -168,4 +171,9 @@ prediction_type_map = {'scansite': "Scansite",
 
 error_resource_not_ready_page_title = "Resource not ready"
 error_resource_not_ready_message = "The resource you are trying to access is currently in processing. If you are the creator of this resource, please visit <a href=\"%s\">this page</a> to check on its status."
+
+
+
+ 
+
 
