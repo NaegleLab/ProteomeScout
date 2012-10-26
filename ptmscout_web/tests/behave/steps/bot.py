@@ -3,6 +3,7 @@ from mock import patch
 import re
 from ptmscout.database.permissions import Permission
 from ptmscout.config import strings
+import os
 
 class Bot(object):
     def __init__(self, app):
@@ -56,3 +57,15 @@ class Bot(object):
         
         self.user.saveUser()
         
+    def load_datafile(self, filename, form, load_type='new', parent_experiment='', change_description=''):
+        filename = os.path.join('tests','behave','data',filename)
+        
+        f = open(filename, 'rb')
+        filecontents = f.read()
+        
+        
+        form.set('data_file', (filename, filecontents))
+        form.set('load_type', load_type)
+        form.set('parent_experiment', parent_experiment)
+        form.set('change_description', change_description)
+        return form.submit()
