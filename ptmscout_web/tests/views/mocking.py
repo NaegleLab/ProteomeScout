@@ -3,29 +3,60 @@ from ptmscout.utils import crypto
 from ptmscout.database.user import User
 from ptmscout.database.experiment import Experiment, ExperimentData
 from ptmscout.database.permissions import Permission
-from ptmscout.database.protein import Protein, Species, GeneOntology, Domain
+from ptmscout.database.protein import Protein, GeneOntology, Domain
 import random
 from ptmscout.database.modifications import MeasuredPeptide, Phosphopep,\
     ScansitePrediction
 from ptmscout.database.gene_expression import ExpressionProbeset,\
     ExpressionSample, ExpressionCollection, ExpressionTissue
+from ptmscout.database.taxonomies import Species
+from ptmscout.database.upload import Session
+import datetime
 
 TEST_USER_ID = 2
 
-def createMockUser(username, email, password, active):
+def createMockUser(username=None, email=None, password=None, active=1):
     global TEST_USER_ID
     mock = Mock(spec=User)
+    
+    mock.id = TEST_USER_ID
+    
+    if username==None:
+        username = "user" + str(TEST_USER_ID)
     mock.username = username
     mock.name = "A User"
     mock.email = email
+    
+    if email == None:
+        email = "user%d@institute.edu" % TEST_USER_ID
+    mock.email = email
+    
     mock.institution = "institution"
+    
+    TEST_USER_ID += 1
+    if password==None:
+        password=crypto.randomString(10)
+    
     mock.salt, mock.salted_password = crypto.saltedPassword(password)  
     mock.activation_token = crypto.generateActivationToken()
-    mock.id = TEST_USER_ID
-    TEST_USER_ID += 1
     mock.active = active
     mock.permissions = []
     return mock
+
+def createMockSession(user, sid=random.randint(0,100000), data_file='some_file', load_type='new', parent_experiment=None, stage = 'config', experiment_id=None, change_description='blah'):
+    mock = Mock(spec=Session)
+    mock.id=sid
+    mock.user_id=user.id
+    mock.data_file = data_file
+    mock.load_type = load_type
+    mock.parent_experiment = parent_experiment
+    mock.change_description = change_description
+    mock.stage = stage
+    mock.experiment_id = experiment_id
+    
+    mock.date = datetime.datetime.now()
+    return mock
+    
 
 def createMockExperiment(eid=random.randint(0,100000), public=0, parent_id=None, status='loaded'):
     mock = Mock(spec=Experiment)
@@ -37,6 +68,7 @@ def createMockExperiment(eid=random.randint(0,100000), public=0, parent_id=None,
     mock.name = "Experiment Name" + str(eid)
     mock.status = status
     mock.ready.return_value = mock.status == 'loaded'
+    mock.date = datetime.datetime.now()
     return mock
 
 def createMockPermission(user, experiment, access_level='view'):

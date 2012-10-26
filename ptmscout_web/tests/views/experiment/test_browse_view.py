@@ -61,7 +61,7 @@ class ExperimentBrowseViewTests(unittest.TestCase):
         
         request = DummyRequest()
         
-        ptm_user = createMockUser("username", "email", "password", 1)
+        ptm_user = createMockUser()
         request.user = ptm_user
         
         p1 = createMockProtein()

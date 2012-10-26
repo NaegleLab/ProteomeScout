@@ -2,22 +2,14 @@ from mock import patch
 from ptmscout.config import strings
 from ptmscout.views.accounts.login_view import user_login, user_logout, \
     user_login_success
-from pyramid import testing
 from pyramid.httpexceptions import HTTPFound
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockUser
-import unittest
 import urllib
 from ptmscout.database import user
+from tests.PTMScoutTestCase import UnitTestCase
 
-class UserLoginViewTests(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-
-    def tearDown(self):
-        testing.tearDown()
-        
-
+class UserLoginViewTests(UnitTestCase):
     def test_login_should_display_login_page(self):
         
         request = DummyRequest()
@@ -69,7 +61,7 @@ class UserLoginViewTests(unittest.TestCase):
     
     @patch('ptmscout.database.user.getUserByUsername')
     def test_process_login_should_fail_if_credentials_incorrect(self, patch_getUser):
-        patch_getUser.return_value = createMockUser("good_username", "user@institute.edu", "good_password", 1)
+        patch_getUser.return_value = createMockUser(username="good_username", email="user@institute.edu", password="good_password", active=1)
         
         request = DummyRequest()
         

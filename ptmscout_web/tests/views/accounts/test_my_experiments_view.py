@@ -4,13 +4,11 @@ from ptmscout.database.user import NoSuchUser
 from ptmscout.views.accounts.my_experiments_view import confirm_invite_user, \
     privatize_experiment, publish_experiment, manage_experiment_permissions, \
     manage_experiments
-from pyramid import testing
 from pyramid.httpexceptions import HTTPFound
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockUser, createMockExperiment, \
     createMockPermission
-import unittest
-from tests.PTMScoutTestCase import IntegrationTestCase
+from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 
 class MyExperimentsViewIntegrationTests(IntegrationTestCase):
     def test_integration(self):
@@ -31,12 +29,7 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         result.mustcontain('N/a')
         
 
-class MyExperimentsViewTests(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-
-    def tearDown(self):
-        testing.tearDown()
+class MyExperimentsViewTests(UnitTestCase):
     
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_confirm_invite_should_check_confirmation(self, patch_getExperiment):
