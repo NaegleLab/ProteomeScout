@@ -1,11 +1,11 @@
 from tests.DBTestCase import DBTestCase
-from ptmscout.database.protein import Protein, getSpeciesByName
+from ptmscout.database.protein import Protein
+from ptmscout.database.taxonomies import getSpeciesByName
 from ptmscout.database.experiment import Experiment, getExperimentById,\
     ExperimentData
 from ptmscout.database.modifications import Phosphopep, MeasuredPeptide,\
     getMeasuredPeptidesByProtein
 from ptmscout.database.user import User, getUserById
-from sqlalchemy.sql.expression import null
 
 
 class TestModifications(DBTestCase):

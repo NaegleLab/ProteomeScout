@@ -1,6 +1,6 @@
 from mock import patch
 from ptmscout.config import strings
-from ptmscout.database.protein import Species
+from ptmscout.database.taxonomies import Species
 from ptmscout.views.protein.search_view import protein_search_view
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockProtein, createMockMeasurement, \
@@ -13,7 +13,7 @@ class TestProteinSearchViewIntegration(IntegrationTestCase):
                 
 class TestProteinSearchViews(UnitTestCase):
         
-    @patch('ptmscout.database.protein.getAllSpecies')
+    @patch('ptmscout.database.taxonomies.getAllSpecies')
     def test_protein_search_view_should_get_species_list_and_show_search_forms(self, patch_getSpecies):
         request = DummyRequest()
         
@@ -31,7 +31,7 @@ class TestProteinSearchViews(UnitTestCase):
         self.assertEqual({}, result['modifications'])
         self.assertEqual(False, result['submitted'])
         
-    @patch('ptmscout.database.protein.getAllSpecies')
+    @patch('ptmscout.database.taxonomies.getAllSpecies')
     def test_protein_search_view_should_not_submit_search_if_protein_field_empty(self, patch_getSpecies):
         request = DummyRequest()
         request.POST['submitted'] = "true"
@@ -58,7 +58,7 @@ class TestProteinSearchViews(UnitTestCase):
     
     @patch('ptmscout.database.modifications.getMeasuredPeptidesByProtein')
     @patch('ptmscout.database.protein.getProteinsByAccession')
-    @patch('ptmscout.database.protein.getAllSpecies')
+    @patch('ptmscout.database.taxonomies.getAllSpecies')
     def test_protein_search_view_should_process_search_form(self, patch_getSpecies, patch_getProteins, patch_getMods):
         request = DummyRequest()
         request.POST['submitted'] = "true"

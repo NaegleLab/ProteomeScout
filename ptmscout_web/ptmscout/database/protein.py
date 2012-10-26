@@ -4,6 +4,7 @@ from sqlalchemy.types import Integer, TEXT, VARCHAR, Enum, Text, Float
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import null, or_
 from ptmscout.config import strings, settings
+from ptmscout.database.taxonomies import Species
 
 go_association_table = Table('protein_GO', Base.metadata,
     Column('protein_id', Integer(10), ForeignKey('protein.id')),
@@ -101,8 +102,3 @@ def getProteinsByAccession(accessions, species=None):
     
     return q.all()
 
-def getSpeciesByName(name):
-    return DBSession.query(Species).filter_by(name=name).first()
-
-def getAllSpecies():
-    return DBSession.query(Species).all()
