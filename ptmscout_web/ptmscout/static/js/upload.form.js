@@ -3,9 +3,14 @@ $(document).ready(function(){
 	
 	$('#new_dataset')
 		.click(function(){
-			setValues()
 			$('#expselect option[value=""]').attr('selected','true')
 			$('#parent_exp').css('display', "none");
+			$('#change_desc').css('display', "none");
+		});
+	
+	$('#append_dataset')
+		.click(function(){
+			$('#parent_exp').css('display', "table-row");
 			$('#change_desc').css('display', "none");
 		});
 	
@@ -29,4 +34,6 @@ $(document).ready(function(){
 			else
 				$('.pubinfo').css('display',"none");
 		});
+	
+	$('#new_dataset').click()
 });

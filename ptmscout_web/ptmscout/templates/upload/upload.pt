@@ -22,7 +22,7 @@
                             <input id="new_dataset" type="radio" name="load_type" value="new" />New
                             <input id="append_dataset" type="radio" name="load_type" value="append" />Append
                             <input id="reload_dataset" type="radio" name="load_type" value="reload" />Reload
-                            <input id="derived_dataset" type="radio" name="load_type" value="extension" />Extension
+                            <input id="extend_dataset" type="radio" name="load_type" value="extension" />Extension
                         </td>
                     </tr>
                     <tr id="parent_exp">
