@@ -4,19 +4,19 @@ Feature: Dataset Load
 
     Scenario: Correct Dataset
           Given a user submits a correctly formatted dataset of phosphorylation data
-          Then the user should be sent an email which contains:
+          Then the user should be sent an email with a link to the experiment which contains:
             | peptides | proteins | errors |
             | 17       | 14       | 0      |
 
     Scenario: Load a correct dataset with degenerate methylation names
           Given a user has loaded a dataset in which modifications have varying specificities of naming
-          Then the user should be sent an email which contains:
+          Then the user should be sent an email with a link to the experiment which contains:
             | peptides | proteins | errors |
             | 9        | 9        | 0      |
 
     Scenario: Load a dataset with bad amino acid assignments
           Given a user has loaded a dataset and the modification type does not match the amino acid for that species
-          Then the user should be sent an email which contains:
+          Then the user should be sent an email with a link to the experiment which contains:
             | peptides | proteins | errors |
             | 9        | 9        | 3      |
 

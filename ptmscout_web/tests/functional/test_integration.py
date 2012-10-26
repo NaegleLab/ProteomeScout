@@ -16,11 +16,6 @@ class InfoFunctionalTests(IntegrationTestCase):
         self.ptmscoutapp.get('/login')
         self.ptmscoutapp.get('/register')
         
-    def test_forbidden_should_invoke_on_unauthorized_access(self):
-        self.bot.logout()
-        response = self.ptmscoutapp.get('/upload')
-        response.mustcontain("forbidden")
-        
     def test_experiment_not_ready_should_notify_resource_not_ready(self):
         exp = experiment.getExperimentById(1, None)
         exp.status = 'loading'

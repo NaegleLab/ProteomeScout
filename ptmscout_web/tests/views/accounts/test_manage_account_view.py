@@ -1,22 +1,14 @@
 from ptmscout.config import strings
 from ptmscout.views.accounts.manage_account_view import manage_account, \
     change_password, change_password_success
-from pyramid import testing
 from pyramid.httpexceptions import HTTPFound
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockUser
 import ptmscout.utils.crypto as crypto
-import unittest
 import urllib
+from tests.PTMScoutTestCase import UnitTestCase
 
-class ManageAccountViewTests(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-
-    def tearDown(self):
-        testing.tearDown()
-        
-
+class ManageAccountViewTests(UnitTestCase):
     def test_manage_account_should_display_account_info(self):
         request = DummyRequest()
         request.GET['reason'] = "reason"

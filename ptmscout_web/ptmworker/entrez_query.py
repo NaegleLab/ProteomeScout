@@ -1,3 +1,4 @@
+from celery.task import task
 from Bio import Entrez, SeqIO
 from ptmscout.config import settings
 from Bio import Medline

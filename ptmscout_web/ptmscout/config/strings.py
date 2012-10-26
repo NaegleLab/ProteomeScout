@@ -43,6 +43,22 @@ You may view the error log for this upload at %s.
 
 Thanks for using PTMScout,
 -The PTMScout Team"""
+experiment_upload_configure_page_title = "Configure Experiment Data"
+experiment_upload_configure_message = "Please verify and assign designations for the column types present in your dataset. Some column types may have been automatically inferred from your headers."
+
+
+experiment_upload_warning_no_column_assignment = "Warning: Column assignment for '%s' not found"
+experiment_upload_warning_multi_column_assignment = "Error: Found multiple column assignments for '%s'"
+experiment_upload_warning_data_column_not_numeric = "Error: Data column '%s' contains non-numeric values"
+experiment_upload_warning_acc_column_contains_bad_accessions = "Warning: Accession column contains %d accessions with unrecognized types"
+experiment_upload_warning_peptide_column_contains_bad_peptide_strings = "Warning: Peptide column contains %d peptides with incorrect formatting"
+experiment_upload_warning_no_run_column = "Warning: Experiment contains multiple datapoints for the same protein/peptide pair, but no run column"
+experiment_upload_warning_modifications_do_not_match_amino_acids = "Warning: Specified modifications types for %d peptides do not match amino-acid residues for any known species"
+
+
+experiment_upload_option_no_run_column_assign_in_order = "Assign run numbers in order of occurrence"
+experiment_upload_option_no_run_column_assign_in_order = "Return to choose a run column from the dataset"
+
 
 experiment_upload_confirm_page_title = "Confirm Submission"
 experiment_upload_confirm_message = "Experiment headers have parsed successfully. You may review warnings below. Are you sure you wish to proceed with the upload?"
@@ -99,6 +115,8 @@ share_experiment_page_title = "Share Experiment"
 upload_page_title = "Upload"
 upload_page_header = "Data Upload"
 
+
+
 user_invite_page_title = "Invite User"
 user_invite_confirm = "User %s is not a registered user, are you sure you wish to invite this user?"
 user_invite_email_required = "Email address is required"
@@ -134,6 +152,7 @@ Thanks,
 
 view_page_title = "PTMScout Terms of Use"
 
+failure_reason_experiment_file_not_enough_columns = "Not enough columns detected in data file. Verify that the file is TSV format and try again"
 failure_reason_experiment_header_no_peptide_column = "Data file did not contain a peptide column"
 failure_reason_experiment_header_multiple_peptide_column = "Data file contained multiple peptide columns. Check for the phrase 'pep' in all columns of the experiment header."
 failure_reason_experiment_header_no_acc_column = "Data file did not contain an accession column"
@@ -168,4 +187,9 @@ prediction_type_map = {'scansite': "Scansite",
 
 error_resource_not_ready_page_title = "Resource not ready"
 error_resource_not_ready_message = "The resource you are trying to access is currently in processing. If you are the creator of this resource, please visit <a href=\"%s\">this page</a> to check on its status."
+
+
+
+ 
+
 

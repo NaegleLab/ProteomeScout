@@ -1,6 +1,6 @@
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, VARCHAR
-from ptmscout.database import Base
+from ptmscout.database import Base, DBSession
 
 class Taxonomy(Base):
     __tablename__='taxonomy'
@@ -17,3 +17,9 @@ class Species(Base):
     
     def __init__(self, name):
         self.name = name
+        
+def getSpeciesByName(name):
+    return DBSession.query(Species).filter_by(name=name).first()
+
+def getAllSpecies():
+    return DBSession.query(Species).all()

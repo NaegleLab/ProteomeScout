@@ -22,102 +22,41 @@ def set_form_defaults(form):
     form.set('ambiguous', "no")
     form.set('notes', "none")
     form.set('terms_of_use', "yes")
+    
 
+@given(u'a user submits a dataset with an accession that looks like a GenPept accession, but is not a valid accession number')
+def impl(context):
+    assert False
+
+@given(u'a user has loaded a dataset and the modification type does not match the amino acid for that species')
+def impl(context):
+    assert False
 
 @given(u'a user submits a correctly formatted dataset of phosphorylation data')
-def submit_correct_dataset(context):
-    context.active_user.login()
-    result = context.ptmscoutapp.get('/upload', status=200)
-    context.form = result.form
-    
-    context.form.set('load_type', "new")
-    
-    filename = "tests/behave/data/datasetLoad_correctDataset.txt"
-    f = open(filename, 'rb')
-    filecontents = f.read()
-    
-    context.form.set('data_file', (filename, filecontents))
-    context.form.set('description', "This is a correct dataset")
-    
-    set_form_defaults(context.form)
+def impl(context):
+    assert False
+
+@given(u'a user has loaded a dataset in which modifications have varying specificities of naming')
+def impl(context):
+    assert False
+
+@given(u'a user submits a dataset in which a single peptide has more than one flavor of modification and the mod_type entry does not match the amino acids')
+def impl(context):
+    assert False
+
+@given(u'a user submits a dataset in which an isoform specific record is included')
+def impl(context):
+    assert False
 
 @given(u'a user submits a dataset that has an incorrect peptide to protein match')
-def submit_incorrect_peptide_dataset(context):
-    context.active_user.login()
-    result = context.ptmscoutapp.get('/upload', status=200)
-    context.form = result.form
-    
-    context.form.set('load_type', "new")
-    filename = "tests/behave/data/datasetLoad_pepMismatch.txt"
-    f = open(filename, 'rb')
-    filecontents = f.read()
-    
-    context.form.set('data_file', (filename, filecontents))
-    context.form.set('description', "This is a dataset with a bad peptide")
-    
-    set_form_defaults(context.form)
-    
+def impl(context):
+    assert False
 
-@given(u'a user submits a dataset that has an accession that looks like a GenPept accession, but is not currently there')
-def submit_incorrect_genpept_dataset(context):
-    context.active_user.login()
-    result = context.ptmscoutapp.get('/upload', status=200)
-    context.form = result.form
-    
-    context.form.set('load_type', "new")
-    filename = "tests/behave/data/datasetLoad_badAcc.txt"
-    f = open(filename, 'rb')
-    filecontents = f.read()
-    
-    context.form.set('data_file', (filename, filecontents))
-    context.form.set('description', "This is a dataset with a bad accession")
-    
-    set_form_defaults(context.form)
-    
+@given(u'a user submits a dataset and a single peptide has more than one flavor of modification and mod_type assignments match the sequential order of modifcations')
+def impl(context):
+    assert False
 
-@given(u'a user submits a dataset file with more than one peptide column')
-def submit_dataset_with_multiple_peptide_columns(context):
-    context.active_user.login()
-    result = context.ptmscoutapp.get('/upload', status=200)
-    context.form = result.form
-    
-    context.form.set('load_type', "new")
-    filename = "tests/behave/data/datasetLoad_moreThanOnePep.txt"
-    f = open(filename, 'rb')
-    filecontents = f.read()
-    
-    context.form.set('data_file', (filename, filecontents))
-    context.form.set('description', "This is a dataset with multiple peptide columns")
-    
-    set_form_defaults(context.form)
-    
 
-@given(u'a user submits a dataset with no accession column')
-def submit_dataset_without_accession_column(context):
-    context.active_user.login()
-    result = context.ptmscoutapp.get('/upload', status=200)
-    context.form = result.form
-    
-    context.form.set('load_type', "new")
-    filename = "tests/behave/data/datasetLoad_noAcc.txt"
-    f = open(filename, 'rb')
-    filecontents = f.read()
-    
-    context.form.set('data_file', (filename, filecontents))
-    context.form.set('description', "This is a dataset without an accession column")
-    
-    set_form_defaults(context.form)
-    
-
-@then(u'the user should see an error that says "{error_text}"')
-def error_text_display(context, error_text):
-    context.result = context.form.submit()
-    context.result.mustcontain(error_text)
-    
-    
-@then(u'the user should see the text "{text}"')
-def info_text_display(context, text):
-    context.result.mustcontain(text)
     
 @then(u'the user should be sent an email with a link to the experiment which contains')
 @patch('ptmscout.utils.mail.send_automail_message')

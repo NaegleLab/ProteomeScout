@@ -1,3 +1,4 @@
+# Skip
 from tests.PTMScoutTestCase import IntegrationTestCase
 from ptmworker.entrez_query import get_pubmed_record_by_id, get_protein_records_by_accession
 from ptmscout.config import settings
@@ -21,4 +22,3 @@ class EntrezQueryTestCase(IntegrationTestCase):
         self.assertEqual(7, len(records))
         for acc in accessions:
             self.assertEqual(1, len(records[acc]))
-            print list(records[acc])[0]
