@@ -131,6 +131,8 @@ def upload_data_file(request):
             else:
                 reason = result
         
+    if 'data_file' in form_fields:
+        del form_fields['data_file']
     
     return {'pageTitle': strings.upload_page_title,
             'header': strings.upload_page_header,

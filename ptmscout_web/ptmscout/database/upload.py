@@ -9,7 +9,9 @@ class SessionColumn(Base):
     id=Column(Integer(10), primary_key=True, autoincrement=True)
     session_id=Column(Integer(10), ForeignKey('sessions.id'))
     type=Column(Enum(['data','stddev','accession','peptide','species','modification','run', 'none']), default='none')
+    units=Column(VARCHAR(20), default='')
     label=Column(VARCHAR(10), default='')
+    column_number=Column(Integer)
 
 class Session(Base):
     __tablename__='sessions'

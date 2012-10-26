@@ -229,3 +229,20 @@ class IntegrationTestUploadView(IntegrationTestCase):
         
         form.submit(status=302)
         
+    def test_view_integration_when_extending(self):
+        self.bot.acquire_experiments([26])
+        result = self.ptmscoutapp.get("/upload", status=200)
+        result.mustcontain(self.bot.user.permissions[0].experiment.name)
+        
+        form = result.form
+        filename = os.path.join(settings.ptmscout_path, "tests/behave/data/datasetLoad_correctDataset.txt")
+        f = open(filename, 'rb')
+        filecontents = f.read()
+        
+        form.set('data_file', (filename, filecontents))
+        form.set('load_type', "extension")
+        form.set('parent_experiment', "26")
+        form.set('change_description', "This is a change")
+        
+        form.submit(status=302)
+        
