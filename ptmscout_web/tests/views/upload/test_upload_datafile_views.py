@@ -212,6 +212,16 @@ class IntegrationTestUploadView(IntegrationTestCase):
         response = self.ptmscoutapp.get('/upload')
         response.mustcontain("forbidden")
     
+    def test_view_integration_when_missing_fields(self):
+        result = self.ptmscoutapp.get("/upload", status=200)
+        
+        form = result.form
+        
+        form.set('load_type', "new")
+        
+        result = form.submit(status=200)
+        result.mustcontain(strings.failure_reason_required_fields_cannot_be_empty % "Input Data File")
+    
     def test_view_integration(self):
         self.bot.acquire_experiments([26])
         result = self.ptmscoutapp.get("/upload", status=200)

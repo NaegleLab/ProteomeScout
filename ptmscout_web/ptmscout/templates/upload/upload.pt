@@ -9,7 +9,7 @@
         <script type="text/javascript" src="${request.static_url('ptmscout:static/js/upload.form.js')}"></script>
     </div>
     <div metal:fill-slot="content">
-        <form action="" method="post">
+        <form action="" method="post" enctype="multipart/form-data">
             <div class="hidden" id="populated_fields">${formfields}</div>
             <input type="hidden" value="true" name="submitted" />
             <div class="wideform">

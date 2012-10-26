@@ -7,6 +7,9 @@ import base64
 import json
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from ptmscout.database import upload
+import logging
+import cgi
+log = logging.getLogger(__name__)
 
 def create_session(request, exp_file):
     session = upload.Session()
@@ -40,7 +43,6 @@ def save_data_file(request):
     exp_file = "experiment_data" + str(time.time())
     
     input_file = request.POST['data_file'].file
-    
     output_file = open(os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, exp_file), 'wb')
     
     input_file.seek(0)
@@ -84,7 +86,8 @@ def get_required_fields(request):
 def check_required_fields(request, users_experiments):
     field_name_dict = {'parent_experiment': "Parent Experiment",
                        'load_type': "Load Type",
-                       'change_description': "Change Description"}
+                       'change_description': "Change Description",
+                       'data_file': "Input Data File"}
     
     field_dict = {}
     for field in request.POST:
