@@ -8,7 +8,7 @@ class SessionColumn(Base):
     __tablename__='session_columns'
     id=Column(Integer(10), primary_key=True, autoincrement=True)
     session_id=Column(Integer(10), ForeignKey('sessions.id'))
-    type=Column(Enum(['data','stddev','accession','peptide','species','modification','run', 'none']), default='none')
+    type=Column(Enum(['hidden','data','stddev','accession','peptide','species','modification','run', 'none']), default='none')
     label=Column(VARCHAR(10), default='')
     column_number=Column(Integer)
 
