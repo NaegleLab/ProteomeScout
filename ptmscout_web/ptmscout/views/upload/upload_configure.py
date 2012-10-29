@@ -1,95 +1,107 @@
 from ptmscout.config import strings
 from pyramid.view import view_config
 from ptmscout.database import upload
+from ptmscout.utils import webutils
+from pyramid.httpexceptions import HTTPFound
+from ptmscout.utils import uploadutils
+import re
 
 
 def parse_user_input(session, request):
-    pass
-
-
-def get_columns_of_type(session, tp):
-    cols = []
-    for col in session.columns:
-        if tp == col.type:
-            cols.append(col)
-    return cols
-
-def check_data_rows(session):
+    units = webutils.post(request, 'units', '')
+    
+    numcols = 0
+    for field in request.POST:
+        m = re.match('column_([0-9]+)_(type|label)', field)
+        if m:
+            col = int(m.group(1))
+            if col + 1 > numcols:
+                numcols = col + 1
+                
     errors = []
+    columns = {}
     
-    
-    
-    errors
-
-class ColumnError(Exception):
-    def __init__(self, message):
-        self.message = message
+    data_labels = set()
+    stddev_labels = set()
+    stddev_cols = []
+    for c in xrange(0, numcols):
+        col = {'type':'', 'label':''}
+        columns[c] = col
+        col['type'] = webutils.post(request,'column_%d_type' % (c), "").strip()
         
-    def __repr__(self):
-        return self.message
+        if col['type'] == "":
+            errors.append(strings.experiment_upload_error_column_type_not_defined % (c+1))
+            
+        col['label'] = webutils.post(request, 'column_%d_label' % (c), "").strip()
 
-def check_unique_column(session, ctype, required=False):
-    cols = get_columns_of_type(session, ctype)
+        if col['label'] == "" and col['type'] in set(['stddev','data']):        
+            errors.append(strings.experiment_upload_error_data_column_empty_label % (c+1))
+            
+        if col['label'] != "":
+            if col['type'] == 'data':
+                if col['label'] in data_labels:
+                    errors.append(strings.experiment_upload_error_data_column_label_duplicated % (c+1))
+                data_labels.add(col['label'])
+            elif col['type'] == 'stddev':
+                if col['label'] in stddev_labels:
+                    errors.append(strings.experiment_upload_error_data_column_label_duplicated % (c+1))
+                stddev_labels.add(col['label'])
+                stddev_cols.append(c)
+            else:
+                col['label'] = ""
 
-    if required and len(cols) == 0:
-        raise ColumnError(strings.experiment_upload_warning_no_column_assignment % ctype)
-    if len(cols) > 1:
-        raise ColumnError(strings.experiment_upload_error_limit_one_column_of_type % ctype)
-    
-    if len(cols) == 0:
-        return None
-    return cols[0]
+    [ errors.append(strings.experiment_upload_error_standard_deviation_label_does_not_match_any_data_column % (c+1, columns[c]['label'])) 
+            for c in stddev_cols if columns[c]['label'] not in data_labels ]
 
-def check_stddev_maps_to_data(data_cols, stddev_cols):
-    for col in stddev_cols:
-        maps = False
-        for c2 in data_cols:
-            maps |= col.label == c2.label
-        if not maps:
-            raise ColumnError(strings.experiment_upload_error_standard_deviation_label_does_not_match_any_data_column % (col.label))
+    session.columns = []
+    for c in xrange(0, numcols):
+        col = upload.SessionColumn()
+        col.type = columns[c]['type']
+        col.label = columns[c]['label']
+        col.column_number = c
+        session.columns.append(col)
         
-    
-def check_data_column_assignments(session):
-    acc_col = check_unique_column(session, 'accession', required=True)
-    pep_col = check_unique_column(session, 'peptide', required=True)
-    mod_col = check_unique_column(session, 'modification')
-    species_col = check_unique_column(session, 'species')
-    run_col = check_unique_column(session, 'run')
-    
-    data_cols   = get_columns_of_type(session, 'data')
-    stddev_cols = get_columns_of_type(session, 'stddev')
-    
-    check_stddev_maps_to_data(data_cols, stddev_cols)
-    
-    
-    
+    session.units = units
 
-def assign_columns_by_name(session, header):
-    pass
-
-def assign_columns_from_session(session):
-    pass
-
-def assign_columns_from_session_history(header, session, current_user):
-    pass
-
-def assign_column_defaults(session, current_user):
-    pass
-
-
-
-
-
-def load_header_and_data_rows(session, N=20):
-    pass
-
-
+    return {'columns':columns,'units':units}, errors
 
 
 @view_config(route_name='upload_config', renderer='ptmscout:/templates/upload/upload_config.pt')
 def upload_config(request):
     session_id = int(request.matchdict['id'])
     session = upload.getSessionById(session_id, request.user) 
+    submitted = webutils.post(request, 'submitted', "false") == "true"
+    force = webutils.post(request, 'override', "false") == "true"
     
-    return {'pageTitle': strings.experiment_upload_configure_page_title,
+    allowoverride = False
+    
+    column_defs = []
+    errors = []
+    if submitted:
+        commit = False
+        column_defs, errors = parse_user_input(session, request)
+        
+        if errors == []:
+            allowoverride = True
+            try:
+                uploadutils.check_data_column_assignments(session)
+                commit = True
+            except uploadutils.ErrorList, ce:
+                commit = force
+                errors = ce.error_list()
+                
+            if commit:
+                session.save()
+                return HTTPFound(request.application_url + "/upload/%d/metadata" % (session_id))
+    else:
+        column_defs = uploadutils.assign_column_defaults(session, request.user)
+    
+    headers, data_rows = uploadutils.load_header_and_data_rows(session, 20)
+    
+    return {'allowoverride': allowoverride,
+            'headers': headers,
+            'data_rows': data_rows,
+            'error': errors,
+            'columns':column_defs,
+            'pageTitle': strings.experiment_upload_configure_page_title,
             'instruction': strings.experiment_upload_configure_message}

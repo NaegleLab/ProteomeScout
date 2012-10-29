@@ -53,7 +53,7 @@ def createMockSession(user, sid=random.randint(0,100000), data_file='some_file',
     mock.change_description = change_description
     mock.stage = stage
     mock.experiment_id = experiment_id
-    
+    mock.columns = []
     mock.date = datetime.datetime.now()
     return mock
     
