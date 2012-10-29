@@ -46,8 +46,11 @@ Thanks for using PTMScout,
 experiment_upload_configure_page_title = "Configure Experiment Data"
 experiment_upload_configure_message = "Please verify and assign designations for the column types present in your dataset. Some column types may have been automatically inferred from your headers."
 
-experiment_upload_error_standard_deviation_label_does_not_match_any_data_column = "Standard deviation column label '%s' does not match any column label in data columns"
+experiment_upload_error_standard_deviation_label_does_not_match_any_data_column = "Standard deviation column number %d with label '%s' does not match any column label in data columns"
 experiment_upload_error_limit_one_column_of_type = "Error: At most one column of type '%s' can exist in your data"
+experiment_upload_error_column_type_not_defined = "Error: Column type for column number %d was not defined"
+experiment_upload_error_data_column_empty_label = "Error: Label required for data or stddev column number %d"
+experiment_upload_error_data_column_label_duplicated = "Error: Label for data or stddev column %d is duplicated across multiple columns"
 
 experiment_upload_warning_no_column_assignment = "Warning: Column assignment for '%s' not found"
 experiment_upload_warning_multi_column_assignment = "Error: Found multiple column assignments for '%s'"
@@ -188,6 +191,9 @@ prediction_type_map = {'scansite': "Scansite",
 
 error_resource_not_ready_page_title = "Resource not ready"
 error_resource_not_ready_message = "The resource you are trying to access is currently in processing. If you are the creator of this resource, please visit <a href=\"%s\">this page</a> to check on its status."
+
+
+
 
 
 
