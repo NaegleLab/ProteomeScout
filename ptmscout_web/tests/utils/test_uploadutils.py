@@ -191,6 +191,7 @@ class TestUploadUtils(unittest.TestCase):
             check_data_column_assignments(session)
         except ErrorList, el:
             self.assertEqual([ce.message], el.error_list())
+            self.assertEqual(False, el.critical)
         else:
             self.fail("Expected exception: ErrorList([ColumnError()])")
             
@@ -209,6 +210,7 @@ class TestUploadUtils(unittest.TestCase):
             check_data_column_assignments(session)
         except ErrorList, el:
             self.assertEqual([ce.message] * 4, el.error_list())
+            self.assertEqual(True, el.critical)
         else:
             self.fail("Expected exception: ErrorList([ColumnError()])")
 

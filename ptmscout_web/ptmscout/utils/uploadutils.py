@@ -8,8 +8,9 @@ from ptmscout.utils import protein_utils
 
 
 class ErrorList(Exception):
-    def __init__(self, errors):
+    def __init__(self, errors, critical=True):
         self.errors = errors
+        self.critical = critical
         
     def __repr__(self):
         st = ""
@@ -120,13 +121,16 @@ def check_data_column_assignments(session):
     mod_col     = call_catch(ColumnError, errors, check_unique_column, session, 'modification', required=True)
     run_col     = call_catch(ColumnError, errors, check_unique_column, session, 'run')
     
+    critical = True
+    
     if len(errors) == 0:
+        critical = False
         data_cols   = get_columns_of_type(session, 'data')
         stddev_cols = get_columns_of_type(session, 'stddev')
         errors.extend(check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols))
         
     if len(errors) > 0:
-        raise ErrorList(errors)
+        raise ErrorList(errors, critical)
     
 
 
