@@ -33,7 +33,7 @@ Feature: Dataset UI
     Scenario: Load a dataset with bad characters in the peptide column entries
           Given a user is loading a dataset
           When non-alphabetic characters appear in some of the entries
-          Then report the errors and request user confirmation to continue or return to data assignment
+          Then show the user that bad peptide strings have been detected
           
     Scenario: Load a dataset with modifications described in the peptide column
           Given a user is loading a dataset
