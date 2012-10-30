@@ -52,10 +52,11 @@ class SessionAccessForbidden(Exception):
 def getSessionById(session_id, current_user):
     session = DBSession.query(Session).filter_by(id=session_id).first()
     
+    if session == None:
+        raise NoSuchSession()
+    
     if current_user == None or session.user_id != current_user.id:
         raise SessionAccessForbidden()
-    
-    if session == None:
-        raise NoSuchSession()        
+         
     
     return session

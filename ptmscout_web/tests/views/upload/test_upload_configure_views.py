@@ -187,7 +187,7 @@ class TestUploadConfigureView(UnitTestCase):
         self.assertEqual(column_vals, result['columns'])
         
         self.assertEqual(expected_headers, result['headers'])
-        self.assertEqual(18, len(result['data_rows']))
+        self.assertEqual(17, len(result['data_rows']))
         
         self.assertEqual(strings.experiment_upload_configure_page_title, result['pageTitle'])
         self.assertEqual(strings.experiment_upload_configure_message, result['instruction'])
@@ -228,7 +228,7 @@ class TestUploadConfigureView(UnitTestCase):
         self.assertEqual(column_vals, result['columns'])
         
         self.assertEqual(expected_headers, result['headers'])
-        self.assertEqual(18, len(result['data_rows']))
+        self.assertEqual(17, len(result['data_rows']))
         
         self.assertEqual(strings.experiment_upload_configure_page_title, result['pageTitle'])
         self.assertEqual(strings.experiment_upload_configure_message, result['instruction'])
@@ -317,7 +317,7 @@ class TestUploadConfigureView(UnitTestCase):
         
         self.assertEqual(def_column_vals, result['columns'])
         self.assertEqual(expected_headers, result['headers'])
-        self.assertEqual(18, len(result['data_rows']))
+        self.assertEqual(17, len(result['data_rows']))
         
         self.assertEqual(strings.experiment_upload_configure_page_title, result['pageTitle'])
         self.assertEqual(strings.experiment_upload_configure_message, result['instruction'])
