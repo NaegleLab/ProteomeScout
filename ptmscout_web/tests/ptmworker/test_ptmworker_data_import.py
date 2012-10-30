@@ -135,9 +135,9 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         os.chdir(settings.ptmscout_path)
         
         exp = createMockExperiment()
-        exp.datafile = os.path.join("test", "test_dataset.txt")
+        exp.datafile = os.path.join("test", "test_dataset_formatted.txt")
         
-        col_map = {'accession':0, 'peptide':2, 'run':3, 'data':range(4, 20)}
+        col_map = {'accession':0, 'peptide':3, 'run':4, 'data':range(5, 21)}
         res = tasks.start_import.apply_async((exp, col_map))
         
         process_id = res.get()
@@ -151,12 +151,11 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         self.assertEqual(3, len( patch_loadProtein.s.call_args_list ))
         self.assertEqual( args.find('P07197'), args.rfind('P07197')) 
         
-        assert call(exp.id, 'P50914', 'AALLKApSPK') in patch_loadPeptide.s.call_args_list
-        assert call(exp.id, 'Q8N9T8', 'AFVEDpSEDEDGAGEGGSSLLQK') in patch_loadPeptide.s.call_args_list
-        assert call(exp.id, 'Q6KC79', 'AITSLLGGGpSPK') in patch_loadPeptide.s.call_args_list
-        assert call(exp.id, 'A0AUK8', 'ELSNSPLRENpSFGSPLEFR') in patch_loadPeptide.s.call_args_list
+        assert call(exp.id, 'P50914', 'AALLKAsPK') in patch_loadPeptide.s.call_args_list
+        assert call(exp.id, 'Q8N9T8', 'AFVEDsEDEDGAGEGGSSLLQK') in patch_loadPeptide.s.call_args_list
+        assert call(exp.id, 'Q6KC79', 'AITSLLGGGsPK') in patch_loadPeptide.s.call_args_list
         
-        self.assertEquals(18, len(patch_load_run_data.s.call_args_list))
+        self.assertEquals(17, len(patch_load_run_data.s.call_args_list))
         
         patch_finalize.s.assert_called_once_with(exp)
         
@@ -171,12 +170,12 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         os.chdir(settings.ptmscout_path)
         
         exp = createMockExperiment()
-        exp.datafile = os.path.join("test", "test_dataset.txt")
+        exp.datafile = os.path.join("test", "test_dataset_formatted.txt")
         
-        col_map = {'accession':0, 'peptide':2, 'run':3, 'data':range(4, 20)}
+        col_map = {'accession':0, 'peptide':3, 'run':4, 'data':range(5, 21)}
         res = tasks.start_import.apply_async((exp, col_map, 5))
         
         process_id = res.get()
         assert res.successful()
         
-        self.assertEqual(4, len( patch_loadProtein.s.call_args_list ))
+        self.assertEqual(3, len( patch_loadProtein.s.call_args_list ))
