@@ -12,6 +12,7 @@ from pyramid.security import (
     )
 from ptmscout.views.errors import forbidden_view
 from pyramid.exceptions import Forbidden
+from ptmscout.database.user import getUsernameByRequest
 
 class RootFactory(object):
     __acl__ = [ (Allow, Authenticated, 'private') ]
@@ -33,6 +34,7 @@ def main(global_config, **settings):
     authz_policy = ACLAuthorizationPolicy()
     
     config.set_request_property(getUserByRequest, 'user', reify=True)
+    config.set_request_property(getUsernameByRequest, 'username', reify=True)
     config.set_authentication_policy(authn_policy)
     config.set_authorization_policy(authz_policy)
     

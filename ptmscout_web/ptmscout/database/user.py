@@ -89,6 +89,9 @@ def getUserByRequest(request):
             return None
     return None
 
+def getUsernameByRequest(request):
+    return security.authenticated_userid(request)
+
 def getUserById(uid):
     value = DBSession.query(User).filter_by(id=uid).first()
     if value == None:
