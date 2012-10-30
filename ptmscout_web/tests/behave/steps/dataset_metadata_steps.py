@@ -41,7 +41,7 @@ def query_pubmed_for_citation(context):
 def check_pubmed_result(context):
     context.result = context.ptmscoutapp.get('/webservice/pubmed/12230038', status=200)
        
-    cite_dict = json.loads(context.result)
+    cite_dict = context.result.json
     
     cite_dict['authors'] = "Mangalam H"
     cite_dict['journal'] = "Briefings in bioinformatics"
