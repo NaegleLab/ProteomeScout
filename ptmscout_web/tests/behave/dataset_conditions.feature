@@ -15,7 +15,7 @@ Feature: Dataset Conditions UI
     Scenario: Describe conditions
           Given a user is selecting experimental conditions for a dataset
           Then automatically suggest suitable completions based on existing entries
-            | user_input | field_name   | suggestion                     |                                                                                                                                                                                                                                    |
+            | user_input | field_name   | suggestion                     |
             | d          | drug         | dasatinib                      |
             | d          | drug         | doxirubicin                    |
             | H          | cell_type    | HEK 293T                       |
