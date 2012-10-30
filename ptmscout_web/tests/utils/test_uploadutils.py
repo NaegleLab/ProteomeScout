@@ -97,7 +97,7 @@ class TestUploadUtils(unittest.TestCase):
         headers = ['Acc', 'pep', 'other', 'gene(name)', \
                    'run', 'moD_type', 'modification', \
                    'data', 'data:time(min):20', \
-                   'stddev:time(sec):10', 'stddev']
+                   'data:stddev(sec):10', 'stddev']
         
         defs = assign_columns_by_name(headers)
         

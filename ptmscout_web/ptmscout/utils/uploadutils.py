@@ -136,9 +136,9 @@ def get_column_from_header(header):
         h = h.lower()
         col = {'type':'','label':''}
         
-        m = re.match('^(data|stddev):.+:(.+)$', h)
+        m = re.match('^data:(.+):(.+)$', h)
         if m:
-            col['type'] = m.group(1)
+            col['type'] = 'stddev' if m.group(1).find('stddev') == 0 else 'data' 
             col['label'] = m.group(2)
         elif h.find('data') == 0:
             col['type'] = 'data'
