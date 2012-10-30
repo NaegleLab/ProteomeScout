@@ -3,7 +3,6 @@ import csv
 import os
 from ptmscout.utils.webutils import call_catch
 import re
-import sys
 from ptmscout.utils import protein_utils
 
 MAX_ROW_CHECK=100
@@ -65,6 +64,9 @@ def check_unique_column(session, ctype, required=False):
     return cols[0]
 
 
+def test_modification_type_matches_peptide(row, peptide, modification):
+    pass
+
 def check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols, N=MAX_ROW_CHECK):
     errors = []
     header, data = load_header_and_data_rows(session, N)
@@ -90,6 +92,8 @@ def check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stdd
             
         if not protein_utils.check_peptide_modification_valid(peptide, modification):
             errors.append(ParseError(r, mod_col.column_number+1, strings.experiment_upload_warning_modifications_do_not_match_amino_acids))
+        
+        call_catch(ParseError, errors, test_modification_type_matches_peptide, r, peptide, modification)
         
         run = None
         if run_col != None:

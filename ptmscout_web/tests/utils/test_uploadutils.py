@@ -1,7 +1,8 @@
 import unittest
 from ptmscout.utils.uploadutils import ColumnError,\
     check_data_column_assignments, ErrorList, assign_column_defaults,\
-    assign_columns_by_name, assign_columns_from_session_history, check_data_rows
+    assign_columns_by_name, assign_columns_from_session_history, check_data_rows,\
+    ParseError
 from tests.views.mocking import createMockUser, createMockSession,\
     createMockSessionColumn
 from mock import patch
@@ -15,9 +16,16 @@ class TestUploadUtils(unittest.TestCase):
     def tearDown(self):
         unittest.TestCase.tearDown(self)
 
-    def test_check_data_rows_should_compile_list_of_errors(self):
+    def test_check_modification_type_matches_peptide(self):
+        pass
+
+    @patch('ptmscout.utils.uploadutils.test_modification_type_matches_peptide')
+    def test_check_data_rows_should_compile_list_of_errors(self, patch_test_peptide):
         user = createMockUser()
         session = createMockSession(user)
+        
+        patch_test_peptide.side_effect = ParseError(1, None, "Peptide modification error")
+        
         c1=createMockSessionColumn(0, 'accession', session.id)
         c2=createMockSessionColumn(1, 'none', session.id)
         c3=createMockSessionColumn(2, 'modification', session.id)
@@ -50,11 +58,29 @@ class TestUploadUtils(unittest.TestCase):
         
         errors = check_data_rows(session, c1, c4, c3, None, [c5,c6,c7,c8,c9,c10,c11,c12], [c13,c14,c15,c16,c17,c18,c19,c20])
         
-        expected_errors = [
+        expected_errors = ["Line 1: Peptide modification error",
+                           "Line 1: Peptide modification error",
                            "Line 2, Column 8: " + strings.experiment_upload_warning_data_column_not_numeric,
+                           "Line 1: Peptide modification error",
                            "Line 4, Column 1: " + strings.experiment_upload_warning_acc_column_contains_bad_accessions,
+                           "Line 1: Peptide modification error",
+                           "Line 1: Peptide modification error",
+                           "Line 1: Peptide modification error",
+                           "Line 1: Peptide modification error",
+                           "Line 1: Peptide modification error",
                            "Line 9, Column 4: " + strings.experiment_upload_warning_peptide_column_contains_bad_peptide_strings,
-                           "Line 12: " + strings.experiment_upload_warning_no_run_column]
+                           "Line 1: Peptide modification error",
+                           "Line 1: Peptide modification error",
+                           "Line 1: Peptide modification error",
+                           "Line 1: Peptide modification error",
+                           "Line 12: " + strings.experiment_upload_warning_no_run_column,
+                           "Line 1: Peptide modification error",
+                           "Line 1: Peptide modification error",
+                           "Line 1: Peptide modification error",
+                           "Line 1: Peptide modification error",
+                           "Line 1: Peptide modification error",
+                           "Line 1: Peptide modification error",
+                           "Line 1: Peptide modification error"]
         self.maxDiff = None        
         
         self.assertEqual(expected_errors, [ e.message for e in errors ] )
