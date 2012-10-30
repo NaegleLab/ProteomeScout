@@ -6,6 +6,8 @@ import re
 import sys
 from ptmscout.utils import protein_utils
 
+MAX_ROW_CHECK=100
+
 
 class ErrorList(Exception):
     def __init__(self, errors, critical=True):
@@ -63,9 +65,9 @@ def check_unique_column(session, ctype, required=False):
     return cols[0]
 
 
-def check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols):
+def check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols, N=MAX_ROW_CHECK):
     errors = []
-    header, data = load_header_and_data_rows(session, N=sys.maxint)
+    header, data = load_header_and_data_rows(session, N)
     
     keys = set([])
     
