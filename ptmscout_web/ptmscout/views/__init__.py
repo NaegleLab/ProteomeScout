@@ -21,6 +21,7 @@ def add_views(config):
     config.add_route('upload_config', '/upload/{id}/config')
     config.add_route('upload_metadata', '/upload/{id}/metadata')
     config.add_route('upload_confirm', '/upload/{id}/confirm')
+    config.add_route('upload_cancel', '/upload/{id}/cancel')
     
     config.add_route('protein_data', '/proteins/{id}/data')
     config.add_route('protein_GO', '/proteins/{id}/GO')
