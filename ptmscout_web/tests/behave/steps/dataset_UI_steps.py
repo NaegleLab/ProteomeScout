@@ -100,7 +100,7 @@ def load_data_when_unrecognized_headers(context):
 
 @when(u'the user submits a pubmed ID to fill out citation information')
 def query_pubmed_for_citation(context):
-    context.result = context.ptmscoutapp.get('/pm_citation/12230038', status=200)
+    context.result = context.ptmscoutapp.get('/webservice/pubmed/12230038', status=200)
 
 
 def assert_column_type(form, i, t, label=None):
