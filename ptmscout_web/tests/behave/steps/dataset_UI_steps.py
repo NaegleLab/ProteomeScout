@@ -104,38 +104,35 @@ def query_pubmed_for_citation(context):
 
 
 def assert_column_type(form, i, t, label=None):
-    assertEqual(t, form.get('column_%d_type' % (i)))
+    form_elem = form.get('column_%d_type' % (i))
+    print form_elem.options
+    selected_options = [ name for (name, selected) in form_elem.options if selected ]
+    
+    assertEqual([t], selected_options)
     if label != None: 
-        assertEqual(label, form.get('column_%d_label' % (i)))
+        assertEqual(label, form.get('column_%d_label' % (i)).value)
 
 @then(u'show the user column assignments and data column assignments with type and value fields')
 def check_fields_prepopulated_properly(context):
-    assert_column_type(context.result.form, 5, 'accession')
-    assert_column_type(context.result.form, 5, 'modification')
-    assert_column_type(context.result.form, 5, 'peptide')
-    assert_column_type(context.result.form, 5, 'run')
+    assert_column_type(context.result.form, 0, 'none')
+    assert_column_type(context.result.form, 1, 'accession')
+    assert_column_type(context.result.form, 2, 'none')
+    assert_column_type(context.result.form, 3, 'modification')
+    assert_column_type(context.result.form, 4, 'none')
+    assert_column_type(context.result.form, 5, 'none')
+    assert_column_type(context.result.form, 6, 'none')
+    assert_column_type(context.result.form, 7, 'none')
+    assert_column_type(context.result.form, 8, 'none')
+    assert_column_type(context.result.form, 9, 'peptide')
     
-    assertEqual('time(min', context.result.form.get('data_units'))
+    assert_column_type(context.result.form, 10, 'data', '0')
+    assert_column_type(context.result.form, 11, 'data', '1')
+    assert_column_type(context.result.form, 12, 'data', '5')
     
-    assert_column_type(context.result.form, 5, 'data', '0')
-    assert_column_type(context.result.form, 6, 'data', '30')
-    assert_column_type(context.result.form, 7, 'data', '60')
-    assert_column_type(context.result.form, 8, 'data', '120')
-    assert_column_type(context.result.form, 9, 'data', '240')
-    assert_column_type(context.result.form, 10, 'data', '480')
-    assert_column_type(context.result.form, 11, 'data', '960')
-    assert_column_type(context.result.form, 12, 'data', '1440')
+    assert_column_type(context.result.form, 13, 'stddev', '1')
+    assert_column_type(context.result.form, 14, 'stddev', '5')
     
-    assert_column_type(context.result.form, 13, 'stddev', '0')
-    assert_column_type(context.result.form, 13, 'stddev', '30')
-    assert_column_type(context.result.form, 13, 'stddev', '60')
-    assert_column_type(context.result.form, 13, 'stddev', '120')
-    assert_column_type(context.result.form, 13, 'stddev', '240')
-    assert_column_type(context.result.form, 13, 'stddev', '480')
-    assert_column_type(context.result.form, 13, 'stddev', '960')
-    assert_column_type(context.result.form, 13, 'stddev', '1440')
-    
-    assertEqual('time(min)', context.result.form.get('data_units'))
+    assertEqual('time(min)', context.result.form.get('units').value)
 
 @then(u'show the user their headers')
 def check_fields_not_prepopulated_correct_header_titles_shown(context):
@@ -144,8 +141,6 @@ def check_fields_not_prepopulated_correct_header_titles_shown(context):
     for header in headers:
         context.result.mustcontain(header)
         
-    context.result.mustcontain(strings.experiment_upload_warning_no_column_assignment % "accession")
-    context.result.mustcontain(strings.experiment_upload_warning_no_column_assignment % "peptide")
 
 @then(u'show the user that incorrect modifications types have been detected')
 def check_errors_reported_bad_modification_for_amino_acid(context):
@@ -164,22 +159,22 @@ def check_errors_reported_bad_peptide_definition(context):
 
 @then(u'pre-populate all fields of data loading with assignments from original dataset')
 def check_fields_prepopulated_properly_from_session_data(context):
-    assertEqual('accession', context.result.form.get('column_0_type')) 
-    assertEqual('modification', context.result.form.get('column_2_type')) 
-    assertEqual('peptide', context.result.form.get('column_3_type')) 
-    assertEqual('run', context.result.form.get('column_4_type'))
+    assert_column_type(context.result.form, 0, 'accession') 
+    assert_column_type(context.result.form, 2, 'modification') 
+    assert_column_type(context.result.form, 3, 'peptide') 
+    assert_column_type(context.result.form, 4, 'run')
     
-    assertEqual('data', context.result.form.get('column_5_type')) 
-    assertEqual('data', context.result.form.get('column_6_type'))
-    assertEqual('0', context.result.form.get('column_5_label'))
-    assertEqual('30', context.result.form.get('column_6_label'))
+    assert_column_type(context.result.form, 5, 'data') 
+    assert_column_type(context.result.form, 6, 'data')
+    assert_column_type(context.result.form, 5, 'data', '0')
+    assert_column_type(context.result.form, 6, 'data', '30')
     
-    assertEqual('stddev', context.result.form.get('column_13_type'))
-    assertEqual('stddev', context.result.form.get('column_14_type'))
-    assertEqual('0', context.result.form.get('column_13_label'))
-    assertEqual('30', context.result.form.get('column_14_label'))
+    assert_column_type(context.result.form, 13, 'stddev')
+    assert_column_type(context.result.form, 14, 'stddev')
+    assert_column_type(context.result.form, 13, 'stddev', '0')
+    assert_column_type(context.result.form, 14, 'stddev', '30')
     
-    assertEqual('time(min)', context.result.form.get('data_units'))
+    assertEqual('time(min)', context.result.form.get('units').value)
 
     
 #{'STAT': 'MEDLINE', 'IP': '3', 'JT': 'Briefings in bioinformatics', 'DA': '20020916', 'FAU': ['Mangalam, Harry'], 'DP': '2002 Sep', 'OWN': 'NLM', 'PT': ['Journal Article'], 'LA': ['eng'], 'CRDT': ['2002/09/17 10:00'], 'DCOM': '20030606', 'LR': '20041117', 'PG': '296-302', 'TI': 'The Bio* toolkits--a brief overview.', 'PL': 'England', 'TA': 'Brief Bioinform', 'JID': '100912837', 'AB': 'Bioinformatics research is often difficult to do with commercial software. The Open Source BioPerl, BioPython and Biojava projects provide toolkits with multiple functionality that make it easier to create customised pipelines or analysis. This review briefly compares the quirks of the underlying languages and the functionality, documentation, utility and relative advantages of the Bio counterparts, particularly from the point of view of the beginning biologist programmer.', 'AD': 'tacg Informatics, Irvine, CA 92612, USA. hjm@tacgi.com', 'VI': '3', 'IS': '1467-5463 (Print) 1467-5463 (Linking)', 'AU': ['Mangalam H'], 'MHDA': '2003/06/07 05:00', 'MH': ['*Computational Biology', 'Computer Systems', 'Humans', 'Internet', '*Programming Languages', '*Software', 'User-Computer Interface'], 'EDAT': '2002/09/17 10:00', 'SO': 'Brief Bioinform. 2002 Sep;3(3):296-302.', 'SB': 'IM', 'PMID': '12230038', 'PST': 'ppublish'}
