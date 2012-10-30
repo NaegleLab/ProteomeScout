@@ -46,8 +46,3 @@ Feature: Dataset UI
           When identical peptide/protein pairs exist with different data and no explicit run column
           Then show the user that replicate data appears to have been detected
 #          And show the user an option to select a run column from their header or confirm that replicates can be automatically assigned numerically in order of the appearance
-
-    Scenario: Load a dataset with a pmid
-          Given a user is loading a dataset
-          When the user submits a pubmed ID to fill out citation information
-          Then automatically fill out the publication information from the pubmed record
