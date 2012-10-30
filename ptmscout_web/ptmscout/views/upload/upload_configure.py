@@ -93,6 +93,7 @@ def upload_config(request):
             errors = ce.error_list()
             
         if commit:
+            session.stage = 'metadata'
             session.save()
             return HTTPFound(request.application_url + "/upload/%d/metadata" % (session_id))
     else:

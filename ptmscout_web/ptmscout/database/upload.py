@@ -30,7 +30,7 @@ class Session(Base):
     experiment_id=Column(Integer(10), ForeignKey('experiment.id'))
     date=Column(DateTime)
     
-    columns = relationship("SessionColumn")
+    columns = relationship("SessionColumn", cascade="all,delete-orphan")
         
     def __init__(self):
         self.date = datetime.datetime.now()

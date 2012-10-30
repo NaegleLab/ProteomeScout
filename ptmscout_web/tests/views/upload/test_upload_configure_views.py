@@ -299,6 +299,8 @@ class TestUploadConfigureView(UnitTestCase):
         assert isinstance(f, HTTPFound)
         self.assertEqual(request.application_url + "/upload/%d/metadata" % (session.id), f.location)
 
+        self.assertEqual('metadata', session.stage)
+        session.save.assert_called_once_with()
         patch_parse.assert_called_once_with(session, request)
         patch_check.assert_called_once_with(session)
     
@@ -326,6 +328,7 @@ class TestUploadConfigureView(UnitTestCase):
 
         patch_parse.assert_called_once_with(session, request)
         patch_check.assert_called_once_with(session)
+        self.assertEqual('metadata', session.stage)
         session.save.assert_called_once_with()
     
     @patch('ptmscout.utils.uploadutils.assign_column_defaults')
