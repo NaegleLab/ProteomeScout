@@ -97,7 +97,7 @@ class TestUploadUtils(unittest.TestCase):
         headers = ['Acc', 'pep', 'other', 'gene(name)', \
                    'run', 'moD_type', 'modification', \
                    'data', 'data:time(min):20', \
-                   'data:stddev(sec):10', 'stddev']
+                   'data:stddev(sec):10', 'stddev', 'stddev:time(min):20']
         
         defs = assign_columns_by_name(headers)
         
@@ -113,6 +113,7 @@ class TestUploadUtils(unittest.TestCase):
                                      8:{'type':'data','label':'20'},
                                      9:{'type':'stddev','label':'10'},
                                      10:{'type':'stddev','label':''},
+                                     11:{'type':'stddev','label':'20'},
                                      },
                           'units':'time(min)'
                           }, defs)
@@ -178,10 +179,27 @@ class TestUploadUtils(unittest.TestCase):
 
     @patch('ptmscout.utils.uploadutils.check_data_rows')
     @patch('ptmscout.utils.uploadutils.check_unique_column')
-    def test_check_data_column_assignments_should_raise_error(self, patch_check_unique, patch_check):
+    def test_check_data_column_assignments_should_raise_errors(self, patch_check_unique, patch_check_rows):
+        ce = ColumnError("Some error")
+        patch_check_unique.return_value=createMockSessionColumn(0, 'accession', 1)
+        patch_check_rows.return_value = [ce]
+        
+        user = createMockUser()
+        session = createMockSession(user)
+        session.columns = []
+        try:
+            check_data_column_assignments(session)
+        except ErrorList, el:
+            self.assertEqual([ce.message], el.error_list())
+        else:
+            self.fail("Expected exception: ErrorList([ColumnError()])")
+            
+    @patch('ptmscout.utils.uploadutils.check_data_rows')
+    @patch('ptmscout.utils.uploadutils.check_unique_column')
+    def test_check_data_column_assignments_should_raise_error_not_check_rows(self, patch_check_unique, patch_check):
         ce = ColumnError("Some error")
         patch_check_unique.side_effect = ce
-        patch_check.return_value = [ce]
+        patch_check.return_value = []
         
         user = createMockUser()
         session = createMockSession(user)
@@ -190,7 +208,8 @@ class TestUploadUtils(unittest.TestCase):
         try:
             check_data_column_assignments(session)
         except ErrorList, el:
-            self.assertEqual([ce.message] * 5, el.error_list())
+            self.assertEqual([ce.message] * 4, el.error_list())
         else:
             self.fail("Expected exception: ErrorList([ColumnError()])")
 
+        self.assertFalse(patch_check.called)

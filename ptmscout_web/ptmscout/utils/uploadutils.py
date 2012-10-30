@@ -53,9 +53,9 @@ def check_unique_column(session, ctype, required=False):
     cols = get_columns_of_type(session, ctype)
 
     if required and len(cols) == 0:
-        raise ColumnError(strings.experiment_upload_warning_no_column_assignment % ctype)
+        raise ColumnError(strings.experiment_upload_error_no_column_assignment % (ctype,))
     if len(cols) > 1:
-        raise ColumnError(strings.experiment_upload_error_limit_one_column_of_type % ctype)
+        raise ColumnError(strings.experiment_upload_error_limit_one_column_of_type % (ctype,))
     
     if len(cols) == 0:
         return None
@@ -64,7 +64,6 @@ def check_unique_column(session, ctype, required=False):
 
 def check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols):
     errors = []
-
     header, data = load_header_and_data_rows(session, N=sys.maxint)
     
     keys = set([])
@@ -116,16 +115,16 @@ def check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stdd
 def check_data_column_assignments(session):
     errors = []
     
-    acc_col     = call_catch(errors, check_unique_column, session, 'accession', required=True)
-    pep_col     = call_catch(errors, check_unique_column, session, 'peptide', required=True)
-    mod_col     = call_catch(errors, check_unique_column, session, 'modification', required=True)
-    run_col     = call_catch(errors, check_unique_column, session, 'run')
+    acc_col     = call_catch(ColumnError, errors, check_unique_column, session, 'accession', required=True)
+    pep_col     = call_catch(ColumnError, errors, check_unique_column, session, 'peptide', required=True)
+    mod_col     = call_catch(ColumnError, errors, check_unique_column, session, 'modification', required=True)
+    run_col     = call_catch(ColumnError, errors, check_unique_column, session, 'run')
     
-    data_cols   = get_columns_of_type(session, 'data')
-    stddev_cols = get_columns_of_type(session, 'stddev')
-    
-    errors.extend(check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols))
-    
+    if len(errors) == 0:
+        data_cols   = get_columns_of_type(session, 'data')
+        stddev_cols = get_columns_of_type(session, 'stddev')
+        errors.extend(check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols))
+        
     if len(errors) > 0:
         raise ErrorList(errors)
     
@@ -136,10 +135,10 @@ def get_column_from_header(header):
         h = h.lower()
         col = {'type':'','label':''}
         
-        m = re.match('^data:(.+):(.+)$', h)
+        m = re.match('^(data|stddev):(.+):(.+)$', h)
         if m:
-            col['type'] = 'stddev' if m.group(1).find('stddev') == 0 else 'data' 
-            col['label'] = m.group(2)
+            col['type'] = 'stddev' if m.group(1) == 'stddev' or m.group(2).find('stddev') == 0 else 'data' 
+            col['label'] = m.group(3)
         elif h.find('data') == 0:
             col['type'] = 'data'
         elif h.find('stddev') == 0:
