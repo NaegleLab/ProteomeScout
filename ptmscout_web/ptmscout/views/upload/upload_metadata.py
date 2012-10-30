@@ -62,8 +62,7 @@ def create_experiment(field_dict, session, current_user):
     
     return nexp
     
-def create_experiment_and_mark_status(field_dict, session_id, current_user):
-    session = upload.getSessionById(session_id, current_user)
+def create_experiment_and_mark_status(field_dict, session, current_user):
     nexp = create_experiment(field_dict, session, current_user)
     
     session.experiment_id = nexp.id
@@ -156,6 +155,7 @@ def check_required_fields(request):
 def upload_metadata(request):
     submitted = webutils.post(request,'submitted',"false")
     session_id = int(request.matchdict['id'])
+    session = upload.getSessionById(session_id, request.user)
     
     reason = None
     field_dict = {}
@@ -167,7 +167,7 @@ def upload_metadata(request):
             reason = error
         else:
             # need to get exp_file from upload session records
-            create_experiment_and_mark_status(field_dict, session_id, request.user)
+            create_experiment_and_mark_status(field_dict, session, request.user)
             return HTTPFound(request.application_url + "/upload/%d/confirm" % session_id)
     
     if 'data_file' in field_dict:

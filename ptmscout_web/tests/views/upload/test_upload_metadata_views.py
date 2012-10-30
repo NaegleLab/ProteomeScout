@@ -141,22 +141,19 @@ class TestUploadView(UnitTestCase):
         self.assertEqual(exp_file, experiment_instance.dataset)
         
         self.assertEqual(current_user.id, experiment_instance.submitter_id)
-        
+    
     @patch('ptmscout.views.upload.upload_metadata.create_experiment')
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_create_experiment_and_mark_status(self, patch_getSession, patch_create_exp):
+    def test_create_experiment_and_mark_status(self, patch_create_exp):
         user = createMockUser()
         session = createMockSession(user)
         exp = createMockExperiment()
         
         patch_create_exp.return_value = exp
-        patch_getSession.return_value = session
         
         field_dict= {"some":"data"}
-        create_experiment_and_mark_status(field_dict, session.id, user)
+        create_experiment_and_mark_status(field_dict, session, user)
         
         patch_create_exp.assert_called_once_with(field_dict, session, user)
-        patch_getSession.assert_called_once_with(session.id, user)
         
         self.assertEqual('confirm', session.stage)
         self.assertEqual(exp.id, session.experiment_id)
@@ -271,9 +268,10 @@ class TestUploadView(UnitTestCase):
         self.assertEqual({'pmid':"1234", 'URL':"http://somestuff.com", 'published':"yes", 'publication_year':"2008"}, field_dict)
         
 
+    @patch('ptmscout.database.upload.getSessionById')
     @patch('ptmscout.views.upload.upload_metadata.create_experiment_and_mark_status')
     @patch('ptmscout.views.upload.upload_metadata.check_required_fields')
-    def test_view_should_start_upload_on_successful_verification(self, patch_check, patch_start):
+    def test_view_should_start_upload_on_successful_verification(self, patch_check, patch_start, patch_getSession):
         request = DummyRequest()
         
         session_id = 10
@@ -285,15 +283,18 @@ class TestUploadView(UnitTestCase):
         field_dict = {'name':"something"}
         patch_check.return_value = (True, None, field_dict)
         
+        session = createMockSession(request.user)
+        patch_getSession.return_value = session 
+        
         f = upload_metadata(request)
         self.assertEqual(request.application_url + "/upload/%d/confirm" % session_id, f.location)
         
         patch_check.assert_called_once_with(request)
-        patch_start.assert_called_once_with(field_dict, session_id, request.user)
+        patch_start.assert_called_once_with(field_dict, session, request.user)
         
-        
+    @patch('ptmscout.database.upload.getSessionById')
     @patch('ptmscout.views.upload.upload_metadata.check_required_fields')
-    def test_view_should_handle_form_submission_fail_on_check(self, patch_check):
+    def test_view_should_handle_form_submission_fail_on_check(self, patch_check, patch_getSession):
         request = DummyRequest()
         
         session_id = 10
@@ -305,6 +306,9 @@ class TestUploadView(UnitTestCase):
         field_dict = {'name':"something"}
         patch_check.return_value = (False, strings.failure_reason_required_fields_cannot_be_empty, field_dict)
 
+        session = createMockSession(request.user)
+        patch_getSession.return_value = session 
+        
         result = upload_metadata(request)
 
         self.assertEqual(strings.failure_reason_required_fields_cannot_be_empty, result['reason'])
