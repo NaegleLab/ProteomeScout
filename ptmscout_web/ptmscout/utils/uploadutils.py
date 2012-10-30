@@ -133,6 +133,7 @@ def check_data_column_assignments(session):
 
 def get_column_from_header(header):
     for h in header:
+        h = h.lower()
         col = {'type':'','label':''}
         
         m = re.match('^(data|stddev):.+:(.+)$', h)

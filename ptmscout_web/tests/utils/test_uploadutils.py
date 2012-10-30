@@ -94,8 +94,8 @@ class TestUploadUtils(unittest.TestCase):
         
 
     def test_assign_columns_by_name_should_generate_correct_columns(self):
-        headers = ['acc', 'pep', 'other', 'gene(name)', \
-                   'run', 'mod_type', 'modification', \
+        headers = ['Acc', 'pep', 'other', 'gene(name)', \
+                   'run', 'moD_type', 'modification', \
                    'data', 'data:time(min):20', \
                    'stddev:time(sec):10', 'stddev']
         
