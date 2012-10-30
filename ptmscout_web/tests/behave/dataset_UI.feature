@@ -52,6 +52,7 @@ Feature: Dataset UI
           When the user submits a pubmed ID to fill out citation information
           Then automatically fill out the publication information from the pubmed record
 
+## The below scenarios relate to the experimental metadata.  Automatic suggestions will come from existing experimental metadata and so far I am adding autocomplete suggestions based on gene expression tables which we can use to pre-populate a metadata table. 
 #    Scenario: Describe cell type
 #          Given a user is loading a dataset
 #          When they have selected add cell type 
@@ -77,3 +78,11 @@ Feature: Dataset UI
 #          Then automatically suggest suitable completions based on existing entries 
 #	   | user_input | field_name | suggestion |
 #          | d		| drug	     | dasatinib, doxirubicin |
+
+## BONUS feature -- not high priority ##
+#    Scenario: Pre-populate condition fields  
+#          Given a user is loading a dataset
+#          When they have selected loaded a dataset with data fields that contain condition or cell type data
+#          Then pre-popolate the add condition with that value 
+#	   | user_input | field_name | suggestion |
+#          | condition		| EGF	     | EGF |
