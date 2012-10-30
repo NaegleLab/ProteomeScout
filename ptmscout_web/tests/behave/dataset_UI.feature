@@ -33,7 +33,7 @@ Feature: Dataset UI
     Scenario: Load a dataset with bad characters in the peptide column entries
           Given a user is loading a dataset
           When non-alphabetic characters appear in some of the entries
-          Then show the user that bad peptide strings have been detected
+          Then report the errors and request user confirmation to continue or return to data assignment
           
     Scenario: Load a dataset with modifications described in the peptide column
           Given a user is loading a dataset
@@ -52,11 +52,28 @@ Feature: Dataset UI
           When the user submits a pubmed ID to fill out citation information
           Then automatically fill out the publication information from the pubmed record
 
-#    Scenario: Describe experimental conditions
+#    Scenario: Describe cell type
 #          Given a user is loading a dataset
-#          When they are filling out the experimental condition fields
-#          Then automatically suggest suitable completions based on existing entries where cell lines are constrained by species
+#          When they have selected add cell type 
+#          Then automatically suggest suitable completions based on existing entries 
+#	   | user_input | field_name | suggestion |
+#	   | H		| cell_type  | HEK 293T, HEK 293, HELA, HEPG2, HOP62, HOP92, HS578T, HSG, HT1080 |
+ 
+#    Scenario: Describe tissue type
+#          Given a user is loading a dataset
+#          When they have selected add tissue type 
+#          Then automatically suggest suitable completions based on existing entries 
+#	   | user_input | field_name | suggestion |
+# 	   | b		| tissue_type  | BM-CD105+Epithelial cells, BM-CD33+Myeloid, BM-CD34_, BM-CD70+EarlyErythroid, Whole Blood, Whole Brain, Bronchial Epithelial Cells, Fetal Brain, Oflactory Bulb, PB-CD19+Bcells, Bone Marrow, Lymphoma Burkitts Daudi, Lymphoma Burkitts Raji |
 
+#    Scenario: Choose condition type
+#          Given a user is loading a dataset
+#          When they have selected add condition type
+#          Then give users a selection between drug, stimulation, or environmental conditions
 
-    
-
+#    Scenario: Describe condition 
+#          Given a user is loading a dataset
+#          When they have selected add condition type equal to drug
+#          Then automatically suggest suitable completions based on existing entries 
+#	   | user_input | field_name | suggestion |
+#          | d		| drug	     | dasatinib, doxirubicin |
