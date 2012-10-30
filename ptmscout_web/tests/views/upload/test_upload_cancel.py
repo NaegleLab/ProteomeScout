@@ -9,7 +9,7 @@ from mock import patch
 class TestCancelView(UnitTestCase):
 
 
-    @patch('ptmscout.database.upload.getExperimentById')
+    @patch('ptmscout.database.experiment.getExperimentById')
     @patch('ptmscout.database.upload.getSessionById')
     def test_view(self, patch_session, patch_experiment):
         user = createMockUser()
@@ -26,7 +26,7 @@ class TestCancelView(UnitTestCase):
         result = cancel_upload_view(request)
 
         patch_session.assert_called_once_with(247, user)
-        patch_experiment.assert_called_once_with(30)
+        patch_experiment.assert_called_once_with(exp.id, user)
         session.delete.assert_called_once_with()
         
         self.assertEqual(strings.cancel_upload_successful_page_title, result['pageTitle'])

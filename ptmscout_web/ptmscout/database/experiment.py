@@ -75,6 +75,9 @@ class Experiment(Base):
         DBSession.add(self)
         DBSession.flush()
         
+    def delete(self):
+        DBSession.delete(self)
+        
     def getCitationString(self):
         string = ""
         if self.published == 1:
