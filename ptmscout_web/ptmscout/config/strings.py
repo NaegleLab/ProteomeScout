@@ -46,6 +46,10 @@ Thanks for using PTMScout,
 experiment_upload_configure_page_title = "Configure Experiment Data"
 experiment_upload_configure_message = "Please verify and assign designations for the column types present in your dataset. Some column types may have been automatically inferred from your headers."
 
+cancel_upload_successful_page_title = "Experiment Upload"
+cancel_upload_successful_header = "Experiment Upload Cancelled"
+cancel_upload_successful_message = "Experiment upload session cancelled"
+
 experiment_upload_error_standard_deviation_label_does_not_match_any_data_column = "Standard deviation column number %d with label '%s' does not match any column label in data columns"
 experiment_upload_error_limit_one_column_of_type = "Error: At most one column of type '%s' can exist in your data"
 experiment_upload_error_column_type_not_defined = "Error: Column type for column number %d was not defined"
@@ -190,6 +194,7 @@ prediction_type_map = {'scansite': "Scansite",
 
 error_resource_not_ready_page_title = "Resource not ready"
 error_resource_not_ready_message = "The resource you are trying to access is currently in processing. If you are the creator of this resource, please visit <a href=\"%s\">this page</a> to check on its status."
+
 
 
 

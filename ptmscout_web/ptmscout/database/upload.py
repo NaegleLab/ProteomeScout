@@ -38,6 +38,9 @@ class Session(Base):
     def save(self):
         DBSession.add(self)
         DBSession.flush()
+
+    def delete(self):
+        DBSession.delete(self)
         
     def getAncestor(self):
         ancestors = DBSession.query(Session).filter(Session.experiment_id==self.parent_experiment).all()
