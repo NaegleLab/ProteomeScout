@@ -16,8 +16,8 @@ def __check_array(array, var, default):
     return default
 
 
-def call_catch(errors, method, *args, **kwargs):
+def call_catch(etype, errors, method, *args, **kwargs):
     try:
-        method(args, kwargs)
-    except Exception, e:
+        return method(*args, **kwargs)
+    except etype, e:
         errors.append(e)
