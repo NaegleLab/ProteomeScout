@@ -41,15 +41,14 @@ class TestUploadConfigureView(UnitTestCase):
         
         column_defs, errors = parse_user_input(session, request)
         
-        
         self.assertEqual([
                           strings.experiment_upload_error_column_type_not_defined % (2,),
                           strings.experiment_upload_error_data_column_empty_label % (6,),
                           strings.experiment_upload_error_data_column_label_duplicated % (8,),
                           strings.experiment_upload_error_column_type_not_defined % (9,),
                           strings.experiment_upload_error_standard_deviation_label_does_not_match_any_data_column % (7, "20"),
-                          strings.experiment_upload_error_standard_deviation_label_does_not_match_any_data_column % (8, "20"),
-                          ], errors)
+                          strings.experiment_upload_error_standard_deviation_label_does_not_match_any_data_column % (8, "20")
+                          ], [ e.message for e in errors ])
         
         self.assertEqual({
                           'columns':{
@@ -171,7 +170,48 @@ class TestUploadConfigureView(UnitTestCase):
         patch_getSession.return_value = session
         
         column_vals = {"some":"defaults"}
-        patch_parse.return_value = column_vals, ["This is the error"]
+        patch_parse.return_value = column_vals, [ColumnError("This is the error")]
+        
+        result = upload_config(request)
+
+        patch_parse.assert_called_once_with(session, request)        
+        patch_getSession.assert_called_once_with(234, request.user)
+        
+        expected_headers = open(os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'test', 'test_dataset_formatted.txt'), 'r').readline().split("\t")
+        expected_headers = [item for item in expected_headers if item.strip() != ""]
+        
+        self.assertEqual(False, result['allowoverride'])
+        self.assertEqual(["This is the error"], result['error'])
+        
+        self.assertEqual(column_vals, result['data_definitions'])
+        
+        self.assertEqual(expected_headers, result['headers'])
+        self.assertEqual(17, len(result['data_rows']))
+        
+        self.assertEqual(strings.experiment_upload_configure_page_title, result['pageTitle'])
+        self.assertEqual(strings.experiment_upload_configure_message, result['instruction'])
+
+
+    @patch('ptmscout.views.upload.upload_configure.parse_user_input')
+    @patch('ptmscout.utils.uploadutils.check_data_column_assignments')
+    @patch('ptmscout.database.upload.getSessionById')
+    def test_view_should_stop_and_show_errors_disallow_override_if_critical_error(self, patch_getSession, patch_check, patch_parse):
+        request = DummyRequest()
+        request.matchdict['id'] = '234'
+        request.POST['submitted'] = "true"
+        request.user = createMockUser()
+        
+        session = createMockSession(request.user, sid=234)
+        session.data_file = 'test/test_dataset_formatted.txt'
+        session.load_type = 'new'
+        session.stage = 'config'
+        session.user_id = request.user.id
+        patch_getSession.return_value = session
+        
+        patch_check.side_effect = ErrorList([ColumnError("This is the error")], True)
+        
+        column_vals = {"some":"defaults"}
+        patch_parse.return_value = column_vals, []
         
         result = upload_config(request)
 
@@ -209,7 +249,7 @@ class TestUploadConfigureView(UnitTestCase):
         session.user_id = request.user.id
         patch_getSession.return_value = session
         
-        patch_check.side_effect = ErrorList([ColumnError("This is the error")])
+        patch_check.side_effect = ErrorList([ColumnError("This is the error")], False)
         
         column_vals = {"some":"defaults"}
         patch_parse.return_value = column_vals, []
@@ -252,7 +292,7 @@ class TestUploadConfigureView(UnitTestCase):
         
         patch_parse.return_value = 'some_defs', []
         
-        patch_check.side_effect = ErrorList([ColumnError("Ignored error")])
+        patch_check.side_effect = ErrorList([ColumnError("Ignored error")], False)
         
         f = upload_config(request)
         

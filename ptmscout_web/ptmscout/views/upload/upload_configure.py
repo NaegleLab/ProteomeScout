@@ -63,7 +63,7 @@ def parse_user_input(session, request):
         
     session.units = units
 
-    return {'columns':columns,'units':units}, errors
+    return {'columns':columns,'units':units}, [ uploadutils.ColumnError(e) for e in errors ]
 
 
 @view_config(route_name='upload_config', renderer='ptmscout:/templates/upload/upload_config.pt')
@@ -81,18 +81,20 @@ def upload_config(request):
         commit = False
         column_defs, errors = parse_user_input(session, request)
         
-        if errors == []:
-            allowoverride = True
-            try:
-                uploadutils.check_data_column_assignments(session)
-                commit = True
-            except uploadutils.ErrorList, ce:
-                commit = force
-                errors = ce.error_list()
+        try:
+            if len(errors) > 0:
+                raise uploadutils.ErrorList(errors, True)
                 
-            if commit:
-                session.save()
-                return HTTPFound(request.application_url + "/upload/%d/metadata" % (session_id))
+            uploadutils.check_data_column_assignments(session)
+            commit = True
+        except uploadutils.ErrorList, ce:
+            allowoverride = not ce.critical
+            commit = force and allowoverride
+            errors = ce.error_list()
+            
+        if commit:
+            session.save()
+            return HTTPFound(request.application_url + "/upload/%d/metadata" % (session_id))
     else:
         column_defs = uploadutils.assign_column_defaults(session)
     
