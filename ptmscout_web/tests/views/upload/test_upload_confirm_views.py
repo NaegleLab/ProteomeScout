@@ -52,6 +52,7 @@ class TestUploadStatusView(UnitTestCase):
         self.assertEqual('complete', session.stage)
         self.assertEqual(strings.experiment_upload_started_page_title, result['pageTitle'])
         self.assertEqual(strings.experiment_upload_started_message % (request.application_url + "/account/experiments"), result['message'])
+        self.assertEqual(102, result['session_id'])
         self.assertEqual(exp, result['experiment'])
         self.assertEqual("true", result['confirm'])
         
@@ -75,6 +76,7 @@ class TestUploadStatusView(UnitTestCase):
         self.assertEqual(exp, result['experiment'])
         self.assertEqual(strings.experiment_upload_confirm_page_title, result['pageTitle'])
         self.assertEqual(strings.experiment_upload_confirm_message, result['message'])
+        self.assertEqual(102, result['session_id'])
         self.assertEqual("false", result['confirm'])
         
         

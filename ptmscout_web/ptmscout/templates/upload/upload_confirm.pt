@@ -30,7 +30,7 @@
 			    		</form>
 		    		</td>
 		    		<td>
-			    		<a href="${request.application_url}/upload/${experiment.id}/cancel">Cancel</a>
+			    		<a href="${request.application_url}/upload/${session_id}/cancel">Cancel</a>
 		    		</td>
 	    		</tr>
     		</table>

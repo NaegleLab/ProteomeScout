@@ -31,9 +31,11 @@ def upload_confirm_view(request):
         return {'pageTitle': strings.experiment_upload_started_page_title,
                 'message': strings.experiment_upload_started_message % (request.application_url + "/account/experiments"),
                 'experiment': exp,
+                'session_id':session_id,
                 'confirm':confirm}
     
     return {'pageTitle': strings.experiment_upload_confirm_page_title,
             'message': strings.experiment_upload_confirm_message,
             'experiment': exp,
+            'session_id': session_id,
             'confirm': confirm}
