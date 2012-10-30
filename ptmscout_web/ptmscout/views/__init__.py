@@ -2,8 +2,6 @@ from pyramid.exceptions import Forbidden
 from ptmscout.views.errors import forbidden_view
 
 def add_views(config):
-    config.include('pyramid_mailer')
-    
     config.add_static_view('static', 'static', cache_max_age=3600)
     
     config.add_route('about', '/about')
