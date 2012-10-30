@@ -77,20 +77,21 @@ class Experiment(Base):
         
     def getCitationString(self):
         string = ""
-        if self.journal != "" and self.journal != None:
-            string += self.journal + ". "
-        if self.publication_year != None:
-            string += str(self.publication_year)
-            if self.publication_month != None:
-                string += "-" + self.publication_month
-            string += ". "
-        if self.volume != "" and self.volume != None:
-            string += "Vol " + str(self.volume) + ". "
-        if self.page_start != None:
-            string += self.page_start
-            if self.page_end != None:
-                string += "-" + self.__getPageEndFormatted()
-            string += "."
+        if self.published == 1:
+            if self.journal != "" and self.journal != None:
+                string += self.journal + ". "
+            if self.publication_year != None:
+                string += str(self.publication_year)
+                if self.publication_month != None:
+                    string += "-" + self.publication_month
+                string += ". "
+            if self.volume != "" and self.volume != None:
+                string += "Vol " + str(self.volume) + ". "
+            if self.page_start != None:
+                string += self.page_start
+                if self.page_end != None:
+                    string += "-" + self.__getPageEndFormatted()
+                string += "."
         return string
     
     def __getPageEndFormatted(self):
@@ -101,22 +102,23 @@ class Experiment(Base):
     
     def getLongCitationString(self):
         cite_string = ""
-        if self.author !="":
-            cite_string += self.author + ". "
-        if self.journal != "":
-            cite_string += "<b>"+self.journal + "</b>. "
-        if self.publication_year != None:
-            cite_string += str(self.publication_year)
-            if self.publication_month != None:
-                cite_string += "-" + self.publication_month
-            cite_string += ". "
-        if self.volume != None:
-            cite_string += "Vol " +str(self.volume)+". "
-        if self.page_start != None:
-            cite_string += self.page_start
-            if self.page_end != None:
-                cite_string += "-" + self.__getPageEndFormatted()
-            cite_string += "."
+        if self.published == 1:
+            if self.author !="":
+                cite_string += self.author + ". "
+            if self.journal != "":
+                cite_string += "<b>"+self.journal + "</b>. "
+            if self.publication_year != None:
+                cite_string += str(self.publication_year)
+                if self.publication_month != None:
+                    cite_string += "-" + self.publication_month
+                cite_string += ". "
+            if self.volume != None:
+                cite_string += "Vol " +str(self.volume)+". "
+            if self.page_start != None:
+                cite_string += self.page_start
+                if self.page_end != None:
+                    cite_string += "-" + self.__getPageEndFormatted()
+                cite_string += "."
         return cite_string
     
     def getUrl(self):
