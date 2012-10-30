@@ -30,7 +30,7 @@ class Session(Base):
     experiment_id=Column(Integer(10), ForeignKey('experiment.id'))
     date=Column(DateTime)
     
-    columns = relationship(SessionColumn)
+    columns = relationship("SessionColumn")
         
     def __init__(self):
         self.date = datetime.datetime.now()
@@ -40,7 +40,7 @@ class Session(Base):
         DBSession.flush()
         
     def getAncestor(self):
-        ancestors = DBSession.query(Session).filter(experiment_id=self.parent_experiment).all()
+        ancestors = DBSession.query(Session).filter(Session.experiment_id==self.parent_experiment).all()
         ancestors.sort(key=lambda session: session.date, reverse=True)
         return ancestors[0]
 
