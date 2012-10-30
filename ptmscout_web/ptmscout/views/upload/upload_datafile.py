@@ -53,8 +53,8 @@ def save_data_file(request):
         output_file.write(data)
     output_file.close()
     
-    os.system("mac2unix -q %s" % os.path.join(settings.experiment_data_file_path, exp_file))
-    os.system("dos2unix -q %s" % os.path.join(settings.experiment_data_file_path, exp_file))
+    os.system("mac2unix -q %s" % os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, exp_file))
+    os.system("dos2unix -q %s" % os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, exp_file))
     
     error = verify_data_file(exp_file)
     
