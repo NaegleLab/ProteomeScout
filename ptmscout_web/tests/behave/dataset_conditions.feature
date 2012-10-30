@@ -3,31 +3,43 @@ Feature: Dataset Conditions UI
     Automatic suggestions will come from existing experimental metadata
 
 
-    Scenario: Describe cell type
-          Given a user is selecting experimental conditions for a dataset
-          When they have selected add cell type
-          Then automatically suggest suitable completions based on existing entries 
-            | user_input | field_name | suggestion |
-            | H          | cell_type  | HEK 293T, HEK 293, HELA, HEPG2, HOP62, HOP92, HS578T, HSG, HT1080 |
- 
-    Scenario: Describe tissue type
-          Given a user is selecting experimental conditions for a dataset
-          When they have selected add tissue type
-          Then automatically suggest suitable completions based on existing entries 
-            | user_input | field_name   | suggestion |
-            | b          | tissue_type  | BM-CD105+Epithelial cells, BM-CD33+Myeloid, BM-CD34_, BM-CD70+EarlyErythroid, Whole Blood, Whole Brain, Bronchial Epithelial Cells, Fetal Brain, Oflactory Bulb, PB-CD19+Bcells, Bone Marrow, Lymphoma Burkitts Daudi, Lymphoma Burkitts Raji |
+    Scenario: Describe cell, tissue or condition types
+          Given a user is selecting experimental parameters for a dataset
+          Then give them options to add cell, tissue, and condition types
 
     Scenario: Choose condition type
-          Given a user is selecting experimental conditions for a dataset
+          Given a user is selecting experimental parameters for a dataset
           When they have selected add condition type
           Then give users a selection between drug, stimulation, or environmental conditions
 
-    Scenario: Describe condition 
+    Scenario: Describe conditions
           Given a user is selecting experimental conditions for a dataset
-          When they have selected add condition type equal to drug
-          Then automatically suggest suitable completions based on existing entries 
-            | user_input | field_name | suggestion |
-            | d          | drug       | dasatinib, doxirubicin |
+          Then automatically suggest suitable completions based on existing entries
+            | user_input | field_name   | suggestion                     |                                                                                                                                                                                                                                    |
+            | d          | drug         | dasatinib                      |
+            | d          | drug         | doxirubicin                    |
+            | H          | cell_type    | HEK 293T                       |
+            | H          | cell_type    | HEK 293                        |
+            | H          | cell_type    | HELA                           |
+            | H          | cell_type    | HEPG2                          |
+            | H          | cell_type    | HOP62                          |
+            | H          | cell_type    | HOP92                          |
+            | H          | cell_type    | HS578T                         |
+            | H          | cell_type    | HSG                            |
+            | H          | cell_type    | HT1080                         |
+            | b          | tissue_type  | BM-CD105+Epithelial cells      |
+            | b          | tissue_type  | BM-CD33+Myeloid                |
+            | b          | tissue_type  | BM-CD34_                       |
+            | b          | tissue_type  | BM-CD70+EarlyErythroid         |
+            | b          | tissue_type  | Whole Blood                    |
+            | b          | tissue_type  | Whole Brain                    |
+            | b          | tissue_type  | Bronchial Epithelial Cells     |
+            | b          | tissue_type  | Fetal Brain                    |
+            | b          | tissue_type  | Oflactory Bulb                 |
+            | b          | tissue_type  | PB-CD19+Bcells                 |
+            | b          | tissue_type  | Bone Marrow                    |
+            | b          | tissue_type  | Lymphoma Burkitts Daudi        |
+            | b          | tissue_type  | Lymphoma Burkitts Raji         |
 
 ## BONUS feature -- not high priority ##
 #    Scenario: Pre-populate condition fields  
