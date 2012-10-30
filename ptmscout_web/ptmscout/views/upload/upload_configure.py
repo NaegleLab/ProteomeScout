@@ -71,7 +71,7 @@ def upload_config(request):
     session_id = int(request.matchdict['id'])
     session = upload.getSessionById(session_id, request.user) 
     submitted = webutils.post(request, 'submitted', "false") == "true"
-    force = webutils.post(request, 'override', "false") == "true"
+    force = webutils.post(request, 'override', "false") != "false"
     
     allowoverride = False
     
@@ -102,6 +102,7 @@ def upload_config(request):
             'headers': headers,
             'data_rows': data_rows,
             'error': errors,
-            'columns':column_defs,
+            'data_definitions':column_defs,
+            'column_values':upload.SessionColumn.column_values,
             'pageTitle': strings.experiment_upload_configure_page_title,
             'instruction': strings.experiment_upload_configure_message}

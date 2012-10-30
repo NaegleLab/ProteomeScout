@@ -184,7 +184,7 @@ class TestUploadConfigureView(UnitTestCase):
         self.assertEqual(False, result['allowoverride'])
         self.assertEqual(["This is the error"], result['error'])
         
-        self.assertEqual(column_vals, result['columns'])
+        self.assertEqual(column_vals, result['data_definitions'])
         
         self.assertEqual(expected_headers, result['headers'])
         self.assertEqual(17, len(result['data_rows']))
@@ -225,7 +225,7 @@ class TestUploadConfigureView(UnitTestCase):
         self.assertEqual(True, result['allowoverride'])
         self.assertEqual(["This is the error"], result['error'])
         
-        self.assertEqual(column_vals, result['columns'])
+        self.assertEqual(column_vals, result['data_definitions'])
         
         self.assertEqual(expected_headers, result['headers'])
         self.assertEqual(17, len(result['data_rows']))
@@ -315,12 +315,14 @@ class TestUploadConfigureView(UnitTestCase):
         self.assertEqual(False, result['allowoverride'])
         self.assertEqual([], result['error'])
         
-        self.assertEqual(def_column_vals, result['columns'])
+        self.assertEqual(def_column_vals, result['data_definitions'])
         self.assertEqual(expected_headers, result['headers'])
         self.assertEqual(17, len(result['data_rows']))
         
         self.assertEqual(strings.experiment_upload_configure_page_title, result['pageTitle'])
         self.assertEqual(strings.experiment_upload_configure_message, result['instruction'])
+        
+        self.assertEqual(upload.SessionColumn.column_values, result['column_values'])
         
         
 class IntegrationTestUploadConfigureView(IntegrationTestCase):
