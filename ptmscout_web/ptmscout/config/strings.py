@@ -51,18 +51,17 @@ experiment_upload_error_limit_one_column_of_type = "Error: At most one column of
 experiment_upload_error_column_type_not_defined = "Error: Column type for column number %d was not defined"
 experiment_upload_error_data_column_empty_label = "Error: Label required for data or stddev column number %d"
 experiment_upload_error_data_column_label_duplicated = "Error: Label for data or stddev column %d is duplicated across multiple columns"
+experiment_upload_error_multi_column_assignment = "Error: Found multiple column assignments for '%s'"
 
 experiment_upload_warning_no_column_assignment = "Warning: Column assignment for '%s' not found"
-experiment_upload_warning_multi_column_assignment = "Error: Found multiple column assignments for '%s'"
-experiment_upload_warning_data_column_not_numeric = "Error: Data column '%s' contains non-numeric values"
-experiment_upload_warning_acc_column_contains_bad_accessions = "Warning: Accession column contains %d accessions with unrecognized types"
-experiment_upload_warning_peptide_column_contains_bad_peptide_strings = "Warning: Peptide column contains %d peptides with incorrect formatting"
-experiment_upload_warning_modifications_do_not_match_amino_acids = "Warning: Specified modifications types for %d peptides do not match amino-acid residues for any known species"
-
+experiment_upload_warning_data_column_not_numeric = "Warning: Data column contains non-numeric values"
+experiment_upload_warning_acc_column_contains_bad_accessions = "Warning: Accession column contains accession with unrecognized types"
+experiment_upload_warning_peptide_column_contains_bad_peptide_strings = "Warning: Peptide column contains peptide with incorrect formatting"
+experiment_upload_warning_modifications_do_not_match_amino_acids = "Warning: Specified modifications types for peptide does not match amino-acid residues for any known species"
 experiment_upload_warning_no_run_column = "Warning: Experiment contains multiple datapoints for the same protein/peptide pair, but no run column"
-experiment_upload_option_no_run_column_assign_in_order  = "Assign run numbers in order of occurrence"
-experiment_upload_option_no_run_column_return_to_assign = "Return to choose a run column from the dataset"
+experiment_upload_warning_full_dupe = "Warning: Experiment contains multiple datapoints for the same protein/peptide/run triplet"
 
+experiment_upload_option_no_run_column_assign_in_order  = "Assign run numbers in order of occurrence"
 
 experiment_upload_confirm_page_title = "Confirm Submission"
 experiment_upload_confirm_message = "Experiment headers have parsed successfully. You may review warnings below. Are you sure you wish to proceed with the upload?"

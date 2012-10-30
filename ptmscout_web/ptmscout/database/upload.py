@@ -36,6 +36,10 @@ class Session(Base):
         DBSession.add(self)
         DBSession.flush()
         
+    def getAncestor(self):
+        ancestors = DBSession.query(Session).filter(experiment_id=self.parent_experiment).all()
+        ancestors.sort(key=lambda session: session.date, reverse=True)
+        return ancestors[0]
 
 class NoSuchSession(Exception):
     pass

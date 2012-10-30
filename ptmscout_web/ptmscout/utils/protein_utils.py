@@ -27,8 +27,17 @@ def get_accession_type(acc):
 def check_peptide_alphabet(pep):
     amino_acids = set("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     
-    for residue in pep:
+    for residue in pep.upper():
         if residue not in amino_acids:
             return False
     
     return True
+
+def get_valid_accession_types():
+    return set(['gi','refseq','swissprot','genbank','ipi'])
+
+
+def check_peptide_modification_valid(peptide, modification):
+    return True
+
+

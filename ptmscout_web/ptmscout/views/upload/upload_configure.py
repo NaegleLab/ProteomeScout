@@ -94,7 +94,7 @@ def upload_config(request):
                 session.save()
                 return HTTPFound(request.application_url + "/upload/%d/metadata" % (session_id))
     else:
-        column_defs = uploadutils.assign_column_defaults(session, request.user)
+        column_defs = uploadutils.assign_column_defaults(session)
     
     headers, data_rows = uploadutils.load_header_and_data_rows(session, 20)
     
