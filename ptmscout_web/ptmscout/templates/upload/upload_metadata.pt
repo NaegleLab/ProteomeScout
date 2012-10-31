@@ -10,6 +10,7 @@
     <div metal:fill-slot="content">
         <form action="" method="post">
             <div class="hidden" id="populated_fields">${formfields}</div>
+            <div class="hidden" id="pubmed_query_url">${request.application_url}/webservice/pubmed/</div>
             <input type="hidden" value="true" name="submitted" />
             <div class="wideform">
                 <div tal:condition="reason != None" class="errorbox">Error: ${reason}</div>
@@ -41,7 +42,8 @@
                         <td class="fieldname">PubMed ID:*</td>
                         <td>
                             <input type="text" name="pmid" size="13" maxlength="12" />
-                            <!-- <button id="load_pubmed">Load Pubmed Citation</button> -->
+                            <input type="button" id="load_pubmed" value="Load Pubmed Citation" />
+                            <span id="pmiderror" class="errortext" style="display:none"></span>
                         </td>
                     </tr>
                     <tr class="pubinfo">

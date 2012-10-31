@@ -42,6 +42,12 @@ td.fieldname {
 	padding:10px;
 }
 
+.errortext {
+	overflow:visible;
+	white-space:nowrap;
+	color:red;
+}
+
 .centered {
 	margin-left: auto;
 	margin-right: auto;
