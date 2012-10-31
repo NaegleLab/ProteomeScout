@@ -23,8 +23,8 @@ if __name__ == '__main__':
         dbinit.setUp()
         
         arg_dict = {}
-        for i, item in enumerate(sys.argv):
-            arg_dict[i] = item
+        for i, child in enumerate(sys.argv):
+            arg_dict[i] = child
             
         run_type = arg_dict.get(1, "test")
         
@@ -151,8 +151,8 @@ if __name__ == '__main__':
             for i,s in enumerate(sort_order):
                 exp_val_dict[s] = exp_values[i]
             
-            exp_values = sorted( exp_val_dict.items(), key=lambda item: item[0] )
-            values = sorted( [ (s.tissue.name, s.value) for s in human_sample.samples if s.collection.name == 'Human' ], key=lambda item: item[0] )
+            exp_values = sorted( exp_val_dict.items(), key=lambda child: child[0] )
+            values = sorted( [ (s.tissue.name, s.value) for s in human_sample.samples if s.collection.name == 'Human' ], key=lambda child: child[0] )
             
             print "Testing sample 1..."
             assert human_sample.species.name == "homo sapiens"
@@ -170,9 +170,9 @@ if __name__ == '__main__':
             for i,s in enumerate(sort_order):
                 exp_val_dict[s] = exp_values[i]
             
-            exp_values = sorted( exp_val_dict.items(), key=lambda item: item[0] )
+            exp_values = sorted( exp_val_dict.items(), key=lambda child: child[0] )
             
-            values = sorted( [ (s.tissue.name, s.value) for s in mouse_sample.samples if s.collection.name == 'Mouse' ], key=lambda item: item[0] )
+            values = sorted( [ (s.tissue.name, s.value) for s in mouse_sample.samples if s.collection.name == 'Mouse' ], key=lambda child: child[0] )
             
             print "Testing sample 2..."
             assert mouse_sample.species.name == "mus musculus"
@@ -190,9 +190,9 @@ if __name__ == '__main__':
             for i,s in enumerate(sort_order):
                 exp_val_dict[s] = exp_values[i]
             
-            exp_values = sorted( exp_val_dict.items(), key=lambda item: item[0] )
+            exp_values = sorted( exp_val_dict.items(), key=lambda child: child[0] )
             
-            values = sorted( [ (s.tissue.name, s.value) for s in NCI60_sample.samples if s.collection.name == 'NCI60' ], key=lambda item: item[0] )
+            values = sorted( [ (s.tissue.name, s.value) for s in NCI60_sample.samples if s.collection.name == 'NCI60' ], key=lambda child: child[0] )
             
             print "Testing sample 3..."
             assert NCI60_sample.species.name == "homo sapiens"

@@ -1,6 +1,6 @@
 from ptmscout.database import Base, DBSession
 from sqlalchemy.schema import Column, ForeignKey, Table, UniqueConstraint
-from sqlalchemy.types import Integer, VARCHAR, CHAR, Float
+from sqlalchemy.types import Integer, VARCHAR, CHAR, Float, Enum
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import and_
 
@@ -9,6 +9,45 @@ MS_phosphopep = Table('MS_phosphopep', Base.metadata,
                       Column('MS_id', Integer(10), ForeignKey('MS.id')),
                       Column('phosphopep_id', Integer(10), ForeignKey('phosphopep.id')))
 
+PTM_taxon = Table('PTM_taxonomy', Base.metadata,
+                    Column('PTM_id', Integer(10), ForeignKey('PTM.id')),
+                    Column('taxon_id', Integer(10), ForeignKey('taxonomy.node_id')))
+
+class PTMkeyword(Base):
+    __tablename__ = 'PTM_keywords'
+    id = Column(Integer(10), autoincrement=True, primary_key=True)
+    PTM_id = Column(Integer(10), ForeignKey('PTM.id'))
+    keyword = Column(VARCHAR(100))
+    
+class PTM(Base):
+    __tablename__ = 'PTM'
+    
+    id = Column(Integer(10), autoincrement=True, primary_key=True)
+    name = Column(VARCHAR(100), unique=True)
+    
+    position = Column(Enum(['anywhere','c-terminal','n-terminal','core']))
+    
+    accession = Column(VARCHAR(10))
+    target = Column(VARCHAR(1))
+    mono_mass_diff = Column(Float)
+    avg_mass_diff = Column(Float)
+
+    taxons = relationship("Taxonomy", secondary=PTM_taxon)
+    keywords = relationship("PTMkeyword")
+    
+    def hasKeyword(self, key):
+        k = key.lower()
+        for kw in self.keywords:
+            if kw.keyword.lower() == k:
+                return True
+        return False
+
+    def createKeyword(self, key):
+        if not self.hasKeyword(key):
+            ptmkw = PTMkeyword()
+            ptmkw.keyword = key
+            self.keywords.append(ptmkw)
+            
 class ScansitePrediction(Base):
     __tablename__ = 'phosphopep_prediction'
     id = Column(Integer(10), autoincrement=True, primary_key=True)

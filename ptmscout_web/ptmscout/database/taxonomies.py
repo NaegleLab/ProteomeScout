@@ -23,3 +23,8 @@ def getSpeciesByName(name):
 
 def getAllSpecies():
     return DBSession.query(Species).all()
+
+def getTaxonomyById(txid):
+    return DBSession.query(Taxonomy).filter_by(node_id=txid).first()
+
+
