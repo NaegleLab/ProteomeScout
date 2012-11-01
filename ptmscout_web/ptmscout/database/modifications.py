@@ -2,7 +2,8 @@ from ptmscout.database import Base, DBSession
 from sqlalchemy.schema import Column, ForeignKey, Table, UniqueConstraint
 from sqlalchemy.types import Integer, VARCHAR, CHAR, Float, Enum
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql.expression import and_
+from sqlalchemy.sql.expression import and_, or_
+from ptmscout.database.taxonomies import Taxonomy
 
 MS_phosphopep = Table('MS_phosphopep', Base.metadata,
                       Column('id', Integer(10), primary_key=True),
@@ -122,3 +123,10 @@ def getModificationBySite(pep_site, pep_type, prot_id):
     return mod
 
 
+def findMatchingPTM(residue, mod_type, taxon_ids=None):
+    if taxon_ids == None:
+        mods = DBSession.query(PTM).join(PTMkeyword).filter(and_(PTM.target==residue, or_(PTM.accession==mod_type, PTM.name==mod_type, PTMkeyword.keyword==mod_type))).all()
+    else:
+        mods = DBSession.query(PTM).join(PTMkeyword, Taxonomy).filter(and_(PTM.target==residue, or_(PTM.accession==mod_type, PTM.name==mod_type, PTMkeyword.keyword==mod_type), Taxonomy.node_id.in_(taxon_ids))).all()
+    
+    return len(mods) > 0
