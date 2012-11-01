@@ -102,7 +102,7 @@ def check_required_fields(request, users_experiments):
 
     
     
-@view_config(route_name='upload', renderer='ptmscout:/templates/upload/upload.pt')
+@view_config(route_name='upload', renderer='ptmscout:/templates/upload/upload_datafile.pt')
 def upload_data_file(request):
     submitted = webutils.post(request, 'submitted', "false")
     
