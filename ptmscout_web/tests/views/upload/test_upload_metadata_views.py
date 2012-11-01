@@ -312,9 +312,61 @@ class TestUploadView(UnitTestCase):
         result = upload_metadata(request)
 
         self.assertEqual(strings.failure_reason_required_fields_cannot_be_empty, result['reason'])
-        self.assertEqual(field_dict, json.loads(base64.b64decode(result['formfields'])))
+        self.assertEqual(field_dict, result['formfields'])
         patch_check.assert_called_once_with(request)
         
+    @patch('ptmscout.database.experiment.getExperimentById')
+    @patch('ptmscout.database.upload.getSessionById')
+    def test_view_should_populate_field_if_parent_experiment_avaiable(self, patch_getSession, patch_getExperiment):
+        request = DummyRequest()
+        session_id = 10
+        request.matchdict['id'] = session_id
+        request.user = createMockUser()
+        
+        exp = createMockExperiment()
+        patch_getExperiment.return_value = exp
+
+        exp.published = 1
+        exp.page_start = '200'
+        exp.page_end = '300'
+        exp.URL = 'someurl'
+        exp.contact = 'someguy@someplace.edu'
+        exp.author = 'Some G'
+        exp.name = 'Some name'
+        exp.publication_year = 2008
+        exp.publication_month = 'february'
+        exp.volume = '3'
+        exp.journal = "some journal"
+        exp.description = "some description"
+        exp.PMID = 1223456
+        exp.ambiguity = 1
+        
+        field_dict = {
+                     'pmid':exp.PMID,
+                     'publication_year': exp.publication_year,
+                     'publication_month': exp.publication_month, 
+                     'published': 'yes' if exp.published == 1 else 'no',
+                     'ambiguous': 'yes' if exp.ambiguity == 1 else 'no',
+                     'author_contact' : exp.contact,
+                     'page_start': exp.page_start,
+                     'page_end': exp.page_end,
+                     'authors': exp.author,
+                     'journal': exp.journal,
+                     'volume': exp.volume,
+                     'description': exp.description,
+                     'experiment_name':"",
+                     'URL': exp.URL,
+                     'notes':""
+        }
+
+        session = createMockSession(request.user)
+        session.parent_experiment = exp.id
+        patch_getSession.return_value = session 
+        
+        result = upload_metadata(request)
+
+        patch_getExperiment.assert_called_once_with(exp.id, request.user)
+        self.assertEqual(field_dict, result['formfields'])
         
 class IntegrationTestUploadMetadataView(IntegrationTestCase):
     def test_view_integration(self):

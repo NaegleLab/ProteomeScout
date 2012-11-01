@@ -64,15 +64,6 @@ def save_data_file(request):
     return False, error
 
 
-def experiment_to_dict(exp):
-    expd = {}
-    
-    for key in exp.__dict__:
-        if key[0] != "_":
-            expd[key] = exp.__dict__[key]
-    
-    return expd
-
 def get_required_fields(request):
     req_fields = ['data_file']
     if (webutils.post(request, 'load_type', "") != "new"):
@@ -118,7 +109,7 @@ def upload_data_file(request):
         raise HTTPForbidden()
     
     users_experiments = [ p.experiment for p in request.user.permissions if p.access_level=='owner' ]    
-    dict_exps = [ experiment_to_dict(exp) for exp in users_experiments ]
+    dict_exps = [ webutils.object_to_dict(exp) for exp in users_experiments ]
     reason = None
     form_fields = {}
     

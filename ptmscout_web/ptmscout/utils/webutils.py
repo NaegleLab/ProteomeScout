@@ -21,3 +21,12 @@ def call_catch(etype, errors, method, *args, **kwargs):
         return method(*args, **kwargs)
     except etype, e:
         errors.append(e)
+
+def object_to_dict(exp):
+    expd = {}
+    
+    for key in exp.__dict__:
+        if key[0] != "_":
+            expd[key] = exp.__dict__[key]
+    
+    return expd

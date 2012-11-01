@@ -25,70 +25,58 @@
                         <td>
                             <select id="pubselect" name="published">
                                 <option value=""></option>
-                                <option value="no">No</option>
-                                <option value="yes">Yes</option>
+                                <option value="no"  tal:attributes="selected 'yes' if formfields['published'] == 'no' else default">No</option>
+                                <option value="yes" tal:attributes="selected 'yes' if formfields['published'] == 'yes' else default">Yes</option>
                             </select>
                         </td>
                     </tr>
                     <tr>
                         <td class="fieldname">URL:*</td>
-                        <td><input type="text" name="URL" size="55"/></td>
+                        <td><input type="text" name="URL" size="55" tal:attributes="value formfields['URL']"/></td>
                     </tr>
                     <tr>
                         <td class="fieldname">Description:</td>
-                        <td><textarea name="description" rows="5" cols="42" ></textarea></td>
+                        <td><textarea name="description" rows="5" cols="42" tal:content="formfields['description']"></textarea></td>
                     </tr>
                     <tr class="pubinfo">
                         <td class="fieldname">PubMed ID:*</td>
                         <td>
-                            <input type="text" name="pmid" size="13" maxlength="12" />
+                            <input type="text" name="pmid" size="13" maxlength="12" tal:attributes="value formfields['pmid']"/>
                             <input type="button" id="load_pubmed" value="Load Pubmed Citation" />
                             <span id="pmiderror" class="errortext" style="display:none"></span>
                         </td>
                     </tr>
                     <tr class="pubinfo">
                         <td class="fieldname">Authors:</td>
-                        <td><input type="text" name="authors" size="55"/></td>
+                        <td><input type="text" name="authors" size="55" tal:attributes="value formfields['authors']"/></td>
                     </tr>
                     <tr class="pubinfo">
                         <td class="fieldname">Author Contact E-mail:</td>
-                        <td><input type="text" name="author_contact" size="55"/></td>
+                        <td><input type="text" name="author_contact" size="55" tal:attributes="value formfields['author_contact']"/></td>
                     </tr>
                     <tr class="pubinfo">
                         <td class="fieldname">Journal:</td>
-                        <td><input type="text" name="journal" size="55"/></td>
+                        <td><input type="text" name="journal" size="55" tal:attributes="value formfields['journal']"/></td>
                     </tr>
                     <tr class="pubinfo">
                         <td class="fieldname">Publication Date:</td>
                         <td>
                             <select name="publication_month">
                                 <option value=""></option>
-                                <option value="None">N/a</option>
-                                <option value="january">January</option>
-                                <option value="february">February</option>
-                                <option value="march">March</option>
-                                <option value="april">April</option>
-                                <option value="may">May</option>
-                                <option value="june">June</option>
-                                <option value="july">July</option>
-                                <option value="august">August</option>
-                                <option value="september">September</option>
-                                <option value="october">October</option>
-                                <option value="november">November</option>
-                                <option value="december">December</option>
+                                <option tal:repeat="month ['none', 'january','february','march','april','may','june','july','august','september','october','november','december']" tal:attributes="value month; selected 'yes' if formfields['publication_month'] == month else default" tal:content="month.capitalize()"></option>
                             </select>
-                            <input type="text" size="4" name="publication_year" maxlength="4"/>
+                            <input type="text" size="4" name="publication_year" maxlength="4" tal:attributes="value formfields['publication_year']"/>
                         </td>
                     </tr>
                     <tr class="pubinfo">
                         <td class="fieldname">Volume:</td>
-                        <td ><input type="text" name="volume" /></td>
+                        <td ><input type="text" name="volume" tal:attributes="value formfields['volume']"/></td>
                     </tr>
                     <tr class="pubinfo">
                         <td class="fieldname">Pages:</td>
                         <td>
-                            <input type="text" name="page_start" size="10" maxlength="10" /> to
-                            <input type="text" name="page_end" size="10" maxlength="10" />
+                            <input type="text" name="page_start" size="10" maxlength="10" tal:attributes="value formfields['page_start']"/> to
+                            <input type="text" name="page_end" size="10" maxlength="10" tal:attributes="value formfields['page_end']"/>
                         </td>
                     </tr>
                 </table>
@@ -101,8 +89,8 @@
                         <td> 
                             <select name="ambiguous">
                                 <option value=""></option>
-                                <option value="no">No</option>
-                                <option value="yes">Yes</option>
+                                <option value="no" tal:attributes="selected 'yes' if formfields['ambiguous']=='no' else default">No</option>
+                                <option value="yes" tal:attributes="selected 'yes' if formfields['ambiguous']=='yes' else default">Yes</option>
                             </select> 
                         </td>
                     </tr>

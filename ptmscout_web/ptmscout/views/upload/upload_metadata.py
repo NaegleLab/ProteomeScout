@@ -109,7 +109,6 @@ def check_required_fields(request):
                      'author_contact' : "Author Contact Email",
                      'page_start': "Page Start",
                      'page_end': "Page End",
-                     'author_contact':"Author Contact",
                      'authors': "Authors",
                      'journal': "Journal",
                      'volume': "Volume",
@@ -151,6 +150,46 @@ def check_required_fields(request):
     
     return True, None, field_dict
     
+
+def init_form_fields(session, user):
+    field_dict = {   'pmid':"",
+                     'publication_year':"",
+                     'publication_month':"",
+                     'published':"",
+                     'ambiguous':"",
+                     'author_contact' :"",
+                     'page_start':"",
+                     'page_end':"",
+                     'authors':"",
+                     'journal':"",
+                     'volume':"",
+                     'description':"",
+                     'experiment_name':"",
+                     'URL':"",
+                     'notes':""
+                     }
+    if session.parent_experiment != None:
+        exp = experiment.getExperimentById(session.parent_experiment, user)
+        field_dict = {
+                     'pmid':exp.PMID,
+                     'publication_year': exp.publication_year,
+                     'publication_month': exp.publication_month,
+                     'published': 'yes' if exp.published == 1 else 'no',
+                     'ambiguous': 'yes' if exp.ambiguity == 1 else 'no',
+                     'author_contact' : exp.contact,
+                     'page_start': exp.page_start,
+                     'page_end': exp.page_end,
+                     'authors': exp.author,
+                     'journal': exp.journal,
+                     'volume': exp.volume,
+                     'description': exp.description,
+                     'experiment_name':"",
+                     'URL': exp.URL,
+                     'notes':""
+                  }        
+    
+    return field_dict
+
 @view_config(route_name='upload_metadata', renderer='ptmscout:templates/upload/upload_metadata.pt', permission='private')
 def upload_metadata(request):
     submitted = webutils.post(request,'submitted',"false")
@@ -169,10 +208,12 @@ def upload_metadata(request):
             # need to get exp_file from upload session records
             create_experiment_and_mark_status(field_dict, session, request.user)
             return HTTPFound(request.application_url + "/upload/%d/confirm" % session_id)
+    else:
+        field_dict = init_form_fields(session, request.user)
     
     if 'data_file' in field_dict:
         del field_dict['data_file']
     
     return {'pageTitle': strings.upload_page_title,
             'reason':reason,
-            'formfields':base64.b64encode(json.dumps(field_dict))}
+            'formfields':field_dict}
