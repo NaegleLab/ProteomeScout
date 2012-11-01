@@ -61,7 +61,12 @@ experiment_upload_error_no_column_assignment = "Error: Column assignment for '%s
 experiment_upload_warning_data_column_not_numeric = "Warning: Data column contains non-numeric values"
 experiment_upload_warning_acc_column_contains_bad_accessions = "Warning: Accession column contains accession with unrecognized types"
 experiment_upload_warning_peptide_column_contains_bad_peptide_strings = "Warning: Peptide column contains peptide with incorrect formatting"
-experiment_upload_warning_modifications_do_not_match_amino_acids = "Warning: Specified modifications types for peptide does not match amino-acid residues for any known species"
+
+experiment_upload_warning_modifications_not_valid = "Warning: Specified modification '%s' is not valid"
+experiment_upload_warning_modifications_do_not_match_amino_acids = "Warning: Specified modification '%s' does not match residue '%s' for any known species"
+experiment_upload_warning_wrong_number_of_mods = "Warning: Not enough modifications types specified for modified amino acids in peptide (%d for %d)"
+experiment_upload_warning_ambiguous_modification_type_for_amino_acid = "Warning: Specified modification '%s' has multiple possible types for amino-acid '%s'"
+
 experiment_upload_warning_no_run_column = "Warning: Experiment contains multiple datapoints for the same protein/peptide pair, but no run column"
 experiment_upload_warning_full_dupe = "Warning: Experiment contains multiple datapoints for the same protein/peptide/run triplet"
 
@@ -194,12 +199,4 @@ prediction_type_map = {'scansite': "Scansite",
 
 error_resource_not_ready_page_title = "Resource not ready"
 error_resource_not_ready_message = "The resource you are trying to access is currently in processing. If you are the creator of this resource, please visit <a href=\"%s\">this page</a> to check on its status."
-
-
-
-
-
-
-
-
 

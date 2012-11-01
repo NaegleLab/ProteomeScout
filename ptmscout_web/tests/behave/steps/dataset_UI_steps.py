@@ -139,7 +139,14 @@ def check_fields_not_prepopulated_correct_header_titles_shown(context):
 @then(u'show the user that incorrect modifications types have been detected')
 def check_errors_reported_bad_modification_for_amino_acid(context):
     result = context.result.form.submit()
-    result.mustcontain(strings.experiment_upload_warning_modifications_do_not_match_amino_acids)
+    result.mustcontain(strings.experiment_upload_warning_modifications_do_not_match_amino_acids % ('methylhistidine', 'K'))
+
+#   This assertion needs to be checked against requirements
+#    result.mustcontain(strings.experiment_upload_warning_modifications_do_not_match_amino_acids % ('methylation', 'W'))
+    result.mustcontain(strings.experiment_upload_warning_modifications_do_not_match_amino_acids % ('methylation', 'G'))
+
+#    This assertion will appear in the dataset_load.feature, but cannot be checked at this stage
+#    result.mustcontain(strings.experiment_upload_warning_modifications_do_not_match_amino_acids % ('phosphorylation', 'H'))
 
 @then(u'show the user that replicate data appears to have been detected')
 def check_errors_reported_replicate_data(context):

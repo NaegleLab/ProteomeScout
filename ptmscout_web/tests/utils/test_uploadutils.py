@@ -2,10 +2,11 @@ import unittest
 from ptmscout.utils.uploadutils import ColumnError,\
     check_data_column_assignments, ErrorList, assign_column_defaults,\
     assign_columns_by_name, assign_columns_from_session_history, check_data_rows,\
-    ParseError
+    ParseError, check_modification_type_matches_peptide \
+    
 from tests.views.mocking import createMockUser, createMockSession,\
-    createMockSessionColumn
-from mock import patch
+    createMockSessionColumn, createMockPTM
+from mock import patch, call
 from ptmscout.config import strings
 
 class TestUploadUtils(unittest.TestCase):
@@ -16,10 +17,82 @@ class TestUploadUtils(unittest.TestCase):
     def tearDown(self):
         unittest.TestCase.tearDown(self)
 
-    def test_check_modification_type_matches_peptide(self):
-        pass
+    @patch('ptmscout.database.modifications.findMatchingPTM')
+    def test_check_modification_type_matches_peptide_should_throw_error_when_mismatch_of_number_of_mods(self, patch_findPTM):
+        mods = []
+        patch_findPTM.return_value = mods, True
+        
+        try:
+            check_modification_type_matches_peptide(1, "DFERtGdYDFqERAS", "Sulfation, METH")
+        except ParseError, pe:
+            self.assertEqual(1, pe.row)
+            self.assertEqual(strings.experiment_upload_warning_wrong_number_of_mods % (2, 3), pe.msg)
+        else:
+            self.fail("Expected exception ParseError")
+        
+    @patch('ptmscout.database.modifications.findMatchingPTM')
+    def test_check_modification_type_matches_peptide_should_throw_error_when_no_mod_of_type(self, patch_findPTM):
+        mods = []
+        patch_findPTM.return_value = mods, False
+        
+        try:
+            check_modification_type_matches_peptide(1, "DFERTGDYDFqERAS", "Sulfation")
+        except ParseError, pe:
+            self.assertEqual(1, pe.row)
+            self.assertEqual(strings.experiment_upload_warning_modifications_not_valid % ('Sulfation'), pe.msg)
+        else:
+            self.fail("Expected exception ParseError")
+            
+        patch_findPTM.assert_any_call("Sulfation", "Q") 
 
-    @patch('ptmscout.utils.uploadutils.test_modification_type_matches_peptide')
+    @patch('ptmscout.database.modifications.findMatchingPTM')
+    def test_check_modification_type_matches_peptide_should_throw_error_when_no_matching_mod(self, patch_findPTM):
+        mods = []
+        patch_findPTM.return_value = mods, True
+        
+        try:
+            check_modification_type_matches_peptide(1, "DFERTGDYDFqERAS", "Sulfation")
+        except ParseError, pe:
+            self.assertEqual(1, pe.row)
+            self.assertEqual(strings.experiment_upload_warning_modifications_do_not_match_amino_acids % ('Sulfation', 'Q'), pe.msg)
+        else:
+            self.fail("Expected exception ParseError")
+            
+        patch_findPTM.assert_any_call("Sulfation", "Q") 
+
+    @patch('ptmscout.database.modifications.findMatchingPTM')
+    def test_check_modification_type_matches_peptide_should_not_throw_error_on_ambiguous_modification_if_category_available(self, patch_findPTM):
+        ptm1 = createMockPTM(name="Methylation", keywords=["PHOS"])
+        ptm2 = createMockPTM(name="2-methylglutamine", target="Q", parent=ptm1, keywords=["methylation", "METH"])
+        ptm3 = createMockPTM(name="N5-methylglutamine", target="Q", parent=ptm1, keywords=["methylation", "METH"])
+        
+        mods = [ptm1,ptm2,ptm3]
+        patch_findPTM.return_value = mods, True
+        
+        check_modification_type_matches_peptide(1, "DFERTGDYDFqERAS", "METH")
+        
+        patch_findPTM.assert_any_call("METH", "Q") 
+    
+    @patch('ptmscout.database.modifications.findMatchingPTM')
+    def test_check_modification_type_matches_peptide_should_throw_error_on_ambiguous_modification_if_no_fallback_available(self, patch_findPTM):
+        ptm1 = createMockPTM(name="2-methylglutamine", target="Q", keywords=["methylation", "METH"])
+        ptm2 = createMockPTM(name="N5-methylglutamine", target="Q", keywords=["methylation", "METH"])
+        
+        mods = [ptm1,ptm2]
+        patch_findPTM.return_value = mods, True
+        
+        try:
+            check_modification_type_matches_peptide(1, "DFERTGDYDFqERAS", "METH")
+        except ParseError, pe:
+            self.assertEqual(1, pe.row)
+            self.assertEqual(strings.experiment_upload_warning_ambiguous_modification_type_for_amino_acid % ("METH", "Q"), pe.msg) 
+        else:
+            self.fail("Expected exception ParseError")
+        
+        patch_findPTM.assert_any_call("METH", "Q") 
+    
+
+    @patch('ptmscout.utils.uploadutils.check_modification_type_matches_peptide')
     def test_check_data_rows_should_compile_list_of_errors(self, patch_test_peptide):
         user = createMockUser()
         session = createMockSession(user)

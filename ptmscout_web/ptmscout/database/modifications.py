@@ -43,7 +43,7 @@ class PTM(Base):
         return len(set([t.node_id for t in self.taxons]) & taxon_ids) > 0
 
     def hasTarget(self, residue):
-        return residue in set([c.target for c in self.children]) + set([self.target])
+        return residue in set([c.target for c in self.children]) or residue == self.target
     
     def hasKeyword(self, key):
         k = key.lower()
@@ -132,9 +132,11 @@ def getModificationBySite(pep_site, pep_type, prot_id):
 def findMatchingPTM(mod_type, residue=None, taxon_ids=None):
     mods = DBSession.query(PTM).join(PTMkeyword).filter(or_(PTM.accession==mod_type, PTM.name==mod_type, PTMkeyword.keyword==mod_type)).all()
     
+    mods_exist = len(mods) > 0
+    
     if residue:
         mods = [mod for mod in mods if mod.hasTarget(residue)]
     if taxon_ids:
         mods = [mod for mod in mods if mod.hasTaxon(taxon_ids)]
     
-    return mods
+    return mods, mods_exist

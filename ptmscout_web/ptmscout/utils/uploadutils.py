@@ -4,6 +4,7 @@ import os
 from ptmscout.utils.webutils import call_catch
 import re
 from ptmscout.utils import protein_utils
+from ptmscout.database import modifications
 
 MAX_ROW_CHECK=100
 
@@ -64,8 +65,36 @@ def check_unique_column(session, ctype, required=False):
     return cols[0]
 
 
-def test_modification_type_matches_peptide(row, peptide, modification):
-    pass
+def check_modification_type_matches_peptide(row, peptide, modification):
+    modified_alphabet = set("abcdefghijklmnopqrstuvwxyz")
+    modified_residues = [ r for r in peptide if r in modified_alphabet ]
+    mod_list = [ m.strip() for m in modification.split(',') ]
+    
+    if len(mod_list) > 1 and len(modified_residues) != len(mod_list):
+        raise ParseError(row, None, strings.experiment_upload_warning_wrong_number_of_mods % (len(mod_list), len(modified_residues)))
+    
+    if len(mod_list) == 1 and len(modified_residues) > 1:
+        mod_list = mod_list * len(modified_residues)
+    
+    for i, residue in enumerate(modified_residues):
+        residue = residue.upper()
+        mod_type = mod_list[i]
+        mods, found_type = modifications.findMatchingPTM(mod_type, residue)
+        
+        if len(mods) == 0:
+            msg = ""
+            if found_type: msg = strings.experiment_upload_warning_modifications_do_not_match_amino_acids % (mod_type, residue)
+            else: msg = strings.experiment_upload_warning_modifications_not_valid % (mod_type)
+            raise ParseError(row, None, msg)
+        
+        matches = [ mod for mod in mods if mod.target == residue ]
+        parents = [ mod for mod in mods if mod.target == None ]
+        
+        if matches > 1:
+            if len(parents) == 0:
+                raise ParseError(row, None, strings.experiment_upload_warning_ambiguous_modification_type_for_amino_acid % (mod_type, residue))
+            elif len(parents) > 1:
+                raise ParseError(row, None, "Unexpected error, parser encountered multiple possible parent modification type assignments")
 
 def check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols, N=MAX_ROW_CHECK):
     errors = []
@@ -93,7 +122,7 @@ def check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stdd
         if not protein_utils.check_peptide_modification_valid(peptide, modification):
             errors.append(ParseError(r, mod_col.column_number+1, strings.experiment_upload_warning_modifications_do_not_match_amino_acids))
         
-        call_catch(ParseError, errors, test_modification_type_matches_peptide, r, peptide, modification)
+        call_catch(ParseError, errors, check_modification_type_matches_peptide, r, peptide, modification)
         
         run = None
         if run_col != None:

@@ -6,7 +6,7 @@ from ptmscout.database.permissions import Permission
 from ptmscout.database.protein import Protein, GeneOntology, Domain
 import random
 from ptmscout.database.modifications import MeasuredPeptide, Phosphopep,\
-    ScansitePrediction
+    ScansitePrediction, PTM, PTMkeyword
 from ptmscout.database.gene_expression import ExpressionProbeset,\
     ExpressionSample, ExpressionCollection, ExpressionTissue
 from ptmscout.database.taxonomies import Species
@@ -245,5 +245,32 @@ def createMockDomain(pid):
     return mock
      
     
+def createMockPTM(ptmid=random.randint(0,100000), name=None,  position=None, accession=None, target=None, mm=None, ma=None, parent=None, keywords=[], taxons=[]):
+    mock = Mock(spec=PTM)
     
+    if name==None:
+        name = "PTM-" + ptmid
     
+    mock.id = ptmid
+    mock.position = position
+    mock.name = name
+    mock.accession = accession
+    mock.target = target
+    mock.mono_mass_diff = mm
+    mock.avg_mass_diff = ma
+    mock.children = []
+    mock.taxons = []
+    mock.keywords = []
+    
+    if(parent != None):
+        mock.parent_id = parent.id
+        parent.children.append(mock)
+    
+    for t in taxons: mock.taxons.append(t)
+    for k in keywords:
+        mkw = Mock(spec=PTMkeyword)
+        mkw.keyword = k
+        mkw.PTM_id = mock.id
+        mock.keywords.append(mkw)
+    
+    return mock

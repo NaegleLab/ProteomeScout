@@ -3,11 +3,11 @@ NAME	acc	Gene Symbol	MOD_TYPE	RSD	SITE_GRP_ID	SPECIES	MW (kD)	IN_DOMAIN	pep	PUBM
 4930417G10Rik	Q8CDW1	4930417G10Rik	dimethylation	R257	9482571	mouse	34.46		GTGPQRPrSWAAADS			1	
 53BP1	Q12888	TP53BP1	METHYLATION	R1396	2344821	human	213.57		GkAPVTPrGrGrrGr	2			
 AAK1	Q2M2I8	AAK1	trimethylation	K317	11086048	human	103.88	Pkinase	FSFKLLKkECPIPNV			1	
-ABAT	P50554	Abat	asymmetric demthylarginine	R144	2099739	rat	56.46	Aminotran_3	ENFVDkLrESLMSVA	1	1		
+ABAT	P50554	Abat	asymmetric dimethylarginine	R144	2099739	rat	56.46	Aminotran_3	ENFVDkLrESLMSVA	1	1		
 ABCA15	Q6XBG2	Abca15	lysine methyl ester	K162	8107574	mouse	190.52		YLRFSDIkKNINSGA			1	
 AC131281.7	ENSP00000415918		N6-methylated lysine	K59	11085723	human	12.33	Ribosomal_L23eN	KVKALKAkKAVLKGV			1	
 ACTB	P60709	ACTB	methylhistidine	H73	2103802	human	41.74	Actin	TLKYPIEhGIVTNWD		1		
 ACTB	P60711	Actb	methylation	H73	2103802	rat	41.74	Actin	TLKYPIEhGIVTNWD	1	1		
 ACTB	P60711	Actb	methylhistidine	H73	2103802	rat	41.74	Actin	TLkYPIEhGIVTNWD	1	1	#error on one peptide since k is not a histidine	
-ACTB	P60711	Actb	methylation	H73	2103802	rat	41.74	Actin	TLKYPIEhGIVTNwD	1	1	#error on one peptide since w cannot be methylated	
+ACTB	P60711	Actb	methylation	H73	2103802	rat	41.74	Actin	TLKYPIEhgIVTNWD	1	1	#error on one peptide since g cannot be methylated	
 ACTB	P60711	Actb	phosphorylation	H73	2103802	rat	41.74	Actin	TLKYPIEhGIVTNWD	1	1	#error since histidine cannot be phosphorylated in verterbrates/eukaryotes	
