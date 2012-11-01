@@ -33,15 +33,21 @@ class PTM(Base):
     mono_mass_diff = Column(Float)
     avg_mass_diff = Column(Float)
 
+    parent_id = Column(Integer(10), ForeignKey('PTM.id'))
+    children = relationship("PTM")
+
     taxons = relationship("Taxonomy", secondary=PTM_taxon)
     keywords = relationship("PTMkeyword")
+
+    def hasTaxon(self, taxon_ids):
+        return len(set([t.node_id for t in self.taxons]) & taxon_ids) > 0
+
+    def hasTarget(self, residue):
+        return residue in set([c.target for c in self.children]) + set([self.target])
     
     def hasKeyword(self, key):
         k = key.lower()
-        for kw in self.keywords:
-            if kw.keyword.lower() == k:
-                return True
-        return False
+        return k in set([kw.keyword.lower() for kw in self.keywords])
 
     def createKeyword(self, key):
         if not self.hasKeyword(key):
@@ -123,10 +129,12 @@ def getModificationBySite(pep_site, pep_type, prot_id):
     return mod
 
 
-def findMatchingPTM(residue, mod_type, taxon_ids=None):
-    if taxon_ids == None:
-        mods = DBSession.query(PTM).join(PTMkeyword).filter(and_(PTM.target==residue, or_(PTM.accession==mod_type, PTM.name==mod_type, PTMkeyword.keyword==mod_type))).all()
-    else:
-        mods = DBSession.query(PTM).join(PTMkeyword, Taxonomy).filter(and_(PTM.target==residue, or_(PTM.accession==mod_type, PTM.name==mod_type, PTMkeyword.keyword==mod_type), Taxonomy.node_id.in_(taxon_ids))).all()
+def findMatchingPTM(mod_type, residue=None, taxon_ids=None):
+    mods = DBSession.query(PTM).join(PTMkeyword).filter(or_(PTM.accession==mod_type, PTM.name==mod_type, PTMkeyword.keyword==mod_type)).all()
     
-    return len(mods) > 0
+    if residue:
+        mods = [mod for mod in mods if mod.hasTarget(residue)]
+    if taxon_ids:
+        mods = [mod for mod in mods if mod.hasTaxon(taxon_ids)]
+    
+    return mods
