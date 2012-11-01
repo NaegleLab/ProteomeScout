@@ -2,7 +2,6 @@ from . import Base, DBSession
 from sqlalchemy import Column, Integer, VARCHAR, Text
 from ptmscout.config import settings as config
 from ptmscout.database.permissions import Permission
-from sqlalchemy.dialects.mysql.base import TINYINT
 from sqlalchemy.schema import ForeignKey
 from sqlalchemy.types import Float, Enum, DateTime
 from sqlalchemy.sql.expression import null

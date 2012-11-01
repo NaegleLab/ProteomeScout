@@ -5,8 +5,6 @@ from ptmscout.views.upload.upload_metadata import upload_metadata, check_require
 from ptmscout.config import strings
 from tests.views.mocking import createMockUser, createMockExperiment,\
     createMockSession
-import base64
-import json
 from mock import patch
 from ptmscout.database import upload
 

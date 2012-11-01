@@ -3,12 +3,9 @@ import time
 from ptmscout.config import settings, strings
 import os
 from ptmscout.utils import webutils
-import base64
-import json
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from ptmscout.database import upload
 import logging
-import cgi
 log = logging.getLogger(__name__)
 
 def create_session(request, exp_file):

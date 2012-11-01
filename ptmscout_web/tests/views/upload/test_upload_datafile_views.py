@@ -8,8 +8,6 @@ from mock import patch
 import cgi
 from tests.views.mocking import createMockUser, createMockExperiment,\
     createMockPermission
-import json
-import base64
 from pyramid.httpexceptions import HTTPFound
 
 class TestUploaddata_fileView(UnitTestCase):
