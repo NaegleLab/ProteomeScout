@@ -10,7 +10,6 @@
     </div>
     <div metal:fill-slot="content">
         <form action="" method="post" enctype="multipart/form-data">
-            <div class="hidden" id="populated_fields">${formfields}</div>
             <input type="hidden" value="true" name="submitted" />
             <div class="wideform">
                 <div tal:condition="reason != None" class="errorbox">Error: ${reason}</div>
@@ -19,10 +18,10 @@
                     <tr>
                         <td class="fieldname">Upload type:</td>
                         <td>
-                            <input id="new_dataset" type="radio" name="load_type" value="new" />New
-                            <input id="append_dataset" type="radio" name="load_type" value="append" />Append
-                            <input id="reload_dataset" type="radio" name="load_type" value="reload" />Reload
-                            <input id="extend_dataset" type="radio" name="load_type" value="extension" />Extension
+                            <input id="new_dataset" type="radio" name="load_type" value="new" tal:attributes="checked 'yes' if formfields['load_type'] == 'new' else default"/>New
+                            <input id="append_dataset" type="radio" name="load_type" value="append" tal:attributes="checked 'yes' if formfields['load_type'] == 'append' else default"/>Append
+                            <input id="reload_dataset" type="radio" name="load_type" value="reload" tal:attributes="checked 'yes' if formfields['load_type'] == 'reload' else default"/>Reload
+                            <input id="extend_dataset" type="radio" name="load_type" value="extension" tal:attributes="checked 'yes' if formfields['load_type'] == 'extension' else default"/>Extension
                         </td>
                     </tr>
                     <tr id="parent_exp">
@@ -30,14 +29,14 @@
                         <td>
                             <select id="expselect" class="stretch" name="parent_experiment">
                                 <option value=""></option>
-                                <option tal:repeat="exp user_experiments" tal:attributes="value exp.id" tal:content="exp.name"></option>
+                                <option tal:repeat="exp user_experiments" tal:attributes="value exp.id; selected 'yes' if formfields['parent_experiment'] == str(exp.id) else default" tal:content="exp.name"></option>
                             </select>
                         </td>
                     </tr>
                     <tr id="change_desc">
                         <td class="fieldname">Change description:</td>
                         <td>
-                            <textarea cols="43" rows="5" name="change_description"></textarea>
+                            <textarea cols="43" rows="5" name="change_description" tal:content="formfields['change_description']"></textarea>
                         </td>
                     </tr>
                 </table>

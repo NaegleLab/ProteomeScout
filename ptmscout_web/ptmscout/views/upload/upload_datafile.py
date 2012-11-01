@@ -99,7 +99,8 @@ def check_required_fields(request, users_experiments):
         return False, strings.failure_reason_field_value_not_valid % field_name_dict['parent_experiment'], field_dict
     
     return True, None, field_dict
-        
+
+    
     
 @view_config(route_name='upload', renderer='ptmscout:/templates/upload/upload.pt')
 def upload_data_file(request):
@@ -111,7 +112,7 @@ def upload_data_file(request):
     users_experiments = [ p.experiment for p in request.user.permissions if p.access_level=='owner' ]    
     dict_exps = [ webutils.object_to_dict(exp) for exp in users_experiments ]
     reason = None
-    form_fields = {}
+    
     
     if submitted == "true":
         success, reason, form_fields = check_required_fields(request, users_experiments)
@@ -124,12 +125,14 @@ def upload_data_file(request):
                 return HTTPFound(request.application_url + "/upload/%d/config" % (session_id))
             else:
                 reason = result
-        
+    else:
+        form_fields = {'load_type':"", 'parent_experiment':"", 'change_description':""}
+    
     if 'data_file' in form_fields:
         del form_fields['data_file']
     
     return {'pageTitle': strings.upload_page_title,
             'header': strings.upload_page_header,
             'user_experiments': dict_exps,
-            'formfields': base64.b64encode(json.dumps(form_fields)),
+            'formfields': form_fields,
             'reason':reason}

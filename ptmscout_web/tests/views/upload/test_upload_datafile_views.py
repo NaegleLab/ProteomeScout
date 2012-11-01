@@ -141,7 +141,7 @@ class TestUploaddata_fileView(UnitTestCase):
         result = upload_data_file(request)
         
         self.assertEqual(strings.failure_reason_experiment_file_not_enough_columns, result['reason'])
-        self.assertEqual(field_dict, json.loads(base64.b64decode(result['formfields'])))
+        self.assertEqual(field_dict, result['formfields'])
         patch_check.assert_called_once_with(request, [])
         patch_verify.assert_called_once_with(request)
     
@@ -178,7 +178,7 @@ class TestUploaddata_fileView(UnitTestCase):
         result = upload_data_file(request)
 
         self.assertEqual(strings.failure_reason_required_fields_cannot_be_empty, result['reason'])
-        self.assertEqual(field_dict, json.loads(base64.b64decode(result['formfields'])))
+        self.assertEqual(field_dict, result['formfields'])
         patch_check.assert_called_once_with(request, [])
     
     def test_view_should_get_users_experiments(self):
@@ -200,7 +200,7 @@ class TestUploaddata_fileView(UnitTestCase):
         self.assertEqual(strings.upload_page_title, result['pageTitle'])
         
         self.assertEqual(expected_experiments, result['user_experiments'])
-        self.assertEqual({}, json.loads(base64.b64decode(result['formfields'])))
+        self.assertEqual({'load_type':"", 'parent_experiment':"", 'change_description':""}, result['formfields'])
         self.assertEqual(None, result['reason'])
     
 

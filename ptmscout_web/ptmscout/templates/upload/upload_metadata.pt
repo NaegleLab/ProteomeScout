@@ -9,7 +9,6 @@
     </div>
     <div metal:fill-slot="content">
         <form action="" method="post">
-            <div class="hidden" id="populated_fields">${formfields}</div>
             <div class="hidden" id="pubmed_query_url">${request.application_url}/webservice/pubmed/</div>
             <input type="hidden" value="true" name="submitted" />
             <div class="wideform">
