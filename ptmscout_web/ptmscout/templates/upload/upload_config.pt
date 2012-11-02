@@ -23,11 +23,13 @@
                     <div class="datatable">
                         <table>
                             <tr class="headers">
+                                <td class="header">#</td>
                                 <td tal:repeat="(c, column_name) enumerate(headers)" tal:attributes="class 'header c%d'%(c)">
                                     <span tal:content="column_name"></span>
                                 </td>
                             </tr>
                             <tr class="column_defs">
+                                <td class="header"></td>
                                 <td tal:repeat="c data_definitions['columns']" tal:attributes="id 'c%d' % (c);class 'coldef c%d'%(c)">
                                     <select tal:attributes="name 'column_%d_type' % (c)">
                                         <option tal:repeat="val column_values" tal:attributes="value val; selected 'selected' if val==data_definitions['columns'][c]['type'] else default" tal:content="val"></option>
@@ -36,7 +38,8 @@
                                     <input class="expander" style="display:none" tal:attributes="id 'c%d'%(c)" type="button" value="->"/>
                                 </td>
                             </tr>
-                            <tr tal:repeat="row data_rows">
+                            <tr tal:repeat="(r, row) enumerate(data_rows)">
+                                <td class="cell header" tal:content="r"></td>
                                 <td tal:repeat="(c,cell) enumerate(row)" tal:attributes="class 'cell c%d'%(c)">
                                     <span  tal:content="cell"></span>
                                 </td>
