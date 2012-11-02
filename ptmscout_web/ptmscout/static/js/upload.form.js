@@ -1,5 +1,35 @@
 $(document).ready(function(){
-	$('.pubinfo').css('display', "none")
+	
+	// initialization
+	
+	var a_checked = $('#append_dataset').attr("checked") != "undefined"
+	var r_checked = $('#reload_dataset').attr("checked") != "undefined"
+	var e_checked = $('#extend_dataset').attr("checked") != "undefined"
+	
+	$('#parent_exp').css('display', function(){
+		if(a_checked || r_checked || e_checked)
+			return "table-row"
+		return "none"
+	});
+	
+	$('#change_desc').css('display', function(){
+		if(e_checked)
+			return "table-row"
+		return "none"
+	});
+	
+
+	$('.pubinfo').css('display', function(){
+		value = $('#pubselect option:selected').val();
+		if(value == "yes")
+			return "table-row"
+		else
+			return "none";
+	});
+	
+	
+	
+	// behaviours
 	
 	$('#new_dataset')
 		.click(function(){
@@ -34,8 +64,6 @@ $(document).ready(function(){
 			else
 				$('.pubinfo').css('display',"none");
 		});
-	
-	$('#new_dataset').click()
 	
 	month_vals = ['january','february','march','april','may','june','july','august','september','october','november','december']
 	
