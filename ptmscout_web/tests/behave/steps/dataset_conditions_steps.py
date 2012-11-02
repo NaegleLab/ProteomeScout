@@ -40,9 +40,7 @@ def check_form_exists_with_cell_tissue_conditions(context):
     form.set('4_type', 'environment')
     form.set('4_value', 'ph=5.5')
     
-    result = form.submit()
-    result.showbrowser()
-    result = result.follow()
+    result = form.submit().follow(status=200)
     result.mustcontain(strings.experiment_upload_confirm_message)
 
 @then(u'automatically suggest suitable completions based on existing entries')

@@ -201,7 +201,7 @@ class FormValidator(object):
         errors = []
         
         for ref in self.schema.field_names:
-            value = self.schema.form_values[ref].strip()
+            value = self.schema.get_form_value(ref)
             error = self.validate_field(ref, value)
             
             if error != None:

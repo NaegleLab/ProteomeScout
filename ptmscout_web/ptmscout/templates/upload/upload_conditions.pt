@@ -6,10 +6,13 @@
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js" ></script>
         <script type="text/javascript" src="${request.static_url('ptmscout:static/js/utils.js')}" ></script>
         <script type="text/javascript" src="${request.static_url('ptmscout:static/js/base64.js')}"></script>
-        <script type="text/javascript" src="${request.static_url('ptmscout:static/js/datafile.configurator.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('ptmscout:static/js/upload.condition.js')}"></script>
     </div>
     <div metal:fill-slot="content">
         <div class="conditions_form">
+            <div class="formtitle">
+                Configure Experimental Conditions
+            </div>
             <div class="error_display" tal:condition="len(errors)>0">
                 <ul>
                     <li tal:repeat="error errors" tal:content="error"></li>
@@ -17,13 +20,13 @@
             </div>
             <form action="" method="post">
                 <input type="hidden" name="submitted" value="true" />
-	            <div tal:repeat="i xrange(0, MAX_FIELDS)" tal:attributes="class 'condition hidden' if i not in added_fields else 'condition'">
+	            <div tal:repeat="i xrange(0, MAX_FIELDS)" tal:attributes="id 'c%d' % (i); class 'condition hidden' if i not in added_fields else 'condition'">
 	                ${formrenderer.render('%d_type' % (i,), class_='cond_type')}
 	                ${formrenderer.render('%d_value' % (i,), class_='cond_value')}
-	                <input class="remove_condition" type="button" value="Remove" />
+	                <input class="remove_condition" type="button" value="X" />
                 </div>
-                <div class="condition">
-                    <input class="add_condition" type="button" value="Add Experimental Condition" />
+                <div class="add_condition">
+                    <input id="add_condition" type="button" value="Add Experimental Condition" />
                 </div>
                 <div class="formsubmission">
                     <input type="submit" value="Continue" />

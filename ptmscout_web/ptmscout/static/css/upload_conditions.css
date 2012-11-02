@@ -6,13 +6,17 @@
 	margin-bottom:20px;
 }
 
-.condition {
+.condition, .add_condition {
 	border: solid 1px black;
 	padding:5px;
 	margin:10px;
 	margin-top:5px;
 	margin-bottom:5px;
     background:lightgray;
+}
+
+.remove_condition {
+	float:right;
 }
 
 .hidden {
@@ -24,4 +28,14 @@
     padding:10px;
     border: solid 1px black;
     background:#FF88AA;
+}
+
+.formtitle {
+	font-weight:bold;
+	font-size:18px;
+	border: solid 1px black;
+    padding:5px;
+    margin:10px;
+    margin-top:5px;
+    margin-bottom:5px;
 }
