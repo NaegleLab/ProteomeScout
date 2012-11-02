@@ -237,16 +237,18 @@ def getExperimentTree(current_user):
 def getValuesForField(field_name, current_user):
     exp_ids = [ exp.id for exp in current_user.allExperiments() ]
     
-    query = DBSession.query(ExperimentCondition).join(Experiment)
+    query = DBSession.query(ExperimentCondition).outerjoin(Experiment)
     if len(exp_ids) > 0:
         results = query.filter(
                             and_(ExperimentCondition.type==field_name, 
-                                 or_(Experiment.public==1, 
+                                 or_(ExperimentCondition.experiment_id==null,
+                                     Experiment.public==1, 
                                      Experiment.id.in_(exp_ids)))).all()
     else:
         results = query.filter(
                             and_(ExperimentCondition.type==field_name, 
-                                 Experiment.public==1)).all()
+                                 or_(ExperimentCondition.experiment_id==null,
+                                     Experiment.public==1))).all()
     
     return [ r.value for r in results ]
 
