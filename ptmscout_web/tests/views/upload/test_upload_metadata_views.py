@@ -268,7 +268,7 @@ class TestUploadView(UnitTestCase):
         patch_getSession.return_value = session 
         
         f = upload_metadata(request)
-        self.assertEqual(request.application_url + "/upload/%d/confirm" % session_id, f.location)
+        self.assertEqual(request.application_url + "/upload/%d/conditions" % session_id, f.location)
         
         patch_check.assert_called_once_with(request)
         patch_start.assert_called_once_with(field_dict, session, request.user)

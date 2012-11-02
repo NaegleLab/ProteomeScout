@@ -202,7 +202,7 @@ def upload_metadata(request):
         else:
             # need to get exp_file from upload session records
             create_experiment_and_mark_status(field_dict, session, request.user)
-            return HTTPFound(request.application_url + "/upload/%d/confirm" % session_id)
+            return HTTPFound(request.application_url + "/upload/%d/conditions" % session_id)
     else:
         field_dict = init_form_fields(session, request.user)
     
