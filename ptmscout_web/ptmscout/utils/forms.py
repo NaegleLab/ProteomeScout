@@ -37,6 +37,8 @@ class FormSchema(object):
         value = self.form_values[ref]
         if value == None:
             value = self.field_defaults[ref]
+        else:
+            value = value.strip()
         return value
     
     def field_was_attempted(self, field_ref):
@@ -114,27 +116,28 @@ class FormRenderer(object):
         cls_str = '' if class_ == None else 'class="%s"' % (class_)
         
         if field_type == FormSchema.TEXT:
-            self.__render_text(ref, id_str, cls_str)
+            return self.__render_text(ref, id_str, cls_str)
         if field_type == FormSchema.TEXTAREA:
-            self.__render_textarea(ref, id_str, cls_str)
+            return self.__render_textarea(ref, id_str, cls_str)
         if field_type == FormSchema.SELECT:
-            self.__render_select(ref, id_str, cls_str)
+            return self.__render_select(ref, id_str, cls_str)
         if field_type == FormSchema.CHECKBOX:
-            self.__render_checkbox(ref, id_str, cls_str)
+            return self.__render_checkbox(ref, id_str, cls_str)
         if field_type == FormSchema.RADIO:
-            self.__render_radio(ref, id_str, cls_str)
+            return self.__render_radio(ref, id_str, cls_str)
         if field_type == FormSchema.PASSWORD:
-            self.__render_password(ref, id_str, cls_str)
+            return self.__render_password(ref, id_str, cls_str)
     
     
     def __render_select(self, ref, id_str, cls_str):
         items = []
-        items.append('<select %s %s ref="%s">\n' % (id_str, cls_str, ref))
+        items.append('<select %s %s name="%s">\n' % (id_str, cls_str, ref))
         
         cur_value = self.schema.get_form_value(ref)
+        
         valid_values = [('','')] + self.schema.enum_values[ref]
         for (value, proper_name) in valid_values:
-            selected = '' if cur_value == value else 'selected'
+            selected = 'selected' if cur_value == value else ''
             items.append('<option value="%s" %s>%s</option>' % (value, selected, proper_name))
         
         items.append('</select>')
@@ -152,7 +155,7 @@ class FormRenderer(object):
         
         cur_value = self.schema.get_form_value(ref)
         for (value, proper_name) in self.schema.enum_values[ref]:
-            selected = '' if cur_value == value else 'checked'
+            selected = 'checked' if cur_value == value else ''
             items.append('<input type="radio" %s %s name="%s" value="%s" %s /> %s' % (id_str, cls_str, ref, value, selected, proper_name))
         
         return FormLiteral("\n".join(items))
@@ -224,9 +227,10 @@ class FormValidator(object):
                 int(field_value)
             except:
                 return strings.failure_reason_field_must_be_numeric % (proper_name)
-            
+        
         if field_ref in self.schema.enum_fields and self.schema.field_was_attempted(field_ref):
-            if field_value not in self.schema.enum_values[field_ref]:
+            internal_values = set([ k for k, _ in self.schema.enum_values[field_ref] ])
+            if field_value not in internal_values:
                 return strings.failure_reason_field_value_not_valid % (proper_name)
             
         return None

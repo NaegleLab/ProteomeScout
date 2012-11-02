@@ -13,28 +13,28 @@ Feature: Dataset Conditions UI
             | user_input | field_name   | suggestion                     |
             | d          | drug         | dasatinib                      |
             | d          | drug         | doxirubicin                    |
-            | H          | cell_type    | HEK 293T                       |
-            | H          | cell_type    | HEK 293                        |
-            | H          | cell_type    | HELA                           |
-            | H          | cell_type    | HEPG2                          |
-            | H          | cell_type    | HOP62                          |
-            | H          | cell_type    | HOP92                          |
-            | H          | cell_type    | HS578T                         |
-            | H          | cell_type    | HSG                            |
-            | H          | cell_type    | HT1080                         |
-            | b          | tissue_type  | BM-CD105+Epithelial cells      |
-            | b          | tissue_type  | BM-CD33+Myeloid                |
-            | b          | tissue_type  | BM-CD34_                       |
-            | b          | tissue_type  | BM-CD70+EarlyErythroid         |
-            | b          | tissue_type  | Whole Blood                    |
-            | b          | tissue_type  | Whole Brain                    |
-            | b          | tissue_type  | Bronchial Epithelial Cells     |
-            | b          | tissue_type  | Fetal Brain                    |
-            | b          | tissue_type  | Oflactory Bulb                 |
-            | b          | tissue_type  | PB-CD19+Bcells                 |
-            | b          | tissue_type  | Bone Marrow                    |
-            | b          | tissue_type  | Lymphoma Burkitts Daudi        |
-            | b          | tissue_type  | Lymphoma Burkitts Raji         |
+            | H          | cell         | HEK 293T                       |
+            | H          | cell         | HEK 293                        |
+            | H          | cell         | HELA                           |
+            | H          | cell         | HEPG2                          |
+            | H          | cell         | HOP62                          |
+            | H          | cell         | HOP92                          |
+            | H          | cell         | HS578T                         |
+            | H          | cell         | HSG                            |
+            | H          | cell         | HT1080                         |
+            | b          | tissue       | BM-CD105+Epithelial cells      |
+            | b          | tissue       | BM-CD33+Myeloid                |
+            | b          | tissue       | BM-CD34_                       |
+            | b          | tissue       | BM-CD70+EarlyErythroid         |
+            | b          | tissue       | Whole Blood                    |
+            | b          | tissue       | Whole Brain                    |
+            | b          | tissue       | Bronchial Epithelial Cells     |
+            | b          | tissue       | Fetal Brain                    |
+            | b          | tissue       | Oflactory Bulb                 |
+            | b          | tissue       | PB-CD19+Bcells                 |
+            | b          | tissue       | Bone Marrow                    |
+            | b          | tissue       | Lymphoma Burkitts Daudi        |
+            | b          | tissue       | Lymphoma Burkitts Raji         |
 
 ## BONUS feature -- not high priority ##
 #    Scenario: Pre-populate condition fields  

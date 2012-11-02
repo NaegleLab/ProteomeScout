@@ -104,7 +104,7 @@ class TestUploadConditionsView(UnitTestCase):
         self.assertTrue(isinstance(result, HTTPFound))
         self.assertEqual(request.application_url + "/upload/%d/confirm" % (session.id), result.location)
         
-        patch_getExperiment.assert_called_once_with(exp.id, request.user)
+        patch_getExperiment.assert_called_once_with(exp.id, request.user, False)
         mockValidator.validate.assert_called_once_with()
         
         patch_save_form_data.assert_called_once_with(exp, mockSchema, set([1,2,3]))
@@ -195,3 +195,10 @@ class IntegrationTestUploadConditionsView(IntegrationTestCase):
         
         result = self.ptmscoutapp.get("/upload/%d/conditions" % session.id, status=200)
         result.mustcontain(strings.experiment_upload_conditions_page_title)
+        
+        result.form.set('0_type', 'cell')
+        result.form.set('0_value', 'HELLA')
+        
+        result.form.submit(status=302).follow(status=200)
+        
+        

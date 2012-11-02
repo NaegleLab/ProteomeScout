@@ -34,13 +34,15 @@ def check_form_exists_with_cell_tissue_conditions(context):
     form.set('2_type', 'drug')
     form.set('2_value', 'myostatin')
     
-    form.set('3_type', 'stimulation')
+    form.set('3_type', 'stimulus')
     form.set('3_value', 'alot')
     
-    form.set('4_type', 'environmental')
+    form.set('4_type', 'environment')
     form.set('4_value', 'ph=5.5')
     
-    result = form.submit(status=302).follow(status=200)
+    result = form.submit()
+    result.showbrowser()
+    result = result.follow()
     result.mustcontain(strings.experiment_upload_confirm_message)
 
 @then(u'automatically suggest suitable completions based on existing entries')

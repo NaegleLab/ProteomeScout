@@ -54,7 +54,7 @@ def upload_conditions_view(request):
     if submitted:
         errors = forms.FormValidator(schema).validate()
         if len(errors) == 0:
-            exp = experiment.getExperimentById(session.experiment_id, request.user)
+            exp = experiment.getExperimentById(session.experiment_id, request.user, False)
             save_form_data(exp, schema, added_fields)
             return HTTPFound(request.application_url + "/upload/%d/confirm" % (session_id))
     
