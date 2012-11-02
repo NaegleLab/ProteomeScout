@@ -2,6 +2,7 @@
 	<div metal:fill-slot="header">
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/info.css')}" />
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/users.css')}" />
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/forms.css')}" />
 	</div>
     <div metal:fill-slot="content">
     	<div id="experimentInfo" >
@@ -10,8 +11,8 @@
 		   		<a href="${experiment.getUrl()}" tal:condition="experiment.getUrl() != None">${experiment.name}</a>
 		   		<tal:expname tal:condition="experiment.getUrl() == None">${experiment.name}</tal:expname><br />
 	            <div tal:condition="experiment.published==1" >
-	            <tal:expcitation tal:content="structure experiment.getLongCitationString()"></tal:expcitation><br />
-	            <br /><br />
+	               <tal:expcitation tal:content="structure experiment.getLongCitationString()"></tal:expcitation><br />
+	               <br /><br />
 	            </div>
 			    ${experiment.description}
 			    <br /><br />
@@ -25,12 +26,15 @@
     			<div class="wideform">
                     <div tal:condition="reason != None" class="errorbox">Error: ${reason}</div>
 	     		    <div class="formagreement">
-                            <input type="checkbox" name="terms_of_use" />
-                            I have read and agree to the <a href="${request.application_url}/terms" target="_blank">terms of use</a> 
-                        </div>
-                        <input type="hidden" name="confirm" value="true" />
-                        <input type="submit" value="Confirm" />
-		    		<a href="${request.application_url}/upload/${session_id}/cancel">Cancel</a>
+                        <input type="checkbox" name="terms_of_use" />
+                        I have read and agree to the <a href="${request.application_url}/terms" target="_blank">terms of use</a> 
+                    </div>
+                    <div class="formsubmission">
+		                <input type="hidden" name="confirm" value="true" />
+		                <input type="submit" value="Confirm" />
+			    		<a href="${request.application_url}/upload/${session_id}/cancel">Cancel</a>
+		    		</div>
+		    		<div class="clear"></div>
 		    	</div>
        		</form>
     	</div>
