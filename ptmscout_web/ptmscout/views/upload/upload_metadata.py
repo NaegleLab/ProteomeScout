@@ -1,7 +1,5 @@
 from pyramid.view import view_config
 from ptmscout.config import strings
-import base64
-import json
 from ptmscout.utils import webutils
 from pyramid.httpexceptions import HTTPFound
 from ptmscout.database import experiment, upload
