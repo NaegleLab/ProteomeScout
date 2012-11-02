@@ -4,7 +4,7 @@ from ptmscout.config import settings as config
 from ptmscout.database.permissions import Permission
 from sqlalchemy.schema import ForeignKey
 from sqlalchemy.types import Float, Enum, DateTime
-from sqlalchemy.sql.expression import null
+from sqlalchemy.sql.expression import null, or_, and_
 import datetime
 from ptmscout.utils import celeryutils
 from sqlalchemy.orm import relationship
@@ -234,3 +234,19 @@ def getExperimentTree(current_user):
     
     return experiment_tree
     
+def getValuesForField(field_name, current_user):
+    exp_ids = [ exp.id for exp in current_user.allExperiments() ]
+    
+    query = DBSession.query(ExperimentCondition).join(Experiment)
+    if len(exp_ids) > 0:
+        results = query.filter(
+                            and_(ExperimentCondition.type==field_name, 
+                                 or_(Experiment.public==1, 
+                                     Experiment.id.in_(exp_ids)))).all()
+    else:
+        results = query.filter(
+                            and_(ExperimentCondition.type==field_name, 
+                                 Experiment.public==1)).all()
+    
+    return [ r.value for r in results ]
+
