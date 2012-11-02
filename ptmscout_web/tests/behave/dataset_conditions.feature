@@ -4,13 +4,8 @@ Feature: Dataset Conditions UI
 
 
     Scenario: Describe cell, tissue or condition types
-          Given a user is selecting experimental parameters for a dataset
-          Then give them options to add cell, tissue, and condition types
-
-    Scenario: Choose condition type
-          Given a user is selecting experimental parameters for a dataset
-          When they have selected add condition type
-          Then give users a selection between drug, stimulation, or environmental conditions
+          Given a user is selecting experimental conditions for a dataset
+          Then give the user options to add cell, tissue, drug, stimulation, or environmental conditions
 
     Scenario: Describe conditions
           Given a user is selecting experimental conditions for a dataset

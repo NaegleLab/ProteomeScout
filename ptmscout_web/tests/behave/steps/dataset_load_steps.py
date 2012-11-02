@@ -72,9 +72,9 @@ def experiment_uploaded_check_email(context, patch_mail):
     asynchronous_assert_called(patch_mail)
     argstr = str(patch_mail.call_args)
     
-    peps = context.table['peptides']
-    prots = context.table['proteins']
-    errors = context.table['errors']
+    peps = context.table[0]['peptides']
+    prots = context.table[0]['proteins']
+    errors = context.table[0]['errors']
     
     assertContains("Peptides: %s" % (peps), argstr)
     assertContains("Proteins: %s" % (prots), argstr)
