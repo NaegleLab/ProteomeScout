@@ -7,6 +7,17 @@ from sqlalchemy.types import Float, Enum, DateTime
 from sqlalchemy.sql.expression import null
 import datetime
 from ptmscout.utils import celeryutils
+from sqlalchemy.orm import relationship
+
+class ExperimentCondition(Base):
+    __tablename__ = 'experiment_condition'
+    
+    id = Column(Integer(10), primary_key=True, autoincrement=True)
+    
+    type = Column(Enum(['cell','tissue','drug','stimulus','environment']))
+    value = Column(VARCHAR(100))
+    
+    experiment_id = Column(Integer(10), ForeignKey("experiment.id"))
 
 class ExperimentData(Base):
     __tablename__ = 'data'
@@ -61,6 +72,9 @@ class Experiment(Base):
     import_process_id = Column(VARCHAR(40), default="")
     status = Column(Enum('preload','loading','loaded'), default='preload')
     submitter_id = Column(Integer(10), ForeignKey('users.id'))
+    
+    
+    conditions = relationship("ExperimentCondition")
     
     def __init__(self):
         self.date = datetime.datetime.now()
@@ -159,6 +173,12 @@ class Experiment(Base):
         
         allowed_users = [p.user_id for p in self.permissions]
         return user.id in allowed_users
+        
+    def addExperimentCondition(self, ctype, value):
+        condition = ExperimentCondition()
+        condition.type = ctype
+        condition.value = value
+        self.conditions.append(condition)
         
 class NoSuchExperiment(Exception):
     def __init__(self, eid):
