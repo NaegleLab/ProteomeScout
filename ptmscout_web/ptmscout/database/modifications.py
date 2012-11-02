@@ -3,7 +3,6 @@ from sqlalchemy.schema import Column, ForeignKey, Table, UniqueConstraint
 from sqlalchemy.types import Integer, VARCHAR, CHAR, Float, Enum
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import and_, or_
-from ptmscout.database.taxonomies import Taxonomy
 
 MS_phosphopep = Table('MS_phosphopep', Base.metadata,
                       Column('id', Integer(10), primary_key=True),
