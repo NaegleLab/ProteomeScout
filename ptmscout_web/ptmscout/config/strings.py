@@ -72,6 +72,11 @@ experiment_upload_warning_full_dupe = "Warning: Experiment contains multiple dat
 
 experiment_upload_option_no_run_column_assign_in_order  = "Assign run numbers in order of occurrence"
 
+
+experiment_upload_conditions_page_title = "Experimental Conditions"
+experiment_upload_conditions_error_value_must_be_specified = "Error: values are required for all experiment conditions fields"
+
+
 experiment_upload_confirm_page_title = "Confirm Submission"
 experiment_upload_confirm_message = "Required experiment information is now complete. Are you sure you wish to proceed with the upload? Please review and accept the terms of use below. Pressing cancel will remove this upload session, you may start a new one later."
 
@@ -174,7 +179,7 @@ failure_reason_terms_of_use_not_accepted = "You must agree to the terms of use a
 failure_reason_field_value_not_valid = "Field '%s' has invalid value"
 failure_reason_field_must_be_numeric = "Field '%s' must be numeric"
 failure_reason_required_fields_cannot_be_empty = "Required form field '%s' cannot be empty"
- 
+
 failure_reason_form_fields_cannot_be_empty = "Form fields cannot be empty"
 failure_reason_new_passwords_not_matching = "Password confirmation did not match"
 failure_reason_incorrect_password = "Supplied password was incorrect"
@@ -199,4 +204,3 @@ prediction_type_map = {'scansite': "Scansite",
 
 error_resource_not_ready_page_title = "Resource not ready"
 error_resource_not_ready_message = "The resource you are trying to access is currently in processing. If you are the creator of this resource, please visit <a href=\"%s\">this page</a> to check on its status."
-

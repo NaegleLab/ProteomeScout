@@ -6,3 +6,8 @@ def call_get_pubmed_record_by_id(request):
     pmid = int(request.matchdict['id'])
     record = entrez_query.get_pubmed_record_by_id(pmid)
     return record
+
+@view_config(route_name='field_fetch', renderer='json', permission='private')
+def get_autocomplete_for_field(request):
+    field_name = request.matchdict['field']
+    return {field_name:[]}
