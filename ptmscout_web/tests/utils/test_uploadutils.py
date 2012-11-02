@@ -62,7 +62,7 @@ class TestUploadUtils(unittest.TestCase):
 
     @patch('ptmscout.database.modifications.findMatchingPTM')
     def test_check_modification_type_matches_peptide_should_not_throw_error_on_ambiguous_modification_if_category_available(self, patch_findPTM):
-        ptm1 = createMockPTM(name="Methylation", keywords=["PHOS"])
+        ptm1 = createMockPTM(name="Methylation", keywords=["METH"])
         ptm2 = createMockPTM(name="2-methylglutamine", target="Q", parent=ptm1, keywords=["methylation", "METH"])
         ptm3 = createMockPTM(name="N5-methylglutamine", target="Q", parent=ptm1, keywords=["methylation", "METH"])
         
@@ -91,6 +91,16 @@ class TestUploadUtils(unittest.TestCase):
         
         patch_findPTM.assert_any_call("METH", "Q") 
     
+    @patch('ptmscout.database.modifications.findMatchingPTM')
+    def test_check_modification_type_matches_should_succeed(self, patch_findPTM):
+        ptm1 = createMockPTM(name="Phosphorylation", keywords=["PHOS"])
+        ptm2 = createMockPTM(name="phosphoserine", target="S", parent=ptm1, keywords=["Phosphorylation", "PHOS"])
+        
+        patch_findPTM.return_value = [ptm1,ptm2], True
+               
+        check_modification_type_matches_peptide(1, "AKsPVPKsPVEEK", "PHOS")
+        
+        patch_findPTM.assert_any_call("PHOS", "S")
 
     @patch('ptmscout.utils.uploadutils.check_modification_type_matches_peptide')
     def test_check_data_rows_should_compile_list_of_errors(self, patch_test_peptide):

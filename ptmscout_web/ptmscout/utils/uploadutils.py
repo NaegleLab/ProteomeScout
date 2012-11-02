@@ -90,7 +90,7 @@ def check_modification_type_matches_peptide(row, peptide, modification):
         matches = [ mod for mod in mods if mod.target == residue ]
         parents = [ mod for mod in mods if mod.target == None ]
         
-        if matches > 1:
+        if len(matches) > 1:
             if len(parents) == 0:
                 raise ParseError(row, None, strings.experiment_upload_warning_ambiguous_modification_type_for_amino_acid % (mod_type, residue))
             elif len(parents) > 1:
