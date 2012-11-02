@@ -18,6 +18,7 @@ def add_views(config):
     config.add_route('upload', '/upload')
     config.add_route('upload_config', '/upload/{id}/config')
     config.add_route('upload_metadata', '/upload/{id}/metadata')
+    config.add_route('upload_conditions', '/upload/{id}/conditions')
     config.add_route('upload_confirm', '/upload/{id}/confirm')
     config.add_route('upload_cancel', '/upload/{id}/cancel')
     
