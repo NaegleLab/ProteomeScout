@@ -48,7 +48,7 @@
                     </div>
                     <div class="right">
                         <span tal:condition="allowoverride">Ignore warnings and continue? <input type="checkbox" name="override"/></span> 
-                        <input type="submit" value="Submit"/>
+                        <input type="submit" value="Continue"/>
                     </div>
                     <div class="clear"></div>
                 </form>

@@ -101,7 +101,7 @@
                     </tr>
                 </table>
                 
-                <div class="formsubmission"><input type="submit" value="Upload" /></div>
+                <div class="formsubmission"><input type="submit" value="Continue" /></div>
                 <div class="clear"></div>               
                 <div class="formfooter">* denotes an optional field, all other fields are required</div>
             </div>
