@@ -169,7 +169,6 @@ class TestUploadView(UnitTestCase):
         request.POST['URL'] = "http://somestuff.com"
         request.POST['published'] = "blah"
         request.POST['publication_year'] = "2008"
-        request.POST['terms_of_use'] = "yes"
         
         patch_required.return_value = ['published']
         patch_numeric.return_value = ['publication_year', 'pmid']
@@ -194,7 +193,6 @@ class TestUploadView(UnitTestCase):
         request.POST['URL'] = "http://somestuff.com"
         request.POST['published'] = "yes"
         request.POST['publication_year'] = "2008"
-        request.POST['terms_of_use'] = "yes"
         
         patch_required.return_value = ['published']
         patch_numeric.return_value = ['publication_year', 'pmid']
@@ -215,7 +213,6 @@ class TestUploadView(UnitTestCase):
         request.POST['pmid'] = "1234"
         request.POST['URL'] = "http://somestuff.com"
         request.POST['published'] = "   "
-        request.POST['terms_of_use'] = "yes"
         
         patch_required.return_value = ['published']
         
@@ -227,19 +224,6 @@ class TestUploadView(UnitTestCase):
         self.assertEqual(strings.failure_reason_required_fields_cannot_be_empty % "Published", error)
         self.assertEqual({'pmid':"1234", 'URL':"http://somestuff.com", 'published':""}, field_dict)
 
-    def test_check_required_fields_should_return_false_if_terms_not_accepted(self):
-        request = DummyRequest()
-        request.POST['pmid'] = "1234"
-        request.POST['URL'] = "http://somestuff.com"
-        request.POST['published'] = "   "
-        
-        status, error, field_dict = check_required_fields(request)
-        
-        self.assertEqual(False, status)
-        self.assertEqual(strings.failure_reason_terms_of_use_not_accepted, error)
-        self.assertEqual({'pmid':"1234", 'URL':"http://somestuff.com", 'published':""}, field_dict)
-
-
     @patch('ptmscout.views.upload.upload_metadata.get_numeric_fields')
     @patch('ptmscout.views.upload.upload_metadata.get_enum_fields')
     @patch('ptmscout.views.upload.upload_metadata.get_required_fields')
@@ -249,7 +233,6 @@ class TestUploadView(UnitTestCase):
         request.POST['URL'] = "http://somestuff.com"
         request.POST['published'] = "yes"
         request.POST['publication_year'] = "2008"
-        request.POST['terms_of_use'] = "yes"
         
         patch_required.return_value = ['published']
         patch_numeric.return_value = ['publication_year']

@@ -18,24 +18,23 @@
 			    Loaded: ${experiment.date}<br />
 		    </fieldset>
 		</div>    
-    	<div class = "infobox" tal:condition="confirm=='false'">
+    	<div class = "infobox" tal:condition="not confirm">
     		<div class = "infoheader">Confirm</div>
     		<p class = "infotext">${message}</p>
-    		<table>
-    			<tr>
-    				<td>
-			    		<form id="confirm" method="post" action="">
-			    			<input type="hidden" name="confirm" value="true" />
-			    			<input type="submit" value="Confirm" />
-			    		</form>
-		    		</td>
-		    		<td>
-			    		<a href="${request.application_url}/upload/${session_id}/cancel">Cancel</a>
-		    		</td>
-	    		</tr>
-    		</table>
+    		<form id="confirm" method="post" action="">
+    			<div class="wideform">
+                    <div tal:condition="reason != None" class="errorbox">Error: ${reason}</div>
+	     		    <div class="formagreement">
+                            <input type="checkbox" name="terms_of_use" />
+                            I have read and agree to the <a href="${request.application_url}/terms" target="_blank">terms of use</a> 
+                        </div>
+                        <input type="hidden" name="confirm" value="true" />
+                        <input type="submit" value="Confirm" />
+		    		<a href="${request.application_url}/upload/${session_id}/cancel">Cancel</a>
+		    	</div>
+       		</form>
     	</div>
-    	<div class = "infobox" tal:condition="confirm=='true'">
+    	<div class = "infobox" tal:condition="confirm">
     		<div class = "infoheader">Upload Started</div>
     		<p class = "infotext" tal:content="structure message"></p>
     	</div>

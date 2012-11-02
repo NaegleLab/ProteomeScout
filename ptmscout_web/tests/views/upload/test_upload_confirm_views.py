@@ -33,6 +33,7 @@ class TestUploadStatusView(UnitTestCase):
     def test_start_upload_view_should_start_job_and_display_confirmation(self, patch_getSession, patch_getExperiment, patch_startUpload):
         request = DummyRequest()
         request.POST['confirm'] = "true"
+        request.POST['terms_of_use'] = "yes"
         request.matchdict['id'] = "102"
         request.user = createMockUser()
         
@@ -50,12 +51,39 @@ class TestUploadStatusView(UnitTestCase):
         patch_startUpload.assert_called_once_with(exp)
         
         self.assertEqual('complete', session.stage)
+        self.assertEqual(None, result['reason'])
         self.assertEqual(strings.experiment_upload_started_page_title, result['pageTitle'])
         self.assertEqual(strings.experiment_upload_started_message % (request.application_url + "/account/experiments"), result['message'])
         self.assertEqual(102, result['session_id'])
         self.assertEqual(exp, result['experiment'])
-        self.assertEqual("true", result['confirm'])
+        self.assertEqual(True, result['confirm'])
         
+    @patch('ptmscout.database.experiment.getExperimentById')
+    @patch('ptmscout.database.upload.getSessionById')
+    def test_start_upload_view_should_fail_if_terms_not_accepted(self, patch_getSession, patch_getExperiment):
+        request = DummyRequest()
+        request.matchdict['id'] = "102"
+        request.user = createMockUser() 
+        request.POST['confirm'] = "true"
+        
+        session = createMockSession(request.user, sid=102, experiment_id=26, stage='confirm')
+        exp = createMockExperiment(26, 0, None, 'preload')
+        
+        patch_getSession.return_value=session
+        patch_getExperiment.return_value = exp
+        
+        result = upload_confirm_view(request)
+        
+        patch_getSession.assert_called_once_with(102, request.user)
+        patch_getExperiment.assert_called_once_with(26, request.user, False)
+        
+        self.assertEqual(strings.failure_reason_terms_of_use_not_accepted, result['reason'])
+        self.assertEqual(exp, result['experiment'])
+        self.assertEqual(strings.experiment_upload_confirm_page_title, result['pageTitle'])
+        self.assertEqual(strings.experiment_upload_confirm_message, result['message'])
+        self.assertEqual(102, result['session_id'])
+        self.assertEqual(False, result['confirm'])
+    
     @patch('ptmscout.database.experiment.getExperimentById')
     @patch('ptmscout.database.upload.getSessionById')
     def test_start_upload_view_should_get_confirmation(self, patch_getSession, patch_getExperiment):
@@ -73,11 +101,12 @@ class TestUploadStatusView(UnitTestCase):
         
         patch_getSession.assert_called_once_with(102, request.user)
         patch_getExperiment.assert_called_once_with(26, request.user, False)
+        self.assertEqual(None, result['reason'])
         self.assertEqual(exp, result['experiment'])
         self.assertEqual(strings.experiment_upload_confirm_page_title, result['pageTitle'])
         self.assertEqual(strings.experiment_upload_confirm_message, result['message'])
         self.assertEqual(102, result['session_id'])
-        self.assertEqual("false", result['confirm'])
+        self.assertEqual(False, result['confirm'])
         
         
         
@@ -125,6 +154,7 @@ class IntegrationTestUploadStatusView(IntegrationTestCase):
         result = self.ptmscoutapp.get("/upload/%d/confirm" % session.id, status=200)
                 
         result.mustcontain(strings.experiment_upload_confirm_message)
+        result.form.set('terms_of_use', True)
         result = result.form.submit()
         
         result.mustcontain(strings.experiment_upload_started_message % ("http://localhost/account/experiments"))

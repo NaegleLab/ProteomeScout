@@ -121,11 +121,6 @@ def check_required_fields(request):
         if(isinstance(field_dict[field], str)):
             field_dict[field] = field_dict[field].strip()
 
-    if('terms_of_use' not in field_dict):
-        return False, strings.failure_reason_terms_of_use_not_accepted, field_dict
-    
-    del field_dict['terms_of_use']
-    
     for field in req_fields:
         if field not in field_dict or field_dict[field] == "":
             return False, strings.failure_reason_required_fields_cannot_be_empty % field_name_dict[field], field_dict

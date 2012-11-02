@@ -101,11 +101,6 @@
                     </tr>
                 </table>
                 
-                <div class="formagreement">
-                    <input type="checkbox" name="terms_of_use" />
-                    I have read and agree to the <a href="${request.application_url}/terms" target="_blank">terms of use</a> 
-                </div>
-                
                 <div class="formsubmission"><input type="submit" value="Upload" /></div>
                 <div class="clear"></div>               
                 <div class="formfooter">* denotes an optional field, all other fields are required</div>

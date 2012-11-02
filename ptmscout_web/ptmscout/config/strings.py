@@ -73,7 +73,7 @@ experiment_upload_warning_full_dupe = "Warning: Experiment contains multiple dat
 experiment_upload_option_no_run_column_assign_in_order  = "Assign run numbers in order of occurrence"
 
 experiment_upload_confirm_page_title = "Confirm Submission"
-experiment_upload_confirm_message = "Required experiment information is now complete. Are you sure you wish to proceed with the upload? Pressing cancel will delete this upload session, you may start a new one later."
+experiment_upload_confirm_message = "Required experiment information is now complete. Are you sure you wish to proceed with the upload? Please review and accept the terms of use below. Pressing cancel will remove this upload session, you may start a new one later."
 
 experiment_upload_started_page_title = "Upload Started"
 experiment_upload_started_message = \
