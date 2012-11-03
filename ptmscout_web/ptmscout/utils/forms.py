@@ -33,6 +33,9 @@ class FormSchema(object):
         self.required_fields = set()
         self.conditional_fields = {}
 
+    def set_field(self, ref, value):
+        self.form_values[ref] = value
+
     def get_form_value(self, ref):
         value = self.form_values[ref]
         if value == None:

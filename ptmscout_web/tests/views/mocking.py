@@ -1,7 +1,8 @@
 from mock import Mock
 from ptmscout.utils import crypto
 from ptmscout.database.user import User
-from ptmscout.database.experiment import Experiment, ExperimentData
+from ptmscout.database.experiment import Experiment, ExperimentData,\
+    ExperimentCondition
 from ptmscout.database.permissions import Permission
 from ptmscout.database.protein import Protein, GeneOntology, Domain
 import random
@@ -64,6 +65,16 @@ def createMockSessionColumn(col_num, tp, session_id, label='', scid=random.randi
     mock.type = tp
     mock.label = label
     mock.column_number = col_num
+    return mock
+
+def createMockCondition(t, value, eid=random.randint(0,100000), experiment_id=None):
+    mock = Mock(spec=ExperimentCondition)
+    
+    mock.id = eid
+    mock.experiment_id = experiment_id
+    mock.type = t
+    mock.value = value
+    
     return mock
 
 def createMockExperiment(eid=random.randint(0,100000), public=0, parent_id=None, status='loaded'):

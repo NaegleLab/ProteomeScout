@@ -5,7 +5,7 @@ from ptmscout.utils import forms
 from mock import Mock, patch
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockSession, createMockUser,\
-    createMockExperiment
+    createMockExperiment, createMockCondition
 from ptmscout.views.upload.upload_conditions import upload_conditions_view,\
     get_form_schema, MAX_VALUES, CONDITION_TYPES, save_form_data
 from pyramid.httpexceptions import HTTPFound
@@ -27,8 +27,10 @@ class TestUploadConditionsView(UnitTestCase):
         request.POST['10_type'] = "environment"
         request.POST['10_value'] = "v10"
         
-        schema, added_fields = get_form_schema(request)
+        
         exp = createMockExperiment()
+        exp.conditions = []
+        schema, added_fields = get_form_schema(exp, request)
         
         save_form_data(exp, schema, added_fields)
         
@@ -38,7 +40,37 @@ class TestUploadConditionsView(UnitTestCase):
         exp.addExperimentCondition.assert_any_call("environment", "v10")
         
         exp.saveExperiment.assert_called_once_with()
+    
+    def test_get_form_schema_should_get_values_from_experiment_if_not_submitted(self):
+        request = DummyRequest()
         
+        exp = createMockExperiment()
+        c1 = createMockCondition('f0', 'v0')
+        c2 = createMockCondition('f1', 'v1')
+        c3 = createMockCondition('f2', 'v2')
+        exp.conditions = [c1,c2,c3]
+        
+        schema, added_fields = get_form_schema(exp, request)
+        
+        
+        for i in xrange(0, MAX_VALUES):
+            self.assertIn('%d_type' % (i), schema.enum_fields)
+            self.assertEqual(CONDITION_TYPES, schema.enum_values['%d_type' % (i)])
+            self.assertEqual(forms.FormSchema.SELECT, schema.field_types['%d_type' % (i)])
+            self.assertEqual(forms.FormSchema.TEXT, schema.field_types['%d_value' % (i)])
+            
+            parent, _ = schema.conditional_fields['%d_value' % (i)]
+            self.assertEqual('%d_type' % (i),parent)
+            
+        self.assertEqual("f0", schema.form_values['0_type'])
+        self.assertEqual("v0", schema.form_values['0_value'])
+        self.assertEqual("f1", schema.form_values['1_type'])
+        self.assertEqual("v1", schema.form_values['1_value'])
+        self.assertEqual("f2", schema.form_values['2_type'])
+        self.assertEqual("v2", schema.form_values['2_value'])
+        
+        self.assertEqual(MAX_VALUES * 2, len(schema.field_names))
+        self.assertEqual(set([0,1,2]), added_fields)
     
     def test_get_form_schema_should_create_form_and_set_values(self):
         request = DummyRequest()
@@ -51,7 +83,8 @@ class TestUploadConditionsView(UnitTestCase):
         request.POST['2_value'] = "v2"
         request.POST['10_value'] = "v10"
         
-        schema, added_fields = get_form_schema(request)
+        exp = createMockExperiment()
+        schema, added_fields = get_form_schema(exp, request)
         
         
         for i in xrange(0, MAX_VALUES):
@@ -108,14 +141,14 @@ class TestUploadConditionsView(UnitTestCase):
         mockValidator.validate.assert_called_once_with()
         
         patch_save_form_data.assert_called_once_with(exp, mockSchema, set([1,2,3]))
-        patch_getSchema.assert_called_once_with(request)
+        patch_getSchema.assert_called_once_with(exp, request)
         patch_getSession.assert_called_once_with(session.id, user)
         
-    
+    @patch('ptmscout.database.experiment.getExperimentById')
     @patch('ptmscout.utils.forms.FormValidator')    
     @patch('ptmscout.database.upload.getSessionById')
     @patch('ptmscout.views.upload.upload_conditions.get_form_schema')
-    def test_view_should_validate_on_submission_show_errors(self, patch_getSchema, patch_getSession, patch_validator):
+    def test_view_should_validate_on_submission_show_errors(self, patch_getSchema, patch_getSession, patch_validator, patch_getExperiment):
         mockValidator = patch_validator.return_value
         mockValidator.validate.return_value = ["some errors"]
         
@@ -123,7 +156,9 @@ class TestUploadConditionsView(UnitTestCase):
         patch_getSchema.return_value = mockSchema, set([1,2,3])
         
         user = createMockUser()
-        session = createMockSession(user)
+        exp = createMockExperiment()
+        patch_getExperiment.return_value = exp
+        session = createMockSession(user, experiment_id=exp.id)
         
         patch_getSession.return_value = session
         request = DummyRequest()
@@ -134,7 +169,7 @@ class TestUploadConditionsView(UnitTestCase):
         result = upload_conditions_view(request)
         
         mockValidator.validate.assert_called_once_with()
-        patch_getSchema.assert_called_once_with(request)
+        patch_getSchema.assert_called_once_with(exp, request)
         patch_getSession.assert_called_once_with(session.id, user)
         
         self.assertEqual(set([1,2,3]), result['added_fields'])
@@ -144,15 +179,17 @@ class TestUploadConditionsView(UnitTestCase):
         self.assertEqual(mockSchema, result['formrenderer'].schema)
         
         
-    
+    @patch('ptmscout.database.experiment.getExperimentById')
     @patch('ptmscout.database.upload.getSessionById')
     @patch('ptmscout.views.upload.upload_conditions.get_form_schema')    
-    def test_view_should_show_form(self, patch_getSchema, patch_getSession):
+    def test_view_should_show_form(self, patch_getSchema, patch_getSession, patch_getExperiment):
         mockSchema = Mock(spec=forms.FormSchema)
         patch_getSchema.return_value = mockSchema, set()
         
         user = createMockUser()
-        session = createMockSession(user)
+        exp = createMockExperiment()
+        patch_getExperiment.return_value = exp
+        session = createMockSession(user, experiment_id=exp.id)
         
         patch_getSession.return_value = session
         request = DummyRequest()
@@ -161,7 +198,7 @@ class TestUploadConditionsView(UnitTestCase):
         
         result = upload_conditions_view(request)
         
-        patch_getSchema.assert_called_once_with(request)
+        patch_getSchema.assert_called_once_with(exp, request)
         patch_getSession.assert_called_once_with(session.id, user)
         
         self.assertEqual(set(), result['added_fields'])

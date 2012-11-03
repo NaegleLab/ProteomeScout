@@ -16,8 +16,14 @@ def save_form_data(experiment, schema, added_fields):
         experiment.addExperimentCondition(t, v)
         
     experiment.saveExperiment()
+    
+def parse_fields_from_experiment(exp, schema):
+    for i, cond in enumerate(exp.conditions):
+        schema.set_field('%d_type' % (i), cond.type)
+        schema.set_field('%d_value' % (i), cond.value)
 
-def get_form_schema(request):
+def get_form_schema(exp, request):
+    submitted = webutils.post(request, 'submitted', False) == "true"
     schema = forms.FormSchema()
     
     for i in xrange(0, MAX_VALUES):
@@ -28,6 +34,8 @@ def get_form_schema(request):
         schema.set_field_required_condition(value_field, type_field, lambda type_value: type_value != '' and type_value != None)
     
     schema.parse_fields(request)
+    if not submitted:
+        parse_fields_from_experiment(exp, schema)
     
     added_fields = set()
     
@@ -43,18 +51,19 @@ def get_form_schema(request):
 @view_config(route_name='upload_conditions', renderer='ptmscout:/templates/upload/upload_conditions.pt')
 def upload_conditions_view(request):
     submitted = webutils.post(request, 'submitted', False) == "true"
-    schema, added_fields = get_form_schema(request)
-    renderer = forms.FormRenderer(schema)
     
     session_id = int(request.matchdict['id'])
     session = upload.getSessionById(session_id, request.user)
+    exp = experiment.getExperimentById(session.experiment_id, request.user, False)
+    
+    schema, added_fields = get_form_schema(exp, request)
+    renderer = forms.FormRenderer(schema)
     
     errors = []
     
     if submitted:
         errors = forms.FormValidator(schema).validate()
         if len(errors) == 0:
-            exp = experiment.getExperimentById(session.experiment_id, request.user, False)
             save_form_data(exp, schema, added_fields)
             return HTTPFound(request.application_url + "/upload/%d/confirm" % (session_id))
     

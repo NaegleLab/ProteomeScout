@@ -174,8 +174,17 @@ class Experiment(Base):
         
         allowed_users = [p.user_id for p in self.permissions]
         return user.id in allowed_users
-        
+    
+    def hasExperimentCondition(self, ctype, value):
+        for cond in self.conditions:
+            if cond.type == ctype and cond.value == value:
+                return True    
+        return False
+    
     def addExperimentCondition(self, ctype, value):
+        if self.hasExperimentCondition(ctype, value):
+            return 
+        
         condition = ExperimentCondition()
         condition.type = ctype
         condition.value = value
