@@ -20,15 +20,15 @@ Feature: Dataset Conditions UI
             | H          | cell         | HS578T                         |
             | H          | cell         | HSG                            |
             | H          | cell         | HT1080                         |
-            | b          | tissue       | BM-CD105+Epithelial cells      |
+            | b          | tissue       | BM-CD105+Endothelial           |
             | b          | tissue       | BM-CD33+Myeloid                |
-            | b          | tissue       | BM-CD34_                       |
-            | b          | tissue       | BM-CD70+EarlyErythroid         |
+            | b          | tissue       | BM-CD34+                       |
+            | b          | tissue       | BM-CD71+EarlyErythroid         |
             | b          | tissue       | Whole Blood                    |
             | b          | tissue       | Whole Brain                    |
             | b          | tissue       | Bronchial Epithelial Cells     |
             | b          | tissue       | Fetal Brain                    |
-            | b          | tissue       | Oflactory Bulb                 |
+            | b          | tissue       | Olfactory Bulb                 |
             | b          | tissue       | PB-CD19+Bcells                 |
             | b          | tissue       | Bone Marrow                    |
             | b          | tissue       | Lymphoma Burkitts Daudi        |

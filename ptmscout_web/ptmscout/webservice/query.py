@@ -11,6 +11,6 @@ def call_get_pubmed_record_by_id(request):
 @view_config(route_name='field_fetch', renderer='json', permission='private')
 def get_autocomplete_for_field(request):
     field_name = request.matchdict['field']
-    field_values = experiment.getValuesForField(field_name, request.user)
+    field_values = experiment.getValuesForField(field_name)
     
     return {field_name:field_values}

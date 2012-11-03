@@ -1,6 +1,7 @@
 from behave import *
 from ptmscout.database import upload
 from ptmscout.config import strings
+from tests.behave.steps.assertions import assertContains
 
 @given(u'a user is selecting experimental conditions for a dataset')
 def open_experiment_conditions_page(context):
@@ -53,12 +54,15 @@ def check_autocomplete_function(context):
     
     for field in field_names:
         json = context.ptmscoutapp.get("/webservice/autocomplete/%s" % (field)).json
-        auto_completions[field] = json[field]
+        auto_completions[field] = []
+        
+        for item in json[field]:
+            auto_completions[field].append(item.lower())
         
     for row in context.table:
         field = row['field_name']
         suggestion = row['suggestion']
         
-        assert suggestion in auto_completions[field]
-    
+        if not suggestion.lower() in auto_completions[field]:
+            assert False, "%s not found in list" % (suggestion)
     

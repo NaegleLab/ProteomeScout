@@ -8,6 +8,7 @@ from sqlalchemy.sql.expression import null, or_, and_
 import datetime
 from ptmscout.utils import celeryutils
 from sqlalchemy.orm import relationship
+import logging
 
 class ExperimentCondition(Base):
     __tablename__ = 'experiment_condition'
@@ -234,21 +235,8 @@ def getExperimentTree(current_user):
     
     return experiment_tree
     
-def getValuesForField(field_name, current_user):
-    exp_ids = [ exp.id for exp in current_user.allExperiments() ]
+def getValuesForField(field_name):
+    results = DBSession.query(ExperimentCondition).filter(ExperimentCondition.type==field_name).all()
     
-    query = DBSession.query(ExperimentCondition).outerjoin(Experiment)
-    if len(exp_ids) > 0:
-        results = query.filter(
-                            and_(ExperimentCondition.type==field_name, 
-                                 or_(ExperimentCondition.experiment_id==null,
-                                     Experiment.public==1, 
-                                     Experiment.id.in_(exp_ids)))).all()
-    else:
-        results = query.filter(
-                            and_(ExperimentCondition.type==field_name, 
-                                 or_(ExperimentCondition.experiment_id==null,
-                                     Experiment.public==1))).all()
-    
-    return [ r.value for r in results ]
+    return sorted([ r.value for r in results ])
 
