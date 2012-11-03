@@ -10,6 +10,8 @@ CONDITION_TYPES = \
      ('drug', "Drug"), ('stimulus', "Stimulus"), ('environment', "Environmental Condition")]
 
 def save_form_data(experiment, schema, added_fields):
+    experiment.conditions = []
+    
     for i in added_fields:
         t = schema.get_form_value('%d_type' % (i))
         v = schema.get_form_value('%d_value' % (i))

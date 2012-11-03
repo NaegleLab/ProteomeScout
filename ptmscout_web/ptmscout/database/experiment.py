@@ -74,8 +74,7 @@ class Experiment(Base):
     status = Column(Enum('preload','loading','loaded'), default='preload')
     submitter_id = Column(Integer(10), ForeignKey('users.id'))
     
-    
-    conditions = relationship("ExperimentCondition")
+    conditions = relationship("ExperimentCondition", cascade="all,delete-orphan")
     
     def __init__(self):
         self.date = datetime.datetime.now()
