@@ -9,6 +9,7 @@ class FormLiteral(object):
     def __html__(self):
         return self.html
 
+field_not_empty_test = lambda field_value: field_value != None and field_value != ''
 
 class FormSchema(object):
     CHECKBOX=1
@@ -17,6 +18,7 @@ class FormSchema(object):
     SELECT=4
     RADIO=5
     PASSWORD=6
+    FILE=7
     
     def __init__(self):
         self.form_values = {}
@@ -40,20 +42,19 @@ class FormSchema(object):
         value = self.form_values[ref]
         if value == None:
             value = self.field_defaults[ref]
-        else:
-            value = value.strip()
         return value
     
     def field_was_attempted(self, field_ref):
         field_value = self.form_values[field_ref]
-        if field_value != None:
-            field_value = field_value.strip()
         return not (field_value == None or field_value == '')
 
     def parse_fields(self, request):
         for ref in self.field_names:
-            self.form_values[ref] = webutils.post(request, ref, None)
-    
+            v = webutils.post(request, ref, None)
+            if v != None and self.field_types[ref] != FormSchema.FILE:
+                v = v.strip()
+            self.form_values[ref] = v
+
     
     def set_field_required_condition(self, ref, parent, condition):
         self.conditional_fields[ref] = (parent, condition)
@@ -70,7 +71,10 @@ class FormSchema(object):
     def add_numeric_field(self, ref, name, maxlen=None, default=None):
         self.field_names[ref] = name
         self.numeric_fields.add(ref)
-        self.field_opts[ref] = (maxlen,)
+        
+        width=None if maxlen==None else maxlen+1
+        self.field_opts[ref] = (maxlen, width,)
+        
         self.field_defaults[ref] = default
         self.field_types[ref] = FormSchema.TEXT
     
@@ -106,6 +110,11 @@ class FormSchema(object):
         self.field_defaults[ref] = default
         self.field_types[ref] = FormSchema.SELECT
 
+    def add_file_upload_field(self, ref, name):
+        self.field_names[ref] = name
+        self.field_types[ref] = FormSchema.FILE
+
+
 class FormRenderer(object):
     def __init__(self, schema):
         self.schema = schema
@@ -130,13 +139,16 @@ class FormRenderer(object):
             return self.__render_radio(ref, id_str, cls_str)
         if field_type == FormSchema.PASSWORD:
             return self.__render_password(ref, id_str, cls_str)
-    
+        if field_type == FormSchema.FILE:
+            return self.__render_file(ref, id_str, cls_str)
     
     def __render_select(self, ref, id_str, cls_str):
         items = []
-        items.append('<select %s %s name="%s">\n' % (id_str, cls_str, ref))
+        items.append('<select %s %s name="%s">' % (id_str, cls_str, ref))
         
         cur_value = self.schema.get_form_value(ref)
+        if cur_value == None:
+            cur_value = ''
         
         valid_values = [('','')] + self.schema.enum_values[ref]
         for (value, proper_name) in valid_values:
@@ -159,9 +171,9 @@ class FormRenderer(object):
         cur_value = self.schema.get_form_value(ref)
         for (value, proper_name) in self.schema.enum_values[ref]:
             selected = 'checked' if cur_value == value else ''
-            items.append('<input type="radio" %s %s name="%s" value="%s" %s /> %s' % (id_str, cls_str, ref, value, selected, proper_name))
+            items.append(FormLiteral('<input type="radio" %s %s name="%s" value="%s" %s /> %s' % (id_str, cls_str, ref, value, selected, proper_name)))
         
-        return FormLiteral("\n".join(items))
+        return items
         
     
     def __render_text(self, ref, id_str, cls_str):
@@ -193,6 +205,10 @@ class FormRenderer(object):
         maxlen_str = '' if maxlen == None else 'maxlength="%d"' % (maxlen)
         
         html = '<input type="password" %s %s %s %s name="%s" %s />' % (id_str, cls_str, size_str, maxlen_str, ref)
+        return FormLiteral(html)
+    
+    def __render_file(self, ref, id_str, cls_str):
+        html='<input %s %s type="file" name="%s" />' % (id_str, cls_str, self.schema.field_names[ref])
         return FormLiteral(html)
 
 
