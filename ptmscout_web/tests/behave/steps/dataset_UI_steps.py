@@ -65,7 +65,7 @@ def access_data_upload_form(context):
     
 @when(u'some amino acids in lower case do not match any species possibilities for that type of modification')
 def load_data_file_with_bad_mod_for_amino_acid(context):
-    context.result = context.active_user.load_datafile('datasetLoad_badAminoAcid.txt', context.form).follow()
+    context.result = context.active_user.load_datafile('datasetUI_badAminoAcid.txt', context.form).follow()
 
 @when(u'identical peptide/protein pairs exist with different data and no explicit run column')
 def load_data_file_with_no_run_column(context):
@@ -73,15 +73,15 @@ def load_data_file_with_no_run_column(context):
 
 @when(u'the dataset exists and new entries are being appended')
 def load_data_file_when_appending(context):
-    context.result = context.active_user.load_datafile('datasetLoad_correctDatasetNoHeader.txt', context.form, load_type='append', parent_experiment=str(context.preexisting_exp)).follow()
+    context.result = context.active_user.load_datafile('datasetUI_correctDatasetNoHeader.txt', context.form, load_type='append', parent_experiment=str(context.preexisting_exp)).follow()
 
 @when(u'the user wants the dataset to replace another dataset')
 def load_data_file_when_replacing(context):
-    context.result = context.active_user.load_datafile('datasetLoad_correctDatasetNoHeader.txt', context.form, load_type='reload', parent_experiment=str(context.preexisting_exp)).follow()
+    context.result = context.active_user.load_datafile('datasetUI_correctDatasetNoHeader.txt', context.form, load_type='reload', parent_experiment=str(context.preexisting_exp)).follow()
 
 @when(u'the user wants the dataset to extend another dataset')
 def load_data_file_when_extending(context):
-    context.result = context.active_user.load_datafile('datasetLoad_correctDatasetNoHeader.txt', context.form, load_type='extension', parent_experiment=str(context.preexisting_exp), change_description="Some set of changes are happening").follow()
+    context.result = context.active_user.load_datafile('datasetUI_correctDatasetNoHeader.txt', context.form, load_type='extension', parent_experiment=str(context.preexisting_exp), change_description="Some set of changes are happening").follow()
 
 
 @when(u'non-alphabetic characters appear in some of the entries')

@@ -39,7 +39,7 @@
                                 </td>
                             </tr>
                             <tr tal:repeat="(r, row) enumerate(data_rows)">
-                                <td class="cell header" tal:content="r"></td>
+                                <td class="cell header" tal:content="r+1"></td>
                                 <td tal:repeat="(c,cell) enumerate(row)" tal:attributes="class 'cell c%d'%(c)">
                                     <span  tal:content="cell"></span>
                                 </td>
