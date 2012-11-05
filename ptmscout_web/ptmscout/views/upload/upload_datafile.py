@@ -2,7 +2,7 @@ from pyramid.view import view_config
 import time
 from ptmscout.config import settings, strings
 import os
-from ptmscout.utils import webutils
+from ptmscout.utils import webutils, forms
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from ptmscout.database import upload
 import logging
@@ -28,14 +28,6 @@ def create_session(request, exp_file):
     
     return session.id
     
-def verify_data_file(exp_file):
-    ifile = open(os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, exp_file), 'rb')
-    
-    header = ifile.readline()
-    
-    return None if header.count("\t") >= 3 else strings.failure_reason_experiment_file_not_enough_columns 
-    
-
 def save_data_file(request):
     exp_file = "experiment_data" + str(time.time())
     
@@ -52,84 +44,46 @@ def save_data_file(request):
     
     os.system("mac2unix -q %s" % os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, exp_file))
     os.system("dos2unix -q %s" % os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, exp_file))
-    
-    error = verify_data_file(exp_file)
-    
-    if error == None:
-        return True, exp_file
-    
-    return False, error
 
+    return exp_file
 
-def get_required_fields(request):
-    req_fields = ['data_file']
-    if (webutils.post(request, 'load_type', "") != "new"):
-        req_fields.append('parent_experiment')
+def create_schema(request, users_experiments):
+    schema = forms.FormSchema()
     
-    if (webutils.post(request, 'load_type', "") == "extension"):
-        req_fields.append('change_description')
-        
-    return req_fields
-
-def check_required_fields(request, users_experiments):
-    field_name_dict = {'parent_experiment': "Parent Experiment",
-                       'load_type': "Load Type",
-                       'change_description': "Change Description",
-                       'data_file': "Input Data File"}
+    parent_experiment_options = [(str(e.id), e.name) for e in users_experiments]
     
-    field_dict = {}
-    for field in request.POST:
-        field_dict[field] = webutils.post(request, field, "")
-        if(isinstance(field_dict[field], str)):
-            field_dict[field] = field_dict[field].strip()
+    schema.add_radio_field('load_type', "Load Type", [('new',"New"),('append',"Append"),('reload',"Reload"),('extension',"Extension")])
+    schema.add_select_field('parent_experiment', 'Parent Experiment', parent_experiment_options)
+    schema.add_textarea_field('change_description', "Change Description", 43, 5)
+    schema.add_file_upload_field('data_file', 'Input Data File')
     
-    req_fields = get_required_fields(request)
+    schema.set_field_required_condition('change_description', 'load_type', lambda pval: pval == "extension")
+    schema.set_field_required_condition('parent_experiment', 'load_type', lambda pval: pval != "new")
+    schema.set_required_field('load_type')
+    schema.set_required_field('data_file')
     
-    for field in req_fields:
-        if field not in field_dict or field_dict[field] == "":
-            return False, strings.failure_reason_required_fields_cannot_be_empty % field_name_dict[field], field_dict
-        
-    valid_load_types = set(['new','append','reload','extension'])
-    experiment_ids = set([str(e.id) for e in users_experiments])
-    if field_dict['load_type'] not in valid_load_types or \
-        (field_dict['load_type'] != 'new' and field_dict['parent_experiment'] not in experiment_ids):
-        return False, strings.failure_reason_field_value_not_valid % field_name_dict['parent_experiment'], field_dict
+    schema.parse_fields(request)
     
-    return True, None, field_dict
+    return schema
 
     
-    
-@view_config(route_name='upload', renderer='ptmscout:/templates/upload/upload_datafile.pt')
+@view_config(route_name='upload', renderer='ptmscout:/templates/upload/upload_datafile.pt', permission='private')
 def upload_data_file(request):
-    submitted = webutils.post(request, 'submitted', "false")
-    
-    if(request.user == None):
-        raise HTTPForbidden()
-    
-    users_experiments = [ p.experiment for p in request.user.permissions if p.access_level=='owner' ]    
-    dict_exps = [ webutils.object_to_dict(exp) for exp in users_experiments ]
-    reason = None
-    
-    
-    if submitted == "true":
-        success, reason, form_fields = check_required_fields(request, users_experiments)
+    submitted = webutils.post(request, 'submitted', "false") == "true"
+    users_experiments = [ p.experiment for p in request.user.permissions if p.access_level=='owner' ]
         
-        if success:
-            success, result = save_data_file(request)
-            
-            if success:
-                session_id = create_session(request, result)
-                return HTTPFound(request.application_url + "/upload/%d/config" % (session_id))
-            else:
-                reason = result
-    else:
-        form_fields = {'load_type':"", 'parent_experiment':"", 'change_description':""}
+    errors = []
+    schema = create_schema(request, users_experiments)
     
-    if 'data_file' in form_fields:
-        del form_fields['data_file']
-    
+    if submitted:
+        errors = forms.FormValidator(schema).validate()
+        
+        if len(errors) == 0:
+            output_file = save_data_file(request)
+            session_id = create_session(request, output_file)
+            return HTTPFound(request.application_url + "/upload/%d/config" % (session_id))
+
     return {'pageTitle': strings.upload_page_title,
             'header': strings.upload_page_header,
-            'user_experiments': dict_exps,
-            'formfields': form_fields,
-            'reason':reason}
+            'formrenderer': forms.FormRenderer(schema),
+            'errors':errors}

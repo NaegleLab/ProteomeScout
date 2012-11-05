@@ -12,31 +12,32 @@
         <form action="" method="post" enctype="multipart/form-data">
             <input type="hidden" value="true" name="submitted" />
             <div class="wideform">
-                <div tal:condition="reason != None" class="errorbox">Error: ${reason}</div>
+                <div class="error_display" tal:condition="len(errors)>0">
+                    <ul>
+                        <li tal:repeat="error errors" tal:content="error"></li>
+                    </ul>
+                </div>
                 <div class="formcategory">Experiment Upload Type</div>
                 <table>
                     <tr>
                         <td class="fieldname">Upload type:</td>
                         <td>
-                            <input id="new_dataset" type="radio" name="load_type" value="new" tal:attributes="checked 'yes' if formfields['load_type'] == 'new' else default"/>New
-                            <input id="append_dataset" type="radio" name="load_type" value="append" tal:attributes="checked 'yes' if formfields['load_type'] == 'append' else default"/>Append
-                            <input id="reload_dataset" type="radio" name="load_type" value="reload" tal:attributes="checked 'yes' if formfields['load_type'] == 'reload' else default"/>Reload
-                            <input id="extend_dataset" type="radio" name="load_type" value="extension" tal:attributes="checked 'yes' if formfields['load_type'] == 'extension' else default"/>Extension
+                            ${formrenderer.render('load_type', id_='new_dataset')}
+                            ${formrenderer.render('load_type', id_='append_dataset')}
+                            ${formrenderer.render('load_type', id_='reload_dataset')}
+                            ${formrenderer.render('load_type', id_='extend_dataset')}
                         </td>
                     </tr>
                     <tr id="parent_exp">
                         <td class="fieldname">Parent Experiment:</td>
                         <td>
-                            <select id="expselect" class="stretch" name="parent_experiment">
-                                <option value=""></option>
-                                <option tal:repeat="exp user_experiments" tal:attributes="value exp.id; selected 'yes' if formfields['parent_experiment'] == str(exp.id) else default" tal:content="exp.name"></option>
-                            </select>
+                            ${formrenderer.render('parent_experiment', id_='expselect', class_='stretch')}
                         </td>
                     </tr>
                     <tr id="change_desc">
                         <td class="fieldname">Change description:</td>
                         <td>
-                            <textarea cols="43" rows="5" name="change_description" tal:content="formfields['change_description']"></textarea>
+                            ${formrenderer.render('change_description')}
                         </td>
                     </tr>
                 </table>
@@ -45,7 +46,7 @@
                 <table>
                     <tr>
                         <td class="fieldname">Data input file: </td>
-                        <td > <input type="file" name="data_file" /> </td>
+                        <td > ${formrenderer.render('data_file')} </td>
                     </tr>
                 </table>
 

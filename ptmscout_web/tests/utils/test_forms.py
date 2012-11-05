@@ -16,7 +16,7 @@ class FormUtilsTestCase(unittest.TestCase):
         self.form_schema.add_select_field('published', 'Published', [('no', 'No'),('yes', 'Yes')])
         self.form_schema.add_numeric_field('publication_year', 'Publication Year', 4)
         
-        self.form_schema.add_textarea_field('description', 'Description', 5, 50)
+        self.form_schema.add_textarea_field('description', 'Description', 50, 5)
         self.form_schema.add_radio_field('load_type', 'Load Type', [('new', 'New'),('reload', 'Reload')], 'new')
         
         self.form_schema.set_required_field('published')
@@ -42,7 +42,8 @@ class FormUtilsTestCase(unittest.TestCase):
         self.assertEqual('<input type="text"   size="5" maxlength="4" name="publication_year" value="" />', renderer.render('publication_year').__html__())
         self.assertEqual('<textarea cols="50" rows="5" name="description">stuff</textarea>', renderer.render('description').__html__())
         
-        new_radio, reload_radio = renderer.render('load_type')
+        new_radio = renderer.render('load_type')
+        reload_radio = renderer.render('load_type')
         
         self.assertEqual('<input type="radio"   name="load_type" value="new"  /> New', new_radio.__html__())
         self.assertEqual('<input type="radio"   name="load_type" value="reload" checked /> Reload', reload_radio.__html__())

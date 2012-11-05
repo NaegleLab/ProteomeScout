@@ -120,12 +120,14 @@ class FormSchema(object):
 
     def add_file_upload_field(self, ref, name):
         self.field_names[ref] = name
+        self.field_defaults[ref] = ''
         self.field_types[ref] = FormSchema.FILE
 
 
 class FormRenderer(object):
     def __init__(self, schema):
         self.schema = schema
+        self.radio_indexes = {}
     
     def render(self, ref, id_=None, class_=None):
         if ref not in self.schema.field_names:
@@ -174,15 +176,19 @@ class FormRenderer(object):
         return FormLiteral('<input type="checkbox" %s %s name="%s" %s /> %s' % (id_str, cls_str, ref, checked, proper_name))
     
     def __render_radio(self, ref, id_str, cls_str):
-        items = []
+        if ref not in self.radio_indexes:
+            self.radio_indexes[ref] = 0
         
+        index = self.radio_indexes[ref]
         cur_value = self.schema.get_form_value(ref)
-        for (value, proper_name) in self.schema.enum_values[ref]:
+        
+        if index < len(self.schema.enum_values[ref]):
+            (value, proper_name) = self.schema.enum_values[ref][index]
             selected = 'checked' if cur_value == value else ''
-            items.append(FormLiteral('<input type="radio" %s %s name="%s" value="%s" %s /> %s' % (id_str, cls_str, ref, value, selected, proper_name)))
+            self.radio_indexes[ref] = index+1
+            return FormLiteral('<input type="radio" %s %s name="%s" value="%s" %s /> %s' % (id_str, cls_str, ref, value, selected, proper_name))
         
-        return items
-        
+        return FormLiteral('')
     
     def __render_text(self, ref, id_str, cls_str):
         value = self.schema.get_form_value(ref)
@@ -203,7 +209,7 @@ class FormRenderer(object):
             
         width, height = self.schema.field_opts[ref]
         
-        html = '<textarea cols="%d" rows="%d" name="%s">%s</textarea>' % (height, width, ref, cgi.escape(value))
+        html = '<textarea cols="%d" rows="%d" name="%s">%s</textarea>' % (width, height, ref, cgi.escape(value))
         return FormLiteral(html)
     
     def __render_password(self, ref, id_str, cls_str):
@@ -216,7 +222,7 @@ class FormRenderer(object):
         return FormLiteral(html)
     
     def __render_file(self, ref, id_str, cls_str):
-        html='<input %s %s type="file" name="%s" />' % (id_str, cls_str, self.schema.field_names[ref])
+        html='<input %s %s type="file" name="%s" />' % (id_str, cls_str, ref)
         return FormLiteral(html)
 
 
