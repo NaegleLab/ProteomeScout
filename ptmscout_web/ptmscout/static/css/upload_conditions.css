@@ -23,13 +23,6 @@
 	display:none;
 }
 
-.error_display {
-    margin:10px;
-    padding:10px;
-    border: solid 1px black;
-    background:#FF88AA;
-}
-
 .formtitle {
 	font-weight:bold;
 	font-size:18px;

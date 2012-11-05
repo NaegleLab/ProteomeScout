@@ -12,70 +12,67 @@
             <div class="hidden" id="pubmed_query_url">${request.application_url}/webservice/pubmed/</div>
             <input type="hidden" value="true" name="submitted" />
             <div class="wideform">
-                <div tal:condition="reason != None" class="errorbox">Error: ${reason}</div>
+                <div class="error_display" tal:condition="len(errors)>0">
+	                <ul>
+	                    <li tal:repeat="error errors" tal:content="error"></li>
+	                </ul>
+                </div>
                 <div class="formcategory">Experiment Information</div>
                 <table>
                     <tr>    
                         <td class="fieldname">Experiment Name:</td>
-                        <td ><input type="text" name="experiment_name" size="55"/></td>
+                        <td >${formrenderer.render('experiment_name')}</td>
                     </tr>
                     <tr>
                         <td class="fieldname">Published:</td>
                         <td>
-                            <select id="pubselect" name="published">
-                                <option value=""></option>
-                                <option value="no"  tal:attributes="selected 'yes' if formfields['published'] == 'no' else default">No</option>
-                                <option value="yes" tal:attributes="selected 'yes' if formfields['published'] == 'yes' else default">Yes</option>
-                            </select>
+                            ${formrenderer.render('published',id_='pubselect')}
                         </td>
                     </tr>
                     <tr>
                         <td class="fieldname">URL:*</td>
-                        <td><input type="text" name="URL" size="55" tal:attributes="value formfields['URL']"/></td>
+                        <td>${formrenderer.render('URL')}</td>
                     </tr>
                     <tr>
                         <td class="fieldname">Description:</td>
-                        <td><textarea name="description" rows="5" cols="42" tal:content="formfields['description']"></textarea></td>
+                        <td>${formrenderer.render('description')}</td>
                     </tr>
                     <tr class="pubinfo">
                         <td class="fieldname">PubMed ID:*</td>
                         <td>
-                            <input type="text" name="pmid" size="13" maxlength="12" tal:attributes="value formfields['pmid']"/>
+                            ${formrenderer.render('pmid')}
                             <input type="button" id="load_pubmed" value="Load Pubmed Citation" />
                             <span id="pmiderror" class="errortext" style="display:none"></span>
                         </td>
                     </tr>
                     <tr class="pubinfo">
                         <td class="fieldname">Authors:</td>
-                        <td><input type="text" name="authors" size="55" tal:attributes="value formfields['authors']"/></td>
+                        <td>${formrenderer.render('authors')}</td>
                     </tr>
                     <tr class="pubinfo">
                         <td class="fieldname">Author Contact E-mail:</td>
-                        <td><input type="text" name="author_contact" size="55" tal:attributes="value formfields['author_contact']"/></td>
+                        <td>${formrenderer.render('author_contact')}</td>
                     </tr>
                     <tr class="pubinfo">
                         <td class="fieldname">Journal:</td>
-                        <td><input type="text" name="journal" size="55" tal:attributes="value formfields['journal']"/></td>
+                        <td>${formrenderer.render('journal')}</td>
                     </tr>
                     <tr class="pubinfo">
                         <td class="fieldname">Publication Date:</td>
                         <td>
-                            <select name="publication_month">
-                                <option value=""></option>
-                                <option tal:repeat="month ['none', 'january','february','march','april','may','june','july','august','september','october','november','december']" tal:attributes="value month; selected 'yes' if formfields['publication_month'] == month else default" tal:content="month.capitalize()"></option>
-                            </select>
-                            <input type="text" size="4" name="publication_year" maxlength="4" tal:attributes="value formfields['publication_year']"/>
+                            ${formrenderer.render('publication_month')}
+                            ${formrenderer.render('publication_year')}
                         </td>
                     </tr>
                     <tr class="pubinfo">
                         <td class="fieldname">Volume:</td>
-                        <td ><input type="text" name="volume" tal:attributes="value formfields['volume']"/></td>
+                        <td >${formrenderer.render('volume')}</td>
                     </tr>
                     <tr class="pubinfo">
                         <td class="fieldname">Pages:</td>
                         <td>
-                            <input type="text" name="page_start" size="10" maxlength="10" tal:attributes="value formfields['page_start']"/> to
-                            <input type="text" name="page_end" size="10" maxlength="10" tal:attributes="value formfields['page_end']"/>
+                            ${formrenderer.render('page_start')} to
+                            ${formrenderer.render('page_end')}
                         </td>
                     </tr>
                 </table>
@@ -86,17 +83,13 @@
                     <tr>
                         <td class="fieldname">Contains mass-spec data with possibly ambiguous accessions:</td>
                         <td> 
-                            <select name="ambiguous">
-                                <option value=""></option>
-                                <option value="no" tal:attributes="selected 'yes' if formfields['ambiguous']=='no' else default">No</option>
-                                <option value="yes" tal:attributes="selected 'yes' if formfields['ambiguous']=='yes' else default">Yes</option>
-                            </select> 
+                            ${formrenderer.render('ambiguous')} 
                         </td>
                     </tr>
                     <tr>
                         <td class="fieldname">Notes:*</td>
                         <td>
-                            <textarea rows="5" cols="43" name="notes"></textarea>
+                            ${formrenderer.render('notes')}
                         </td>
                     </tr>
                 </table>

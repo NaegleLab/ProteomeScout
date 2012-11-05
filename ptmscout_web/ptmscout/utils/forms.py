@@ -55,6 +55,14 @@ class FormSchema(object):
                 v = v.strip()
             self.form_values[ref] = v
 
+    def parse_fields_dict(self, field_dict):
+        for ref in self.field_names:
+            v = None
+            if ref in field_dict:
+                v = field_dict[ref]
+            if v != None and self.field_types[ref] != FormSchema.FILE:
+                v = v.strip()
+            self.form_values[ref] = v
     
     def set_field_required_condition(self, ref, parent, condition):
         self.conditional_fields[ref] = (parent, condition)

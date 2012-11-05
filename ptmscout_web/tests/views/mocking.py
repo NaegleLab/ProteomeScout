@@ -88,6 +88,7 @@ def createMockExperiment(eid=random.randint(0,100000), public=0, parent_id=None,
     mock.status = status
     mock.ready.return_value = mock.status == 'loaded'
     mock.date = datetime.datetime.now()
+    mock.experiment_id = None
     return mock
 
 def createMockPermission(user, experiment, access_level='view'):
