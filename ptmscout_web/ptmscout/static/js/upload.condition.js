@@ -1,6 +1,4 @@
 
-function filter_auto_complete
-
 function get_auto_completions(field_type, target_field, value) {
 	if(window.autocompletions[field_type] == undefined){
 		$.get(window.autocomplete_url + field_type, function(data){
@@ -21,18 +19,19 @@ $(document).ready(function(){
 		$(".condition.hidden").first().removeClass("hidden")
 	});
 	
-	$(".cond_type").change(function(){
-		var v = $(this).val();
-		var target = $(this).siblings(".cond_value");
-		if(v != '')
-			get_auto_completions(v, target);
-		
-	}).each(function(){
-		var v = $(this).val();
-		var target = $(this).siblings(".cond_value");
-		if(v != '')
-			get_auto_completions(v, target);
-	});
+	$(".cond_type")
+		.change(function(){
+			var v = $(this).val();
+			var target = $(this).siblings(".cond_value");
+			if(v != '')
+				get_auto_completions(v, target);
+			
+		}).each(function(){
+			var v = $(this).val();
+			var target = $(this).siblings(".cond_value");
+			if(v != '')
+				get_auto_completions(v, target);
+		});
 	
 	$(".remove_condition").click(function(){
 		var parent = $(this).parent()
