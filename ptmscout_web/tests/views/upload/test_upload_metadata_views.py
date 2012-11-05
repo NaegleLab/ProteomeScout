@@ -34,7 +34,7 @@ class TestUploadView(UnitTestCase):
         
         self.assertEqual(exp, nexp)
         
-        patch_getExperiment.assert_called_once_with(exp.id, user)
+        patch_getExperiment.assert_called_once_with(exp.id, user, False)
         
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_get_experiment_ref_should_return_parent_experiment_if_reload(self, patch_getExperiment):
@@ -51,7 +51,7 @@ class TestUploadView(UnitTestCase):
         
         self.assertEqual(exp, nexp)
         
-        patch_getExperiment.assert_called_once_with(exp.id, user)
+        patch_getExperiment.assert_called_once_with(exp.id, user, False)
         
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_get_experiment_ref_should_return_parent_experiment_if_append(self, patch_getExperiment):
@@ -68,7 +68,7 @@ class TestUploadView(UnitTestCase):
         
         self.assertEqual(exp, nexp)
         
-        patch_getExperiment.assert_called_once_with(exp.id, user)
+        patch_getExperiment.assert_called_once_with(exp.id, user, False)
     
     def create_field_dict(self):
         field_dict = {}

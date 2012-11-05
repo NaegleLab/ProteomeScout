@@ -54,9 +54,9 @@ def write_experiment_properties(nexp, session, schema, current_user):
 
 def get_experiment_ref(session, current_user):
     if(session.experiment_id != None):
-        nexp = experiment.getExperimentById(session.experiment_id, current_user)
+        nexp = experiment.getExperimentById(session.experiment_id, current_user, False)
     elif(session.load_type == 'reload' or session.load_type == 'append'):
-        nexp = experiment.getExperimentById(session.parent_experiment, current_user)
+        nexp = experiment.getExperimentById(session.parent_experiment, current_user, False)
     else: 
         nexp = experiment.Experiment()
         nexp.public = 0
@@ -117,9 +117,9 @@ def create_schema(request):
 def populate_schema_from_experiment(schema, session, user):
     exp = None
     if session.experiment_id != None:
-        exp = experiment.getExperimentById(session.experiment_id, user)
+        exp = experiment.getExperimentById(session.experiment_id, user, False)
     elif session.parent_experiment != None:
-        exp = experiment.getExperimentById(session.parent_experiment, user)
+        exp = experiment.getExperimentById(session.parent_experiment, user, False)
         
     if exp != None:
         field_dict = {
@@ -135,7 +135,7 @@ def populate_schema_from_experiment(schema, session, user):
                      'journal': exp.journal,
                      'volume': exp.volume,
                      'description': exp.description,
-                     'experiment_name':"",
+                     'experiment_name':exp.name,
                      'URL': exp.URL,
                      'notes':""
                   }

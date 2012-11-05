@@ -150,10 +150,17 @@ class Experiment(Base):
         return None
     
     def grantPermission(self, user, level):
-        p = Permission(self, level)
-        p.user = user
+        found = False
+        for p in self.permissions:
+            if p.user_id == user.id:
+                p.access_level = level
+                found = True
         
-        self.permissions.append(p)
+        if not found:
+            p = Permission(self, level)
+            p.user = user
+            p.access_level = level
+            self.permissions.append(p)
     
     def ready(self):
         return self.status == 'loaded'
