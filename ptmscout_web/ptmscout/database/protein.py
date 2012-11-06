@@ -16,6 +16,11 @@ expression_association_table = Table('protein_expression', Base.metadata,
     Column('protein_id', Integer(10), ForeignKey('protein.id')),
     Column('probeset_id', Integer(10), ForeignKey('expression_ann.probeset_id')))
 
+protein_taxonomy_table = Table('protein_taxonomy', Base.metadata,
+    Column('id', Integer(10), primary_key=True, autoincrement=True),
+    Column('protein_id', Integer(10), ForeignKey('protein.id')),
+    Column('taxon_id', Integer(10), ForeignKey('taxonomy.node_id')))
+
 class GeneOntology(Base):
     __tablename__='GO'
     id = Column(Integer(10), primary_key=True, autoincrement=True)
@@ -67,6 +72,7 @@ class Protein(Base):
     date = Column(VARCHAR(7))
     species_id = Column(Integer(10), ForeignKey('species.id'))
     
+    taxonomy = relationship("Taxonomy", secondary=protein_taxonomy_table)
     accessions = relationship("Accession", order_by=Accession.type)
     GO_terms = relationship("GeneOntology", secondary=go_association_table)
     domains = relationship("Domain")
@@ -78,6 +84,11 @@ class Protein(Base):
     
     def saveProtein(self):
         DBSession.add(self)
+        
+    def addTaxonomy(self, taxon):
+        if taxon not in self.taxonomy:
+            self.taxonomy.append(taxon)
+        
 
 class NoSuchProtein(Exception):
     def __init__(self, prot):
@@ -101,4 +112,3 @@ def getProteinsByAccession(accessions, species=None):
         q = DBSession.query(Protein).join(Protein.accessions).join(Protein.species).filter(or_(Protein.acc_gene.in_(accessions), Accession.value.in_(accessions)), Species.name == species)
     
     return q.all()
-
