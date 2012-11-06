@@ -47,7 +47,7 @@ class TestUploadStatusView(UnitTestCase):
         patch_getSession.assert_called_once_with(102, request.user)
         patch_getExperiment.assert_called_once_with(26, request.user, False)
         session.save.assert_called_once_with()
-        patch_startUpload.assert_called_once_with(request, exp, session, request.user)
+        patch_startUpload.assert_called_once_with((request, exp, session, request.user))
         
         self.assertEqual('complete', session.stage)
         self.assertEqual(None, result['reason'])
