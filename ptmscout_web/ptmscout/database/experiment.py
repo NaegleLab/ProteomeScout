@@ -24,7 +24,8 @@ class ExperimentData(Base):
     __tablename__ = 'data'
     id = Column(Integer(10), primary_key=True, autoincrement=True)
     
-    type = Column(VARCHAR(20), default='time')
+    type = Column(Enum(['data','stddev']), default='data')
+    units = Column(VARCHAR(20), default='time')
     run = Column(VARCHAR(20), default='average')
     label = Column(VARCHAR(45), default='')
     
