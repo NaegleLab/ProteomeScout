@@ -1,4 +1,3 @@
-# Skip
 from tests.PTMScoutTestCase import IntegrationTestCase
 from ptmworker.entrez_query import get_pubmed_record_by_id
 from ptmscout.config import settings
