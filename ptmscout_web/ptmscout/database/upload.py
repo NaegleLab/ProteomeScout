@@ -47,6 +47,14 @@ class Session(Base):
         ancestors.sort(key=lambda session: session.date, reverse=True)
         return ancestors[0]
 
+    def getColumns(self, tp):
+        found_columns = []
+        for col in self.columns:
+            if col.type == tp:
+                found_columns.append(col)
+        
+        return found_columns
+            
 class NoSuchSession(Exception):
     pass
 
