@@ -37,7 +37,4 @@ def get_valid_accession_types():
     return set(['gi','refseq','swissprot','genbank','ipi'])
 
 
-def check_peptide_modification_valid(peptide, modification):
-    return True
-
 
