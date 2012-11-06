@@ -43,7 +43,7 @@ class TestUploadUtils(unittest.TestCase):
         else:
             self.fail("Expected exception ParseError")
             
-        patch_findPTM.assert_any_call("Sulfation", "Q") 
+        patch_findPTM.assert_any_call("Sulfation", "Q", None) 
 
     @patch('ptmscout.database.modifications.findMatchingPTM')
     def test_check_modification_type_matches_peptide_should_throw_error_when_no_matching_mod(self, patch_findPTM):
@@ -58,7 +58,7 @@ class TestUploadUtils(unittest.TestCase):
         else:
             self.fail("Expected exception ParseError")
             
-        patch_findPTM.assert_any_call("Sulfation", "Q") 
+        patch_findPTM.assert_any_call("Sulfation", "Q", None) 
 
     @patch('ptmscout.database.modifications.findMatchingPTM')
     def test_check_modification_type_matches_peptide_should_not_throw_error_on_ambiguous_modification_if_category_available(self, patch_findPTM):
@@ -71,7 +71,7 @@ class TestUploadUtils(unittest.TestCase):
         
         check_modification_type_matches_peptide(1, "DFERTGDYDFqERAS", "METH")
         
-        patch_findPTM.assert_any_call("METH", "Q") 
+        patch_findPTM.assert_any_call("METH", "Q", None) 
     
     @patch('ptmscout.database.modifications.findMatchingPTM')
     def test_check_modification_type_matches_peptide_should_throw_error_on_ambiguous_modification_if_no_fallback_available(self, patch_findPTM):
@@ -89,7 +89,7 @@ class TestUploadUtils(unittest.TestCase):
         else:
             self.fail("Expected exception ParseError")
         
-        patch_findPTM.assert_any_call("METH", "Q") 
+        patch_findPTM.assert_any_call("METH", "Q", None) 
     
     @patch('ptmscout.database.modifications.findMatchingPTM')
     def test_check_modification_type_matches_should_succeed(self, patch_findPTM):
@@ -100,7 +100,7 @@ class TestUploadUtils(unittest.TestCase):
                
         check_modification_type_matches_peptide(1, "AKsPVPKsPVEEK", "PHOS")
         
-        patch_findPTM.assert_any_call("PHOS", "S")
+        patch_findPTM.assert_any_call("PHOS", "S", None)
 
     @patch('ptmscout.utils.uploadutils.check_modification_type_matches_peptide')
     def test_check_data_rows_should_compile_list_of_errors(self, patch_test_peptide):
