@@ -176,7 +176,8 @@ def createMockData(num, run, mod_id):
         
         mock.id = random.randint(0, 100000)
         
-        mock.type = 'time'
+        mock.type = 'data'
+        mock.units= 'time'
         mock.run = run
         mock.label = labels[i] 
         

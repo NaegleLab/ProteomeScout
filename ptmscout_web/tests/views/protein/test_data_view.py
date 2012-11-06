@@ -128,12 +128,14 @@ class TestProteinDataViews(UnitTestCase):
         data2_s_vals = [(row.label, str(row.value), row.type) for row in sorted(data2, key=lambda item: item.priority)]
         data3_s_vals = [(row.label, str(row.value), row.type) for row in sorted(data3, key=lambda item: item.priority)]
         
-        exp_data1 = [{'run':"run1_12H", 'phosphopeps': [pep1.getName()], 'values': data1_s_vals},
-                     {'run':"run2_24H", 'phosphopeps': [pep1.getName()], 'values': data2_s_vals}]
-        exp_exp1 = {'id': exp.id, 'title': exp.name, 'data':exp_data1}
+        exp_data1 = [{'run':"run1_12H", 'units':'time', 'phosphopeps': [pep1.getName()], 'values': data1_s_vals},
+                     {'run':"run2_24H", 'units':'time', 'phosphopeps': [pep1.getName()], 'values': data2_s_vals}]
+        exp_exp1 = {'id': exp.id,  'title': exp.name, 'data':exp_data1}
         
-        exp_data2 = [{'run':"24H_stuff", 'phosphopeps': [pep2.getName(), pep3.getName()], 'values': data3_s_vals}]
+        exp_data2 = [{'run':"24H_stuff", 'units':'time', 'phosphopeps': [pep2.getName(), pep3.getName()], 'values': data3_s_vals}]
         exp_exp2 = {'id': exp2.id, 'title': exp2.name, 'data':exp_data2}
+        
+        self.maxDiff=None
         
         self.assertEqual([exp_exp1, exp_exp2], result)
         

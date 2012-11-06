@@ -15,7 +15,7 @@ function processDataPoint(dp, points, stddev) {
 		return;
 	}
 	
-	if(type.indexOf("stddev")>=0){
+	if(type == "stddev"){
 		ypos = -1;
 		
 		for(j = 0; j < points.length; j++) {
@@ -25,9 +25,9 @@ function processDataPoint(dp, points, stddev) {
 		if(ypos == 0 && console != undefined)
 			console.log("Warning: data point for sigma at {0} not found".format(x));
 		
-		stddev.push({'label':x, 'y':ypos, 'dev':y, 'axis':type})
+		stddev.push({'label':x, 'y':ypos, 'dev':y})
 	} else {
-		points.push({'label':x,'y':y,'axis':type})
+		points.push({'label':x,'y':y})
 	}
 }
 
@@ -42,15 +42,19 @@ function processRun(run, experiment_data, run_map) {
 			.select(".phosphopeps")
 			.text();
 	
+	units = 
+		d3.select(run)
+			.select(".units")
+			.text();
+	
 	d3.select(run)
 		.selectAll(".datapoint")
 		.each(function() { processDataPoint(this, points, stddev); });
 	
-	isTime = (points[0].axis.indexOf("time") >= 0)
-	axis = points[0].axis
+	isTime = (units.indexOf("time") >= 0)
 	
 	if (! (name in run_map)){
-		run_map[name] = {'name':name, 'series':[], 'isTime': isTime, 'axis': axis};
+		run_map[name] = {'name':name, 'series':[], 'isTime': isTime, 'axis': units};
 	}
 	
 	run_map[name].series.push({'peps':phosphopeps, 'points':points, 'stddev':stddev});

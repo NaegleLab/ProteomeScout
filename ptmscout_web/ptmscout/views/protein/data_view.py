@@ -15,13 +15,16 @@ def format_protein_data(mods):
         run_data = {}
         for d in mod.data:
             values = run_data.get(d.run, set())
-            values.add((d.priority, d.label, d.value, d.type))
+            values.add((d.priority, d.units, d.label, d.value, d.type))
             run_data[d.run] = values
 
         sorted_data = []
         for run in run_data:
-            sorted_values = [(label, str(value), type_) for (_, label, value, type_) in sorted(run_data[run], key=lambda item: item[0])]
-            data_dict = {'run':run, 'values':sorted_values, 'phosphopeps':phosphopeps}
+            data_units = [item[1] for item in run_data[run] if item[4] == 'data']
+            units = data_units[0]
+            
+            sorted_values = [(label, str(value), type_) for (_, _, label, value, type_) in sorted(run_data[run], key=lambda item: item[0])]
+            data_dict = {'run':run, 'units': units, 'values':sorted_values, 'phosphopeps':phosphopeps}
             
             sorted_data.append(data_dict)
             
