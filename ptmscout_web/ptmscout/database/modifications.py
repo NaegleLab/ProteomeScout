@@ -69,8 +69,11 @@ class Phosphopep(Base):
     id = Column(Integer(10), primary_key=True, autoincrement=True)
     pep_tryps = Column(VARCHAR(100))
     pep_aligned = Column(VARCHAR(15))
+    
     site_pos = Column(Integer(10))
     site_type = Column(CHAR(1))
+    modification_id = Column(Integer(10), ForeignKey('PTM.id'))
+    
     pfam_site = Column(VARCHAR(45))
     protein_id = Column(Integer(10), ForeignKey('protein.id'))
     
@@ -119,8 +122,12 @@ def getMeasuredPeptidesByExperiment(eid, user, pids = None):
     return [ mod for mod in modifications if mod.experiment.checkPermissions(user) and mod.experiment.ready() ]
 
 
-def getModificationBySite(pep_site, pep_type, prot_id):
-    mod = DBSession.query(Phosphopep).filter_by(site_pos=pep_site, site_type=pep_type, protein_id=prot_id).first()
+def getModificationBySite(pep_site, pep_type, prot_id, mod_id=None):
+    
+    if mod_id==None:
+        mod = DBSession.query(Phosphopep).filter_by(site_pos=pep_site, site_type=pep_type, protein_id=prot_id).first()
+    else:
+        mod = DBSession.query(Phosphopep).filter_by(site_pos=pep_site, site_type=pep_type, protein_id=prot_id, modification_id=mod_id).first()
     
     if mod == None: 
         raise NoSuchModification(pep_site, pep_type, prot_id)
