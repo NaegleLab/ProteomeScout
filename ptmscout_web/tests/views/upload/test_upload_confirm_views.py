@@ -26,7 +26,6 @@ class TestUploadStatusView(UnitTestCase):
         else:
             self.fail("Expected exception UploadAlreadyStarted")
     
-        
     @patch('ptmworker.tasks.start_import.apply_async')        
     @patch('ptmscout.database.experiment.getExperimentById')
     @patch('ptmscout.database.upload.getSessionById')
@@ -48,7 +47,7 @@ class TestUploadStatusView(UnitTestCase):
         patch_getSession.assert_called_once_with(102, request.user)
         patch_getExperiment.assert_called_once_with(26, request.user, False)
         session.save.assert_called_once_with()
-        patch_startUpload.assert_called_once_with(exp)
+        patch_startUpload.assert_called_once_with(request, exp, session, request.user)
         
         self.assertEqual('complete', session.stage)
         self.assertEqual(None, result['reason'])
