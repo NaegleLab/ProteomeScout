@@ -141,4 +141,16 @@ class TestProteinDataViews(UnitTestCase):
         
 class ProteinDataViewIntegrationTest(IntegrationTestCase):
     def test_protein_view_integration(self):
-        self.ptmscoutapp.get('/proteins/35546/data')
+        result = self.ptmscoutapp.get('/proteins/35546/data')
+        
+        
+        result.mustcontain('<div class="name">average</div>')
+        result.mustcontain('<div class="units">average</div>')
+        result.mustcontain('<div class="phosphopeps">Y518</div>')
+        result.mustcontain('<div class="datapoint">DK,0.88,data</div>')
+        result.mustcontain('<div class="datapoint">M,0.877,data</div>')
+        result.mustcontain('<div class="datapoint">H,1.0,data</div>')
+        result.mustcontain('<div class="datapoint">SH,0.947,data</div>')
+        result.mustcontain('<div class="datapoint">DK,0.005,stddev</div>')
+        result.mustcontain('<div class="datapoint">M,0.016,stddev</div>')
+        result.mustcontain('<div class="datapoint">SH,0.006,stddev</div>')
