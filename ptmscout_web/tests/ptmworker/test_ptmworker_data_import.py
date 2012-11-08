@@ -1,182 +1,215 @@
 # Skip
 from tests.PTMScoutTestCase import IntegrationTestCase
-from mock import patch, call
+from mock import patch
 from ptmworker import tasks
-import os
-from ptmscout.database import experiment, modifications, protein
-from ptmscout.config import settings
-from tests.views.mocking import createMockExperiment
+from ptmscout.config import strings
+from tests.views.mocking import createMockExperiment, createMockMeasurement,\
+    createMockError, createMockSession, createMockUser, createMockProtein,\
+    createMockPTM, createMockPhosphopep
+from ptmscout.utils import uploadutils
 
 class PTMWorkDataImportTestCase(IntegrationTestCase):
-    
-    def test_finalize_import_should_set_experiment_to_loaded_status(self):
+
+    @patch('ptmscout.utils.mail.celery_send_mail')
+    @patch('ptmscout.database.modifications.getMeasuredPeptidesByExperiment')
+    @patch('ptmworker.upload_helpers.mark_experiment')
+    def test_finalize_import_should_set_experiment_to_loaded_status_and_statistics(self, patch_mark_experiment, patch_getPeptides, patch_send_mail):
         exp = createMockExperiment()
-        exp.status = 'loading'
+        e1 = createMockError(2, "Some error", experiment = exp)
+        patch_mark_experiment.return_value = exp
         
-        res = tasks.finalize_import.apply_async((exp,))
+        m1 = createMockMeasurement(10, exp.id)
+        m2 = createMockMeasurement(10, exp.id)
+        m3 = createMockMeasurement(12, exp.id)
+        
+        patch_getPeptides.return_value = [m1,m2,m3]
+        
+        user_email = 'someguy@institute.edu'
+        app_url = 'http://example.com'
+        
+        res = tasks.finalize_import.apply_async((exp.id, user_email, app_url))
         res.get()
         assert res.successful()
         
-        exp.status = 'loaded'
-        exp.saveExperiment.assert_called_once_with()
-    
-    def test_load_peptide_should_fail_to_align_if_sequence_is_missing(self):
-        prot = protein.getProteinById(35546)
+        patch_mark_experiment.assert_called_once_with(exp.id, 'loaded')
+        patch_getPeptides.assert_called_once_with(exp.id, check_ready=False, secure=False)
         
-        # MQPEE GTGWL LELLS EVQLQ QYFLR LRDDL NVTRL--SHFEY VKNED LEKIG M--GRPG QRRLW EAVKRRKALCKRKSWMSKVFSGKRLEAEFPPHHSQSTFRKTSPAPGGPAGEGPLQSLTCLIGEKDLRLLEKLGDGSFGVVRRGEWDAPSGKTVSVAVKCLKPDVLSQPEAMDDFIREVNAMHSLDHRNLIRLYGVVLTPPMKMVTELAPLGSLLDRLRKHQGHFLLGTLSRYAVQVAEGMGYLESKRFIHRDLAARNLLLATRDLVKIGDFGLMRALPQNDDHYVMQEHRKVPFAWCAPESLKTRTFSHASDTWMFGVTLWEMFTYGQEPWIGLNGSQILHKIDKEGERLPRPEDCPQDIYNVMVQCWAHKPEDRPTFVALRDFLLEAQPTDMRALQDFEEPDKLHIQMNDVITVIEGRAENYWWRGQNTRTLCVGPFPRNVVTSVAGLSAQDISQPLQNSFIHTGHGDSDPRHCWGFPDRIDELYLGNPMDPPDLLSVELSTSRPPQHLGGVKKPTYDPVSEDQDPLSSDFKRLGLRKPGLPRGLWLAKPSARVPGTKASRGSGAEVTLIDFGEEPVVPALRPCPPSLAQLAMDACSLLDETPPQSPTRALPRPLHPTPVVDWDARPLPPPPAYDDVAQDEDDFEICSINSTLVGAGVPAGPSQGQTNYAFVPEQARPPPPLEDNLFLPPQGGGKPPSSAQTAEIFQALQQECMRQLQAPGSPAPSPSPGGDDKPQVPPRVPIPPRPTRPHVQLSPAPPGEEETSQWPGPASPPRVPPREPLSPQGSRTPSPLVPPGSSPLPPRLSSSPGKTMPTTQSFASDPKYATPQVIQAPGAGGPCILPIVRDGKKVSSTHYYLLPERPSYLERYQRFLREAQSPEEPTPLPVPLLLPPPSTPAPAAPTATVRPMPQAALDPKANFSTNNSNPGARPPPPRATARLPQRGCPGDGPEAGRPADKIQMAMVHGVTTEECQAALQCHGWSVQRAAQYLKVEQLFGLGLRPRGECHKVLEMFDWNLEQAGCHLLGSWGPAHHKR
-        m = {'gi|8922075': prot}
-        t = tasks.load_peptide.apply_async((m, 1, 'gi|8922075', 'AAAAAAAAAAAaAaAAAQRRL'))
-        try:
-            t.get()
-        except:
-            assert t.failed()
-        
-    
-    def test_load_peptide_should_align_peptide_sequence_and_create_record(self):
-        from ptmscout.database import DBSession
-        
-        prot = protein.getProteinById(35546)
-        
-        ppep = modifications.Phosphopep()
-        ppep.pep_tryps = 'LEKiGMGRPGQRRLW'
-        ppep.pep_aligned = 'KNEDLEKiGMGRPGQ'
-        ppep.protein_id = prot.id
-        ppep.pfam_site = "~~~"
-        ppep.site_pos = 49
-        ppep.site_type = 'I'
-        
-        DBSession.add(ppep)
-        DBSession.flush()
-        
-        # MQPEE GTGWL LELLS EVQLQ QYFLR LRDDL NVTRL--SHFEY VKNED LEKIG M--GRPG QRRLW EAVKRRKALCKRKSWMSKVFSGKRLEAEFPPHHSQSTFRKTSPAPGGPAGEGPLQSLTCLIGEKDLRLLEKLGDGSFGVVRRGEWDAPSGKTVSVAVKCLKPDVLSQPEAMDDFIREVNAMHSLDHRNLIRLYGVVLTPPMKMVTELAPLGSLLDRLRKHQGHFLLGTLSRYAVQVAEGMGYLESKRFIHRDLAARNLLLATRDLVKIGDFGLMRALPQNDDHYVMQEHRKVPFAWCAPESLKTRTFSHASDTWMFGVTLWEMFTYGQEPWIGLNGSQILHKIDKEGERLPRPEDCPQDIYNVMVQCWAHKPEDRPTFVALRDFLLEAQPTDMRALQDFEEPDKLHIQMNDVITVIEGRAENYWWRGQNTRTLCVGPFPRNVVTSVAGLSAQDISQPLQNSFIHTGHGDSDPRHCWGFPDRIDELYLGNPMDPPDLLSVELSTSRPPQHLGGVKKPTYDPVSEDQDPLSSDFKRLGLRKPGLPRGLWLAKPSARVPGTKASRGSGAEVTLIDFGEEPVVPALRPCPPSLAQLAMDACSLLDETPPQSPTRALPRPLHPTPVVDWDARPLPPPPAYDDVAQDEDDFEICSINSTLVGAGVPAGPSQGQTNYAFVPEQARPPPPLEDNLFLPPQGGGKPPSSAQTAEIFQALQQECMRQLQAPGSPAPSPSPGGDDKPQVPPRVPIPPRPTRPHVQLSPAPPGEEETSQWPGPASPPRVPPREPLSPQGSRTPSPLVPPGSSPLPPRLSSSPGKTMPTTQSFASDPKYATPQVIQAPGAGGPCILPIVRDGKKVSSTHYYLLPERPSYLERYQRFLREAQSPEEPTPLPVPLLLPPPSTPAPAAPTATVRPMPQAALDPKANFSTNNSNPGARPPPPRATARLPQRGCPGDGPEAGRPADKIQMAMVHGVTTEECQAALQCHGWSVQRAAQYLKVEQLFGLGLRPRGECHKVLEMFDWNLEQAGCHLLGSWGPAHHKR
-        m = {'gi|8922075': prot}
-        t = tasks.load_peptide.apply_async((m, 1, 'gi|8922075', 'SHFEYVKNEdLEKiGM'))
-        try:
-            MSpeptide = t.get()
-        except:
-            print t.traceback
-        
-        assert t.successful()
-        
-        self.assertEqual('SHFEYVKNEdLEKiGM', MSpeptide.phosphopep)
-        self.assertEqual(35546, MSpeptide.protein_id)
-        self.assertEqual(1, MSpeptide.experiment_id)
-        
-        DBSession.flush()
-        MSpep = DBSession.query(modifications.MeasuredPeptide).filter_by(id=MSpeptide.id).first()
-        
-        pep1, pep2 = MSpep.phosphopeps
-        
-        self.assertEqual('SHFEYVKNEdLEKIGM', pep1.pep_tryps)
-        self.assertEqual('FEYVKNEdLEKIGMG', pep1.pep_aligned)
-        self.assertEqual(45, pep1.site_pos)
-        self.assertEqual('D', pep1.site_type)
+        expected_message = strings.experiment_upload_finished_message % (exp.name, 3, 2, 1, app_url + "/experiments/%d/errors" % (exp.id))
+        patch_send_mail.assert_called_once_with([user_email], strings.experiment_upload_finished_subject, expected_message)
 
-        self.assertEqual('LEKiGMGRPGQRRLW', pep2.pep_tryps)
-        self.assertEqual('KNEDLEKiGMGRPGQ', pep2.pep_aligned)
-        self.assertEqual(49, pep2.site_pos)
-        self.assertEqual('I', pep2.site_type)
+    @patch('ptmscout.database.experiment.createExperimentError')
+    @patch('ptmworker.upload_helpers.create_modifications')
+    def test_load_peptide_should_aggregate_errors(self, patch_create_mods, patch_create_error):
+        exp_id = 10
+        prot = createMockProtein()
+        patch_create_mods.side_effect = uploadutils.ParseError(None, None, "An error")
+        taxons = ["some taxons"]
+        
+        accessions = ["some", "Accessions"]
+        
+        protein_id = 10
+        prot_seq = "ABSFGWERJADSFKJ"
+        taxonomy = ["Bacteria", "Escherichia"]
+        pep_seq = "GWeRJAD"
+        modlist = [createMockPTM()]
+        run_task_args = [(1, "a","b","c","d"),(3, "d","e","f","g")]
+        
+        res = tasks.load_peptide.apply_async(((protein_id, prot_seq, taxonomy), exp_id, pep_seq, modlist, run_task_args))
+        res.get()
+        
+        self.assertTrue(res.successful())
+        patch_create_error.assert_any_call(exp_id, 1, "An error")
+        patch_create_error.assert_any_call(exp_id, 3, "An error")
+        
+
+    @patch('ptmworker.upload_helpers.insert_run_data')
+    @patch('ptmscout.database.modifications.MeasuredPeptide')
+    @patch('ptmworker.upload_helpers.create_modifications')
+    def test_load_peptide_should_measured_peptide_record_with_modifications_and_insert_run_data(self, patch_create_mods, patch_measurement, patch_insert_run):
+        exp_id = 10
+        prot = createMockProtein()
+        pep1 = createMockPhosphopep(prot.id)
+        pep2 = createMockPhosphopep(prot.id)
+        
+        patch_create_mods.return_value = [pep1, pep2]
+        measuredPeptide = patch_measurement.return_value
+        measuredPeptide.phosphopeps = []
+        
+        taxons = ["some taxons"]
+        
+        accessions = ["some", "Accessions"]
+        
+        protein_id = prot.id
+        prot_seq = "ABSFGWERJADSFKJ"
+        taxonomy = ["Bacteria", "Escherichia"]
+        pep_seq = "GWeRjAD"
+        modlist = [createMockPTM(),createMockPTM()]
+        run_task_args = [(1, "a","b","c","d"),(3, "d","e","f","g")]
+        
+        res = tasks.load_peptide.apply_async(((protein_id, prot_seq, taxonomy), exp_id, pep_seq, modlist, run_task_args))
+        res.get()
+        
+        self.assertTrue(res.successful())
+        
+        self.assertEqual(exp_id, measuredPeptide.experiment_id)
+        self.assertEqual(pep_seq, measuredPeptide.phosphopep)
+        self.assertEqual(prot.id, measuredPeptide.protein_id)
+        self.assertEqual([pep1,pep2], measuredPeptide.phosphopeps)
+        
+        measuredPeptide.save.assert_called_once_with()
+        
+        patch_insert_run.assert_any_call(measuredPeptide, 1, "a","b","c","d")
+        patch_insert_run.assert_any_call(measuredPeptide, 3, "d","e","f","g")
+        
+        
+
+    @patch('ptmscout.database.experiment.createExperimentError')
+    @patch('ptmworker.upload_helpers.find_protein')
+    def test_load_protein_should_aggregate_errors(self, patch_find_prot, patch_create_error):
+        exp_id = 10
+        prot = createMockProtein()
+        patch_find_prot.side_effect = uploadutils.ParseError(None, None, "An error")
+        taxons = ["some taxons"]
+        
+        accessions = ["some", "Accessions"]
+        
+        res = tasks.load_protein.apply_async(((prot.name, prot.acc_gene, taxons, prot.species.name, accessions, prot.sequence), exp_id, [1,3]))
+        ret_val = res.get()
+        
+        self.assertTrue(res.successful())
+        self.assertEqual(None, ret_val)
+        patch_create_error.assert_any_call(exp_id, 1, "An error")
+        patch_create_error.assert_any_call(exp_id, 3, "An error")
+
+    @patch('ptmworker.upload_helpers.find_protein')
+    def test_load_protein_should_return_new_protein_info(self, patch_find_prot):
+        exp_id = 10
+        prot = createMockProtein()
+        patch_find_prot.return_value = prot
+        taxons = ["some taxons"]
+        
+        accessions = ["some", "Accessions"]
+        
+        res = tasks.load_protein.apply_async(((prot.name, prot.acc_gene, taxons, prot.species.name, accessions, prot.sequence), exp_id, [1,3]))
+        ret_val = res.get()
+        
+        self.assertEqual((prot.id, prot.sequence, taxons), ret_val)
+        patch_find_prot.assert_called_once_with(prot.name, prot.acc_gene, prot.sequence, accessions, prot.species.name)
+
+    @patch('ptmworker.upload_helpers.mark_experiment')
+    def test_process_error_state_should_change_experiment_status(self, patch_mark):
+        exp = createMockExperiment()
+        patch_mark.return_value = exp
+        
+        res = tasks.process_error_state.apply_async((exp.id,))
+        res.get()
+        
+        patch_mark.assert_called_once_with(exp.id, 'error')
     
-    def test_insert_run_data_should_create_data_records_when_timeseries(self):
-        from ptmscout.database import DBSession
-        MS_peptide = modifications.MeasuredPeptide()
-        MS_peptide.experiment_id = 1
-        MS_peptide.protein_id = 35546
-        MS_peptide.phosphopep = 'ABCDEFG'
+    @patch('ptmworker.tasks.load_peptide')
+    @patch('ptmworker.tasks.load_protein')
+    def test_create_import_tasks(self, patch_protein, patch_peptide):
+        exp_id = 10
+        prot_map = {"Q06FX4":"prot info 1", "A0FGVD":"prot info 2"}
+        accessions = {"Q06FX4":[1,2,4,5], "A0FGVD":[3,6]}
+        peptides = {"Q06FX4":["ABD", "DEF"], "A0FGVD":["GHI"]}
+        mod_map = {("Q06FX4", "ABD"): "phos", ("Q06FX4", "DEF"): "methylation", ("A0FGVD", "GHI"): "acetylation"}
+        series_headers = ["some", "headers"]
+        units = "time(min)"
+        data_runs = {("Q06FX4", "ABD"): {"run1":(1, [1,2]), "run2":(4, [2,3])}, 
+                     ("Q06FX4", "DEF"): {"run1":(2, [3,4]), "run2":(5, [7,8])}, 
+                     ("A0FGVD", "GHI"): {"run1":(3, [5,6]), "run2":(6, [9,10])}}
         
-        DBSession.add(MS_peptide)
-        DBSession.flush()
         
-        series_header = ['data:time(min):0','data:time(min):5','data:time(min):20', 'data:stddev(min):5', 'data:stddev(min):20']
-        series = [0,4,1,3,2]
+        import_tasks = tasks.create_import_tasks(exp_id, prot_map, accessions, peptides, mod_map, series_headers, units, data_runs)
         
-        t = tasks.insert_run_data.apply_async((MS_peptide, series_header, "run1", series))
+        patch_peptide.s.assert_any_call(exp_id, "ABD", "phos", [(1, 'time(min)', ["some", "headers"], "run1", [1,2]),(4, 'time(min)', ["some", "headers"], "run2", [2,3])])
+        patch_peptide.s.assert_any_call(exp_id, "DEF", "methylation", [(2, 'time(min)', ["some", "headers"], "run1", [3,4]),(5, 'time(min)', ["some", "headers"], "run2", [7,8])])
+        patch_peptide.s.assert_any_call(exp_id, "GHI", "acetylation", [(3, 'time(min)', ["some", "headers"], "run1", [5,6]),(6, 'time(min)', ["some", "headers"], "run2", [9,10])])
         
-        t.get()
-        assert t.successful()
+        patch_protein.s.assert_any_call("prot info 1", exp_id, [1,2,4,5])
+        patch_protein.s.assert_any_call("prot info 2", exp_id, [3,6])
         
-        DBSession.flush()
-        
-        result = DBSession.query(experiment.ExperimentData).filter_by(MS_id=MS_peptide.id).all()
-        result = sorted(result, key=lambda item: item.priority)
-        
-        self.assertEqual(5, len(result))
-        
-        self.assertEqual("run1", result[0].run)
-        self.assertEqual("time(min)", result[0].type)
-        self.assertEqual('0', result[0].label)
-        self.assertEqual(0, result[0].value)
-        
-        self.assertEqual("run1", result[1].run)
-        self.assertEqual("time(min)", result[1].type)
-        self.assertEqual('5', result[1].label)
-        self.assertEqual(4, result[1].value)
-
-        self.assertEqual("run1", result[2].run)
-        self.assertEqual("time(min)", result[2].type)
-        self.assertEqual('20', result[2].label)
-        self.assertEqual(1, result[2].value)
-
-        self.assertEqual("run1", result[3].run)
-        self.assertEqual("stddev(min)", result[3].type)
-        self.assertEqual('5', result[3].label)
-        self.assertEqual(3, result[3].value)
-
-        self.assertEqual("run1", result[4].run)
-        self.assertEqual("stddev(min)", result[4].type)
-        self.assertEqual('20', result[4].label)
-        self.assertEqual(2, result[4].value)
+        self.assertEqual(2, len(import_tasks))
         
     
+    @patch('ptmscout.database.experiment.createExperimentError')
+    @patch('ptmscout.database.upload.getSessionById')
+    @patch('ptmworker.tasks.invoke')
     @patch('ptmworker.tasks.finalize_import')
-    @patch('ptmworker.tasks.insert_run_data')
-    @patch('ptmworker.tasks.load_peptide')
-    @patch('ptmworker.tasks.load_proteins')
-    def test_start_import_should_generate_subtasks_for_input_file(self, patch_loadProtein, patch_loadPeptide, patch_load_run_data, patch_finalize):
-        os.chdir(settings.ptmscout_path)
+    @patch('ptmworker.tasks.create_import_tasks')
+    @patch('ptmworker.upload_helpers.get_proteins_from_ncbi')
+    @patch('ptmworker.upload_helpers.get_series_headers')
+    @patch('ptmworker.upload_helpers.parse_datafile')
+    def test_start_import_should_load_file_get_protein_records_log_errors_and_invoke_subtasks(self, patch_parse, patch_get_headers, patch_get_proteins, patch_create_tasks, patch_finalize, patch_invoke, patch_getSession, patch_createError):
+        e1 = uploadutils.ParseError(1, None, "an error")
+        e2 = uploadutils.ParseError(9, None, "another error")
+        session_id = 100
+        exp_id = 2
+        app_url = 'http://example.com'
+        user = createMockUser()
+        session = createMockSession(user, experiment_id = exp_id)
         
-        exp = createMockExperiment()
-        exp.datafile = os.path.join("test", "test_dataset_formatted.txt")
+        patch_parse.return_value = "some accessions", "some peps", "some mods", "some data", [e1]
+        patch_get_headers.return_value = "some headers"
+        prot_map = {"some accessions":"some records"}
+        patch_get_proteins.return_value = prot_map, [e2]
         
-        col_map = {'accession':0, 'peptide':3, 'run':4, 'data':range(5, 21)}
-        res = tasks.start_import.apply_async((exp, col_map))
+        patch_getSession.return_value = session
         
-        process_id = res.get()
-        assert res.successful()
-
-        assert patch_loadProtein.s.called
-        args = ""
-        for i in xrange(0, len(patch_loadProtein.s.call_args_list)):
-            args += str(patch_loadProtein.s.call_args_list[i])
+        patch_create_tasks.return_value = "some tasks"
         
-        self.assertEqual(3, len( patch_loadProtein.s.call_args_list ))
-        self.assertEqual( args.find('P07197'), args.rfind('P07197')) 
-        
-        assert call(exp.id, 'P50914', 'AALLKAsPK') in patch_loadPeptide.s.call_args_list
-        assert call(exp.id, 'Q8N9T8', 'AFVEDsEDEDGAGEGGSSLLQK') in patch_loadPeptide.s.call_args_list
-        assert call(exp.id, 'Q6KC79', 'AITSLLGGGsPK') in patch_loadPeptide.s.call_args_list
-        
-        self.assertEquals(17, len(patch_load_run_data.s.call_args_list))
-        
-        patch_finalize.s.assert_called_once_with(exp)
-        
-        self.assertEqual(process_id, exp.import_process_id)
-        self.assertEqual('loading', exp.status)
-        exp.saveExperiment.assert_called_once_with()
-        
-    @patch('ptmworker.tasks.insert_run_data')
-    @patch('ptmworker.tasks.load_peptide')
-    @patch('ptmworker.tasks.load_proteins')
-    def test_start_import_should_generate_subtasks_for_input_file_should_work_when_exceeding_batch_size(self, patch_loadProtein, patch_loadPeptide, patch_load_run_data):
-        os.chdir(settings.ptmscout_path)
-        
-        exp = createMockExperiment()
-        exp.datafile = os.path.join("test", "test_dataset_formatted.txt")
-        
-        col_map = {'accession':0, 'peptide':3, 'run':4, 'data':range(5, 21)}
-        res = tasks.start_import.apply_async((exp, col_map, 5))
-        
-        process_id = res.get()
+        res = tasks.start_import.apply_async((exp_id, session_id, user.email, app_url))
+        res.get()
         assert res.successful()
         
-        self.assertEqual(3, len( patch_loadProtein.s.call_args_list ))
+        patch_parse.assert_called_once_with(session)
+        patch_get_headers.assert_called_once_with(session)
+        
+        patch_get_proteins.assert_called_once_with("some accessions", 1000)
+        patch_createError.assert_any_call(exp_id, 1, "an error")
+        patch_createError.assert_any_call(exp_id, 9, "another error")
+        
+        patch_create_tasks.assert_called_once_with(exp_id, prot_map, "some accessions", "some peps", "some mods", "some headers", session.units, "some data")
+        patch_invoke.assert_called_once_with("some tasks", exp_id, user.email, app_url)
+        

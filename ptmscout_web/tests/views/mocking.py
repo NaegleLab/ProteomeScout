@@ -53,6 +53,7 @@ def createMockSession(user, sid=random.randint(0,100000), data_file='some_file',
     mock.parent_experiment = parent_experiment
     mock.change_description = change_description
     mock.stage = stage
+    mock.units = 'time'
     mock.experiment_id = experiment_id
     mock.columns = []
     mock.date = datetime.datetime.now()
@@ -276,7 +277,7 @@ def createMockPTM(ptmid=random.randint(0,100000), name=None,  position=None, acc
     mock = Mock(spec=PTM)
     
     if name==None:
-        name = "PTM-" + ptmid
+        name = "PTM-" + str(ptmid)
     
     mock.id = ptmid
     mock.position = position
