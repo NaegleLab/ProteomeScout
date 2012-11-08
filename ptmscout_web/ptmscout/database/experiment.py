@@ -4,12 +4,21 @@ from ptmscout.config import settings as config
 from ptmscout.database.permissions import Permission
 from sqlalchemy.schema import ForeignKey
 from sqlalchemy.types import Float, Enum, DateTime
-from sqlalchemy.sql.expression import null, or_, and_
+from sqlalchemy.sql.expression import null
 import datetime
 from ptmscout.utils import celeryutils
 from sqlalchemy.orm import relationship
-import logging
 
+class ExperimentError(Base):
+    __tablename__ = 'experiment_error'
+    
+    id = Column(Integer(10), primary_key=True, autoincrement=True)
+    experiment_id = Column(Integer(10), ForeignKey("experiment.id"))
+    line = Column(Integer(10))
+    
+    message = Column(Text)
+    
+    
 class ExperimentCondition(Base):
     __tablename__ = 'experiment_condition'
     
@@ -33,6 +42,7 @@ class ExperimentData(Base):
     value = Column(Float, default=null)
     
     MS_id = Column(Integer(10), ForeignKey('MS.id'))
+    MS = relationship("MeasuredPeptide")
     
     def save(self):
         DBSession.add(self)
@@ -75,6 +85,7 @@ class Experiment(Base):
     status = Column(Enum('preload','loading','loaded'), default='preload')
     submitter_id = Column(Integer(10), ForeignKey('users.id'))
     
+    errors = relationship("ExperimentError")
     conditions = relationship("ExperimentCondition", cascade="all,delete-orphan")
     
     def __init__(self):
@@ -219,12 +230,12 @@ class ExperimentNotAvailable(Exception):
         return "Experiment %d is still being processed for upload" % (self.eid)
     
 
-def getExperimentById(experiment_id, current_user, check_ready=True):
+def getExperimentById(experiment_id, user=None, check_ready=True, secure=True):
     value = DBSession.query(Experiment).filter_by(id=experiment_id).first()
     if value == None:
         raise NoSuchExperiment(experiment_id)
 
-    if not value.checkPermissions(current_user):
+    if secure and not value.checkPermissions(user):
         raise ExperimentAccessForbidden(experiment_id)
     
     if check_ready and not value.ready():
@@ -256,3 +267,11 @@ def getValuesForField(field_name):
     
     return sorted([ r.value for r in results ])
 
+def createExperimentError(exp_id, line, message):
+    err = ExperimentError()
+    err.experiment_id = exp_id
+    err.line = line
+    err.message = message
+    
+    DBSession.add(err)
+    
