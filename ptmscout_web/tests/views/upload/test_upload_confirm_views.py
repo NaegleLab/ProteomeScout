@@ -7,6 +7,7 @@ from tests.views.mocking import createMockExperiment, createMockUser,\
     createMockSession
 from mock import patch
 from ptmscout.database import upload
+from ptmscout.utils import webutils
 
 class TestUploadStatusView(UnitTestCase):
     
@@ -41,6 +42,8 @@ class TestUploadStatusView(UnitTestCase):
         
         patch_getSession.return_value = session
         patch_getExperiment.return_value = exp
+        exp.getUrl.return_value = "url"
+        exp.getLongCitationString.return_value = "citation"
         
         result = upload_confirm_view(request)
         
@@ -49,12 +52,16 @@ class TestUploadStatusView(UnitTestCase):
         session.save.assert_called_once_with()
         patch_startUpload.assert_called_once_with((exp.id, session.id, request.user.email, request.application_url))
         
+        exp_dict = webutils.object_to_dict(exp)
+        exp_dict['url'] = "url"
+        exp_dict['citation'] = "citation"
+        self.assertEqual(exp_dict, result['experiment'])
+        
         self.assertEqual('complete', session.stage)
         self.assertEqual(None, result['reason'])
         self.assertEqual(strings.experiment_upload_started_page_title, result['pageTitle'])
         self.assertEqual(strings.experiment_upload_started_message % (request.application_url + "/account/experiments"), result['message'])
         self.assertEqual(102, result['session_id'])
-        self.assertEqual(exp, result['experiment'])
         self.assertEqual(True, result['confirm'])
         
     @patch('ptmscout.database.experiment.getExperimentById')
@@ -70,14 +77,20 @@ class TestUploadStatusView(UnitTestCase):
         
         patch_getSession.return_value=session
         patch_getExperiment.return_value = exp
+        exp.getUrl.return_value = "url"
+        exp.getLongCitationString.return_value = "citation"
         
         result = upload_confirm_view(request)
         
         patch_getSession.assert_called_once_with(102, request.user)
         patch_getExperiment.assert_called_once_with(26, request.user, False)
         
+        exp_dict = webutils.object_to_dict(exp)
+        exp_dict['url'] = "url"
+        exp_dict['citation'] = "citation"
+        self.assertEqual(exp_dict, result['experiment'])
+        
         self.assertEqual(strings.failure_reason_terms_of_use_not_accepted, result['reason'])
-        self.assertEqual(exp, result['experiment'])
         self.assertEqual(strings.experiment_upload_confirm_page_title, result['pageTitle'])
         self.assertEqual(strings.experiment_upload_confirm_message, result['message'])
         self.assertEqual(102, result['session_id'])
@@ -95,13 +108,20 @@ class TestUploadStatusView(UnitTestCase):
         
         patch_getSession.return_value=session
         patch_getExperiment.return_value = exp
+        exp.getUrl.return_value = "url"
+        exp.getLongCitationString.return_value = "citation"
         
         result = upload_confirm_view(request)
         
         patch_getSession.assert_called_once_with(102, request.user)
         patch_getExperiment.assert_called_once_with(26, request.user, False)
+        
+        exp_dict = webutils.object_to_dict(exp)
+        exp_dict['url'] = "url"
+        exp_dict['citation'] = "citation"
+        self.assertEqual(exp_dict, result['experiment'])
+        
         self.assertEqual(None, result['reason'])
-        self.assertEqual(exp, result['experiment'])
         self.assertEqual(strings.experiment_upload_confirm_page_title, result['pageTitle'])
         self.assertEqual(strings.experiment_upload_confirm_message, result['message'])
         self.assertEqual(102, result['session_id'])

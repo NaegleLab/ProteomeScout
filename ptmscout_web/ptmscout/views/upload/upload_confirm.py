@@ -27,14 +27,19 @@ def upload_confirm_view(request):
     reason = None
     
     exp = experiment.getExperimentById(session.experiment_id, request.user, False)
+    exp_dict = webutils.object_to_dict(exp)
+    exp_dict['citation'] = exp.getLongCitationString()
+    exp_dict['url'] = exp.getUrl()
+    
     if confirm and terms_of_use_accepted:
         session.stage = 'complete'
         session.save()
         
         tasks.start_import.apply_async((exp.id, session.id, request.user.email, request.application_url))
+        
         return {'pageTitle': strings.experiment_upload_started_page_title,
                 'message': strings.experiment_upload_started_message % (request.application_url + "/account/experiments"),
-                'experiment': exp,
+                'experiment': exp_dict,
                 'session_id':session_id,
                 'reason':reason,
                 'confirm':confirm}
@@ -45,7 +50,7 @@ def upload_confirm_view(request):
     
     return {'pageTitle': strings.experiment_upload_confirm_page_title,
             'message': strings.experiment_upload_confirm_message,
-            'experiment': exp,
+            'experiment': exp_dict,
             'session_id': session_id,
             'reason':reason,
             'confirm': confirm}
