@@ -69,7 +69,10 @@ class TestUploadUtils(unittest.TestCase):
         mods = [ptm1,ptm2,ptm3]
         patch_findPTM.return_value = mods, True
         
-        check_modification_type_matches_peptide(1, "DFERTGDYDFqERAS", "METH")
+        indices, mod_object = check_modification_type_matches_peptide(1, "DFERTGDYDFqERAS", "METH")
+        
+        self.assertEqual([10], indices)
+        self.assertEqual([ptm1], mod_object)
         
         patch_findPTM.assert_any_call("METH", "Q", None) 
     
@@ -98,7 +101,10 @@ class TestUploadUtils(unittest.TestCase):
         
         patch_findPTM.return_value = [ptm1,ptm2], True
                
-        check_modification_type_matches_peptide(1, "AKsPVPKsPVEEK", "PHOS")
+        indices, mod_object = check_modification_type_matches_peptide(1, "AKsPVPKsPVEEK", "PHOS")
+        
+        self.assertEqual([2,7], indices)
+        self.assertEqual([ptm2, ptm2], mod_object)
         
         patch_findPTM.assert_any_call("PHOS", "S", None)
 

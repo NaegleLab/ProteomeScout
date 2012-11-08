@@ -31,8 +31,10 @@ class ParseError(Exception):
     def __repr__(self):
         if(self.col != None):
             return "Line %d, Column %d: %s" % (self.row, self.col, self.msg)
-        else:
+        elif(self.row != None):
             return "Line %d: %s" % (self.row, self.msg)
+        else:
+            return self.msg
     
     message = property(__repr__)    
 
@@ -67,7 +69,7 @@ def check_unique_column(session, ctype, required=False):
 
 def check_modification_type_matches_peptide(row, peptide, modification, taxon_nodes=None):
     modified_alphabet = set("abcdefghijklmnopqrstuvwxyz")
-    modified_residues = [ r for r in peptide if r in modified_alphabet ]
+    modified_residues = [ (i, r) for i, r in enumerate(peptide) if r in modified_alphabet ]
     mod_list = [ m.strip() for m in modification.split(',') ]
     
     if len(mod_list) > 1 and len(modified_residues) != len(mod_list):
@@ -76,9 +78,10 @@ def check_modification_type_matches_peptide(row, peptide, modification, taxon_no
     if len(mod_list) == 1 and len(modified_residues) > 1:
         mod_list = mod_list * len(modified_residues)
     
-    mods = []
+    mod_object = []
+    mod_indices = []
     
-    for i, residue in enumerate(modified_residues):
+    for i, (r, residue) in enumerate(modified_residues):
         residue = residue.upper()
         mod_type = mod_list[i]
         mods, found_type = modifications.findMatchingPTM(mod_type, residue, taxon_nodes)
@@ -101,10 +104,48 @@ def check_modification_type_matches_peptide(row, peptide, modification, taxon_no
             else:
                 selected_mod = parents[0]
             
+        mod_indices.append(r)
+        mod_object.append(selected_mod)
         
-        mods.append(selected_mod)
+    return mod_indices, mod_object
+    
+    
+def check_data_row(r, row, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols, keys):
+    errors = []
+    
+    accession = row[acc_col.column_number].strip()
+    peptide = row[pep_col.column_number].strip()
+    modification = row[mod_col.column_number].strip()
+
+    acc_type = protein_utils.get_accession_type(accession)
+    if acc_type not in protein_utils.get_valid_accession_types():
+        errors.append(ParseError(r, acc_col.column_number+1, strings.experiment_upload_warning_acc_column_contains_bad_accessions))
+            
+    if not protein_utils.check_peptide_alphabet(peptide):
+        errors.append(ParseError(r, pep_col.column_number+1, strings.experiment_upload_warning_peptide_column_contains_bad_peptide_strings))
         
-    return mods
+    call_catch(ParseError, errors, check_modification_type_matches_peptide, r, peptide, modification)
+    
+    run = None
+    if run_col != None:
+        run = row[run_col.column_number].strip()
+        k = (accession, peptide, run)
+        if k in keys:
+            errors.append(ParseError(r, None, strings.experiment_upload_warning_full_dupe))
+        keys.add(k)
+    else:
+        k = (accession, peptide)
+        if k in keys:
+            errors.append(ParseError(r, None, strings.experiment_upload_warning_no_run_column))
+        keys.add(k)
+        
+    for c in data_cols + stddev_cols:
+        try:
+            float(row[c.column_number].strip())
+        except:
+            errors.append(ParseError(r, c.column_number+1, strings.experiment_upload_warning_data_column_not_numeric))
+    
+    return errors
     
 def check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols, N=MAX_ROW_CHECK):
     errors = []
@@ -116,41 +157,9 @@ def check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stdd
     for row in data:
         if len(row) < len(header):
             continue
-        
         r+=1
-        accession = row[acc_col.column_number].strip()
-        peptide = row[pep_col.column_number].strip()
-        modification = row[mod_col.column_number].strip()
-
-        acc_type = protein_utils.get_accession_type(accession)
-        if acc_type not in protein_utils.get_valid_accession_types():
-            errors.append(ParseError(r, acc_col.column_number+1, strings.experiment_upload_warning_acc_column_contains_bad_accessions))
-                
-        if not protein_utils.check_peptide_alphabet(peptide):
-            errors.append(ParseError(r, pep_col.column_number+1, strings.experiment_upload_warning_peptide_column_contains_bad_peptide_strings))
-            
-        call_catch(ParseError, errors, check_modification_type_matches_peptide, r, peptide, modification)
         
-        run = None
-        if run_col != None:
-            run = row[run_col.column_number].strip()
-            k = (accession, peptide, run)
-            if k in keys:
-                errors.append(ParseError(r, None, strings.experiment_upload_warning_full_dupe))
-            keys.add(k)
-        else:
-            k = (accession, peptide)
-            if k in keys:
-                errors.append(ParseError(r, None, strings.experiment_upload_warning_no_run_column))
-            keys.add(k)
-            
-        for c in data_cols + stddev_cols:
-            try:
-                float(row[c.column_number].strip())
-            except:
-                errors.append(ParseError(r, c.column_number+1, strings.experiment_upload_warning_data_column_not_numeric))
-        
-        
+        errors.extend(check_data_row(r, row, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols, keys))
     
     return errors
 
