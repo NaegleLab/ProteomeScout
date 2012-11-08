@@ -2,9 +2,9 @@ from mock import Mock
 from ptmscout.utils import crypto
 from ptmscout.database.user import User
 from ptmscout.database.experiment import Experiment, ExperimentData,\
-    ExperimentCondition
+    ExperimentCondition, ExperimentError
 from ptmscout.database.permissions import Permission
-from ptmscout.database.protein import Protein, GeneOntology, Domain
+from ptmscout.database.protein import Protein, GeneOntology, ProteinDomain
 import random
 from ptmscout.database.modifications import MeasuredPeptide, Phosphopep,\
     ScansitePrediction, PTM, PTMkeyword
@@ -89,7 +89,21 @@ def createMockExperiment(eid=random.randint(0,100000), public=0, parent_id=None,
     mock.ready.return_value = mock.status == 'loaded'
     mock.date = datetime.datetime.now()
     mock.experiment_id = None
+    mock.errors = []
     return mock
+
+def createMockError(line, message, eid=random.randint(0,100000), experiment=None):
+    mock = Mock(spec=ExperimentError)
+    mock.id = eid
+    mock.line = line
+    mock.message = message
+    
+    if experiment != None:
+        mock.experiment_id = experiment.id
+        experiment.errors.append(mock)
+        
+    return mock
+    
 
 def createMockPermission(user, experiment, access_level='view'):
     mock = Mock(spec=Permission)
@@ -239,7 +253,7 @@ def createMockScansite(pep_id):
     return mock
 
 def createMockDomain(pid):
-    mock = Mock(spec=Domain)
+    mock = Mock(spec=ProteinDomain)
     
     mock.id = random.randint(0, 100000)
     

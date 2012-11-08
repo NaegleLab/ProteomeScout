@@ -5,7 +5,7 @@ from ptmscout.views.experiment.summary_view import experiment_summary_view,\
 from pyramid.testing import DummyRequest
 from ptmscout.config import strings
 from tests.views.mocking import createMockExperiment, createMockProtein,\
-    createMockMeasurement, createMockPhosphopep
+    createMockMeasurement, createMockPhosphopep, createMockError
 from mock import patch
 import json
 import base64
@@ -129,6 +129,11 @@ class SummaryViewsTests(unittest.TestCase):
         patch_measurementSummary.return_value = mock_measurement_summary
         
         exp = createMockExperiment(exp_id, 0, 0)
+        
+        createMockError(1, "Not working", experiment=exp)
+        createMockError(1, "Not working", experiment=exp)
+        createMockError(2, "Not working", experiment=exp)
+        
         patch_getExperiment.return_value = exp
         
         result = experiment_summary_view(request)
@@ -144,6 +149,6 @@ class SummaryViewsTests(unittest.TestCase):
         self.assertEqual(mock_measurement_summary, result['measurement_summary'])
         self.assertEqual(base64.b64encode(json.dumps(sequence_profile)), result['sequence_profile'])
         
-        self.assertEqual(0, result['error_count'])
-        self.assertEqual(0, result['rejected_peptides'])
+        self.assertEqual(3, result['error_count'])
+        self.assertEqual(2, result['rejected_peptides'])
         self.assertEqual(strings.experiment_summary_page_title % (exp.name), result['pageTitle'])
