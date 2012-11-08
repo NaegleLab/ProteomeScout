@@ -31,7 +31,7 @@ def upload_confirm_view(request):
         session.stage = 'complete'
         session.save()
         
-        tasks.start_import.apply_async((request, exp, session, request.user))
+        tasks.start_import.apply_async((exp.id, session.id, request.user.email, request.application_url))
         return {'pageTitle': strings.experiment_upload_started_page_title,
                 'message': strings.experiment_upload_started_message % (request.application_url + "/account/experiments"),
                 'experiment': exp,
