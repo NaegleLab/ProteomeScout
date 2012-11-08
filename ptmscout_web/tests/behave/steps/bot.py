@@ -69,3 +69,51 @@ class Bot(object):
         form.set('parent_experiment', parent_experiment)
         form.set('change_description', change_description)
         return form.submit()
+    
+
+def set_metadata_form_defaults(form):
+    form.set('pmid', '')
+    form.set('URL', '')
+    
+    form.set('description', "This is an experiment")
+    
+    form.set('published', "yes")
+    form.set('experiment_name', "Experiment with some kind of data")
+    form.set('author_contact', "author@institute.edu")
+    form.set('authors', "S Guy, S O Person")
+    form.set('journal', "Journal of serendipitous results")
+    form.set('publication_month', "december")
+    form.set('publication_year', "2011")
+    form.set('volume', "236")
+    form.set('page_start', "111")
+    form.set('page_end', "123")
+    
+    form.set('ambiguous', "no")
+    form.set('notes', "none")
+
+
+def upload_file(context, filename, force=False):
+    context.active_user.login()
+    
+    context.form = context.ptmscoutapp.get('/upload',status=200).form
+    context.result = context.active_user.load_datafile(filename, context.form).follow()
+    context.result = context.result.form.submit()
+    
+    if context.result.status != '302 Found':
+        if force:
+            context.result.form.set('override', 'yes')
+            context.result = context.result.form.submit()
+        else:  
+            context.result.showbrowser()
+    
+    assert context.result.status == '302 Found'
+    context.result = context.result.follow()
+    
+    
+    set_metadata_form_defaults(context.result.form)
+    
+    context.result = context.result.form.submit().follow()
+    context.result = context.result.form.submit().follow()
+    
+    context.form = context.result.form
+    context.form.set('terms_of_use', "yes")
