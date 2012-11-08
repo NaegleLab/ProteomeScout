@@ -7,7 +7,7 @@ import datetime
 class SessionColumn(Base):
     __tablename__='session_columns'
     id=Column(Integer(10), primary_key=True, autoincrement=True)
-    session_id=Column(Integer(10), ForeignKey('sessions.id'))
+    session_id=Column(Integer(10), ForeignKey('session.id'))
     
     column_values=['hidden','data','stddev','accession','peptide','species','modification','run', 'none']
     
@@ -16,7 +16,7 @@ class SessionColumn(Base):
     column_number=Column(Integer)
 
 class Session(Base):
-    __tablename__='sessions'
+    __tablename__='session'
     id=Column(Integer(10), primary_key=True, autoincrement=True)
     user_id=Column(Integer(10), ForeignKey('users.id'))
     
@@ -30,7 +30,7 @@ class Session(Base):
     experiment_id=Column(Integer(10), ForeignKey('experiment.id'))
     date=Column(DateTime)
     
-    columns = relationship("SessionColumn", cascade="all,delete-orphan")
+    columns = relationship("SessionColumn", cascade="all,delete-orphan", lazy="joined")
         
     def __init__(self):
         self.date = datetime.datetime.now()
@@ -63,13 +63,13 @@ class SessionAccessForbidden(Exception):
     pass
 
 
-def getSessionById(session_id, current_user):
+def getSessionById(session_id, user=None, secure=True):
     session = DBSession.query(Session).filter_by(id=session_id).first()
     
     if session == None:
         raise NoSuchSession()
     
-    if current_user == None or session.user_id != current_user.id:
+    if secure and (user == None or session.user_id != user.id):
         raise SessionAccessForbidden()
          
     
