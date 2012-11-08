@@ -36,6 +36,10 @@ def show_proteins_and_rejected_peptides(context):
     context.result.mustcontain('YLRFSDIkKNINSGA')
     context.result.mustcontain('TLkYPIEhGIVTNWD')
     context.result.mustcontain('TLKYPIEhgIVTNWD')
+    
+    context.result.mustcontain("Warning: Specified modification 'lysine methyl ester' does not match residue 'K' for any known species")
+    context.result.mustcontain("Warning: Specified modification 'methylhistidine' does not match residue 'K' for any known species")
+    context.result.mustcontain("Warning: Specified modification 'methylation' does not match residue 'G' for any known species")
 
 
 @then(u'the user should be given a link to download the subset of the dataset that did not load with an additional error explanation column')
