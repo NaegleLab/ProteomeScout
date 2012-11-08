@@ -70,6 +70,8 @@ experiment_upload_warning_ambiguous_modification_type_for_amino_acid = "Warning:
 experiment_upload_warning_no_run_column = "Warning: Experiment contains multiple datapoints for the same protein/peptide pair, but no run column"
 experiment_upload_warning_full_dupe = "Warning: Experiment contains multiple datapoints for the same protein/peptide/run triplet"
 
+experiment_upload_warning_peptide_not_found_in_protein_sequence = "Warning: Peptide sequence not found in protein sequence"
+
 experiment_upload_option_no_run_column_assign_in_order  = "Assign run numbers in order of occurrence"
 
 
