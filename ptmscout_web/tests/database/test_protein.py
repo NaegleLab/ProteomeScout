@@ -12,7 +12,6 @@ class ProteinTest(DBTestCase):
         self.assertEqual('homo sapiens', prot.species.name)
         self.assertEqual('BTK', prot.acc_gene)
         self.assertEqual('Tyrosine-protein kinase BTK; AltName: Full=Bruton tyrosine kinase; AltName: Full=Agamm', prot.name)
-        self.assertEqual('12-2009', prot.date)
          
     def test_non_existant_protein_should_raise_no_such_protein(self):
         try:
@@ -59,10 +58,9 @@ class ProteinTest(DBTestCase):
         
         prot.GO_terms.append(go_term1)
         prot.GO_terms.append(go_term2)
-        prot.saveProtein()
         
         try:
-            self.session.flush()
+            prot.saveProtein()
         except IntegrityError:
             pass
         except Exception, e:
