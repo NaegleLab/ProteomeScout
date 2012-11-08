@@ -38,8 +38,8 @@ class PTM(Base):
     taxons = relationship("Taxonomy", secondary=PTM_taxon)
     keywords = relationship("PTMkeyword")
 
-    def hasTaxon(self, taxon_ids):
-        return len(set([t.node_id for t in self.taxons]) & taxon_ids) > 0
+    def hasTaxon(self, search_taxons):
+        return len(set([t.name for t in self.taxons]) & search_taxons) > 0
 
     def hasTarget(self, residue):
         return residue in set([c.target for c in self.children]) or residue == self.target
@@ -114,12 +114,12 @@ def getMeasuredPeptidesByProtein(pid, user):
     modifications = DBSession.query(MeasuredPeptide).filter_by(protein_id=pid).all()
     return [ mod for mod in modifications if mod.experiment.checkPermissions(user) and mod.experiment.ready() ]
 
-def getMeasuredPeptidesByExperiment(eid, user, pids = None):
+def getMeasuredPeptidesByExperiment(eid, user=None, pids = None, secure=True, check_ready=True):
     if(pids != None):
         modifications = DBSession.query(MeasuredPeptide).filter(and_(MeasuredPeptide.experiment_id==eid, MeasuredPeptide.protein_id.in_(pids))).all()
     else:
         modifications = DBSession.query(MeasuredPeptide).filter_by(experiment_id=eid).all()
-    return [ mod for mod in modifications if mod.experiment.checkPermissions(user) and mod.experiment.ready() ]
+    return [ mod for mod in modifications if (not secure or mod.experiment.checkPermissions(user)) and (not check_ready or mod.experiment.ready()) ]
 
 
 def getModificationBySite(pep_site, pep_type, prot_id, mod_id):
@@ -131,14 +131,14 @@ def getModificationBySite(pep_site, pep_type, prot_id, mod_id):
     return mod
 
 
-def findMatchingPTM(mod_type, residue=None, taxon_ids=None):
+def findMatchingPTM(mod_type, residue=None, taxons=None):
     mods = DBSession.query(PTM).join(PTMkeyword).filter(or_(PTM.accession==mod_type, PTM.name==mod_type, PTMkeyword.keyword==mod_type)).all()
     
     mods_exist = len(mods) > 0
     
     if residue:
         mods = [mod for mod in mods if mod.hasTarget(residue)]
-    if taxon_ids:
-        mods = [mod for mod in mods if mod.hasTaxon(taxon_ids)]
+    if taxons:
+        mods = [mod for mod in mods if mod.hasTaxon(taxons) or len(mod.taxons) == 0]
     
     return mods, mods_exist
