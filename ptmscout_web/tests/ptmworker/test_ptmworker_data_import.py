@@ -1,3 +1,4 @@
+# Skip
 from tests.PTMScoutTestCase import IntegrationTestCase
 from mock import patch, call
 from ptmworker import tasks
