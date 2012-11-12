@@ -27,11 +27,15 @@ class FormUtilsTestCase(unittest.TestCase):
         
     def test_form_renderer(self):
         request = DummyRequest()
+        request.POST = {}
+        request.GET = {}
+        
         request.POST['pmid'] = "1234"
         request.GET['URL'] = "http://somestuff.com"
         request.POST['publication_year'] = ""
         request.GET['description'] = "stuff"
         request.POST['load_type'] = "reload"
+        
         
         self.form_schema.parse_fields(request)
         renderer = forms.FormRenderer(self.form_schema)
