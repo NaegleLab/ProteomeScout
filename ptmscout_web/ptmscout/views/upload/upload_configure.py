@@ -99,7 +99,7 @@ def upload_config(request):
     else:
         column_defs = uploadutils.assign_column_defaults(session)
     
-    headers, data_rows = uploadutils.load_header_and_data_rows(session, uploadutils.MAX_ROW_CHECK)
+    headers, data_rows = uploadutils.load_header_and_data_rows(session.data_file, uploadutils.MAX_ROW_CHECK)
     
     return {'allowoverride': allowoverride,
             'headers': headers,
