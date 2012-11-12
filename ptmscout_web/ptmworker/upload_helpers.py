@@ -63,7 +63,9 @@ def create_new_protein(name, gene, seq, species, accessions):
         acc_db.type = protein_utils.get_accession_type(prot_acc)
         acc_db.value = prot_acc
         prot.accessions.append(acc_db)
-     
+    
+    prot.saveProtein()
+    
     return prot
 
 def find_protein(name, gene, seq, prot_accessions, species):
@@ -90,11 +92,8 @@ def get_proteins_from_ncbi(accessions, MAX_BATCH_SIZE):
         if len(query_job_args[-1]) == MAX_BATCH_SIZE:
             query_job_args.append([])
 
-        
     prot_map = {}
-    for qjob in query_job_args:
-        load_proteins(qjob, pm, prot_map)
-        
+    [ load_proteins(qjob, pm, prot_map) for qjob in query_job_args if len(qjob) > 0 ]
 
     errors = []
     for acc in accessions:
@@ -111,17 +110,25 @@ def get_proteins_from_ncbi(accessions, MAX_BATCH_SIZE):
 
 def get_aligned_peptide_sequences(mod_sites, index, pep_seq, prot_seq):
     upper_case = pep_seq.upper()
-    
     aligned_peptides = []
     
     for i in mod_sites:
         pep_site = i + index
         
+        low_bound = max([pep_site-7, 0])
+        high_bound = min([len(prot_seq), pep_site+8])
+
 #        pep_tryps   = upper_case[:i] + pep_seq[i] + upper_case[i+1:]
-        pep_aligned = prot_seq[pep_site-7:pep_site] + pep_seq[i] + prot_seq[pep_site+1:pep_site+8]
+        pep_aligned = prot_seq[low_bound:pep_site] + pep_seq[i] + prot_seq[pep_site+1:high_bound]
+        
+        if pep_site-7 < 0:
+            pep_aligned = (" " * (7 - pep_site)) + pep_aligned
+        if pep_site+8 > len(prot_seq):
+            pep_aligned = pep_aligned + (" " * (pep_site + 8 - len(prot_seq)))
+        
         pep_type = upper_case[i]
         
-        aligned_peptides.append((pep_site, pep_aligned, pep_type))
+        aligned_peptides.append((pep_site+1, pep_aligned, pep_type))
     
     return aligned_peptides
     
