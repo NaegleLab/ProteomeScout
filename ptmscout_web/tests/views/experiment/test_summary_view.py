@@ -130,9 +130,9 @@ class SummaryViewsTests(unittest.TestCase):
         
         exp = createMockExperiment(exp_id, 0, 0)
         
-        createMockError(1, "Not working", experiment=exp)
-        createMockError(1, "Not working", experiment=exp)
-        createMockError(2, "Not working", experiment=exp)
+        createMockError(1, "Not working", accession="QUP123", peptide="adsfgdfgt", experiment=exp)
+        createMockError(2, "Not working", accession="QUP123", peptide="adsfgdfgt", experiment=exp)
+        createMockError(3, "Not working", accession="KPU321", peptide="wertsdfgf", experiment=exp)
         
         patch_getExperiment.return_value = exp
         

@@ -84,7 +84,7 @@ def experiment_summary_view(request):
     exp = experiment.getExperimentById(eid, request.user)
     measurements = modifications.getMeasuredPeptidesByExperiment(eid, request.user)
     
-    rejected_peps = len(set([err.line for err in exp.errors]))
+    rejected_peps = len(set([err.peptide for err in exp.errors]))
     
     measurement_summary = summarize_measurements(measurements)
     sequence_profile = create_sequence_profile(measurements)
