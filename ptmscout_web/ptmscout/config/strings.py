@@ -22,6 +22,8 @@ account_activation_failed_message = "The specified account is not valid, please 
 
 account_management_page_title = "Account Management"
 
+experiment_errors_page_title = "Experiment Data Upload Errors"
+
 experiments_page_title = "Home - Experiments"
 experiment_page_title = "Experiment: %s"
 experiment_summary_page_title = "Experiment Summary: %s"
@@ -207,5 +209,3 @@ prediction_type_map = {'scansite': "Scansite",
 
 error_resource_not_ready_page_title = "Resource not ready"
 error_resource_not_ready_message = "The resource you are trying to access is currently in processing. If you are the creator of this resource, please visit <a href=\"%s\">this page</a> to check on its status."
-
-
