@@ -50,7 +50,8 @@ class FormSchema(object):
 
     def parse_fields(self, request):
         for ref in self.field_names:
-            v = webutils.post(request, ref, None) or webutils.get(request, ref, None)
+            v = webutils.post(request, ref, None) 
+            if v == None: webutils.get(request, ref, None)
             
             if v != None and self.field_types[ref] != FormSchema.FILE:
                 v = v.strip()
