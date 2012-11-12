@@ -100,7 +100,7 @@ def get_proteins_from_ncbi(accessions, MAX_BATCH_SIZE):
         try:
             prot_map[acc] = get_protein_information(pm, acc)
         except uploadutils.ParseError, e:
-            for line in accessions[acc]:
+            for line, acc, pep in accessions[acc]:
                 e.row = line
                 errors.append(e)
     
