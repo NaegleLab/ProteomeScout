@@ -2,9 +2,9 @@ $(document).ready(function(){
 	
 	// initialization
 	
-	var a_checked = $('#append_dataset').attr("checked") != "undefined"
-	var r_checked = $('#reload_dataset').attr("checked") != "undefined"
-	var e_checked = $('#extend_dataset').attr("checked") != "undefined"
+	var a_checked = $('#append_dataset').attr("checked") == "checked"
+	var r_checked = $('#reload_dataset').attr("checked") == "checked"
+	var e_checked = $('#extend_dataset').attr("checked") == "checked"
 	
 	$('#parent_exp').css('display', function(){
 		if(a_checked || r_checked || e_checked)
