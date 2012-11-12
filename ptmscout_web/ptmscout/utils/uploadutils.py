@@ -155,9 +155,10 @@ def check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stdd
     
     r = 0
     for row in data:
+        r+=1
+        
         if len(row) < len(header):
             continue
-        r+=1
         
         errors.extend(check_data_row(r, row, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols, keys))
     
