@@ -16,6 +16,9 @@ class ExperimentError(Base):
     experiment_id = Column(Integer(10), ForeignKey("experiment.id"))
     line = Column(Integer(10))
     
+    accession = Column(VARCHAR(45))
+    peptide = Column(VARCHAR(150))
+    
     message = Column(Text)
     
     
@@ -267,10 +270,12 @@ def getValuesForField(field_name):
     
     return sorted([ r.value for r in results ])
 
-def createExperimentError(exp_id, line, message):
+def createExperimentError(exp_id, line, accession, peptide, message):
     err = ExperimentError()
     err.experiment_id = exp_id
     err.line = line
+    err.accession = accession
+    err.peptide = peptide
     err.message = message
     
     DBSession.add(err)

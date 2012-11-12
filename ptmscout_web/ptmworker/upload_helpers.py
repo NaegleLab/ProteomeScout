@@ -207,7 +207,7 @@ def parse_datafile(session):
     data_cols = session.getColumns('data')
     stddev_cols = session.getColumns('stddev')
     
-    _, rows = uploadutils.load_header_and_data_rows(session, sys.maxint)
+    _, rows = uploadutils.load_header_and_data_rows(session.data_file, sys.maxint)
     
     keys = set([])
 
@@ -224,7 +224,7 @@ def parse_datafile(session):
         mods = row[mod_col.column_number]
         
         acc_lines = accessions.get(acc, [])
-        acc_lines.append(line)
+        acc_lines.append((line, acc, pep))
         accessions[acc] = acc_lines
         
         pep_set = peptides.get(acc, set())

@@ -88,5 +88,4 @@ class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
         self.assertEqual((3,  "     MSaDFJTKLJ", 'A'), aligned_peptides[1])
         self.assertEqual((8,  "MSADFJTkLJAWERP", 'K'), aligned_peptides[2])
         self.assertEqual((15, "KLJAWERpOIDFK  ", 'P'), aligned_peptides[3])
-        
-    
+            

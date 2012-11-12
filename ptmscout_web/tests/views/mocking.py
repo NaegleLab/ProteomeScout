@@ -93,11 +93,13 @@ def createMockExperiment(eid=random.randint(0,100000), public=0, parent_id=None,
     mock.errors = []
     return mock
 
-def createMockError(line, message, eid=random.randint(0,100000), experiment=None):
+def createMockError(line, message, accession="SOMEACC", peptide="ASDFGJEW", eid=random.randint(0,100000), experiment=None):
     mock = Mock(spec=ExperimentError)
     mock.id = eid
     mock.line = line
     mock.message = message
+    mock.accession = accession
+    mock.peptide = peptide
     
     if experiment != None:
         mock.experiment_id = experiment.id

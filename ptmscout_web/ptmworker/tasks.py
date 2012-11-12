@@ -34,14 +34,14 @@ def finalize_import(exp_id, user_email, application_url):
 
     
 def logErrorsToDB(exp_id, affected_lines, e):
-    for line in affected_lines:
-        experiment.createExperimentError(exp_id, line, e.msg)
+    for line, accession, peptide in affected_lines:
+        experiment.createExperimentError(exp_id, line, accession, peptide, e.msg)
     
     
     
 @celery.task
-def load_peptide((protein_id, prot_seq, taxonomy), exp_id, pep_seq, modlist, run_task_args):
-    affected_lines = [line for line, _, _, _, _ in run_task_args]
+def load_peptide((protein_id, prot_seq, taxonomy), exp_id, accession, pep_seq, modlist, run_task_args):
+    affected_lines = [(line, accession, pep_seq) for line, _, _, _, _ in run_task_args]
     
     try:
         log.debug("loading peptide: %s %s", pep_seq, modlist)
@@ -74,11 +74,7 @@ def load_protein(protein_information, exp_id, affected_lines):
         
         # execute extra protein data import tasks (Future)
 
-        protein_id = prot.id
-        protein_seq = prot.sequence
-        
-            
-        return protein_id, protein_seq, taxonomy
+        return prot.id, prot.sequence, taxonomy
     except uploadutils.ParseError, e:
         logErrorsToDB(exp_id, affected_lines, e)
     except Exception, e:
@@ -105,7 +101,7 @@ def create_import_tasks(exp_id, prot_map, accessions, peptides, mod_map, series_
                 line, series =  runs[run_name]
                 run_tasks.append((line, units, series_headers, run_name, series))
             
-            pep_tasks.append( load_peptide.s(exp_id, pep, mod_map[(acc,pep)], run_tasks) )
+            pep_tasks.append( load_peptide.s(exp_id, acc, pep, mod_map[(acc,pep)], run_tasks) )
         
         import_tasks.append(( load_protein.s(prot_map[acc], exp_id, accessions[acc]) | group(pep_tasks) ))
 
@@ -129,7 +125,9 @@ def start_import(exp_id, session_id, user_email, application_url, MAX_BATCH_SIZE
         prot_map, errs2 = upload_helpers.get_proteins_from_ncbi(accessions, MAX_BATCH_SIZE)
         
         for error in errs1 + errs2:
-            experiment.createExperimentError(exp_id, error.row, error.msg)
+            result = [ (accession, peptide) for acc in accessions for (line, accession, peptide) in accessions[acc] if line == error.row ]
+            acc, pep = result[0] 
+            experiment.createExperimentError(exp_id, error.row, acc, pep, error.msg)
         
 
         
