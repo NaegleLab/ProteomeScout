@@ -57,6 +57,18 @@ class Bot(object):
         
         self.user.saveUser()
         
+    def publish_experiment(self, exp_id):
+        result = self.app.get("http://localhost/account/experiments")
+        forms = result.forms__get()
+        form_name = 'publish%d' % (exp_id)
+        
+        result = self.app.get(forms[form_name].action, status=200)
+        result.mustcontain(strings.publish_experiment_confirm_message)
+        
+        forms = result.forms__get()
+        result = forms['confirm'].submit()
+        result.mustcontain(strings.publish_experiment_success_message)
+        
     def load_datafile(self, filename, form, load_type='new', parent_experiment='', change_description=''):
         filename = os.path.join('tests','behave','data',filename)
         
