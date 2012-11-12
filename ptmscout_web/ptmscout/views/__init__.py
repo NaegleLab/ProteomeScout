@@ -14,6 +14,8 @@ def add_views(config):
     config.add_route('experiment_predictions','/experiments/{id}/predictions')
     config.add_route('experiment_summary','/experiments/{id}/summary')
     config.add_route('experiment_browse','/experiments/{id}/browse')
+    config.add_route('experiment_errors','/experiments/{id}/errors')
+    config.add_route('experiment_download','/experiments/{id}/download')
     
     config.add_route('upload', '/upload')
     config.add_route('upload_config', '/upload/{id}/config')
@@ -51,3 +53,6 @@ def add_views(config):
     config.add_route('change_password_success', '/change_password_success')
     
     config.add_view(forbidden_view, context=Forbidden)
+    
+    
+    config.add_renderer(name='tsv', factory='ptmscout.views.renderers.TSVRenderer')
