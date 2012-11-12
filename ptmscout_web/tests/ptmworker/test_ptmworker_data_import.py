@@ -50,8 +50,10 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         pep_seq = "GWeRJAD"
         modlist = [createMockPTM()]
         run_task_args = [(1, "a","b","c","d"),(3, "d","e","f","g")]
+        line_mapping = {1: (acc, pep_seq),
+                        3: (acc, pep_seq)}
         
-        res = tasks.load_peptide.apply_async(((protein_id, prot_seq, taxonomy), exp_id, acc, pep_seq, modlist, run_task_args))
+        res = tasks.load_peptide.apply_async(((protein_id, prot_seq, taxonomy), exp_id, pep_seq, modlist, line_mapping, run_task_args))
         res.get()
         
         self.assertTrue(res.successful())
@@ -73,14 +75,15 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         measuredPeptide.phosphopeps = []
         
         protein_id = prot.id
-        acc = "Q3K102"
+        pep_seq = "GWeRjAD"
+        
+        line_mapping = {1:("Q3K102", pep_seq), 3:("Q3K102", pep_seq)}
         prot_seq = "ABSFGWERJADSFKJ"
         taxonomy = ["Bacteria", "Escherichia"]
-        pep_seq = "GWeRjAD"
         modlist = [createMockPTM(),createMockPTM()]
         run_task_args = [(1, "a","b","c","d"),(3, "d","e","f","g")]
         
-        res = tasks.load_peptide.apply_async(((protein_id, prot_seq, taxonomy), exp_id, acc, pep_seq, modlist, run_task_args))
+        res = tasks.load_peptide.apply_async(((protein_id, prot_seq, taxonomy), exp_id, pep_seq, modlist, line_mapping, run_task_args))
         res.get()
         
         self.assertTrue(res.successful())
@@ -106,9 +109,9 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         taxons = ["some taxons"]
         
         accessions = ["some", "Accessions"]
-        affected_lines = [(1, 'acc', 'pep1'),(3, 'acc', 'pep2')]
-        
-        res = tasks.load_protein.apply_async(((prot.name, prot.acc_gene, taxons, prot.species.name, accessions, prot.sequence), exp_id, affected_lines))
+        affected_lines = [1,3]
+        line_mapping = {1: ('acc', 'pep1'), 3: ('acc', 'pep2')}
+        res = tasks.load_protein.apply_async(((prot.name, prot.acc_gene, taxons, prot.species.name, accessions, prot.sequence), exp_id, affected_lines, line_mapping))
         ret_val = res.get()
         
         self.assertTrue(res.successful())
@@ -124,8 +127,9 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         taxons = ["some taxons"]
         
         accessions = ["some", "Accessions"]
+        line_mapping = "some line map"
         
-        res = tasks.load_protein.apply_async(((prot.name, prot.acc_gene, taxons, prot.species.name, accessions, prot.sequence), exp_id, [1,3]))
+        res = tasks.load_protein.apply_async(((prot.name, prot.acc_gene, taxons, prot.species.name, accessions, prot.sequence), exp_id, [1,3], line_mapping))
         ret_val = res.get()
         
         self.assertEqual((prot.id, prot.sequence, taxons), ret_val)
@@ -147,6 +151,14 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         exp_id = 10
         prot_map = {"Q06FX4":"prot info 1", "A0FGVD":"prot info 2"}
         accessions = {"Q06FX4":[1,2,4,5], "A0FGVD":[3,6]}
+        line_mapping = {1:("Q06FX4","ABD"),
+                        2:("Q06FX4","DEF"),
+                        3:("A0FGVD","GHI"),
+                        4:("Q06FX4","ABD"),
+                        5:("Q06FX4","DEF"),
+                        6:("A0FGVD","GHI")
+                        }
+        
         peptides = {"Q06FX4":["ABD", "DEF"], "A0FGVD":["GHI"]}
         mod_map = {("Q06FX4", "ABD"): "phos", ("Q06FX4", "DEF"): "methylation", ("A0FGVD", "GHI"): "acetylation"}
         series_headers = ["some", "headers"]
@@ -156,14 +168,14 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
                      ("A0FGVD", "GHI"): {"run1":(3, [5,6]), "run2":(6, [9,10])}}
         
         
-        import_tasks = tasks.create_import_tasks(exp_id, prot_map, accessions, peptides, mod_map, series_headers, units, data_runs)
+        import_tasks = tasks.create_import_tasks(exp_id, prot_map, accessions, peptides, mod_map, line_mapping, series_headers, units, data_runs)
         
-        patch_peptide.s.assert_any_call(exp_id, "Q06FX4", "ABD", "phos", [(1, 'time(min)', ["some", "headers"], "run1", [1,2]),(4, 'time(min)', ["some", "headers"], "run2", [2,3])])
-        patch_peptide.s.assert_any_call(exp_id, "Q06FX4", "DEF", "methylation", [(2, 'time(min)', ["some", "headers"], "run1", [3,4]),(5, 'time(min)', ["some", "headers"], "run2", [7,8])])
-        patch_peptide.s.assert_any_call(exp_id, "A0FGVD", "GHI", "acetylation", [(3, 'time(min)', ["some", "headers"], "run1", [5,6]),(6, 'time(min)', ["some", "headers"], "run2", [9,10])])
+        patch_peptide.s.assert_any_call(exp_id, "ABD", "phos", line_mapping, [(1, 'time(min)', ["some", "headers"], "run1", [1,2]),(4, 'time(min)', ["some", "headers"], "run2", [2,3])])
+        patch_peptide.s.assert_any_call(exp_id, "DEF", "methylation", line_mapping, [(2, 'time(min)', ["some", "headers"], "run1", [3,4]),(5, 'time(min)', ["some", "headers"], "run2", [7,8])])
+        patch_peptide.s.assert_any_call(exp_id, "GHI", "acetylation", line_mapping, [(3, 'time(min)', ["some", "headers"], "run1", [5,6]),(6, 'time(min)', ["some", "headers"], "run2", [9,10])])
         
-        patch_protein.s.assert_any_call("prot info 1", exp_id, [1,2,4,5])
-        patch_protein.s.assert_any_call("prot info 2", exp_id, [3,6])
+        patch_protein.s.assert_any_call("prot info 1", exp_id, [1,2,4,5], line_mapping)
+        patch_protein.s.assert_any_call("prot info 2", exp_id, [3,6], line_mapping)
         
         self.assertEqual(2, len(import_tasks))
         
@@ -185,8 +197,13 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         user = createMockUser()
         session = createMockSession(user, experiment_id = exp_id)
         
-        accessions = {'Q1G345':[(1, 'Q1G345', "PEP1"),(5, 'Q1G345', "PEP2")], 'A34PDF':[(10, 'A34PDF', "PEP4"),(9, 'A34PDF', "PEP3")]}
-        patch_parse.return_value = accessions, "some peps", "some mods", "some data", [e1]
+        line_mapping = {1: ('Q1G345', "PEP1"),
+                        5: ('Q1G345', "PEP2"),
+                        10: ('A34PDF', "PEP4"),
+                        9: ('A34PDF', "PEP3")
+                        }
+        accessions = {'Q1G345':[1,5], 'A34PDF':[10,9]}
+        patch_parse.return_value = accessions, "some peps", "some mods", "some data", [e1], line_mapping
         patch_get_headers.return_value = "some headers"
         prot_map = {"some accessions":"some records"}
         patch_get_proteins.return_value = prot_map, [e2]
@@ -206,6 +223,6 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         patch_createError.assert_any_call(exp_id, 1, 'Q1G345', "PEP1", "an error")
         patch_createError.assert_any_call(exp_id, 9, 'A34PDF', "PEP3", "another error")
         
-        patch_create_tasks.assert_called_once_with(exp_id, prot_map, accessions, "some peps", "some mods", "some headers", session.units, "some data")
+        patch_create_tasks.assert_called_once_with(exp_id, prot_map, accessions, "some peps", "some mods", line_mapping, "some headers", session.units, "some data")
         patch_invoke.assert_called_once_with("some tasks", exp_id, user.email, app_url)
         

@@ -33,15 +33,16 @@ def finalize_import(exp_id, user_email, application_url):
     
 
     
-def logErrorsToDB(exp_id, affected_lines, e):
-    for line, accession, peptide in affected_lines:
-        experiment.createExperimentError(exp_id, line, accession, peptide, e.msg)
+def logErrorsToDB(exp_id, affected_lines, line_mapping, e):
+    for line in affected_lines:
+        acc, pep = line_mapping[line]
+        experiment.createExperimentError(exp_id, line, acc, pep, e.msg)
     
     
     
 @celery.task
-def load_peptide((protein_id, prot_seq, taxonomy), exp_id, accession, pep_seq, modlist, run_task_args):
-    affected_lines = [(line, accession, pep_seq) for line, _, _, _, _ in run_task_args]
+def load_peptide((protein_id, prot_seq, taxonomy), exp_id, pep_seq, modlist, line_mapping, run_task_args):
+    affected_lines = [line for line, _, _, _, _ in run_task_args]
     
     try:
         log.debug("loading peptide: %s %s", pep_seq, modlist)
@@ -61,13 +62,13 @@ def load_peptide((protein_id, prot_seq, taxonomy), exp_id, accession, pep_seq, m
             upload_helpers.insert_run_data(MS_pep, line, units, headers, name, series)
             
     except uploadutils.ParseError, e:
-        logErrorsToDB(exp_id, affected_lines, e)
+        logErrorsToDB(exp_id, affected_lines, line_mapping, e)
     except Exception, e:
         log.debug(traceback.format_exc())
     
 
 @celery.task
-def load_protein(protein_information, exp_id, affected_lines):
+def load_protein(protein_information, exp_id, affected_lines, line_mapping):
     try:
         name, gene, taxonomy, species, prot_accessions, seq = protein_information
         prot = upload_helpers.find_protein(name, gene, seq, prot_accessions, species)
@@ -76,7 +77,7 @@ def load_protein(protein_information, exp_id, affected_lines):
 
         return prot.id, prot.sequence, taxonomy
     except uploadutils.ParseError, e:
-        logErrorsToDB(exp_id, affected_lines, e)
+        logErrorsToDB(exp_id, affected_lines, line_mapping, e)
     except Exception, e:
         log.debug(traceback.format_exc())
     
@@ -87,7 +88,7 @@ def process_error_state(exp_id):
     log.debug("an error occurred during processing '%s'", exp.name)
     
 
-def create_import_tasks(exp_id, prot_map, accessions, peptides, mod_map, series_headers, units, data_runs):
+def create_import_tasks(exp_id, prot_map, accessions, peptides, mod_map, line_mapping, series_headers, units, data_runs):
     import_tasks = []
 
     for acc in prot_map:
@@ -101,9 +102,9 @@ def create_import_tasks(exp_id, prot_map, accessions, peptides, mod_map, series_
                 line, series =  runs[run_name]
                 run_tasks.append((line, units, series_headers, run_name, series))
             
-            pep_tasks.append( load_peptide.s(exp_id, acc, pep, mod_map[(acc,pep)], run_tasks) )
+            pep_tasks.append( load_peptide.s(exp_id, pep, mod_map[(acc,pep)], line_mapping, run_tasks) )
         
-        import_tasks.append(( load_protein.s(prot_map[acc], exp_id, accessions[acc]) | group(pep_tasks) ))
+        import_tasks.append(( load_protein.s(prot_map[acc], exp_id, accessions[acc], line_mapping) | group(pep_tasks) ))
 
     return import_tasks
 
@@ -118,21 +119,20 @@ def start_import(exp_id, session_id, user_email, application_url, MAX_BATCH_SIZE
         upload_helpers.mark_experiment(exp_id, 'loading')
         session = upload.getSessionById(session_id, secure=False)
 
-        accessions, peptides, mod_map, data_runs, errs1 = upload_helpers.parse_datafile(session)
+        accessions, peptides, mod_map, data_runs, errs1, line_mapping = upload_helpers.parse_datafile(session)
         series_headers = upload_helpers.get_series_headers(session)
         
         log.debug("Getting proteins from NCBI: ")
         prot_map, errs2 = upload_helpers.get_proteins_from_ncbi(accessions, MAX_BATCH_SIZE)
         
         for error in errs1 + errs2:
-            result = [ (accession, peptide) for acc in accessions for (line, accession, peptide) in accessions[acc] if line == error.row ]
-            acc, pep = result[0] 
+            acc, pep = line_mapping[error.row]
             experiment.createExperimentError(exp_id, error.row, acc, pep, error.msg)
         
 
         
         log.debug("Creating subtask tree")
-        import_tasks = create_import_tasks(exp_id, prot_map, accessions, peptides, mod_map, series_headers, session.units, data_runs)
+        import_tasks = create_import_tasks(exp_id, prot_map, accessions, peptides, mod_map, line_mapping, series_headers, session.units, data_runs)
         
         
         invoke(import_tasks, exp_id, user_email, application_url)
