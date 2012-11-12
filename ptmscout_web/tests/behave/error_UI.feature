@@ -8,6 +8,7 @@ Feature: Error Report
  	   And the user opens the error log
 	   Then the user should see a list of the proteins and peptides that were rejected during data loading
 
+	 @runme
      Scenario: Owner viewing of errors
        Given a user uploads a dataset with errors
  	   When the user opens the error log

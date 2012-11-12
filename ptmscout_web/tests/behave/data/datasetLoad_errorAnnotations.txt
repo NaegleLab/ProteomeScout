@@ -1,11 +1,4 @@
-Error_Explanations	NAME	acc	Gene Symbol	MOD_TYPE	RSD	SITE_GRP_ID	SPECIES	MW (kD)	IN_DOMAIN	pep	PUBMED_LTP	PUBMED_MS2	CST_MS2	CST_CAT#
-	14-3-3 theta	P27348	YWHAQ	methylation	K212	12194246	human	27.76	14-3-3	TLNEDSYkDSTLIMQ			1	
-	4930417G10Rik	Q8CDW1	4930417G10Rik	dimethylation	R257	9482571	mouse	34.46		GTGPQRPrSWAAADS			1	
-	53BP1	Q12888	TP53BP1	METHYLATION	R1396	2344821	human	213.57		GkAPVTPrGrGrrGr	2			
-	AAK1	Q2M2I8	AAK1	trimethylation	K317	11086048	human	103.88	Pkinase	FSFKLLKkECPIPNV			1	
-	ABAT	P50554	Abat	asymmetric dimethylarginine	R144	2099739	rat	56.46	Aminotran_3	ENFVDKLrESLMSVA	1	1		
+Error Information	NAME	acc	Gene Symbol	MOD_TYPE	RSD	SITE_GRP_ID	SPECIES	MW (kD)	IN_DOMAIN	pep	PUBMED_LTP	PUBMED_MS2	CST_MS2	CST_CAT#
 Warning: Specified modification 'lysine methyl ester' does not match residue 'K' for any known species	ABCA15	Q6XBG2	Abca15	lysine methyl ester	K162	8107574	mouse	190.52		YLRFSDIkKNINSGA			1	
-	ACTB	P60709	ACTB	methylhistidine	H73	2103802	human	41.74	Actin	TLKYPIEhGIVTNWD		1		
 Warning: Specified modification 'methylhistidine' does not match residue 'K' for any known species	ACTB	P60711	Actb	methylhistidine	H73	2103802	rat	41.74	Actin	TLkYPIEhGIVTNWD	1	1	#error on one peptide since k is not a histidine	
 Warning: Specified modification 'methylation' does not match residue 'G' for any known species	ACTB	P60711	Actb	methylation	H73	2103802	rat	41.74	Actin	TLKYPIEhgIVTNWD	1	1	#error on one peptide since g cannot be methylated	
-	ACTB	P60711	Actb	phosphorylation	H73	2103802	rat	41.74	Actin	TLKYPIEhGIVTNWD	1	1	#error since histidine cannot be phosphorylated in verterbrates/eukaryotes	
