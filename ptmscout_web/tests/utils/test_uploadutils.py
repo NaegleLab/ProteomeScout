@@ -252,7 +252,7 @@ class TestUploadUtils(unittest.TestCase):
         
         self.assertEqual({"some assignments":"vals"}, rval)
         patch_assign_columns.assert_called_with(session, header)
-        patch_load_header.assert_called_once_with(session)
+        patch_load_header.assert_called_once_with(session.data_file)
 
 
     @patch('ptmscout.utils.uploadutils.load_header_and_data_rows')        
@@ -263,6 +263,7 @@ class TestUploadUtils(unittest.TestCase):
         session.parent_experiment = None
         session.columns = ["some columns"]
         
+        
         header = "some header"
         patch_load_header.return_value = header, []
         
@@ -271,7 +272,7 @@ class TestUploadUtils(unittest.TestCase):
         
         self.assertEqual({"some assignments":"vals"}, rval)
         patch_assign_columns.assert_called_with(session)
-        patch_load_header.assert_called_once_with(session)
+        patch_load_header.assert_called_once_with(session.data_file)
 
 
     @patch('ptmscout.utils.uploadutils.load_header_and_data_rows')        
@@ -290,7 +291,7 @@ class TestUploadUtils(unittest.TestCase):
         
         self.assertEqual({"some assignments":"vals"}, rval)
         patch_assign_columns.assert_called_with(header)
-        patch_load_header.assert_called_once_with(session)
+        patch_load_header.assert_called_once_with(session.data_file)
 
     @patch('ptmscout.utils.uploadutils.check_data_rows')
     @patch('ptmscout.utils.uploadutils.check_unique_column')

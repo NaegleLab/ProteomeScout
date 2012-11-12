@@ -149,7 +149,7 @@ def check_data_row(r, row, acc_col, pep_col, mod_col, run_col, data_cols, stddev
     
 def check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols, N=MAX_ROW_CHECK):
     errors = []
-    header, data = load_header_and_data_rows(session, N)
+    header, data = load_header_and_data_rows(session.data_file, N)
     
     keys = set([])
     
@@ -251,7 +251,7 @@ def assign_columns_from_session_history(session, header):
     return result
 
 def assign_column_defaults(session):
-    header, _ = load_header_and_data_rows(session)
+    header, _ = load_header_and_data_rows(session.data_file)
     
     if session.columns != []:
         return assign_columns_from_session(session)
@@ -262,8 +262,8 @@ def assign_column_defaults(session):
     return assign_columns_by_name(header)
 
 
-def load_header_and_data_rows(session, N=-1):
-    ifile = csv.reader(open(os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, session.data_file), 'rb'), delimiter='\t')
+def load_header_and_data_rows(data_file, N=-1):
+    ifile = csv.reader(open(os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, data_file), 'rb'), delimiter='\t')
     i = 0
     
     header = ifile.next()
