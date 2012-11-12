@@ -69,7 +69,7 @@ def append_to_dataset(context):
     
     result = context.ptmscoutapp.get(append_link)
     
-    result.mustcontain('<option value="%d" selected >Experiment with some kind of data</option>' % (context.exp_id))
+    result.mustcontain('<option value="%d" selected>Experiment with some kind of data</option>' % (context.exp_id))
     result.mustcontain('name="load_type" value="append" checked />')
     
     
