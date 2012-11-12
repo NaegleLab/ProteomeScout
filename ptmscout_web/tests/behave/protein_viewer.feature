@@ -3,15 +3,15 @@ Feature: Protein Viewer
 	 Users should be able to manipulate the view of a protein
 
 
-	 Scenario: Zoom in on a protein
-	 	   Given a user clicks on the magnify in function
-		   When the user clicks on a protein area or one of the protein track areas
-		   Then the lateral portion of the protein and its associated tracks should expand to be centered on the zone of the click and doubling in zoom size with each click
+	Scenario: Zoom in on a protein
+		  Given a user clicks on the magnify in function
+		  When the user clicks on a protein area or one of the protein track areas
+		  Then the lateral portion of the protein and its associated tracks should expand to be centered on the zone of the click and doubling in zoom size with each click
 
 	Scenario: Zoom limit
 		  Given a user clicks on a magnify function and the protein is either all the way zoomed out or all the way zoomed in
 		  When the user clicks on the protein area
-		  Do nothing
+		  Then do nothing
 
 	Scenario: Zoom out on a protein 
 		  Given a user clicks on the magnify out function
