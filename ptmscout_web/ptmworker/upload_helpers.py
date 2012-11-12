@@ -100,7 +100,7 @@ def get_proteins_from_ncbi(accessions, MAX_BATCH_SIZE):
         try:
             prot_map[acc] = get_protein_information(pm, acc)
         except uploadutils.ParseError, e:
-            for line, acc, pep in accessions[acc]:
+            for line in accessions[acc]:
                 e.row = line
                 errors.append(e)
     
@@ -193,6 +193,7 @@ def parse_datafile(session):
     peptides = {}
     mod_map = {}
     data_runs = {}
+    line_mapping = {}
     errors = []
     
     acc_col = session.getColumns('accession')[0]
@@ -211,21 +212,24 @@ def parse_datafile(session):
     
     keys = set([])
 
-    line = 1
+    line=0
     for row in rows:
+        line+=1
         line_errors = uploadutils.check_data_row(line, row, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols, keys)
-        
-        if len(line_errors) > 0:
-            errors.extend(line_errors)
-            continue
         
         acc = row[acc_col.column_number]
         pep = row[pep_col.column_number]
         mods = row[mod_col.column_number]
         
-        acc_lines = accessions.get(acc, [])
-        acc_lines.append((line, acc, pep))
-        accessions[acc] = acc_lines
+        line_mapping[line] = (acc, pep)
+        
+        if len(line_errors) > 0:
+            errors.extend(line_errors)
+            continue
+        
+        line_set = accessions.get(acc, [])
+        line_set.append(line)
+        accessions[acc] = line_set
         
         pep_set = peptides.get(acc, set())
         pep_set.add(pep)
@@ -248,9 +252,8 @@ def parse_datafile(session):
         
         data_runs[(acc,pep)] = run_data
         
-        line+=1
     
-    return accessions, peptides, mod_map, data_runs, errors
+    return accessions, peptides, mod_map, data_runs, errors, line_mapping
     
 
 def get_series_headers(session):
