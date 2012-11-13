@@ -1,5 +1,5 @@
 from tests.PTMScoutTestCase import IntegrationTestCase
-from ptmworker.entrez_query import get_pubmed_record_by_id
+from ptmworker.entrez_tools import get_pubmed_record_by_id
 from ptmscout.config import settings
 from Bio import Entrez
 

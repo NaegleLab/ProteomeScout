@@ -1,11 +1,11 @@
 from pyramid.view import view_config
-from ptmworker import entrez_query
+from ptmworker import entrez_tools
 from ptmscout.database import experiment
 
 @view_config(route_name='pmid_fetch', renderer='json', permission='private')
 def call_get_pubmed_record_by_id(request):
     pmid = int(request.matchdict['id'])
-    record = entrez_query.get_pubmed_record_by_id(pmid)
+    record = entrez_tools.get_pubmed_record_by_id(pmid)
     return record
 
 @view_config(route_name='field_fetch', renderer='json', permission='private')
