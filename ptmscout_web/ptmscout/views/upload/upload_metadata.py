@@ -101,14 +101,14 @@ def create_schema(request):
     schema.set_required_field('published')
     schema.set_required_field('ambiguous')
     
-    schema.set_field_required_condition('author_contact', 'published', forms.field_not_empty_test)
-    schema.set_field_required_condition('authors', 'published', forms.field_not_empty_test)
-    schema.set_field_required_condition('journal', 'published', forms.field_not_empty_test)
-    schema.set_field_required_condition('publication_year', 'published', forms.field_not_empty_test)
-    schema.set_field_required_condition('publication_month', 'published', forms.field_not_empty_test)
-    schema.set_field_required_condition('volume', 'published', forms.field_not_empty_test)
-    schema.set_field_required_condition('page_start', 'published', forms.field_not_empty_test)
-    schema.set_field_required_condition('page_end', 'published', forms.field_not_empty_test)
+    schema.set_field_required_condition('author_contact', 'published', forms.field_equals_test('yes'))
+    schema.set_field_required_condition('authors', 'published', forms.field_equals_test('yes'))
+    schema.set_field_required_condition('journal', 'published', forms.field_equals_test('yes'))
+    schema.set_field_required_condition('publication_year', 'published', forms.field_equals_test('yes'))
+    schema.set_field_required_condition('publication_month', 'published', forms.field_equals_test('yes'))
+    schema.set_field_required_condition('volume', 'published', forms.field_equals_test('yes'))
+    schema.set_field_required_condition('page_start', 'published', forms.field_equals_test('yes'))
+    schema.set_field_required_condition('page_end', 'published', forms.field_equals_test('yes'))
     
     schema.parse_fields(request)
     

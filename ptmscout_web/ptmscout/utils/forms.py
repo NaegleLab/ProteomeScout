@@ -11,6 +11,10 @@ class FormLiteral(object):
 
 field_not_empty_test = lambda field_value: field_value != None and field_value != ''
 
+
+def field_equals_test(value):
+    return lambda field_value: field_value == value
+
 class FormSchema(object):
     CHECKBOX=1
     TEXT=2
@@ -269,3 +273,6 @@ class FormValidator(object):
                 return strings.failure_reason_field_value_not_valid % (proper_name)
             
         return None
+
+
+
