@@ -6,7 +6,6 @@ from sqlalchemy.schema import ForeignKey
 from sqlalchemy.types import Float, Enum, DateTime
 from sqlalchemy.sql.expression import null
 import datetime
-from ptmscout.utils import celeryutils
 from sqlalchemy.orm import relationship
 
 class ExperimentError(Base):
@@ -93,11 +92,6 @@ class Experiment(Base):
     
     def __init__(self):
         self.date = datetime.datetime.now()
-
-    def progress(self):
-        if(self.status == 'loading' and self.import_process_id != ""):
-            celeryutils.get_percent_complete(self.import_process_id)
-        return "N/a"
 
     def saveExperiment(self):
         DBSession.add(self)
