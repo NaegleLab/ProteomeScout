@@ -3,7 +3,7 @@ import time
 from ptmscout.config import settings, strings
 import os
 from ptmscout.utils import webutils, forms
-from pyramid.httpexceptions import HTTPFound, HTTPForbidden
+from pyramid.httpexceptions import HTTPFound
 from ptmscout.database import upload
 import logging
 log = logging.getLogger(__name__)

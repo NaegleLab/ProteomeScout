@@ -254,7 +254,7 @@ class FormValidator(object):
             parent_ref, condition = self.schema.conditional_fields[field_ref]
             parent_value = self.schema.get_form_value(parent_ref)
             
-            if condition(parent_value) and not self.schema.field_was_attempted(parent_ref):
+            if condition(parent_value) and not self.schema.field_was_attempted(field_ref):
                 return strings.failure_reason_required_fields_cannot_be_empty % (proper_name)
         
         if field_ref in self.schema.numeric_fields and self.schema.field_was_attempted(field_ref):

@@ -25,6 +25,25 @@ class FormUtilsTestCase(unittest.TestCase):
     def tearDown(self):
         unittest.TestCase.tearDown(self)
         
+    def test_empty_select_field_required_should_validate_with_error_with_condition_met(self):
+        schema = forms.FormSchema()
+        
+        parent_experiment_options = [(str(24), 'Experiment 1'), (str(28), 'Experiment 2')]
+        schema.add_select_field('parent_experiment', 'Parent Experiment', parent_experiment_options)
+        schema.add_radio_field('load_type', "Load Type", [('new',"New"),('append',"Append"),('reload',"Reload"),('extension',"Extension")])
+        
+        schema.set_field_required_condition('parent_experiment', 'load_type', lambda pval: pval != "new")
+        
+        request = DummyRequest()
+        request.POST['load_type'] = 'reload'
+        request.POST['parent_experiment'] = ''
+        
+        schema.parse_fields(request)
+        
+        errors = forms.FormValidator(schema).validate()
+        
+        self.assertEqual([strings.failure_reason_required_fields_cannot_be_empty % ('Parent Experiment')], errors)
+        
     def test_form_renderer(self):
         request = DummyRequest()
         request.POST = {}
