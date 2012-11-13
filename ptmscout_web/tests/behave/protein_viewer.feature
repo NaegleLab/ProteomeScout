@@ -30,7 +30,7 @@ Feature: Protein Viewer
 
 	Scenario: Filter by modification
 		  Given a user is looking at a protein with many types of modifications
-		  When the user de-selects a modifcation type 
+		  When the user de-selects a modification type 
 		  Then the indication of that modification appearing on sites within the protein should disappear
 		
 	Scenario: Turn on or off tracks
@@ -51,6 +51,6 @@ Feature: Protein Viewer
 	Scenario: Viewieng a protein anchored in an experiment
 		  Given a user is viewing a protein
 		  When they chose that protein from within an experiment
-		  Then indicate the sites of modifcation that are site specific by highlighting the representative box and give them an option to filter out all modifications not captured in that experiment
+		  Then indicate the sites of modification that are site specific by highlighting the representative box and give them an option to filter out all modifications not captured in that experiment
 
 		 
