@@ -94,6 +94,11 @@ class NoSuchProtein(Exception):
     def __str__(self):
         return "No such protein: %s" % (str(self.prot))
 
+def getGoAnnotationById(goId):
+    value = DBSession.query(GeneOntology).filter_by(GO=goId).first()
+    
+    return value
+
 def getProteinById(pid):
     value = DBSession.query(Protein).filter_by(id=pid).first()
     
