@@ -13,8 +13,10 @@ def format_predictions(measurements):
     predictions = []
     phosphomap = {}
     for m in measurements:
-        for p in m.phosphopeps:
-            for s in p.predictions:
+        for p in m.peptides:
+            pep = p.peptide
+            
+            for s in pep.predictions:
                 predictions.append(s)
                 phosphomap[s] = m
     

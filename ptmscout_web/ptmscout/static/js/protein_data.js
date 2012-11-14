@@ -37,9 +37,9 @@ function processRun(run, experiment_data, run_map) {
 	points = []
 	stddev = []
 	
-	phosphopeps = 
+	peptides = 
 		d3.select(run)
-			.select(".phosphopeps")
+			.select(".peptides")
 			.text();
 	
 	units = 
@@ -57,7 +57,7 @@ function processRun(run, experiment_data, run_map) {
 		run_map[name] = {'name':name, 'series':[], 'isTime': isTime, 'axis': units};
 	}
 	
-	run_map[name].series.push({'peps':phosphopeps, 'points':points, 'stddev':stddev});
+	run_map[name].series.push({'peps':peptides, 'points':points, 'stddev':stddev});
 }
 
 function processRuns(experiment_data){

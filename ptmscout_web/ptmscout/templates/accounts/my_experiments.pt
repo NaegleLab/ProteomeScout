@@ -12,7 +12,6 @@
 		   			<th>Description</th>
 		   			<th>Author</th>
 		   			<th>Journal Info</th>
-		   			<th>Primary Modifications</th>
 		   			<th>Status</th>
 		   			<th class="accesscontrol">Access Control</th>
 		   		</tr>
@@ -22,10 +21,8 @@
 						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.description"></a></td>
 						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.author"></a></td>
 						<td class="citation" tal:content="experiment.getCitationString()"></td>
-						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.primaryModification"></a></td>
 						<td>
 							<span class="status" tal:content="experiment.status"></span>
-							<span class="progress" tal:condition="experiment.status=='loading'" tal:content="str(experiment.progress()) + '%'"></span>
 						</td>
 						<td class="accesscontrol" tal:condition="experiment.public == 0">
 							<table>

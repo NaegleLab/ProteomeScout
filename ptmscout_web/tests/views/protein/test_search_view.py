@@ -4,7 +4,8 @@ from ptmscout.database.taxonomies import Species
 from ptmscout.views.protein.search_view import protein_search_view
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockProtein, createMockMeasurement, \
-    createMockPhosphopep, createMockUser
+    createMockPeptide, createMockUser, createMockPTM,\
+    createMockPeptideModification
 from tests.PTMScoutTestCase import UnitTestCase, IntegrationTestCase
 
 class TestProteinSearchViewIntegration(IntegrationTestCase):
@@ -72,13 +73,15 @@ class TestProteinSearchViews(UnitTestCase):
         m1 = createMockMeasurement(p1.id, 1)
         m2 = createMockMeasurement(p1.id, 4)
         
-        pep1 = createMockPhosphopep(p1.id)
-        pep2 = createMockPhosphopep(p1.id)
-        pep3 = createMockPhosphopep(p1.id)
+        pep1 = createMockPeptide(p1.id)
+        pep2 = createMockPeptide(p1.id)
+        pep3 = createMockPeptide(p1.id)
         
-        m1.phosphopeps.append(pep1)
-        m1.phosphopeps.append(pep2)
-        m2.phosphopeps.append(pep3)
+        mod = createMockPTM()
+        
+        createMockPeptideModification( m1, pep1, mod )
+        createMockPeptideModification( m1, pep2, mod )
+        createMockPeptideModification( m2, pep3, mod )
         
         mod_list = [m1, m2]
         

@@ -3,8 +3,8 @@ from ptmscout.database.protein import Protein
 from ptmscout.database.taxonomies import getSpeciesByName
 from ptmscout.database.experiment import Experiment, getExperimentById,\
     ExperimentData
-from ptmscout.database.modifications import Phosphopep, MeasuredPeptide,\
-    getMeasuredPeptidesByProtein
+from ptmscout.database.modifications import Peptide, MeasuredPeptide,\
+    getMeasuredPeptidesByProtein, findMatchingPTM
 from ptmscout.database.user import User, getUserById
 
 
@@ -82,36 +82,46 @@ class TestModifications(DBTestCase):
         exp = getExperimentById(exp.id, u)
         u = getUserById(u.id)
         
-        p1 = Phosphopep()
+        phos_mods, exist = findMatchingPTM('Phosphorylation')
+        
+        tyr_mod = None
+        the_mod = None
+        ser_mod = None
+        
+        for mod in phos_mods:
+            if mod.target=='Y':
+                tyr_mod = mod
+            if mod.target=='T':
+                the_mod = mod
+            if mod.target=='S':
+                ser_mod = mod
+        
+        p1 = Peptide()
         p1.pep_tryps="blag"
         p1.pep_aligned="blag"
         p1.site_pos=1
         p1.site_type='Y'
-        p1.pfam_site="SH3_1"
         p1.protein_id = p.id
         
-        p2 = Phosphopep()
+        p2 = Peptide()
         p2.pep_tryps="blag2"
         p2.pep_aligned="blag2"
         p2.site_pos=1
         p2.site_type='T'
-        p2.pfam_site="SH3_1"
         p2.protein_id = p.id
         
-        p3 = Phosphopep()
+        p3 = Peptide()
         p3.pep_tryps="blag3"
         p3.pep_aligned="blag3"
         p3.site_pos=1
         p3.site_type='S'
-        p3.pfam_site="SH3_1"
         p3.protein_id = p.id
         
-        p4 = Phosphopep()
+        p4 = Peptide()
         p4.pep_tryps="blag4"
         p4.pep_aligned="blag4"
         p4.site_pos=1
         p4.site_type='S'
-        p4.pfam_site="SH3_1"
         p4.protein_id = p.id
         
         self.session.add(p1)
@@ -121,25 +131,25 @@ class TestModifications(DBTestCase):
         mod1 = MeasuredPeptide()
         mod1.experiment_id = exp.id
         mod1.protein_id = p.id
-        mod1.phosphopep = "blag"
+        mod1.peptide = "blag"
         self.session.add(mod1)
         
         mod2 = MeasuredPeptide()
         mod2.experiment_id = exp.id
         mod2.protein_id = p.id
-        mod2.phosphopep = "blag2"        
+        mod2.peptide = "blag2"        
         self.session.add(mod2)
         
         mod3 = MeasuredPeptide()
         mod3.experiment_id = exp2.id
         mod3.protein_id = p.id
-        mod3.phosphopep = "blag3"        
+        mod3.peptide = "blag3"        
         self.session.add(mod3)
         
         mod4 = MeasuredPeptide()
         mod4.experiment_id = exp3.id
         mod4.protein_id = p.id
-        mod4.phosphopep = "blag4"        
+        mod4.peptide = "blag4"        
         self.session.add(mod4)
         
         self.session.flush()
@@ -169,10 +179,11 @@ class TestModifications(DBTestCase):
         mod1.data.append(d2)
         mod1.data.append(d3)
         
-        mod1.phosphopeps.append(p1)
-        mod2.phosphopeps.append(p2)
-        mod3.phosphopeps.append(p3)
-        mod4.phosphopeps.append(p4)
+        mod1.addPeptideModification(p1, tyr_mod)
+        mod2.addPeptideModification(p2, the_mod)
+        mod3.addPeptideModification(p3, ser_mod)
+        mod4.addPeptideModification(p4, ser_mod)
+        
         self.session.add(mod1)
         self.session.add(mod2)
         self.session.add(mod3)
@@ -180,8 +191,8 @@ class TestModifications(DBTestCase):
         
         modifications = getMeasuredPeptidesByProtein(p.id, u)
         
-        phosphopep_ids = [ p.id for m in modifications for p in m.phosphopeps ]
-        self.assertEqual([p1.id, p2.id], phosphopep_ids)
+        Peptide_ids = [ p.peptide.id for m in modifications for p in m.peptides ]
+        self.assertEqual([p1.id, p2.id], Peptide_ids)
         
         self.assertEqual(['time(min)']*3, [d.type for d in modifications[0].data])
         self.assertEqual([0,1,10], sorted([d.label for d in modifications[0].data]))

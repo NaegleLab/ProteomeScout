@@ -7,7 +7,6 @@ import sys
 
 log = logging.getLogger('ptmscout')
 
-
 def mark_experiment(exp_id, status):
     exp = experiment.getExperimentById(exp_id, check_ready=False, secure=False)
     exp.status = status
@@ -30,8 +29,10 @@ def get_protein_information(pm, acc):
     
     species = XML[0]['GBSeq_organism']
     
-    prot_accessions = [ XML[0]['GBSeq_primary-accession'] ]
-    prot_accessions.extend( XML[0]['GBSeq_other-seqids'] )
+    prot_accessions = set([ acc ])
+    prot_accessions.add( XML[0]['GBSeq_primary-accession'] )
+    for seqid in XML[0]['GBSeq_other-seqids']:
+        prot_accessions.add(seqid)
     
     return name, gene, taxonomy, species, prot_accessions, seq
 
@@ -52,6 +53,7 @@ def find_or_create_species(species):
     return sp
 
 def create_new_protein(name, gene, seq, species, accessions):
+    log.debug("Creating protein: %s SEQ: %s", str(accessions), seq)
     prot = protein.Protein()
     prot.acc_gene = gene
     prot.name = name
@@ -63,21 +65,17 @@ def create_new_protein(name, gene, seq, species, accessions):
         acc_db.type = protein_utils.get_accession_type(prot_acc)
         acc_db.value = prot_acc
         prot.accessions.append(acc_db)
-    
-    prot.saveProtein()
-    
+
     return prot
+
 
 def find_protein(name, gene, seq, prot_accessions, species):
     for p in protein.getProteinsByAccession(prot_accessions, species):
         if p.sequence.lower() == seq.lower():
             return p
-    
-    log.debug("Creating protein: %s SEQ: %s", str(prot_accessions), seq)
-    return create_new_protein(name, gene, seq, species, prot_accessions)
 
 
-def load_proteins(accessions, pm, prot_map):
+def load_proteins(accessions, pm):
     log.debug("Querying for proteins: %s", str(accessions))
     pm.batch_get_protein_sequence(accessions)
 
@@ -93,7 +91,7 @@ def get_proteins_from_ncbi(accessions, MAX_BATCH_SIZE):
             query_job_args.append([])
 
     prot_map = {}
-    [ load_proteins(qjob, pm, prot_map) for qjob in query_job_args if len(qjob) > 0 ]
+    [ load_proteins(qjob, pm) for qjob in query_job_args if len(qjob) > 0 ]
 
     errors = []
     for acc in accessions:
@@ -152,7 +150,7 @@ def create_modifications(protein_id, prot_seq, pep_seq, mods, taxonomy):
         try:
             pep_mod = modifications.getModificationBySite(pep_site, pep_type, protein_id, mod.id)
         except modifications.NoSuchModification:
-            pep_mod = modifications.Phosphopep()
+            pep_mod = modifications.Peptide()
             pep_mod.pep_aligned = pep_aligned
             pep_mod.pep_tryps = ""
             pep_mod.site_pos = pep_site

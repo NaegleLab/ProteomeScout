@@ -26,7 +26,7 @@ class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
         MS_peptide = modifications.MeasuredPeptide()
         MS_peptide.experiment_id = 1
         MS_peptide.protein_id = 35546
-        MS_peptide.phosphopep = 'ABCDEFG'
+        MS_peptide.peptide = 'ABCDEFG'
         
         DBSession.add(MS_peptide)
         DBSession.flush()

@@ -1,41 +1,37 @@
-import unittest
-from pyramid import testing
 from ptmscout.views.experiment.summary_view import experiment_summary_view,\
     summarize_measurements, create_sequence_profile
 from pyramid.testing import DummyRequest
 from ptmscout.config import strings
 from tests.views.mocking import createMockExperiment, createMockProtein,\
-    createMockMeasurement, createMockPhosphopep, createMockError
+    createMockMeasurement, createMockPeptide, createMockError,\
+    createMockPeptideModification, createMockPTM
 from mock import patch
 import json
 import base64
 import math
-from tests.PTMScoutTestCase import IntegrationTestCase
+from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 
 class SummaryViewIntegrationTests(IntegrationTestCase):
     def test_view_integration(self):
         self.ptmscoutapp.get('/experiments/26/summary')
         self.ptmscoutapp.get('/experiments/26')
 
-class SummaryViewsTests(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-        
-    def tearDown(self):
-        testing.tearDown()
-    
+class SummaryViewsTests(UnitTestCase):
     def test_get_sequence_profile(self):
         p1 = createMockProtein()
         
         m1 = createMockMeasurement(p1.id, 1)
         m2 = createMockMeasurement(p1.id, 1)
         
-        pep1 = createMockPhosphopep(p1.id)
-        pep2 = createMockPhosphopep(p1.id)
-        pep3 = createMockPhosphopep(p1.id)
-        m1.phosphopeps.append(pep1)
-        m1.phosphopeps.append(pep2)
-        m2.phosphopeps.append(pep3)
+        pep1 = createMockPeptide(p1.id)
+        pep2 = createMockPeptide(p1.id)
+        pep3 = createMockPeptide(p1.id)
+        
+        mod = createMockPTM()
+        
+        createMockPeptideModification(m1, pep1, mod)
+        createMockPeptideModification(m1, pep2, mod)
+        createMockPeptideModification(m2, pep3, mod)
         
         pep1.pep_aligned='LKKVVALyDYMPMNA'
         pep2.pep_aligned='VSHWQQQsYLDSGIH'
@@ -86,17 +82,20 @@ class SummaryViewsTests(unittest.TestCase):
         m1.protein = p1
         m2.protein = p1
         
-        pep1 = createMockPhosphopep(p1.id)
-        pep2 = createMockPhosphopep(p1.id)
-        pep3 = createMockPhosphopep(p1.id)
+        pep1 = createMockPeptide(p1.id)
+        pep2 = createMockPeptide(p1.id)
+        pep3 = createMockPeptide(p1.id)
         
         pep1.site_type='Y'
         pep2.site_type='T'
         pep3.site_type='S'
         
-        m1.phosphopeps.append(pep1)
-        m1.phosphopeps.append(pep2)
-        m2.phosphopeps.append(pep3)
+        mod = createMockPTM(name="phosphorylation")
+        mod2 = createMockPTM(name="phosphoserine",parent=mod)
+        
+        createMockPeptideModification(m1, pep1, mod)
+        createMockPeptideModification(m1, pep2, mod)
+        createMockPeptideModification(m2, pep3, mod2)
         
         mods = [m1,m2]
         result = summarize_measurements(mods)

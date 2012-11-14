@@ -67,8 +67,10 @@ class PFamParser(object):
         domain.class_ = class_
         
         self.domains.append(domain)
-        
-TIMEOUT=5
+
+INTER_QUERY_INTERVAL=1
+TIMEOUT=10
+
 class PFamError(Exception):
     def __init__(self, msg):
         self.msg = msg
@@ -101,17 +103,16 @@ def get_computed_pfam_domains(prot_seq, cutoff):
     
     dom = xml.parseString(jobrequest.read())
     result_url = dom.getElementsByTagName('result_url')[0].childNodes[0].nodeValue
-    print result_url
     
     code = 202
     started = time.clock()
     while(code == 202):
         if time.clock() - started > TIMEOUT:
-            raise PFamError("Request Timed Out") 
+            raise PFamError("Request Timed Out")
         
         resultquery = urllib2.urlopen(result_url)
         code = resultquery.getcode()
-        time.sleep(0.1)
+        time.sleep(INTER_QUERY_INTERVAL)
     
     if code != 200:
         raise PFamError("Got unexpected response code: %d" % (code))

@@ -14,11 +14,12 @@ def format_pfam_domains(measurements):
             mapset = domain_map.get(d.label, set())
             mapset.add(prot)
             domain_map[d.label] = mapset
-    
-    if '~~~' in domain_map:
-        domain_map['None'] = domain_map['~~~']
-        del domain_map['~~~']
             
+        if len(prot.domains) == 0:
+            mapset = domain_map.get('None', set())
+            mapset.add(prot)
+            domain_map['None'] = mapset
+    
     for domain in domain_map:
         domain_map[domain] = len(domain_map[domain])
     
@@ -32,15 +33,18 @@ def format_pfam_sites(measurements):
     site_map = {}
     
     for m in measurements:
-        for p in m.phosphopeps:
-            mapset = site_map.get(p.pfam_site, set())
-            mapset.add(m)
-            site_map[p.pfam_site] = mapset
-
-    if '~~~' in site_map:
-        site_map['None'] = site_map['~~~']
-        del site_map['~~~']
+        for p in m.peptides:
+            pep = p.peptide
             
+            if pep.protein_domain != None:
+                pfam_site = pep.protein_domain.label
+            else:
+                pfam_site = 'None'
+            
+            mapset = site_map.get(pfam_site, set())
+            mapset.add(m)
+            site_map[pfam_site] = mapset
+
     for site in site_map:
         site_map[site] = len(site_map[site])
         

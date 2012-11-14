@@ -65,14 +65,11 @@ class Experiment(Base):
     URL = Column(Text)
     published = Column(Integer(1))
     
-    errorLog = Column(VARCHAR(30))
     ambiguity = Column(Integer(1))
     export = Column(Integer(1))
     experiment_id = Column(Integer(10), default=None)
     
     dataset = Column(Text)
-    
-    primaryModification = Column(VARCHAR(15), default='')
     
     volume = Column(Integer(11))
     page_start = Column(VARCHAR(10))
@@ -83,7 +80,6 @@ class Experiment(Base):
     
     public = Column(Integer(1), default=0)
     
-    import_process_id = Column(VARCHAR(40), default="")
     status = Column(Enum('preload','loading','loaded'), default='preload')
     submitter_id = Column(Integer(10), ForeignKey('users.id'))
     

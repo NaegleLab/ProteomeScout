@@ -6,7 +6,6 @@ from ptmworker import upload_helpers
 import logging 
 import traceback
 from ptmscout.database import modifications, experiment, upload
-import transaction
 
 log = logging.getLogger('ptmscout')
 
@@ -68,13 +67,14 @@ def load_peptide((protein_id, prot_seq, taxonomy), exp_id, pep_seq, modlist, lin
     
 
 @celery.task
-def load_protein(protein_information, exp_id, affected_lines, line_mapping):
+def load_protein(accession, protein_information, exp_id, affected_lines, line_mapping):
     try:
         name, gene, taxonomy, species, prot_accessions, seq = protein_information
         prot = upload_helpers.find_protein(name, gene, seq, prot_accessions, species)
         
-        # execute extra protein data import tasks (Future)
-
+        if prot == None:
+            prot = upload_helpers.create_new_protein(name, gene, seq, species, prot_accessions)
+        
         return prot.id, prot.sequence, taxonomy
     except uploadutils.ParseError, e:
         logErrorsToDB(exp_id, affected_lines, line_mapping, e)
@@ -104,7 +104,7 @@ def create_import_tasks(exp_id, prot_map, accessions, peptides, mod_map, line_ma
             
             pep_tasks.append( load_peptide.s(exp_id, pep, mod_map[(acc,pep)], line_mapping, run_tasks) )
         
-        import_tasks.append(( load_protein.s(prot_map[acc], exp_id, accessions[acc], line_mapping) | group(pep_tasks) ))
+        import_tasks.append(( load_protein.s(acc, prot_map[acc], exp_id, accessions[acc], line_mapping) | group(pep_tasks) ))
 
     return import_tasks
 

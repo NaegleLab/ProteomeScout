@@ -4,8 +4,8 @@ from ptmscout.views.protein.data_view import protein_experiment_data_view,\
     format_protein_data
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockProtein, createMockUser, \
-    createMockMeasurement, createMockExperiment, createMockPhosphopep, \
-    createMockData
+    createMockMeasurement, createMockExperiment, createMockPeptide, \
+    createMockData, createMockPTM, createMockPeptideModification
 from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 
 class TestProteinDataViews(UnitTestCase):
@@ -81,12 +81,15 @@ class TestProteinDataViews(UnitTestCase):
         exp2 = createMockExperiment(3, 0, 0)
         mock_mod2.experiment = exp2
         
-        pep1 = createMockPhosphopep(prot_id)
-        pep2 = createMockPhosphopep(prot_id)
-        pep3 = createMockPhosphopep(prot_id)
-        mock_mod.phosphopeps.append(pep1)
-        mock_mod2.phosphopeps.append(pep2)
-        mock_mod2.phosphopeps.append(pep3)
+        pep1 = createMockPeptide(prot_id)
+        pep2 = createMockPeptide(prot_id)
+        pep3 = createMockPeptide(prot_id)
+        
+        mod = createMockPTM()
+        
+        createMockPeptideModification(mock_mod, pep1, mod)
+        createMockPeptideModification(mock_mod2, pep2, mod)
+        createMockPeptideModification(mock_mod2, pep3, mod)
 
         mod_list = [mock_mod, mock_mod2]
         
@@ -105,12 +108,15 @@ class TestProteinDataViews(UnitTestCase):
         exp2 = createMockExperiment(3, 0, 0)
         mock_mod2.experiment = exp2
         
-        pep1 = createMockPhosphopep(prot_id)
-        pep2 = createMockPhosphopep(prot_id)
-        pep3 = createMockPhosphopep(prot_id)
-        mock_mod.phosphopeps.append(pep1)
-        mock_mod2.phosphopeps.append(pep2)
-        mock_mod2.phosphopeps.append(pep3)
+        pep1 = createMockPeptide(prot_id)
+        pep2 = createMockPeptide(prot_id)
+        pep3 = createMockPeptide(prot_id)
+        
+        mod = createMockPTM()
+        
+        createMockPeptideModification(mock_mod, pep1, mod)
+        createMockPeptideModification(mock_mod2, pep2, mod)
+        createMockPeptideModification(mock_mod2, pep3, mod)
         
         data1 = createMockData(5, 'run1_12H', mock_mod.id)
         data2 = createMockData(5, 'run2_24H', mock_mod.id)
@@ -128,11 +134,11 @@ class TestProteinDataViews(UnitTestCase):
         data2_s_vals = [(row.label, str(row.value), row.type) for row in sorted(data2, key=lambda item: item.priority)]
         data3_s_vals = [(row.label, str(row.value), row.type) for row in sorted(data3, key=lambda item: item.priority)]
         
-        exp_data1 = [{'run':"run1_12H", 'units':'time', 'phosphopeps': [pep1.getName()], 'values': data1_s_vals},
-                     {'run':"run2_24H", 'units':'time', 'phosphopeps': [pep1.getName()], 'values': data2_s_vals}]
+        exp_data1 = [{'run':"run1_12H", 'units':'time', 'peptides': [pep1.getName()], 'values': data1_s_vals},
+                     {'run':"run2_24H", 'units':'time', 'peptides': [pep1.getName()], 'values': data2_s_vals}]
         exp_exp1 = {'id': exp.id,  'title': exp.name, 'data':exp_data1}
         
-        exp_data2 = [{'run':"24H_stuff", 'units':'time', 'phosphopeps': [pep2.getName(), pep3.getName()], 'values': data3_s_vals}]
+        exp_data2 = [{'run':"24H_stuff", 'units':'time', 'peptides': [pep2.getName(), pep3.getName()], 'values': data3_s_vals}]
         exp_exp2 = {'id': exp2.id, 'title': exp2.name, 'data':exp_data2}
         
         self.maxDiff=None
@@ -146,7 +152,7 @@ class ProteinDataViewIntegrationTest(IntegrationTestCase):
         
         result.mustcontain('<div class="name">average</div>')
         result.mustcontain('<div class="units">average</div>')
-        result.mustcontain('<div class="phosphopeps">Y518</div>')
+        result.mustcontain('<div class="peptides">Y518</div>')
         result.mustcontain('<div class="datapoint">DK,0.88,data</div>')
         result.mustcontain('<div class="datapoint">M,0.877,data</div>')
         result.mustcontain('<div class="datapoint">H,1.0,data</div>')

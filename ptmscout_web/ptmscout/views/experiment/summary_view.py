@@ -7,7 +7,7 @@ import math
 
 
 def create_sequence_profile(measurements):
-    peptides = [pep for m in measurements for pep in m.phosphopeps]
+    peptides = [p.peptide for m in measurements for p in m.peptides]
 
     frequencies = [0]*15
     N = float(len(peptides))
@@ -55,7 +55,9 @@ def summarize_measurements(measurements):
                'by_type':{}}
     
     for measured_peptide in measurements:
-        for pep in measured_peptide.phosphopeps:
+        for p in measured_peptide.peptides:
+            pep = p.peptide
+            
             residue_count = summary['by_residue'].get(pep.site_type, 0)
             summary['by_residue'][pep.site_type] = residue_count+1
             
@@ -63,8 +65,12 @@ def summarize_measurements(measurements):
             species_count = summary['by_species'].get(species, 0)
             summary['by_species'][species] = species_count+1
             
-            type_count = summary['by_type'].get('phosphorylation', 0)
-            summary['by_type']['phosphorylation'] = type_count+1
+            mod = p.modification
+            while mod.parent:
+                mod = mod.parent 
+            
+            type_count = summary['by_type'].get(mod.name, 0)
+            summary['by_type'][mod.name] = type_count+1
             
             mods = summary['modifications']
             summary['modifications'] = mods+1

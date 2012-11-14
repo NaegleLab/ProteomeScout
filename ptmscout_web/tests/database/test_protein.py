@@ -39,7 +39,7 @@ class ProteinTest(DBTestCase):
         
         self.assertEqual('Mpv17l2', prot.acc_gene)
         
-        acc_ids = set([ term.term for term in prot.GO_terms ])
+        acc_ids = set([ entry.GO_term.term for entry in prot.GO_terms ])
         self.assertEqual(
                 set(['mitochondrion','molecular_function','biological_process']), 
                 acc_ids)
@@ -51,13 +51,16 @@ class ProteinTest(DBTestCase):
         go_term1.aspect = 'F'
         go_term1.GO = 'GO:unique'
         go_term1.term = "SomeTermOfGO"
+        go_term1.version = "1.2"
+        
         go_term2 = GeneOntology()
         go_term2.aspect = 'F'
         go_term2.GO = 'GO:unique'
         go_term2.term = "SomeTermOfGO"
+        go_term2.version = "1.2"
         
-        prot.GO_terms.append(go_term1)
-        prot.GO_terms.append(go_term2)
+        prot.addGoTerm(go_term1)
+        prot.addGoTerm(go_term2)
         
         try:
             prot.saveProtein()

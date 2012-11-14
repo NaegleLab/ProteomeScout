@@ -1,5 +1,6 @@
 from tests.DBTestCase import DBTestCase
 import ptmscout.database.protein as protein
+from ptmscout.database import gene_expression
 
 class ExpressionTestCase(DBTestCase):
     def test_gene_expression_should_ref_appropriate_data(self):
@@ -18,3 +19,7 @@ class ExpressionTestCase(DBTestCase):
         
         self.assertEqual(79, len(human_samples))
         self.assertEqual(1, len(tounge_sample))
+        
+    def test_getExpressionProbeSet(self):
+        probesets = gene_expression.getExpressionProbeSetsForProtein(['Q2L6H3','HSPA6','Gm378'])
+        self.assertEqual([1, 3, 6695, 8274, 10210, 12799, 69693], sorted([probe.id for probe in probesets]))

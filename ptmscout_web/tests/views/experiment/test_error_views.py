@@ -1,4 +1,3 @@
-from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockUser, createMockExperiment,\
     createMockError
@@ -6,6 +5,7 @@ from ptmscout.views.experiment.errors_view import experiment_errors_view
 from mock import patch
 from ptmscout.config import strings
 from ptmscout.database import experiment
+from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 
 class TestExperimentErrorsView(UnitTestCase):
     

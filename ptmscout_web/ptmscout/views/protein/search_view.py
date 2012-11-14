@@ -23,7 +23,7 @@ def protein_search_view(request):
             mods = modifications.getMeasuredPeptidesByProtein(p.id, request.user)
             for mod in mods:
                 peps = protein_mods.get(p.id, set())
-                [ peps.add(pep) for pep in mod.phosphopeps ]
+                [ peps.add(pep.peptide) for pep in mod.peptides ]
                 protein_mods[p.id] = peps
     
     proteins = sorted(proteins, key=lambda prot: prot.acc_gene)

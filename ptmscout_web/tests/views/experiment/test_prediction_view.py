@@ -2,7 +2,8 @@ import unittest
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockProtein, createMockMeasurement,\
-    createMockPhosphopep, createMockExperiment, createMockScansite
+    createMockPeptide, createMockExperiment, createMockScansite, createMockPTM,\
+    createMockPeptideModification
 from ptmscout.views.experiment.prediction_view import prediction_view,\
     format_predictions, filter_predictions
 from ptmscout.config import strings
@@ -42,14 +43,17 @@ class TestPredictionViews(UnitTestCase):
         m2 = createMockMeasurement(p1.id, expid)
         m3 = createMockMeasurement(p1.id, expid)
         
-        pep1 = createMockPhosphopep(p1.id)
-        pep2 = createMockPhosphopep(p1.id)
-        pep3 = createMockPhosphopep(p1.id)
-        pep4 = createMockPhosphopep(p1.id)
+        pep1 = createMockPeptide(p1.id)
+        pep2 = createMockPeptide(p1.id)
+        pep3 = createMockPeptide(p1.id)
+        pep4 = createMockPeptide(p1.id)
+        mod = createMockPTM()
         
-        m1.phosphopeps.extend([pep1, pep2])
-        m2.phosphopeps.extend([pep2, pep3])
-        m3.phosphopeps.append(pep4)
+        createMockPeptideModification(m1, pep1, mod)
+        createMockPeptideModification(m1, pep2, mod)
+        createMockPeptideModification(m2, pep2, mod)
+        createMockPeptideModification(m2, pep3, mod)
+        createMockPeptideModification(m3, pep4, mod)
         
         measurements = [m1,m2,m3]
         

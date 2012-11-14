@@ -1,21 +1,17 @@
 from ptmscout.database import Base, DBSession
 from sqlalchemy.schema import Column, ForeignKey, UniqueConstraint, Table
-from sqlalchemy.types import Integer, TEXT, VARCHAR, Enum, Text, Float, DATETIME
+from sqlalchemy.types import Integer, TEXT, VARCHAR, Enum, Text, Float, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import null, or_
 from ptmscout.config import strings, settings
-from ptmscout.database.taxonomies import Species
+import taxonomies
 import datetime
-
-go_association_table = Table('protein_GO', Base.metadata,
-    Column('protein_id', Integer(10), ForeignKey('protein.id')),
-    Column('GO_id', Integer(10), ForeignKey('GO.id')),
-    Column('version', VARCHAR(10)))
 
 expression_association_table = Table('protein_expression', Base.metadata,
     Column('id', Integer(10), primary_key=True, autoincrement=True),
     Column('protein_id', Integer(10), ForeignKey('protein.id')),
-    Column('probeset_id', Integer(10), ForeignKey('expression_ann.probeset_id')))
+    Column('probeset_id', Integer(10), ForeignKey('expression.probeset_id')))
+
 
 class GeneOntology(Base):
     __tablename__='GO'
@@ -23,11 +19,26 @@ class GeneOntology(Base):
     aspect = Column(Enum(['F','P','C']), default=null)
     GO = Column(VARCHAR(10))
     term = Column(Text)
-    version = Column(VARCHAR(10), default='0')
+    date = Column(DateTime)
+    version = Column(VARCHAR(10))
     UniqueConstraint('aspect', 'GO', name="uniqueEntry")
+    
+    def __init__(self):
+        self.date = datetime.datetime.now()
     
 #    def getURL(self):
 #        return settings.accession_urls['GO'] % (self.GO)
+
+
+class GeneOntologyEntry(Base):
+    __tablename__='protein_GO'
+    id = Column(Integer(10), primary_key=True, autoincrement=True)
+    protein_id = Column(Integer(10), ForeignKey('protein.id'))
+    GO_id = Column(Integer(10), ForeignKey('GO.id'))
+    date = Column(DateTime)
+    
+    GO_term = relationship("GeneOntology")
+
 
 class ProteinAccession(Base):
     __tablename__='protein_acc'
@@ -65,14 +76,14 @@ class Protein(Base):
     sequence = Column(TEXT)
     acc_gene = Column(VARCHAR(30))
     name = Column(VARCHAR(100))
-    date = Column(DATETIME)
+    date = Column(DateTime)
     species_id = Column(Integer(10), ForeignKey('species.id'))
     
     accessions = relationship("ProteinAccession", order_by=ProteinAccession.type)
     domains = relationship("ProteinDomain")
     
     species = relationship("Species")
-    GO_terms = relationship("GeneOntology", secondary=go_association_table)
+    GO_terms = relationship("GeneOntologyEntry")
     expression_probes = relationship("ExpressionProbeset", secondary=expression_association_table)
     
     def __init__(self):
@@ -85,7 +96,19 @@ class Protein(Base):
     def addTaxonomy(self, taxon):
         if taxon not in self.taxonomy:
             self.taxonomy.append(taxon)
+    
+    def addGoTerm(self, GO_term, date_added=datetime.datetime.now()):
+        goe = GeneOntologyEntry()
+        goe.GO_term = GO_term
+        goe.version = date_added
+        self.GO_terms.append(goe)
         
+    def hasGoTerm(self, GO_id):
+        for goe in self.GO_terms:
+            if goe.GO_term.GO == GO_id:
+                return True
+        
+        return False
 
 class NoSuchProtein(Exception):
     def __init__(self, prot):
@@ -111,6 +134,6 @@ def getProteinsByAccession(accessions, species=None):
     if species == None:
         q = DBSession.query(Protein).join(Protein.accessions).filter(or_(Protein.acc_gene.in_(accessions), ProteinAccession.value.in_(accessions)))
     else:
-        q = DBSession.query(Protein).join(Protein.accessions).join(Protein.species).filter(or_(Protein.acc_gene.in_(accessions), ProteinAccession.value.in_(accessions)), Species.name == species)
+        q = DBSession.query(Protein).join(Protein.accessions).join(Protein.species).filter(or_(Protein.acc_gene.in_(accessions), ProteinAccession.value.in_(accessions)), taxonomies.Species.name == species)
     
     return q.all()

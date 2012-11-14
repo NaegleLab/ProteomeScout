@@ -5,7 +5,7 @@ from ptmworker import tasks
 from ptmscout.config import strings
 from tests.views.mocking import createMockExperiment, createMockMeasurement,\
     createMockError, createMockSession, createMockUser, createMockProtein,\
-    createMockPTM, createMockPhosphopep
+    createMockPTM, createMockPeptide
 from ptmscout.utils import uploadutils
 
 class PTMWorkDataImportTestCase(IntegrationTestCase):
@@ -67,8 +67,8 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
     def test_load_peptide_should_measured_peptide_record_with_modifications_and_insert_run_data(self, patch_create_mods, patch_measurement, patch_insert_run):
         exp_id = 10
         prot = createMockProtein()
-        pep1 = createMockPhosphopep(prot.id)
-        pep2 = createMockPhosphopep(prot.id)
+        pep1 = createMockPeptide(prot.id)
+        pep2 = createMockPeptide(prot.id)
         
         patch_create_mods.return_value = [pep1, pep2]
         measuredPeptide = patch_measurement.return_value

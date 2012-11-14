@@ -1,14 +1,14 @@
-from tests.PTMScoutTestCase import UnitTestCase, IntegrationTestCase
-from mock import patch
-from ptmscout.database import experiment
-import os
+from ptmscout.views.experiment.download_view import download_experiment
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockExperiment, createMockUser,\
     createMockError
-from ptmscout.views.experiment.download_view import download_experiment
+from mock import patch
 from pyramid.httpexceptions import HTTPForbidden
 from ptmscout.utils import uploadutils
 from ptmscout.config import strings
+from ptmscout.database import experiment
+import os
+from tests.PTMScoutTestCase import UnitTestCase, IntegrationTestCase
 
 class TestExperimentDownloadView(UnitTestCase):
     

@@ -4,10 +4,11 @@ from ptmscout.database.user import User
 from ptmscout.database.experiment import Experiment, ExperimentData,\
     ExperimentCondition, ExperimentError
 from ptmscout.database.permissions import Permission
-from ptmscout.database.protein import Protein, GeneOntology, ProteinDomain
+from ptmscout.database.protein import Protein, GeneOntology, ProteinDomain,\
+    GeneOntologyEntry
 import random
-from ptmscout.database.modifications import MeasuredPeptide, Phosphopep,\
-    ScansitePrediction, PTM, PTMkeyword
+from ptmscout.database.modifications import MeasuredPeptide, Peptide,\
+    ScansitePrediction, PTM, PTMkeyword, PeptideModification
 from ptmscout.database.gene_expression import ExpressionProbeset,\
     ExpressionSample, ExpressionCollection, ExpressionTissue
 from ptmscout.database.taxonomies import Species
@@ -134,6 +135,19 @@ def createMockProtein():
     mock.GO_terms = []
     return mock
 
+
+def createMockGOE(prot_id, GO_term, date=datetime.datetime.now()):
+    mock = Mock(spec=GeneOntologyEntry)
+    
+    mock.id = random.randint(0,100000)
+    mock.protein_id = prot_id
+    mock.GO_id = GO_term.id
+    mock.GO_term = GO_term
+    
+    mock.date = date
+    
+    return mock
+
 def createMockGO(go_type):
     mock = Mock(spec=GeneOntology)
     
@@ -157,24 +171,37 @@ def createMockMeasurement(pid, expid):
     mock.id = random.randint(0,100000)
     mock.protein_id = pid
     mock.experiment_id = expid
-    mock.phosphopep = "ABCDEF"
-    mock.phosphopeps = []
+    mock.peptide = "ABCDEF"
+    mock.peptides = []
     mock.data = []
     
     return mock
 
-def createMockPhosphopep(pid):
-    mock = Mock(spec=Phosphopep)
+def createMockPeptideModification(measurement, peptide, modification):
+    mock = Mock(spec=PeptideModification)
+    
+    mock.id = random.randint(0,100000)
+    mock.MS_id = measurement.id 
+    mock.peptide_id = peptide.id
+    mock.modification_id = modification.id
+    mock.peptide = peptide
+    mock.modification = modification
+    
+    measurement.peptides.append(mock)
+    
+    return mock
+
+def createMockPeptide(pid):
+    mock = Mock(spec=Peptide)
     
     site_types = ['Y','T','S','P']
     
     mock.id = random.randint(0, 100000)
     mock.protein_id = pid
+    mock.protein_domain_id = None
     mock.pep_aligned = "ABCDEFHG"
-    mock.pep_tryps = "JFDAABCDEFHGADFG"
     mock.site_pos = random.randint(0, 3000)
     mock.site_type = site_types[random.randint(0,3)]
-    mock.pfam_site = "pfam1"
     
     mock.getName.return_value = mock.site_type + str(mock.site_pos)
     mock.getPeptide.return_value = mock.pep_aligned
@@ -255,12 +282,17 @@ def createMockScansite(pep_id):
     
     return mock
 
-def createMockDomain(pid):
+def createMockDomain(pid, label=None):
     mock = Mock(spec=ProteinDomain)
     
     mock.id = random.randint(0, 100000)
     
-    mock.label = "some_label"+str(mock.id)
+    
+    if label==None:
+        mock.label = "some_label"+str(mock.id)
+    else:
+        mock.label = label
+    
     mock.start = random.randint(0, 10000)
     mock.stop = random.randint(mock.start+1, 10000)
     
@@ -292,6 +324,7 @@ def createMockPTM(ptmid=random.randint(0,100000), name=None,  position=None, acc
     mock.taxons = []
     mock.keywords = []
     
+    mock.parent = parent
     if(parent != None):
         mock.parent_id = parent.id
         parent.children.append(mock)

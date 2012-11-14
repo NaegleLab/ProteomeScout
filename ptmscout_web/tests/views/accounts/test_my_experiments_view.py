@@ -26,7 +26,6 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         result.mustcontain(exp.name)
         result.mustcontain('Status')
         result.mustcontain('loading')
-        result.mustcontain('N/a')
         
 
 class MyExperimentsViewTests(UnitTestCase):
