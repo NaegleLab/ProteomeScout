@@ -1,7 +1,7 @@
 # Skip
 from tests.PTMScoutTestCase import IntegrationTestCase
 from mock import patch
-from ptmworker import tasks
+from ptmworker import data_import
 from ptmscout.config import strings
 from tests.views.mocking import createMockExperiment, createMockMeasurement,\
     createMockError, createMockSession, createMockUser, createMockProtein,\
@@ -27,7 +27,7 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         user_email = 'someguy@institute.edu'
         app_url = 'http://example.com'
         
-        res = tasks.finalize_import.apply_async((exp.id, user_email, app_url))
+        res = data_import.finalize_import.apply_async((exp.id, user_email, app_url))
         res.get()
         assert res.successful()
         
@@ -53,7 +53,7 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         line_mapping = {1: (acc, pep_seq),
                         3: (acc, pep_seq)}
         
-        res = tasks.load_peptide.apply_async(((protein_id, prot_seq, taxonomy), exp_id, pep_seq, modlist, line_mapping, run_task_args))
+        res = data_import.load_peptide.apply_async(((protein_id, prot_seq, taxonomy), exp_id, pep_seq, modlist, line_mapping, run_task_args))
         res.get()
         
         self.assertTrue(res.successful())
@@ -83,7 +83,7 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         modlist = [createMockPTM(),createMockPTM()]
         run_task_args = [(1, "a","b","c","d"),(3, "d","e","f","g")]
         
-        res = tasks.load_peptide.apply_async(((protein_id, prot_seq, taxonomy), exp_id, pep_seq, modlist, line_mapping, run_task_args))
+        res = data_import.load_peptide.apply_async(((protein_id, prot_seq, taxonomy), exp_id, pep_seq, modlist, line_mapping, run_task_args))
         res.get()
         
         self.assertTrue(res.successful())
@@ -111,7 +111,7 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         accessions = ["some", "Accessions"]
         affected_lines = [1,3]
         line_mapping = {1: ('acc', 'pep1'), 3: ('acc', 'pep2')}
-        res = tasks.load_protein.apply_async(((prot.name, prot.acc_gene, taxons, prot.species.name, accessions, prot.sequence), exp_id, affected_lines, line_mapping))
+        res = data_import.load_protein.apply_async(((prot.name, prot.acc_gene, taxons, prot.species.name, accessions, prot.sequence), exp_id, affected_lines, line_mapping))
         ret_val = res.get()
         
         self.assertTrue(res.successful())
@@ -129,7 +129,7 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         accessions = ["some", "Accessions"]
         line_mapping = "some line map"
         
-        res = tasks.load_protein.apply_async(((prot.name, prot.acc_gene, taxons, prot.species.name, accessions, prot.sequence), exp_id, [1,3], line_mapping))
+        res = data_import.load_protein.apply_async(((prot.name, prot.acc_gene, taxons, prot.species.name, accessions, prot.sequence), exp_id, [1,3], line_mapping))
         ret_val = res.get()
         
         self.assertEqual((prot.id, prot.sequence, taxons), ret_val)
@@ -140,14 +140,14 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         exp = createMockExperiment()
         patch_mark.return_value = exp
         
-        res = tasks.process_error_state.apply_async((exp.id,))
+        res = data_import.process_error_state.apply_async((exp.id,))
         res.get()
         
         patch_mark.assert_called_once_with(exp.id, 'error')
     
-    @patch('ptmworker.tasks.load_peptide')
-    @patch('ptmworker.tasks.load_protein')
-    def test_create_import_tasks(self, patch_protein, patch_peptide):
+    @patch('ptmworker.data_import.load_peptide')
+    @patch('ptmworker.data_import.load_protein')
+    def test_create_import_data_import(self, patch_protein, patch_peptide):
         exp_id = 10
         prot_map = {"Q06FX4":"prot info 1", "A0FGVD":"prot info 2"}
         accessions = {"Q06FX4":[1,2,4,5], "A0FGVD":[3,6]}
@@ -168,7 +168,7 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
                      ("A0FGVD", "GHI"): {"run1":(3, [5,6]), "run2":(6, [9,10])}}
         
         
-        import_tasks = tasks.create_import_tasks(exp_id, prot_map, accessions, peptides, mod_map, line_mapping, series_headers, units, data_runs)
+        import_data_import = data_import.create_import_data_import(exp_id, prot_map, accessions, peptides, mod_map, line_mapping, series_headers, units, data_runs)
         
         patch_peptide.s.assert_any_call(exp_id, "ABD", "phos", line_mapping, [(1, 'time(min)', ["some", "headers"], "run1", [1,2]),(4, 'time(min)', ["some", "headers"], "run2", [2,3])])
         patch_peptide.s.assert_any_call(exp_id, "DEF", "methylation", line_mapping, [(2, 'time(min)', ["some", "headers"], "run1", [3,4]),(5, 'time(min)', ["some", "headers"], "run2", [7,8])])
@@ -177,18 +177,18 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         patch_protein.s.assert_any_call("prot info 1", exp_id, [1,2,4,5], line_mapping)
         patch_protein.s.assert_any_call("prot info 2", exp_id, [3,6], line_mapping)
         
-        self.assertEqual(2, len(import_tasks))
+        self.assertEqual(2, len(import_data_import))
         
     
     @patch('ptmscout.database.experiment.createExperimentError')
     @patch('ptmscout.database.upload.getSessionById')
-    @patch('ptmworker.tasks.invoke')
-    @patch('ptmworker.tasks.finalize_import')
-    @patch('ptmworker.tasks.create_import_tasks')
+    @patch('ptmworker.data_import.invoke')
+    @patch('ptmworker.data_import.finalize_import')
+    @patch('ptmworker.data_import.create_import_data_import')
     @patch('ptmworker.upload_helpers.get_proteins_from_ncbi')
     @patch('ptmworker.upload_helpers.get_series_headers')
     @patch('ptmworker.upload_helpers.parse_datafile')
-    def test_start_import_should_load_file_get_protein_records_log_errors_and_invoke_subtasks(self, patch_parse, patch_get_headers, patch_get_proteins, patch_create_tasks, patch_finalize, patch_invoke, patch_getSession, patch_createError):
+    def test_start_import_should_load_file_get_protein_records_log_errors_and_invoke_subdata_import(self, patch_parse, patch_get_headers, patch_get_proteins, patch_create_data_import, patch_finalize, patch_invoke, patch_getSession, patch_createError):
         e1 = uploadutils.ParseError(1, None, "an error")
         e2 = uploadutils.ParseError(9, None, "another error")
         session_id = 100
@@ -210,9 +210,9 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         
         patch_getSession.return_value = session
         
-        patch_create_tasks.return_value = "some tasks"
+        patch_create_data_import.return_value = "some data_import"
         
-        res = tasks.start_import.apply_async((exp_id, session_id, user.email, app_url))
+        res = data_import.start_import.apply_async((exp_id, session_id, user.email, app_url))
         res.get()
         assert res.successful()
         
@@ -223,6 +223,6 @@ class PTMWorkDataImportTestCase(IntegrationTestCase):
         patch_createError.assert_any_call(exp_id, 1, 'Q1G345', "PEP1", "an error")
         patch_createError.assert_any_call(exp_id, 9, 'A34PDF', "PEP3", "another error")
         
-        patch_create_tasks.assert_called_once_with(exp_id, prot_map, accessions, "some peps", "some mods", line_mapping, "some headers", session.units, "some data")
-        patch_invoke.assert_called_once_with("some tasks", exp_id, user.email, app_url)
+        patch_create_data_import.assert_called_once_with(exp_id, prot_map, accessions, "some peps", "some mods", line_mapping, "some headers", session.units, "some data")
+        patch_invoke.assert_called_once_with("some data_import", exp_id, user.email, app_url)
         
