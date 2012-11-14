@@ -9,7 +9,7 @@ def cancel_upload_view(request):
     session.delete()
     
     if(session.experiment_id != None):
-        exp = experiment.getExperimentById(session.experiment_id, request.user)
+        exp = experiment.getExperimentById(session.experiment_id, request.user, check_ready=False)
         exp.delete()
     
     

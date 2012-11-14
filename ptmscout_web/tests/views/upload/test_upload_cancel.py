@@ -26,7 +26,7 @@ class TestCancelView(UnitTestCase):
         result = cancel_upload_view(request)
 
         patch_session.assert_called_once_with(247, user)
-        patch_experiment.assert_called_once_with(exp.id, user)
+        patch_experiment.assert_called_once_with(exp.id, user, check_ready=False)
         session.delete.assert_called_once_with()
         
         self.assertEqual(strings.cancel_upload_successful_page_title, result['pageTitle'])

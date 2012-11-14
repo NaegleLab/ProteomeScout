@@ -9,8 +9,6 @@ class Permission(Base):
     experiment_id = Column(Integer(10), ForeignKey('experiment.id'), primary_key=True)
     access_level = Column('access_level', Enum(['view', 'owner']), default='view')
     
-    experiment = relationship("Experiment", backref="permissions")
-
     def __init__(self, experiment, access_level='view'):
         self.experiment = experiment
         self.access_level = access_level

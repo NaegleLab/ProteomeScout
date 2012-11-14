@@ -4,7 +4,7 @@ from pyramid.testing import DummyRequest
 from ptmscout.config import strings
 from tests.views.mocking import createMockExperiment, createMockProtein,\
     createMockMeasurement, createMockPeptide, createMockError,\
-    createMockPeptideModification, createMockPTM
+    createMockPeptideModification, createMockPTM, createMockUser
 from mock import patch
 import json
 import base64
@@ -116,7 +116,7 @@ class SummaryViewsTests(UnitTestCase):
         request = DummyRequest()
         exp_id = 1
         request.matchdict['id'] = exp_id
-        request.user = None
+        request.user = createMockUser()
         
         sequence_profile = ["some list of items"]
         patch_sequenceProfile.return_value = sequence_profile
@@ -135,9 +135,13 @@ class SummaryViewsTests(UnitTestCase):
         
         patch_getExperiment.return_value = exp
         
+        request.user.experimentOwner.return_value = True
+        
         result = experiment_summary_view(request)
 
-        patch_getExperiment.assert_called_once_with(exp_id, None)
+        request.user.experimentOwner.assert_called_once_With(exp)
+
+        patch_getExperiment.assert_called_once_with(exp_id, request.user)
         patch_getMeasurements.assert_called_once_with(exp_id, request.user)
         
         patch_sequenceProfile.assert_called_once_with(measurements)        
@@ -148,6 +152,6 @@ class SummaryViewsTests(UnitTestCase):
         self.assertEqual(mock_measurement_summary, result['measurement_summary'])
         self.assertEqual(base64.b64encode(json.dumps(sequence_profile)), result['sequence_profile'])
         
-        self.assertEqual(3, result['error_count'])
+        self.assertEqual(True, result['user_owner'])
         self.assertEqual(2, result['rejected_peptides'])
         self.assertEqual(strings.experiment_summary_page_title % (exp.name), result['pageTitle'])

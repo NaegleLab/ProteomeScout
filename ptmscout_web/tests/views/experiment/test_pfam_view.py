@@ -5,7 +5,7 @@ from ptmscout.views.experiment.pfam_view import show_pfam_view,\
     format_pfam_domains, format_pfam_sites
 from tests.views.mocking import createMockExperiment, createMockProtein,\
     createMockMeasurement, createMockPeptide, createMockDomain,\
-    createMockPeptideModification, createMockPTM
+    createMockPeptideModification, createMockPTM, createMockUser
 from ptmscout.config import strings
 import base64
 import json
@@ -98,7 +98,7 @@ class TestPfamView(UnitTestCase):
         expid = 1
         exp = createMockExperiment(expid, 0, 0)
         request.matchdict['id'] = expid
-        request.user = None
+        request.user = createMockUser()
         
         patch_getExperiment.return_value = exp
         
@@ -110,7 +110,11 @@ class TestPfamView(UnitTestCase):
         domains = ["some","formatted","domains"]
         patch_formatDomains.return_value = domains
         
+        request.user.experimentOwner.return_value = True
+        
         result = show_pfam_view(request)
+        
+        request.user.experimentOwner.assert_called_once_with(exp)
         
         patch_getExperiment.assert_called_once_with(expid, request.user)
         patch_getMeasurements.assert_called_once_with(expid, request.user)
@@ -121,6 +125,7 @@ class TestPfamView(UnitTestCase):
         self.assertEqual(strings.experiment_pfam_page_title % (exp.name), result['pageTitle'])
         self.assertEqual(exp, result['experiment'])
         
+        self.assertEqual(True, result['user_owner'])
         self.assertEqual(sites, result['sites'])
         self.assertEqual(domains, result['domains'])
         

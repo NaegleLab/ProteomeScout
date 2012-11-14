@@ -9,7 +9,7 @@
 				| <a href="${request.application_url}/experiments/${experiment.id}/GO">GO Terms</a>
 				| <a href="${request.application_url}/experiments/${experiment.id}/pfam">Protein Families</a>
 				| <a href="${request.application_url}/experiments/${experiment.id}/predictions">Scansite Predictions</a>
-				| <a href="${request.application_url}/experiments/${experiment.id}/errors">Error Log</a>
+				<tal:empty tal:condition="user_owner">| <a href="${request.application_url}/experiments/${experiment.id}/errors">Error Log</a></tal:empty>
 			</div>
 		</div>
 
@@ -30,10 +30,10 @@
 			</div>
 		</div>
 		
-		<div class="section_group" tal:condition="user_owner">
+		<div class="section_group">
 			<div class="title">Data Set Error Resolution Steps</div>
 			<div class="body">
-				<ol>
+				<ol class="resolution_steps">
 					<li><a href="${request.application_url}/experiments/${experiment.id}/download?errors=True">Download</a> your data set with error annotations.</li>
 					<li>Correct the reported errors in the data set and save the file.</li>
 					<li><a href="${request.application_url}/upload?load_type=append&parent_experiment=${experiment.id}">Upload</a> your corrected data set.</li>
@@ -47,10 +47,10 @@
 			<div class="body">
 				<table class="error_listing">
 					<tr>
-						<th>Line #</th>
-						<th>Accession</th>
-						<th>Peptide</th>
-						<th>Error</th>
+						<th class="min">Line#</th>
+						<th class="min">Accession</th>
+						<th class="min">Peptide</th>
+						<th class="max">Error</th>
 					</tr>
 					<tr tal:repeat="(line, accession, peptide, message) errors">
 						<td tal:content="line"></td>

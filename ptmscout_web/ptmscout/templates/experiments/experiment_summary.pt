@@ -19,7 +19,7 @@
 				| <a href="${request.application_url}/experiments/${experiment.id}/GO">GO Terms</a>
 				| <a href="${request.application_url}/experiments/${experiment.id}/pfam">Protein Families</a>
 				| <a href="${request.application_url}/experiments/${experiment.id}/predictions">Scansite Predictions</a>
-				| <a href="${request.application_url}/experiments/${experiment.id}/errors">Error Log</a>
+				<tal:empty tal:condition="user_owner">| <a href="${request.application_url}/experiments/${experiment.id}/errors">Error Log</a></tal:empty>
 			</div>
 		</div>
 
@@ -43,10 +43,6 @@
 					<tr>
 						<td class="field">Rejected Peptides</td>
 						<td class="value">${rejected_peptides}</td>
-					</tr>
-					<tr>
-						<td class="field">Dataset Errors</td>
-						<td class="value">${error_count}</td>
 					</tr>
 				</table>
 				

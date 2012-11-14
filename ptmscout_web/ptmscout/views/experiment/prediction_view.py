@@ -5,7 +5,7 @@ import base64
 import json
 
 def filter_predictions(predictions, threshold = 1.0):
-    return [p for p in predictions if p.score <= threshold and p.value != "~~~"]
+    return [ p for p in predictions if p.score <= threshold ]
 
 def format_predictions(measurements):
     formatted_predictions = {}
@@ -65,10 +65,12 @@ def prediction_view(request):
     expid = request.matchdict['id']
     exp = experiment.getExperimentById(expid, request.user)
     
+    user_owner = request.user != None and request.user.experimentOwner(exp)
     
     measurements = modifications.getMeasuredPeptidesByExperiment(expid, request.user)
     formatted_predictions = format_predictions(measurements)
     
     return {'experiment': exp,
             'pageTitle': strings.experiment_prediction_page_title % (exp.name),
-            'predictions': formatted_predictions}
+            'predictions': formatted_predictions,
+            'user_owner': user_owner}

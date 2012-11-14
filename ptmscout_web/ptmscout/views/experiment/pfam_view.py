@@ -59,10 +59,13 @@ def show_pfam_view(request):
     exp = experiment.getExperimentById(expid, request.user)
     measurements = modifications.getMeasuredPeptidesByExperiment(expid, request.user)
     
+    user_owner = request.user != None and request.user.experimentOwner(exp)
+    
     formatted_sites = format_pfam_sites(measurements)
     formatted_domains = format_pfam_domains(measurements)
     
     return {'pageTitle': strings.experiment_pfam_page_title % (exp.name),
             'experiment':exp,
             'sites':formatted_sites,
-            'domains':formatted_domains}
+            'domains':formatted_domains,
+            'user_owner': user_owner}

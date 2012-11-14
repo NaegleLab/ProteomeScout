@@ -90,6 +90,8 @@ def experiment_summary_view(request):
     exp = experiment.getExperimentById(eid, request.user)
     measurements = modifications.getMeasuredPeptidesByExperiment(eid, request.user)
     
+    user_owner = request.user != None and request.user.experimentOwner(exp)
+    
     rejected_peps = len(set([err.peptide for err in exp.errors]))
     
     measurement_summary = summarize_measurements(measurements)
@@ -100,5 +102,5 @@ def experiment_summary_view(request):
             'measurement_summary':measurement_summary,
             'sequence_profile': encoded,
             'rejected_peptides':rejected_peps,
-            'error_count':len(exp.errors),
-            'pageTitle': strings.experiment_summary_page_title % (exp.name)}
+            'pageTitle': strings.experiment_summary_page_title % (exp.name),
+            'user_owner': user_owner}

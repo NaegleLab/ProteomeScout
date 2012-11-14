@@ -49,6 +49,12 @@ class User(Base):
                     for permission in self.permissions \
                         if permission.access_level == 'owner' ]
         
+    def experimentOwner(self, exp):
+        result = [ permission.experiment \
+                        for permission in self.permissions \
+                            if permission.access_level == 'owner' and permission.experiment.id == exp.id]
+        return len(result) > 0
+    
     def allExperiments(self):
         return [ permission.experiment for permission in self.permissions ]
 
