@@ -127,7 +127,7 @@ def manage_experiment_permissions(request):
 
 @view_config(route_name='my_experiments', renderer='ptmscout:templates/accounts/my_experiments.pt', permission='private')
 def manage_experiments(request):
-    users_experiments = [ p.experiment for p in request.user.permissions if p.access_level=='owner' ]
+    users_experiments = request.user.myExperiments()
     
     return {'pageTitle':strings.my_experiments_page_title,
             'experiments': users_experiments}

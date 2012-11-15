@@ -324,11 +324,8 @@ class MyExperimentsViewTests(UnitTestCase):
 
         exp1 = createMockExperiment(1, 0)
         exp2 = createMockExperiment(2, 0)
-        exp3 = createMockExperiment(3, 0)
         
-        ptm_user.permissions.append(createMockPermission(ptm_user, exp1, 'owner'))
-        ptm_user.permissions.append(createMockPermission(ptm_user, exp2, 'owner'))
-        ptm_user.permissions.append(createMockPermission(ptm_user, exp3, 'view'))
+        ptm_user.myExperiments.return_value = [exp1,exp2]
         
         info = manage_experiments(request)
         
