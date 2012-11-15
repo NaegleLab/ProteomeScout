@@ -80,6 +80,8 @@ class Peptide(Base):
     def getName(self):
         return self.site_type + str(self.site_pos)
 
+    def save(self):
+        DBSession.add(self)
 
 class PeptideModification(Base):
     __tablename__ = 'MS_modifications'
@@ -116,7 +118,7 @@ class MeasuredPeptide(Base):
         pmod.modification = ptm
         self.peptides.append(pmod)
         
-class NoSuchModification(Exception):
+class NoSuchPeptide(Exception):
     def __init__(self, pep_site, pep_type, protein_id):
         self.site = pep_site
         self.t = pep_type
@@ -137,11 +139,11 @@ def getMeasuredPeptidesByExperiment(eid, user=None, pids = None, secure=True, ch
     return [ mod for mod in modifications if (not secure or mod.experiment.checkPermissions(user)) and (not check_ready or mod.experiment.ready()) ]
 
 
-def getModificationBySite(pep_site, pep_type, prot_id, mod_id):
-    mod = DBSession.query(Peptide).filter_by(site_pos=pep_site, site_type=pep_type, protein_id=prot_id, modification_id=mod_id).first()
+def getPeptideBySite(pep_site, pep_type, prot_id):
+    mod = DBSession.query(Peptide).filter_by(site_pos=pep_site, site_type=pep_type, protein_id=prot_id).first()
     
     if mod == None: 
-        raise NoSuchModification(pep_site, pep_type, prot_id)
+        raise NoSuchPeptide(pep_site, pep_type, prot_id)
     
     return mod
 
@@ -157,3 +159,8 @@ def findMatchingPTM(mod_type, residue=None, taxons=None):
         mods = [mod for mod in mods if mod.hasTaxon(taxons) or len(mod.taxons) == 0]
     
     return mods, mods_exist
+
+def getPeptideById(pep_id):
+    return DBSession.query(Peptide).filter(Peptide.id==pep_id).first()
+
+

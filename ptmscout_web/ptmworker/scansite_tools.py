@@ -16,6 +16,14 @@ class MotifNode(object):
             txt += str(c.nodeValue) 
         return txt
 
+    def parse_source(self):
+        lower_name = self.name.lower()
+        lower_nick = self.nickname.lower()
+        is_kinase = lower_name.find("kinase") > -1 or lower_nick.find("_kin") > -1
+        if is_kinase:
+            return 'scansite_kinase'
+        return 'scansite_bind'
+
 class ScansiteParser():
     def __init__(self, scansite_stream):
         self.dom = xml.parseString(scansite_stream)

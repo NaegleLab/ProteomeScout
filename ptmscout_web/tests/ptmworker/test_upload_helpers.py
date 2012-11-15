@@ -3,7 +3,6 @@ from ptmworker import upload_helpers
 from ptmscout.database import modifications, experiment
 from tests.views.mocking import createMockExperiment
 from mock import patch
-from ptmworker.upload_helpers import get_aligned_peptide_sequences
 
 class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
     @patch('ptmscout.database.experiment.getExperimentById')
@@ -20,7 +19,6 @@ class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
         exp.saveExperiment.assert_called_once_with()
         self.assertEqual(exp, v)
         
-    
     def test_insert_run_data_should_create_data_records_when_timeseries(self):
         from ptmscout.database import DBSession
         MS_peptide = modifications.MeasuredPeptide()
@@ -82,7 +80,7 @@ class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
         mod_sites = [ i for i in xrange(0, len(pep_seq)) if pep_seq[i] != pep_up[i] ]
         index = 0
         
-        aligned_peptides = get_aligned_peptide_sequences(mod_sites, index, pep_seq, prot_seq)
+        aligned_peptides = upload_helpers.get_aligned_peptide_sequences(mod_sites, index, pep_seq, prot_seq)
         
         self.assertEqual((1,  "       mSADFJTK", 'M'), aligned_peptides[0])
         self.assertEqual((3,  "     MSaDFJTKLJ", 'A'), aligned_peptides[1])

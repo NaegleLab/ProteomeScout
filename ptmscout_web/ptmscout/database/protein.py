@@ -2,7 +2,7 @@ from ptmscout.database import Base, DBSession
 from sqlalchemy.schema import Column, ForeignKey, UniqueConstraint, Table
 from sqlalchemy.types import Integer, TEXT, VARCHAR, Enum, Text, Float, DateTime
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql.expression import null, or_
+from sqlalchemy.sql.expression import null, or_, and_
 from ptmscout.config import strings, settings
 import taxonomies
 import datetime
@@ -69,6 +69,9 @@ class ProteinDomain(Base):
     params = Column(VARCHAR(45))
     protein_id = Column(Integer(10), ForeignKey('protein.id'))
     version = Column(Integer(11))
+    
+    def save(self):
+        DBSession.add(self)
 
 class Protein(Base):
     __tablename__='protein'
@@ -137,3 +140,7 @@ def getProteinsByAccession(accessions, species=None):
         q = DBSession.query(Protein).join(Protein.accessions).join(Protein.species).filter(or_(Protein.acc_gene.in_(accessions), ProteinAccession.value.in_(accessions)), taxonomies.Species.name == species)
     
     return q.all()
+
+
+def getProteinDomain(prot_id, pep_site):
+    return DBSession.query(ProteinDomain).filter(and_(ProteinDomain.protein_id==prot_id, ProteinDomain.start <= pep_site, pep_site <= ProteinDomain.stop))    

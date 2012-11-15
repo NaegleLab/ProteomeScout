@@ -1,9 +1,10 @@
 from ptmscout.database import protein, taxonomies, modifications, experiment
 from ptmscout.utils import protein_utils, uploadutils
-from ptmscout.config import settings, strings
+from ptmscout.config import strings
 import logging
-from geeneus import Proteome
 import sys
+from ptmscout.database.modifications import NoSuchPeptide
+from ptmworker import scansite_tools
 
 log = logging.getLogger('ptmscout')
 
@@ -12,30 +13,6 @@ def mark_experiment(exp_id, status):
     exp.status = status
     exp.saveExperiment()
     return exp
-
-def get_protein_information(pm, acc):
-    seq = pm.get_protein_sequence(acc)
-    
-    if seq == "":
-        raise uploadutils.ParseError(None, None, "Unable to fetch protein accession: %s" % (acc))
-    
-    name = pm.get_protein_name(acc)
-    gene = pm.get_geneID(acc)
-    
-    XML = pm.get_raw_xml(acc)
-
-    taxonomy = XML[0]['GBSeq_taxonomy']
-    taxonomy = set([ t.strip() for t in taxonomy.split(';') ])
-    
-    species = XML[0]['GBSeq_organism']
-    
-    prot_accessions = set([ acc ])
-    prot_accessions.add( XML[0]['GBSeq_primary-accession'] )
-    for seqid in XML[0]['GBSeq_other-seqids']:
-        prot_accessions.add(seqid)
-    
-    return name, gene, taxonomy, species, prot_accessions, seq
-
 
 def find_or_create_species(species):
     sp = taxonomies.getSpeciesByName(species)
@@ -51,6 +28,20 @@ def find_or_create_species(species):
         sp.taxon_id = tx.id
         
     return sp
+
+
+def create_domains_for_protein(prot, domains, source, params):
+    for domain in domains:
+        dbdomain = protein.ProteinDomain()
+        dbdomain.p_value = domain.p_value
+        dbdomain.start = domain.start
+        dbdomain.stop = domain.stop
+        dbdomain.source = source
+        dbdomain.version = domain.release
+        dbdomain.label = domain.label
+        dbdomain.params = params
+        prot.domains.append(dbdomain)
+
 
 def create_new_protein(name, gene, seq, species, accessions):
     log.debug("Creating protein: %s SEQ: %s", str(accessions), seq)
@@ -69,42 +60,16 @@ def create_new_protein(name, gene, seq, species, accessions):
     return prot
 
 
-def find_protein(name, gene, seq, prot_accessions, species):
+def find_protein(seq, prot_accessions, species):
     for p in protein.getProteinsByAccession(prot_accessions, species):
         if p.sequence.lower() == seq.lower():
             return p
 
-
-def load_proteins(accessions, pm):
-    log.debug("Querying for proteins: %s", str(accessions))
-    pm.batch_get_protein_sequence(accessions)
-
-
-def get_proteins_from_ncbi(accessions, MAX_BATCH_SIZE):
-    pm = Proteome.ProteinManager(settings.adminEmail)
-
-    query_job_args = [[]]
-    for acc in accessions:
-        query_job_args[-1].append(acc)
-        
-        if len(query_job_args[-1]) == MAX_BATCH_SIZE:
-            query_job_args.append([])
-
-    prot_map = {}
-    [ load_proteins(qjob, pm) for qjob in query_job_args if len(qjob) > 0 ]
-
-    errors = []
-    for acc in accessions:
-        try:
-            prot_map[acc] = get_protein_information(pm, acc)
-        except uploadutils.ParseError, e:
-            for line in accessions[acc]:
-                e.row = line
-                errors.append(e)
-    
-            
-    return prot_map, errors
-
+def get_related_proteins(prot_accessions, species):
+    related_proteins = []
+    for p in protein.getProteinsByAccession(prot_accessions, species):
+        related_proteins.append(p)
+    return related_proteins
 
 def get_aligned_peptide_sequences(mod_sites, index, pep_seq, prot_seq):
     upper_case = pep_seq.upper()
@@ -131,36 +96,57 @@ def get_aligned_peptide_sequences(mod_sites, index, pep_seq, prot_seq):
     return aligned_peptides
     
 
-def create_modifications(protein_id, prot_seq, pep_seq, mods, taxonomy):
-    created_mods = []
-    
-    prot_seq = prot_seq.upper()
-    
+def check_peptide_matches_protein_sequence(prot_seq, pep_seq):   
     index = prot_seq.find(pep_seq.upper())
+    
     if index == -1:
         raise uploadutils.ParseError(None, None, strings.experiment_upload_warning_peptide_not_found_in_protein_sequence)
     
+    return index
+
+def parse_modifications(prot_seq, pep_seq, mods, taxonomy):
+    index = check_peptide_matches_protein_sequence(prot_seq, pep_seq)
     mod_indices, mod_types = uploadutils.check_modification_type_matches_peptide(None, pep_seq, mods, taxonomy)
     aligned_sequences = get_aligned_peptide_sequences(mod_indices, index, pep_seq, prot_seq)
     
+    mod_map = {}
+    
     for i in xrange(0, len(mod_indices)):
-        mod = mod_types[i]
-        pep_site, pep_aligned, pep_type = aligned_sequences[i]
+        mod_map[mod_indices[i]] = (mod_types[i], aligned_sequences[i])
+    
+    return mod_map
+
+
+def query_peptide_predictions(pep_seq, motif_class):
+    scansite_predictions = scansite_tools.get_scansite_motif(pep_seq, motif_class)
+    
+    db_predictions = []
+    for scansite in scansite_predictions:
+        pred = modifications.ScansitePrediction()
+        pred.score = scansite.score
+        pred.value = scansite.nickname
+        pred.source = scansite.parse_source()
+        db_predictions.append(pred)
         
-        try:
-            pep_mod = modifications.getModificationBySite(pep_site, pep_type, protein_id, mod.id)
-        except modifications.NoSuchModification:
-            pep_mod = modifications.Peptide()
-            pep_mod.pep_aligned = pep_aligned
-            pep_mod.pep_tryps = ""
-            pep_mod.site_pos = pep_site
-            pep_mod.site_type = pep_type
-            pep_mod.protein_id = protein_id
-            pep_mod.mod_id = mod.id
-        
-        created_mods.append(pep_mod)
-        
-    return created_mods
+    return db_predictions
+
+def get_peptide(prot_id, pep_site, peptide_sequence):
+    upper_pep = peptide_sequence.upper()
+    pep_type = upper_pep[8]
+    
+    created = False
+    try:
+        pep = modifications.getPeptideBySite(pep_site, pep_type, prot_id)
+    except NoSuchPeptide:
+        pep = modifications.Peptide()
+        pep.pep_aligned = peptide_sequence
+        pep.site_pos = pep_site
+        pep.site_type = pep_type
+        pep.protein_id = prot_id
+        pep.save()
+        created = True
+    
+    return pep, created
     
 
 def insert_run_data(MSpeptide, line, units, series_header, run_name, series):
@@ -178,11 +164,20 @@ def insert_run_data(MSpeptide, line, units, series_header, run_name, series):
             data.units = units
             data.label = x
             data.value = y
-            data.MS = MSpeptide
-            
-            data.save()
+            MSpeptide.data.append(data)
         except Exception, e:
             log.debug("Error inserting data element on line %d: '%s' exc: %s", line, series[i], str(e))
+
+
+def get_series_headers(session):
+    headers = []
+    for col in session.getColumns('data'):
+        headers.append(('data', col.label))
+    
+    for col in session.getColumns('stddev'):
+        headers.append(('stddev', col.label))
+    
+    return headers
 
 
 
@@ -254,12 +249,17 @@ def parse_datafile(session):
     return accessions, peptides, mod_map, data_runs, errors, line_mapping
     
 
-def get_series_headers(session):
-    headers = []
-    for col in session.getColumns('data'):
-        headers.append(('data', col.label))
+def create_chunked_tasks(task_method, task_args, MAX_BATCH_SIZE):
+    tasks = []
+    args = []
     
-    for col in session.getColumns('stddev'):
-        headers.append(('stddev', col.label))
+    for arg in task_args:
+        args.append(arg)
+        if len(args) == MAX_BATCH_SIZE:
+            tasks.append( task_method.s(args) )
+            args = []
+    if len(args) > 0:
+        tasks.append( task_method.s(args) )
+        
+    return tasks
     
-    return headers
