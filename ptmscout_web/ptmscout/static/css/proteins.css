@@ -132,6 +132,15 @@ tr.odd {
 	width:750px;
 }
 
+.modsite {
+	font-size:14px;
+}
+
+.peptide {
+	font-family:"Lucida Console", Monaco, monospace;
+	font-size:16px;
+}
+
 .experiment_data .run {
 	display:none;
 }

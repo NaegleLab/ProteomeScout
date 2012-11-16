@@ -18,10 +18,10 @@
 						<a tal:attributes="href request.application_url + '/proteins/' + str(protein.id) + ('/data?experiment_id=%d' % experiment.id if experiment != None else '')" tal:content="protein.acc_gene"></a>
 					</td>
 					<td tal:content="protein.species.name"></td>
-					<td>
+					<td class="modsite">
 						<div tal:repeat="phosphopep modifications[protein.id]" class="phosphopep_data" tal:content="phosphopep['site']"></div>
 					</td>
-					<td>
+					<td class="peptide">
 						<div tal:repeat="phosphopep modifications[protein.id]" class="phosphopep_data" tal:content="phosphopep['peptide']"></div>
 					</td>
 					<td tal:condition="include_predictions" class="predictions">
