@@ -16,8 +16,8 @@
 			    Loaded: ${experiment.date}<br />
 		    </fieldset>
 		</div>    
-    	<div class = "infobox" tal:condition="confirm=='false'">
-    		<div class = "infoheader">Confirm</div>
+    	<div class = "infobox" tal:condition="not confirm">
+    		<div class = "infoheader">${header}</div>
     		<p class = "infotext">${message}</p>
     		<table>
     			<tr>
@@ -35,8 +35,8 @@
 	    		</tr>
     		</table>
     	</div>
-    	<div class = "infobox" tal:condition="confirm=='true'">
-    		<div class = "infoheader">Success</div>
+    	<div class = "infobox" tal:condition="confirm">
+    		<div class = "infoheader">${header}</div>
     		<p class = "infotext">${message}</p>
     	</div>
     </div>

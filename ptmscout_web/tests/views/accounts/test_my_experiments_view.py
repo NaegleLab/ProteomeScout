@@ -11,6 +11,7 @@ from tests.views.mocking import createMockUser, createMockExperiment, \
 from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 
 class MyExperimentsViewIntegrationTests(IntegrationTestCase):
+    
     def test_integration(self):
         from ptmscout.database import experiment
         
@@ -31,6 +32,52 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
 class MyExperimentsViewTests(UnitTestCase):
     
     @patch('ptmscout.database.experiment.getExperimentById')
+    def test_confirm_invite_should_fail_for_bad_domain(self, patch_getExperiment):
+        request = DummyRequest()
+        ptm_user = createMockUser("username", "email", "password", 1)
+        request.user = ptm_user
+        
+        exp1 = createMockExperiment(1, 1)
+        ptm_user.permissions.append(createMockPermission(ptm_user, exp1, 'owner'))
+        request.matchdict['id'] = "%d" % (exp1.id)
+        invited_email = "inviteduser@institute.com"
+        request.GET['email'] = invited_email
+                
+        patch_getExperiment.return_value = exp1
+        
+        info = confirm_invite_user(request)
+        
+        self.assertEqual(True, info['confirm'])
+        self.assertEqual("Failure", info['header'])
+        self.assertEqual(strings.user_invite_page_title, info['pageTitle'])
+        self.assertEqual(strings.failure_reason_email_not_allowed, info['message'])
+        self.assertEqual(exp1, info['experiment'])
+        self.assertEqual(request.application_url + "/account/experiments", info['redirect'])
+    
+    @patch('ptmscout.database.experiment.getExperimentById')
+    def test_confirm_invite_should_fail_for_bad_email(self, patch_getExperiment):
+        request = DummyRequest()
+        ptm_user = createMockUser("username", "email", "password", 1)
+        request.user = ptm_user
+        
+        exp1 = createMockExperiment(1, 1)
+        ptm_user.permissions.append(createMockPermission(ptm_user, exp1, 'owner'))
+        request.matchdict['id'] = "%d" % (exp1.id)
+        invited_email = "inviteduser@institute"
+        request.GET['email'] = invited_email
+                
+        patch_getExperiment.return_value = exp1
+        
+        info = confirm_invite_user(request)
+        
+        self.assertEqual(True, info['confirm'])
+        self.assertEqual("Failure", info['header'])
+        self.assertEqual(strings.user_invite_page_title, info['pageTitle'])
+        self.assertEqual(strings.failure_reason_email_not_valid, info['message'])
+        self.assertEqual(exp1, info['experiment'])
+        self.assertEqual(request.application_url + "/account/experiments", info['redirect'])
+    
+    @patch('ptmscout.database.experiment.getExperimentById')
     def test_confirm_invite_should_check_confirmation(self, patch_getExperiment):
         request = DummyRequest()
         ptm_user = createMockUser("username", "email", "password", 1)
@@ -46,7 +93,8 @@ class MyExperimentsViewTests(UnitTestCase):
         
         info = confirm_invite_user(request)
         
-        self.assertEqual("false", info['confirm'])
+        self.assertEqual(False, info['confirm'])
+        self.assertEqual("Confirm", info['header'])
         self.assertEqual(strings.user_invite_page_title, info['pageTitle'])
         self.assertEqual(strings.user_invite_confirm % (invited_email), info['message'])
         self.assertEqual(exp1, info['experiment'])
@@ -80,7 +128,8 @@ class MyExperimentsViewTests(UnitTestCase):
         
         self.assertIn(strings.user_invite_email_subject % (ptm_user.name), str(patch_mail.call_args))
         self.assertIn(expected_email_body, str(patch_mail.call_args))
-        self.assertEqual("true", info['confirm'])
+        self.assertEqual(True, info['confirm'])
+        self.assertEqual("Success", info['header'])
         self.assertEqual(strings.user_invite_page_title, info['pageTitle'])
         self.assertEqual(strings.user_invited % (invited_email), info['message'])
         self.assertEqual(exp1, info['experiment'])
@@ -101,7 +150,8 @@ class MyExperimentsViewTests(UnitTestCase):
         
         info = privatize_experiment(request)
         
-        self.assertEqual("true", info['confirm'])
+        self.assertEqual(True, info['confirm'])
+        self.assertEqual("Success", info['header'])
         self.assertEqual(strings.privatize_experiment_page_title, info['pageTitle'])
         self.assertEqual(strings.privatize_experiment_already_message, info['message'])
         self.assertEqual(exp1, info['experiment'])
@@ -122,7 +172,8 @@ class MyExperimentsViewTests(UnitTestCase):
         
         info = privatize_experiment(request)
         
-        self.assertEqual("false", info['confirm'])
+        self.assertEqual(False, info['confirm'])
+        self.assertEqual("Confirm", info['header'])
         self.assertEqual(strings.privatize_experiment_page_title, info['pageTitle'])
         self.assertEqual(strings.privatize_experiment_confirm_message, info['message'])
         self.assertEqual(exp1, info['experiment'])
@@ -146,7 +197,8 @@ class MyExperimentsViewTests(UnitTestCase):
         self.assert_(exp1.makePrivate.called)
         self.assert_(exp1.saveExperiment.called)
         
-        self.assertEqual("true", info['confirm'])
+        self.assertEqual(True, info['confirm'])
+        self.assertEqual("Success", info['header'])
         self.assertEqual(strings.privatize_experiment_page_title, info['pageTitle'])
         self.assertEqual(strings.privatize_experiment_success_message, info['message'])
         self.assertEqual(exp1, info['experiment'])
@@ -167,7 +219,8 @@ class MyExperimentsViewTests(UnitTestCase):
         
         info = publish_experiment(request)
         
-        self.assertEqual("true", info['confirm'])
+        self.assertEqual(True, info['confirm'])
+        self.assertEqual("Success", info['header'])
         self.assertEqual(strings.publish_experiment_page_title, info['pageTitle'])
         self.assertEqual(strings.publish_experiment_already_message, info['message'])
         self.assertEqual(exp1, info['experiment'])
@@ -188,7 +241,8 @@ class MyExperimentsViewTests(UnitTestCase):
         
         info = publish_experiment(request)
         
-        self.assertEqual("false", info['confirm'])
+        self.assertEqual(False, info['confirm'])
+        self.assertEqual("Confirm", info['header'])
         self.assertEqual(strings.publish_experiment_page_title, info['pageTitle'])
         self.assertEqual(strings.publish_experiment_confirm_message, info['message'])
         self.assertEqual(exp1, info['experiment'])
@@ -212,7 +266,8 @@ class MyExperimentsViewTests(UnitTestCase):
         exp1.makePublic.assert_called_once()
         exp1.saveExperiment.assert_called_once()
         
-        self.assertEqual("true", info['confirm'])
+        self.assertEqual(True, info['confirm'])
+        self.assertEqual("Success", info['header'])
         self.assertEqual(strings.publish_experiment_page_title, info['pageTitle'])
         self.assertEqual(strings.publish_experiment_success_message, info['message'])
         self.assertEqual(exp1, info['experiment'])
