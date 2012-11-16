@@ -1,12 +1,67 @@
 from ptmscout.database import protein, taxonomies, modifications, experiment
-from ptmscout.utils import protein_utils, uploadutils
+from ptmscout.utils import uploadutils
 from ptmscout.config import strings
 import logging
 import sys
 from ptmscout.database.modifications import NoSuchPeptide
 from ptmworker import scansite_tools
+import transaction
+import traceback
+from celery.canvas import group
 
 log = logging.getLogger('ptmscout')
+
+
+def logged_task(fn):
+    def ttask(*args):
+        log.debug("Running task: %s", fn.__name__)
+        try:
+            return fn(*args)
+        except Exception:
+            log.warning(traceback.format_exc())
+            raise
+    ttask.__name__ = fn.__name__
+    return ttask
+
+
+def transaction_task(fn):
+    def ttask(*args):
+        log.debug("Running task: %s", fn.__name__)
+        try:
+            result = fn(*args)
+            transaction.commit()
+            return result
+        except Exception:
+            log.warning(traceback.format_exc())
+            transaction.abort()
+            raise
+    ttask.__name__ = fn.__name__
+    return ttask
+
+
+def dynamic_transaction_task(fn):
+    def ttask(*args):
+        log.debug("Running task: %s", fn.__name__)
+        try:
+            result = fn(*args)
+            transaction.commit()
+            
+            if result != None and len(result) > 0:
+                new_tasks = group(result)
+                new_tasks.apply_async()
+        except Exception:
+            log.warning(traceback.format_exc())
+            transaction.abort()
+            raise
+    ttask.__name__ = fn.__name__
+    return ttask
+
+
+def report_errors(exp_id, errors, line_mapping):
+    for e in errors:
+        accession, peptide = line_mapping[e.row]
+        experiment.createExperimentError(exp_id, e.row, accession, peptide, e.msg)
+
 
 def mark_experiment(exp_id, status):
     exp = experiment.getExperimentById(exp_id, check_ready=False, secure=False)
@@ -51,19 +106,13 @@ def create_new_protein(name, gene, seq, species, accessions):
     prot.sequence = seq
     prot.species = find_or_create_species(species)
     
-    for prot_acc in accessions:
+    for acc_type, acc in accessions:
         acc_db = protein.ProteinAccession()
-        acc_db.type = protein_utils.get_accession_type(prot_acc)
-        acc_db.value = prot_acc
+        acc_db.type = acc_type
+        acc_db.value = acc
         prot.accessions.append(acc_db)
 
     return prot
-
-
-def find_protein(seq, prot_accessions, species):
-    for p in protein.getProteinsByAccession(prot_accessions, species):
-        if p.sequence.lower() == seq.lower():
-            return p
 
 def get_related_proteins(prot_accessions, species):
     related_proteins = []
@@ -109,15 +158,11 @@ def parse_modifications(prot_seq, pep_seq, mods, taxonomy):
     mod_indices, mod_types = uploadutils.check_modification_type_matches_peptide(None, pep_seq, mods, taxonomy)
     aligned_sequences = get_aligned_peptide_sequences(mod_indices, index, pep_seq, prot_seq)
     
-    mod_map = {}
-    
-    for i in xrange(0, len(mod_indices)):
-        mod_map[mod_indices[i]] = (mod_types[i], aligned_sequences[i])
-    
-    return mod_map
+    return mod_types, aligned_sequences
 
 
 def query_peptide_predictions(pep_seq, motif_class):
+    log.debug("Loading scansite predictions...")
     scansite_predictions = scansite_tools.get_scansite_motif(pep_seq, motif_class)
     
     db_predictions = []
@@ -128,11 +173,13 @@ def query_peptide_predictions(pep_seq, motif_class):
         pred.source = scansite.parse_source()
         db_predictions.append(pred)
         
+        log.debug("%f %s %s", scansite.score, scansite.nickname, scansite.parse_source())
+        
     return db_predictions
 
 def get_peptide(prot_id, pep_site, peptide_sequence):
     upper_pep = peptide_sequence.upper()
-    pep_type = upper_pep[8]
+    pep_type = upper_pep[7]
     
     created = False
     try:

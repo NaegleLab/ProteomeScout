@@ -5,6 +5,28 @@ from tests.views.mocking import createMockExperiment
 from mock import patch
 
 class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
+
+    @patch('ptmscout.database.modifications.Peptide')    
+    @patch('ptmscout.database.modifications.getPeptideBySite')
+    def test_get_peptide_should_create_new_peptide_if_not_found(self, patch_getPep, patch_pep):
+        pid = 100
+        pep_site = 200
+        pep_seq = "ASDFGBSdKEDFASD"
+        pep_type = 'D'
+                
+        patch_getPep.return_value = None
+        patch_getPep.side_effect = modifications.NoSuchPeptide(pep_site, pep_type, pid)
+        
+        pepinst, created =  upload_helpers.get_peptide(pid, pep_site, pep_seq)
+        
+        self.assertTrue(created)        
+        self.assertEqual(pep_seq, pepinst.pep_aligned)
+        self.assertEqual(pep_site, pepinst.site_pos)
+        self.assertEqual(pep_type, pepinst.site_type)
+        self.assertEqual(pid, pepinst.protein_id)
+        pepinst.save.assert_called_once_with()
+        
+    
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_mark_experiment_should_get_experiment_and_mark(self, patch_getExp):
         exp = createMockExperiment()
@@ -71,7 +93,62 @@ class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
         self.assertEqual('20', result[4].label)
         self.assertEqual(2, result[4].value)
         
+    
+    def test_parse_modifications_should_produce_correct_seqs(self):
+        prot_seq = \
+"""MDPTGSQLDSDFSQQDTPCLIIEDSQPESQVLEDDSGSHFSMLSRHLPNLQTHKENPVLD
+VVSNPEQTAGEERGDGNSGFNEHLKENKVADPVDSSNLDTCGSISQVIEQLPQPNRTSSV
+LGMSVESAPAVEEEKGEELEQKEKEKEEDTSGNTTHSLGAEDTASSQLGFGVLELSQSQD
+VEENTVPYEVDKEQLQSVTTNSGYTRLSDVDANTAIKHEEQSNEDIPIAEQSSKDIPVTA
+QPSKDVHVVKEQNPPPARSEDMPFSPKASVAAMEAKEQLSAQELMESGLQIQKSPEPEVL
+STQEDLFDQSNKTVSSDGCSTPSREEGGCSLASTPATTLHLLQLSGQRSLVQDSLSTNSS
+DLVAPSPDAFRSTPFIVPSSPTEQEGRQDKPMDTSVLSEEGGEPFQKKLQSGEPVELENP
+PLLPESTVSPQASTPISQSTPVFPPGSLPIPSQPQFSHDIFIPSPSLEEQSNDGKKDGDM
+HSSSLTVECSKTSEIEPKNSPEDLGLSLTGDSCKLMLSTSEYSQSPKMESLSSHRIDEDG
+ENTQIEDTEPMSPVLNSKFVPAENDSILMNPAQDGEVQLSQNDDKTKGDDTDTRDDISIL
+ATGCKGREETVAEDVCIDLTCDSGSQAVPSPATRSEALSSVLDQEEAMEIKEHHPEEGSS
+GSEVEEIPETPCESQGEELKEENMESVPLHLSLTETQSQGLCLQKEMPKKECSEAMEVET
+SVISIDSPQKLAILDQELEHKEQEAWEEATSEDSSVVIVDVKEPSPRVDVSCEPLEGVEK
+CSDSQSWEDIAPEIEPCAENRLDTKEEKSVEYEGDLKSGTAETEPVEQDSSQPSLPLVRA
+DDPLRLDQELQQPQTQEKTSNSLTEDSKMANAKQLSSDAEAQKLGKPSAHASQSFCESSS
+ETPFHFTLPKEGDIIPPLTGATPPLIGHLKLEPKRHSTPIGISNYPESTIATSDVMSESM
+VETHDPILGSGKGDSGAAPDVDDKLCLRMKLVSPETEASEESLQFNLEKPATGERKNGST
+AVAESVASPQKTMSVLSCICEARQENEARSEDPPTTPIRGNLLHFPSSQGEEEKEKLEGD
+HTIRQSQQPMKPISPVKDPVSPASQKMVIQGPSSPQGEAMVTDVLEDQKEGRSTNKENPS
+KALIERPSQNNIGIQTMECSLRVPETVSAATQTIKNVCEQGTSTVDQNFGKQDATVQTER
+GSGEKPVSAPGDDTESLHSQGEEEFDMPQPPHGHVLHRHMRTIREVRTLVTRVITDVYYV
+DGTEVERKVTEETEEPIVECQECETEVSPSQTGGSSGDLGDISSFSSKASSLHRTSSGTS
+LSAMHSSGSSGKGAGPLRGKTSGTEPADFALPSSRGGPGKLSPRKGVSQTGTPVCEEDGD
+AGLGIRQGGKAPVTPRGRGRRGRPPSRTTGTRETAVPGPLGIEDISPNLSPDDKSFSRVV
+PRVPDSTRRTDVGAGALRRSDSPEIPFQAAAGPSDGLDASSPGNSFVGLRVVAKWSSNGY
+FYSGKITRDVGAGKYKLLFDDGYECDVLGKDILLCDPIPLDTEVTALSEDEYFSAGVVKG
+HRKESGELYYSIEKEGQRKWYKRMAVILSLEQGNRLREQYGLGPYEAVTPLTKAADISLD
+NLVEGKRKRRSNVSSPATPTASSSSSTTPTRKITESPRASMGVLSGKRKLITSEEERSPA
+KRGRKSATVKPGAVGAGEFVSPCESGDNTGEPSALEEQRGPLPLNKTLFLGYAFLLTMAT
+TSDKLASRSKLPDGPTGSSEEEEEFLEIPPFNKQYTESQLRAGAGYILEDFNEAQCNTAY
+QCLLIADQHCRTRKYFLCLASGIPCVSHVWVHDSCHANQLQNYRNYLLPAGYSLEEQRIL
+DWQPRENPFQNLKVLLVSDQQQNFLELWSEILMTGGAASVKQHHSSAHNKDIALGVFDVV
+VTDPSCPASVLKCAEALQLPVVSQEWVIQCLIVGERIGFKQHPKYKHDYVSH"""        
+        prot_seq = prot_seq.replace("\n", "")
+        pep_seq = "GkAPVTPrGrGrrGr"
         
+        taxonomy = set(['eukaryota', 'chordata', 'mammalia', 'homo'])
+        mod_types, aligned_peps = upload_helpers.parse_modifications(prot_seq, pep_seq, "METHYLATION", taxonomy)
+        
+        self.assertEqual('N6-methyllysine', mod_types[0].name)
+        self.assertEqual('Omega-N-methylarginine', mod_types[1].name)
+        self.assertEqual('Omega-N-methylarginine', mod_types[2].name)
+        self.assertEqual('Omega-N-methylarginine', mod_types[3].name)
+        self.assertEqual('Omega-N-methylarginine', mod_types[4].name)
+        self.assertEqual('Omega-N-methylarginine', mod_types[5].name)
+        
+        self.assertEqual((1390, "LGIRQGGkAPVTPRG", 'K'), aligned_peps[0])
+        self.assertEqual((1396, "GKAPVTPrGRGRRGR", 'R'), aligned_peps[1])
+        self.assertEqual((1398, "APVTPRGrGRRGRPP", 'R'), aligned_peps[2])
+        self.assertEqual((1400, "VTPRGRGrRGRPPSR", 'R'), aligned_peps[3])
+        self.assertEqual((1401, "TPRGRGRrGRPPSRT", 'R'), aligned_peps[4])
+        self.assertEqual((1403, "RGRGRRGrPPSRTTG", 'R'), aligned_peps[5])
+    
     def test_get_aligned_peptide_sequences_should_produce_correct_seqs(self):
         pep_seq = "mSaDFJTkLJAWERpOID"
         pep_up = pep_seq.upper()
