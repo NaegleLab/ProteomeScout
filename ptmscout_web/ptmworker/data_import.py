@@ -161,9 +161,33 @@ def create_protein_import_tasks(prot_map, missing_proteins, parsed_datafile, hea
     
     return prot_tasks
 
+
+@celery.task
+@upload_helpers.transaction_task
+def create_hierarchy_for_missing_GO_annotations(created_entries):
+    links = 0
+    for entry in created_entries:
+        go_term = protein.getGoAnnotationById(entry.goId)
+        
+        for parent_goId in entry.is_a:
+            parent_term = protein.getGoAnnotationById(parent_goId)
+            
+            if parent_term == None:
+                log.warn("Parent term '%s' not found in GO annotations!", parent_goId)
+            
+            parent_term.children.append(go_term)
+            parent_term.save()
+            links += 1
+    
+    log.debug("Created: %d GO entries with %d edges", len(created_entries), links)        
+
+
 @celery.task
 @upload_helpers.transaction_task
 def create_missing_GO_annotations(GO_annotation_map, protein_ids):
+    created_go_entries = []
+    created, assigned = 0, 0
+    
     for acc in protein_ids:
         go_annotations = GO_annotation_map[acc]
         protein_id = protein_ids[acc]
@@ -180,14 +204,19 @@ def create_missing_GO_annotations(GO_annotation_map, protein_ids):
                 go_term.term = entry.goName
                 go_term.aspect = entry.goFunction
                 go_term.version = version
-                
-                #insert hierarchy later
+                created_go_entries.append(entry)
+                created+=1
                 
             goe = protein.GeneOntologyEntry()
             goe.GO_term = go_term
             goe.protein_id = protein_id
             goe.date = dateAdded
             goe.save()
+            assigned+=1
+    
+    log.debug("Assigned %d terms, created %d terms", assigned, created)
+    
+    return created_go_entries
 
 
 @celery.task
@@ -212,8 +241,9 @@ def create_GO_import_tasks(protein_map, new_protein_ids):
     
     GO_aggregate_task = aggregate_GO_annotations.s()
     GO_term_task = create_missing_GO_annotations.s(new_protein_ids)
+    GO_hierarchy_task = create_hierarchy_for_missing_GO_annotations.s()
     
-    return ( group(GO_annotation_tasks) | GO_aggregate_task | GO_term_task )
+    return ( group(GO_annotation_tasks) | GO_aggregate_task | GO_term_task | GO_hierarchy_task )
 
 
 @celery.task(rate_limit='3/s')

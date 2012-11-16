@@ -28,7 +28,7 @@ class GeneOntology(Base):
     UniqueConstraint('aspect', 'GO', name="uniqueEntry")
     
     
-    children = relationship("GeneOntology", secondary=go_hierarchy_table,
+    children = relationship("GeneOntology", secondary=go_hierarchy_table, backref="parents",
                         primaryjoin=id==go_hierarchy_table.c.parent_id,
                         secondaryjoin=id==go_hierarchy_table.c.child_id)
     
