@@ -224,7 +224,7 @@ class FormRenderer(object):
         size_str = '' if size == None else 'size="%d"' % (size)
         maxlen_str = '' if maxlen == None else 'maxlength="%d"' % (maxlen)
         
-        html = '<input type="password" %s %s %s %s name="%s" %s />' % (id_str, cls_str, size_str, maxlen_str, ref)
+        html = '<input type="password" %s %s %s %s name="%s" />' % (id_str, cls_str, size_str, maxlen_str, ref)
         return FormLiteral(html)
     
     def __render_file(self, ref, id_str, cls_str):
@@ -235,6 +235,11 @@ class FormRenderer(object):
 class FormValidator(object):
     def __init__(self, schema):
         self.schema = schema
+        self.extra_validators = {}
+
+    # validators are functions or lambda expressions accepting 3 args: field_name, field_value, schema
+    def add_alternate_validator(self, ref, validator):
+        self.extra_validators[ref] = validator
 
     def validate(self):
         errors = []
@@ -271,6 +276,12 @@ class FormValidator(object):
             internal_values = set([ k for k, _ in self.schema.enum_values[field_ref] ])
             if field_value not in internal_values:
                 return strings.failure_reason_field_value_not_valid % (proper_name)
+            
+        if field_ref in self.extra_validators:
+            validator = self.extra_validators[field_ref]
+            error = validator(proper_name, field_value, self.schema)
+            if error != None:
+                return error
             
         return None
 
