@@ -1,5 +1,8 @@
 import urllib2
 import xml.dom.minidom as xml 
+from ptmscout.config import settings
+
+
 
 scansite_url = "http://scansite3.mit.edu/Scansite3Webservice/proteinScan/proteinName=PTMSCOUT_QUERY/sequence=%s/motifClass=%s/motifNicknames=/stringencyValue=LOW"
 
@@ -34,6 +37,9 @@ class ScansiteParser():
             self.sites.append(mn)
 
 def get_scansite_motif(pep_seq, motif_class):
+    if settings.DISABLE_SCANSITE:
+        return []
+    
     query_url = scansite_url  % (pep_seq, motif_class)
     
     result = urllib2.urlopen(query_url)

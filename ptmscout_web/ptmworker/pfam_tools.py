@@ -1,6 +1,9 @@
 import urllib, urllib2
 import xml.dom.minidom as xml 
 import time
+from ptmscout.config import settings
+
+
 
 class PFamDomain(object):
     def __init__(self):
@@ -60,7 +63,7 @@ class PFamParser(object):
         domain.accession = accession
         domain.label = label
         domain.start = pep_start
-        domain.end = pep_end
+        domain.stop = pep_end
         domain.p_value = pvalue
         domain.significant = issignificant
         domain.release = db_release
@@ -87,7 +90,7 @@ def filter_domains(domains):
     
     while( len(domains) > 0):
         domain = domains.pop(0)
-        range_set = set(range(domain.start, domain.end+1))
+        range_set = set(range(domain.start, domain.stop+1))
         
         if len(range_set & used_sites) == 0:
             used_sites |= range_set
@@ -97,6 +100,9 @@ def filter_domains(domains):
 
 
 def get_computed_pfam_domains(prot_seq, cutoff):
+    if settings.DISABLE_PFAM:
+        return []
+    
     args = {'seq':prot_seq, 'output':'xml', 'evalue':cutoff}
     
     jobrequest = urllib2.urlopen("http://pfam.sanger.ac.uk/search/sequence", urllib.urlencode(args))
@@ -117,7 +123,8 @@ def get_computed_pfam_domains(prot_seq, cutoff):
     if code != 200:
         raise PFamError("Got unexpected response code: %d" % (code))
     
-    parsed_pfam = PFamParser(resultquery.read())
+    xmlresult = resultquery.read()
+    parsed_pfam = PFamParser(xmlresult)
     
     return filter_domains(parsed_pfam.domains)
 

@@ -61,7 +61,7 @@ class IntegrationTestQuickGoQuery(IntegrationTestCase):
         self.assertEqual("1.2", oboxml.version)
         self.assertEqual("GO:0005768", obo.goId)
         self.assertEqual("endosome", obo.goName)
-        self.assertEqual("cellular_component", obo.goFunction)
+        self.assertEqual('C', obo.goFunction)
         self.assertEqual(["GO:0044444","GO:0043231"], obo.is_a)
         
 
@@ -71,7 +71,7 @@ class IntegrationTestQuickGoQuery(IntegrationTestCase):
         self.assertEqual("1.2", version)
         self.assertEqual("GO:0005768", obo.goId)
         self.assertEqual("endosome", obo.goName)
-        self.assertEqual("cellular_component", obo.goFunction)
+        self.assertEqual('C', obo.goFunction)
         self.assertEqual(["GO:0044444","GO:0043231"], obo.is_a)
     
     def test_batch_get_GO_annotations_should_return_annotation_subset(self):

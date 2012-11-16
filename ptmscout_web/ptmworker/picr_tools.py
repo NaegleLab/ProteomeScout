@@ -1,5 +1,7 @@
 import xml.dom.minidom as xml
 import urllib2
+from ptmscout.config import settings
+
 
 
 class PICRParser(object):
@@ -30,7 +32,11 @@ picr_accession_query_url = "http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccess
 picr_sequence_query_url  = "http://www.ebi.ac.uk/Tools/picr/rest/getUPIForSequence?sequence=%s&database=IPI&database=REFSEQ&database=SWISSPROT"
 
 def get_picr(accession):
+    if settings.DISABLE_PICR:
+        return []
+    
     result = urllib2.urlopen(picr_accession_query_url % (accession))
+    
     return PICRParser(result.read()).references
     
     
