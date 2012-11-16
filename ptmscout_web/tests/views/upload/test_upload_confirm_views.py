@@ -27,7 +27,7 @@ class TestUploadStatusView(UnitTestCase):
         else:
             self.fail("Expected exception UploadAlreadyStarted")
     
-    @patch('ptmworker.tasks.start_import.apply_async')        
+    @patch('ptmworker.data_import.start_import.apply_async')        
     @patch('ptmscout.database.experiment.getExperimentById')
     @patch('ptmscout.database.upload.getSessionById')
     def test_start_upload_view_should_start_job_and_display_confirmation(self, patch_getSession, patch_getExperiment, patch_startUpload):
@@ -151,7 +151,7 @@ class IntegrationTestUploadStatusView(IntegrationTestCase):
         result = self.ptmscoutapp.get("/upload/%d/confirm" % (session.id), status=200)
         result.mustcontain(strings.experiment_upload_started_page_title)
     
-    @patch('ptmworker.tasks.start_import.apply_async')
+    @patch('ptmworker.data_import.start_import.apply_async')
     def test_view_integration(self, patch_startImport):
         from ptmscout.database import experiment
         self.bot.login()
