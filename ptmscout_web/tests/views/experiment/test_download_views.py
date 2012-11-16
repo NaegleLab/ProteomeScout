@@ -88,7 +88,7 @@ class TestExperimentDownloadView(UnitTestCase):
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_download_experiment_view(self, patch_getExperiment):
         data_file = 'test/test_dataset_formatted.txt'
-        exp = createMockExperiment()
+        exp = createMockExperiment(eid=20)
         exp.dataset = data_file
         
         exp_headers, exp_data = uploadutils.load_header_and_data_rows(data_file, 100)
@@ -114,6 +114,8 @@ class TestExperimentDownloadView(UnitTestCase):
         
         self.assertEqual(exp_headers, result['header'])
         self.assertEqual(exp_data, result['data'])
+        self.assertEqual('text/tab-separated-values', request.response.content_type)
+        self.assertEqual('attachment; filename="experiment.20.annotated.tsv"', request.response.content_disposition)
         
         
 class IntegrationTestExperimentDownloadView(IntegrationTestCase):

@@ -32,4 +32,6 @@ def download_experiment(request):
         
         rows = [r for r in rows if r[0] != ""]
     
+    request.response.content_type = 'text/tab-separated-values'
+    request.response.content_disposition = 'attachment; filename="experiment.%d.annotated.tsv"' % (exp_id)
     return { 'header': header, 'data': rows }
