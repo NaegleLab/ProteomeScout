@@ -24,7 +24,15 @@ class Bot(object):
     # this needs to change to a direct request for registration
     @patch('ptmscout.utils.mail.send_automail_message')
     def register(self, patch_mail):
-        response = self.app.post('/process_registration', {'username':self.username, 'pass1':self.password, 'pass2':self.password, 'name':self.fullname, 'email':self.email, 'institution':self.institution}, status=200)
+        response = self.app.get('/register')
+        response.form.set('username', self.username)
+        response.form.set('pass1', self.password)
+        response.form.set('pass2', self.password)
+        response.form.set('name', self.fullname)
+        response.form.set('email', self.email)
+        response.form.set('institution', self.institution)
+        response = response.form.submit().follow()
+
         response.mustcontain(strings.user_registration_success_header)
 
         patch_mail.assert_called_once()

@@ -37,7 +37,7 @@ def add_views(config):
     config.add_route('logout', '/logout')
     
     config.add_route('register', '/register')
-    config.add_route('process_registration', '/process_registration')
+    config.add_route('registration_success', '/registration_success')
     config.add_route('activate_account', '/activate_account')
     
     config.add_route('forgot_password', '/forgot_password')
