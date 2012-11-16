@@ -62,6 +62,7 @@ experiment_upload_error_multi_column_assignment = "Error: Found multiple column 
 experiment_upload_error_no_column_assignment = "Error: Column assignment for '%s' not found"
 
 experiment_upload_warning_data_column_not_numeric = "Warning: Data column contains non-numeric values"
+experiment_upload_warning_accession_not_found = "Warning: Protein accession '%s' was not found in any external databases queried by PTMScout"
 experiment_upload_warning_acc_column_contains_bad_accessions = "Warning: Accession column contains accession with unrecognized types"
 experiment_upload_warning_peptide_column_contains_bad_peptide_strings = "Warning: Peptide column contains peptide with incorrect formatting"
 
@@ -209,3 +210,14 @@ prediction_type_map = {'scansite': "Scansite",
 
 error_resource_not_ready_page_title = "Resource not ready"
 error_resource_not_ready_message = "The resource you are trying to access is currently in processing. If you are the creator of this resource, please visit <a href=\"%s\">this page</a> to check on its status."
+
+
+experiment_upload_failed_subject = "PTMScout experiment upload failed"
+experiment_upload_failed_message = \
+"""
+Upload of experiment '%s' failed. Please check the error logs and correct the issue.
+
+-PTMScout
+"""
+
+
