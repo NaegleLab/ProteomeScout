@@ -34,10 +34,9 @@ class PTM(Base):
     keywords = relationship("PTMkeyword")
 
     def hasTaxon(self, search_taxons):
-        return len(set([t.name for t in self.taxons]) & search_taxons) > 0
+        return len(set([t.name.lower() for t in self.taxons]) & search_taxons) > 0
 
     def hasTarget(self, residue):
-        print self.children
         return residue in set([c.target for c in self.children]) or residue == self.target
     
     def hasKeyword(self, key):
@@ -82,6 +81,7 @@ class Peptide(Base):
 
     def save(self):
         DBSession.add(self)
+        DBSession.flush()
 
 class PeptideModification(Base):
     __tablename__ = 'MS_modifications'
