@@ -13,7 +13,8 @@ def build_go_annotation_tree(measurements):
     
     GO_terms = {}
     for p in protein_set:
-        for g in p.GO_terms:
+        for goe in p.GO_terms:
+            g = goe.GO_term
             node = GO_terms.get(g.GO, {'GO':g.GO, 'aspect':g.aspect, 'term':g.term, 'value':0, 'children':[]})
             node['value'] += 1
             GO_terms[g.GO] = node
@@ -22,7 +23,8 @@ def build_go_annotation_tree(measurements):
     child_set = set()
     
     for p in protein_set:
-        for g in p.GO_terms:
+        for goe in p.GO_terms:
+            g = goe.GO_term
             parent = GO_terms[g.GO]
             for c in g.children:
                 if c.GO in GO_terms: 
@@ -60,7 +62,8 @@ def format_go_terms(measurements):
         protein_set.add(m.protein)
     
     for p in protein_set:
-        for g in p.GO_terms:
+        for goe in p.GO_terms:
+            g = goe.GO_term
             num = GO_terms[g.aspect].get((g.GO, g.term), 0)
             GO_terms[g.aspect][(g.GO, g.term)] = num+1
             prot_by_aspect[g.aspect].add(p)

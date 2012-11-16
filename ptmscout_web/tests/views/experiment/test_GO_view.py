@@ -2,7 +2,7 @@ from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 from pyramid.testing import DummyRequest
 from mock import patch
 from tests.views.mocking import createMockExperiment, createMockMeasurement,\
-    createMockProtein, createMockGO
+    createMockProtein, createMockGO, createMockGOE
 from ptmscout.views.experiment.GO_view import show_experiment_go_terms,\
     format_go_terms, build_go_annotation_tree
 from ptmscout.config import strings
@@ -26,9 +26,9 @@ class TestExperimentGOView(UnitTestCase):
         g1.children.append(g3)
         g4.children.append(g5)
         
-        p1.GO_terms = [g1,g2]
-        p2.GO_terms = [g1,g3]
-        p3.GO_terms = [g4]
+        p1.GO_terms = [createMockGOE(p1.id, g1),createMockGOE(p1.id, g2)]
+        p2.GO_terms = [createMockGOE(p2.id, g1),createMockGOE(p2.id, g3)]
+        p3.GO_terms = [createMockGOE(p3.id, g4)]
         
         m1 = createMockMeasurement(p1.id, 1)
         m2 = createMockMeasurement(p1.id, 1)
@@ -57,13 +57,16 @@ class TestExperimentGOView(UnitTestCase):
         p2 = createMockProtein()
         p3 = createMockProtein()
         
+        
         g1 = createMockGO('F')
         g2 = createMockGO('P')
         g3 = createMockGO('C')
         g4 = createMockGO('C')
         
-        p1.GO_terms = [g1,g2,g3]
-        p2.GO_terms = [g2,g4]
+        
+        
+        p1.GO_terms = [createMockGOE(p1.id, g1),createMockGOE(p1.id, g2),createMockGOE(p1.id, g3)]
+        p2.GO_terms = [createMockGOE(p2.id, g2),createMockGOE(p2.id, g4)]
         p3.GO_terms = []
         
         m1 = createMockMeasurement(p1.id, 1)

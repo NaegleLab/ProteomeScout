@@ -7,7 +7,10 @@ from ptmscout.config import strings, settings
 import taxonomies
 import datetime
 
-
+go_hierarchy_table = Table('GO_hierarchy', Base.metadata,
+    Column('parent_id', Integer(10), ForeignKey('GO.id')),
+    Column('child_id', Integer(10), ForeignKey('GO.id')))
+    
 expression_association_table = Table('protein_expression', Base.metadata,
     Column('id', Integer(10), primary_key=True, autoincrement=True),
     Column('protein_id', Integer(10), ForeignKey('protein.id')),
@@ -23,6 +26,11 @@ class GeneOntology(Base):
     date = Column(DateTime)
     version = Column(VARCHAR(10))
     UniqueConstraint('aspect', 'GO', name="uniqueEntry")
+    
+    
+    children = relationship("GeneOntology", secondary=go_hierarchy_table,
+                        primaryjoin=id==go_hierarchy_table.c.parent_id,
+                        secondaryjoin=id==go_hierarchy_table.c.child_id)
     
     def __init__(self):
         self.date = datetime.datetime.now()
