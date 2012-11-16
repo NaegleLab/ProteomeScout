@@ -6,7 +6,7 @@ from ptmscout.utils.uploadutils import ColumnError,\
     
 from tests.views.mocking import createMockUser, createMockSession,\
     createMockSessionColumn, createMockPTM
-from mock import patch, call
+from mock import patch
 from ptmscout.config import strings
 
 class TestUploadUtils(unittest.TestCase):

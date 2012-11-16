@@ -2,7 +2,7 @@ from celery.task import task
 from Bio import Entrez
 from ptmscout.config import settings
 from Bio import Medline
-from ptmscout.utils import protein_utils, uploadutils
+from ptmscout.utils import protein_utils
 from ptmworker import pfam_tools
 from geeneus import Proteome
 import logging
@@ -112,7 +112,7 @@ def load_proteins(accessions, pm):
     pm.batch_get_protein_sequence(accessions)
 
 
-def get_proteins_from_ncbi(accessions, MAX_BATCH_SIZE):
+def get_proteins_from_ncbi(accessions):
     pm = Proteome.ProteinManager(settings.adminEmail)
     load_proteins(accessions, pm)
 

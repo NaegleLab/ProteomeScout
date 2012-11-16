@@ -3,6 +3,9 @@ from ptmscout.config import settings
 from Bio import Entrez
 import os
 from ptmworker import entrez_tools
+import json
+import mock
+from geeneus import Proteome
 
 class EntrezQueryTestCase(IntegrationTestCase):
         
@@ -54,7 +57,7 @@ class EntrezQueryTestCase(IntegrationTestCase):
         self.assertEqual('RPL14', gene)
         
         expected_taxonomy = 'Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi; Mammalia; Eutheria; Euarchontoglires; Primates; Haplorrhini; Catarrhini; Hominidae; Homo'.split("; ")
-        self.assertEqual(set(expected_taxonomy), taxonomy)
+        self.assertEqual(set([ tax.lower() for tax in expected_taxonomy ]), taxonomy)
         
         self.assertEqual('Homo sapiens', species)
         self.assertEqual(1, len(prot_domains))
