@@ -4,9 +4,26 @@ from tests.behave.steps import bot
 import os
 from mock import patch
 
+
+def log_abort():
+    import logging 
+    logging.getLogger('ptmscout').debug("Transaction aborted")
+
+def session_flush():
+    import logging 
+    from ptmscout.database import DBSession
+    DBSession.flush()
+    logging.getLogger('ptmscout').debug("Transaction committed")
+
 @given(u'a user uploads a dataset with errors')
+@patch('transaction.abort')
+@patch('transaction.commit')
 @patch('ptmscout.utils.mail.celery_send_mail')
-def user_upload_with_errors(context, patch_mail):
+def user_upload_with_errors(context, patch_mail, patch_commit, patch_abort):
+    
+    patch_commit.side_effect = session_flush
+    patch_abort.side_effect = log_abort
+    
     context.active_user.login()
     bot.upload_file(context, 'datasetLoad_badAminoAcid.txt', True)
     context.form.submit()
@@ -22,12 +39,6 @@ def user_upload_with_errors(context, patch_mail):
     
     context.active_user.publish_experiment(context.exp_id)
     
-@when(u'another user logs in')
-def another_user_opens_the_error_log(context):
-    context.active_user.logout()
-    context.active_user = bot.Bot(context.ptmscoutapp)
-    context.active_user.register_and_login()
-
 @when(u'the user opens the error log')
 def user_opens_the_error_log(context):
     context.result = context.ptmscoutapp.get(context.exp_link + "/errors")
