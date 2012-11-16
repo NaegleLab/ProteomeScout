@@ -18,8 +18,13 @@ accession_urls = {'swissprot':"http://ca.expasy.org/uniprot/%s",
 
 ptmscout_path = "/data/ptmscout/ptmscout_web"
 
+email_regex = "[a-z0-9\.\-\_]+@[a-z0-9\.\-\_]+\.([a-z]+)$"
 
 DISABLE_PFAM = False
 DISABLE_SCANSITE = False
 DISABLE_QUICKGO = False
 DISABLE_PICR = False 
+
+valid_domain_suffixes = set(['edu','gov'])
+
+
