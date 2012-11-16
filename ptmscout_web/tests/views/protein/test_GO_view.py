@@ -3,8 +3,17 @@ from ptmscout.config import strings
 from ptmscout.views.protein.GO_view import protein_gene_ontology_view
 from pyramid import testing
 from pyramid.testing import DummyRequest
-from tests.views.mocking import createMockProtein, createMockGO
+from tests.views.mocking import createMockProtein, createMockGO, createMockGOE
 import unittest
+
+from tests.PTMScoutTestCase import IntegrationTestCase
+
+class ProteinGOIntegrationTests(IntegrationTestCase):
+    def test_protein_GO(self):
+        self.ptmscoutapp.get('/proteins/35546/GO')
+        
+
+
 
 class TestProteinGOViews(unittest.TestCase):
     def setUp(self):
@@ -21,14 +30,15 @@ class TestProteinGOViews(unittest.TestCase):
         request.matchdict['id'] = str(mock_prot.id)
         patch_getProtein.return_value = mock_prot
         
-        mock_prot.GO_terms.append(createMockGO('P'))
-        mock_prot.GO_terms.append(createMockGO('C'))
-        mock_prot.GO_terms.append(createMockGO('P'))
-        mock_prot.GO_terms.append(createMockGO('F'))
-        mock_prot.GO_terms.append(createMockGO('C'))
-        mock_prot.GO_terms.append(createMockGO('P'))
-        mock_prot.GO_terms.append(createMockGO('C'))
-        mock_prot.GO_terms.append(createMockGO('F'))
+        
+        mock_prot.GO_terms.append(createMockGOE(mock_prot.id, createMockGO('P')))
+        mock_prot.GO_terms.append(createMockGOE(mock_prot.id, createMockGO('C')))
+        mock_prot.GO_terms.append(createMockGOE(mock_prot.id, createMockGO('P')))
+        mock_prot.GO_terms.append(createMockGOE(mock_prot.id, createMockGO('F')))
+        mock_prot.GO_terms.append(createMockGOE(mock_prot.id, createMockGO('C')))
+        mock_prot.GO_terms.append(createMockGOE(mock_prot.id, createMockGO('P')))
+        mock_prot.GO_terms.append(createMockGOE(mock_prot.id, createMockGO('C')))
+        mock_prot.GO_terms.append(createMockGOE(mock_prot.id, createMockGO('F')))
         
         result = protein_gene_ontology_view(request)
         

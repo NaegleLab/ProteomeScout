@@ -67,6 +67,7 @@ def __process_login(request):
             return resp_dict
         
         request.user = ptm_user
+        request.username = username
         request.response.headers.extend(security.remember(request, ptm_user.username))
     except NoSuchUser:
         resp_dict['reason'] = strings.failure_reason_incorrect_credentials

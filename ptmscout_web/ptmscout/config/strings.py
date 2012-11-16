@@ -22,6 +22,8 @@ account_activation_failed_message = "The specified account is not valid, please 
 
 account_management_page_title = "Account Management"
 
+experiment_errors_page_title = "Experiment Data Upload Errors"
+
 experiments_page_title = "Home - Experiments"
 experiment_page_title = "Experiment: %s"
 experiment_summary_page_title = "Experiment Summary: %s"
@@ -29,6 +31,66 @@ experiment_browse_page_title = "Browsing Experiment: %s"
 experiment_prediction_page_title = "Experiment Predictions: %s"
 experiment_pfam_page_title = "Experiment Protein Families: %s"
 experiment_GO_page_title = "Experiment GO Terms: %s"
+
+experiment_upload_finished_subject = "PTMScout experiment upload completed" 
+experiment_upload_finished_message = \
+"""PTMScout has finished processing the upload of your experiment: '%s'
+
+Upload Results:
+
+Peptides: %d
+Proteins: %d
+Errors: %d
+
+You may view the error log for this upload at %s.
+
+Thanks for using PTMScout,
+-The PTMScout Team"""
+experiment_upload_configure_page_title = "Configure Experiment Data"
+experiment_upload_configure_message = "Please verify and assign designations for the column types present in your dataset. Some column types may have been automatically inferred from your headers."
+
+cancel_upload_successful_page_title = "Experiment Upload"
+cancel_upload_successful_header = "Experiment Upload Cancelled"
+cancel_upload_successful_message = "Experiment upload session cancelled"
+
+experiment_upload_error_reasons_column_title = "Error Information"
+experiment_upload_error_standard_deviation_label_does_not_match_any_data_column = "Standard deviation column number %d with label '%s' does not match any column label in data columns"
+experiment_upload_error_limit_one_column_of_type = "Error: At most one column of type '%s' can exist in your data"
+experiment_upload_error_column_type_not_defined = "Error: Column type for column number %d was not defined"
+experiment_upload_error_data_column_empty_label = "Error: Label required for data or stddev column number %d"
+experiment_upload_error_data_column_label_duplicated = "Error: Label for data or stddev column %d is duplicated across multiple columns"
+experiment_upload_error_multi_column_assignment = "Error: Found multiple column assignments for '%s'"
+experiment_upload_error_no_column_assignment = "Error: Column assignment for '%s' not found"
+
+experiment_upload_warning_data_column_not_numeric = "Warning: Data column contains non-numeric values"
+experiment_upload_warning_accession_not_found = "Warning: Protein accession '%s' was not found in any external databases queried by PTMScout"
+experiment_upload_warning_acc_column_contains_bad_accessions = "Warning: Accession column contains accession with unrecognized types"
+experiment_upload_warning_peptide_column_contains_bad_peptide_strings = "Warning: Peptide column contains peptide with incorrect formatting"
+
+experiment_upload_warning_modifications_not_valid = "Warning: Specified modification '%s' is not valid"
+experiment_upload_warning_modifications_do_not_match_amino_acids = "Warning: Specified modification '%s' does not match residue '%s' for any known species"
+experiment_upload_warning_wrong_number_of_mods = "Warning: Not enough modifications types specified for modified amino acids in peptide (%d for %d)"
+experiment_upload_warning_ambiguous_modification_type_for_amino_acid = "Warning: Specified modification '%s' has multiple possible types for amino-acid '%s'"
+
+experiment_upload_warning_no_run_column = "Warning: Experiment contains multiple datapoints for the same protein/peptide pair, but no run column"
+experiment_upload_warning_full_dupe = "Warning: Experiment contains multiple datapoints for the same protein/peptide/run triplet"
+
+experiment_upload_warning_peptide_not_found_in_protein_sequence = "Warning: Peptide sequence not found in protein sequence"
+
+experiment_upload_option_no_run_column_assign_in_order  = "Assign run numbers in order of occurrence"
+
+
+experiment_upload_conditions_page_title = "Experimental Conditions"
+experiment_upload_conditions_error_value_must_be_specified = "Error: values are required for all experiment conditions fields"
+
+
+experiment_upload_confirm_page_title = "Confirm Submission"
+experiment_upload_confirm_message = "Required experiment information is now complete. Are you sure you wish to proceed with the upload? Please review and accept the terms of use below. Pressing cancel will remove this upload session, you may start a new one later."
+
+experiment_upload_started_page_title = "Upload Started"
+experiment_upload_started_message = \
+"""Experiment upload process successfully started. An e-mail will be sent to you when the experiment upload is complete. Additionally, you may check the status of the upload by visiting <a href=\"%s\">this page</a>"""
+
 
 forgotten_password_page_title = "Forgotten Password Retrieval"
 forgotten_password_success_header = "Password Reset Success"
@@ -77,6 +139,8 @@ share_experiment_page_title = "Share Experiment"
 upload_page_title = "Upload"
 upload_page_header = "Data Upload"
 
+
+
 user_invite_page_title = "Invite User"
 user_invite_confirm = "User %s is not a registered user, are you sure you wish to invite this user?"
 user_invite_email_required = "Email address is required"
@@ -112,6 +176,17 @@ Thanks,
 
 view_page_title = "PTMScout Terms of Use"
 
+failure_reason_experiment_file_not_enough_columns = "Not enough columns detected in data file. Verify that the file is TSV format and try again"
+failure_reason_experiment_header_no_peptide_column = "Data file did not contain a peptide column"
+failure_reason_experiment_header_multiple_peptide_column = "Data file contained multiple peptide columns. Check for the phrase 'pep' in all columns of the experiment header."
+failure_reason_experiment_header_no_acc_column = "Data file did not contain an accession column"
+failure_reason_experiment_header_multiple_acc_columns = "Data file contained multiple accession columns"
+
+failure_reason_terms_of_use_not_accepted = "You must agree to the terms of use at the bottom of this form before submitting a dataset"
+failure_reason_field_value_not_valid = "Field '%s' has invalid value"
+failure_reason_field_must_be_numeric = "Field '%s' must be numeric"
+failure_reason_required_fields_cannot_be_empty = "Required form field '%s' cannot be empty"
+
 failure_reason_form_fields_cannot_be_empty = "Form fields cannot be empty"
 failure_reason_new_passwords_not_matching = "Password confirmation did not match"
 failure_reason_incorrect_password = "Supplied password was incorrect"
@@ -131,3 +206,19 @@ error_protein_not_found_message = "No protein resource exists with the specified
 prediction_type_map = {'scansite': "Scansite",
                        'scansite_bind': "Scansite Bind",
                        'scansite_kinase': "Scansite Kinase"}
+
+
+
+error_resource_not_ready_page_title = "Resource not ready"
+error_resource_not_ready_message = "The resource you are trying to access is currently in processing. If you are the creator of this resource, please visit <a href=\"%s\">this page</a> to check on its status."
+
+
+experiment_upload_failed_subject = "PTMScout experiment upload failed"
+experiment_upload_failed_message = \
+"""
+Upload of experiment '%s' failed. Please check the error logs and correct the issue.
+
+-PTMScout
+"""
+
+

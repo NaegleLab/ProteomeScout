@@ -4,8 +4,15 @@ from ptmscout.views.protein.modifications_view import protein_modifications_view
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockProtein, createMockUser, \
-    createMockMeasurement, createMockExperiment, createMockPhosphopep
+    createMockMeasurement, createMockExperiment, createMockPeptide,\
+    createMockPTM, createMockPeptideModification
 import unittest
+from tests.PTMScoutTestCase import IntegrationTestCase
+
+
+class TestProteinModificationViewsIntegration(IntegrationTestCase):
+    def test_integration(self):
+        self.ptmscoutapp.get('/proteins/35546/modifications')
 
 class TestProteinModificationViews(unittest.TestCase):
     def setUp(self):
@@ -32,9 +39,12 @@ class TestProteinModificationViews(unittest.TestCase):
         mock_mod2 = createMockMeasurement(mock_prot.id, 25)
         mock_mod2.experiment = createMockExperiment(3, 0, 0)
         
-        p1 = createMockPhosphopep(mock_prot.id)
-        mock_mod.phosphopeps.append(p1)
-        mock_mod2.phosphopeps.append(p1)
+        p1 = createMockPeptide(mock_prot.id)
+        
+        mod = createMockPTM()
+        
+        createMockPeptideModification(mock_mod, p1, mod)
+        createMockPeptideModification(mock_mod2, p1, mod)
         
         p1.getName.return_value = "mock_pep_name"
         p1.getPeptide.return_value = "mock_peptide"

@@ -1,8 +1,9 @@
 from tests.DBTestCase import DBTestCase
 import ptmscout.database.experiment as dbexperiment
 from ptmscout.database.experiment import NoSuchExperiment, Experiment,\
-    getExperimentTree, ExperimentAccessForbidden
+    getExperimentTree, ExperimentAccessForbidden, ExperimentNotAvailable
 from mock import patch
+from ptmscout.database import user, permissions
 
 class ExperimentTestCase(DBTestCase):
     def test_getExperimentById_should_succeed_on_existing_experiment(self):
@@ -10,6 +11,30 @@ class ExperimentTestCase(DBTestCase):
         
         self.assertEqual("PhosphoSite: A bioinformatics resource dedicated to physiological protein phosphorylation.", experiment.name)
         self.assertEqual("http://www.phosphosite.org/", experiment.URL)
+    
+    def test_getExperimentById_should_throw_exception_when_experiment_is_currently_uploading(self):
+        try:
+            exp = dbexperiment.getExperimentById(1, None)
+            exp.public = 0
+            exp.status = 'loading'
+            exp.saveExperiment()
+            
+            ptmuser = user.getUserById(1)
+            
+            perm = permissions.Permission(exp)
+            perm.experiment_id = exp.id
+            perm.user_id = ptmuser.id
+            
+            ptmuser.permissions.append(perm)
+            
+            dbexperiment.getExperimentById(1, ptmuser)
+            
+        except ExperimentNotAvailable, f:
+            self.assertEqual(1, f.eid)
+        except Exception, e:
+            self.fail("Unexpected exception: " + str(e))
+        else:
+            self.fail("Expected exception ExperimentNotAvailable was not thrown")
     
     def test_getExperimentById_should_throw_exception_when_experiment_is_private(self):
         try:
@@ -40,11 +65,17 @@ class ExperimentTestCase(DBTestCase):
         exp = dbexperiment.getExperimentById(1, None)
         exp.public = 0
         exp.saveExperiment()
+        
+        exp2 = dbexperiment.getExperimentById(2, None)
+        exp2.status = 'preload'
+        exp2.saveExperiment()
+        
         experiments = dbexperiment.getAllExperiments(None)
         
         self.assertTrue(len(experiments) > 0)
         
         self.assertFalse( exp.id in [ e.id for e in experiments ] )
+        self.assertFalse( exp2.id in [ e.id for e in experiments ] )
         
     @patch('ptmscout.database.experiment.getAllExperiments')
     def test_getExperimentTree_should_build_experiment_tree(self, patch_getAllExperiments):
@@ -57,11 +88,11 @@ class ExperimentTestCase(DBTestCase):
         experiments[4].id = 5
         experiments[5].id = 6
         
-        experiments[0].experiment_id = 0
-        experiments[1].experiment_id = 0
+        experiments[0].experiment_id = None
+        experiments[1].experiment_id = None
         experiments[2].experiment_id = 1
         experiments[3].experiment_id = 1
-        experiments[4].experiment_id = 0
+        experiments[4].experiment_id = None
         experiments[5].experiment_id = 2
         
         patch_getAllExperiments.return_value = experiments

@@ -3,20 +3,14 @@ from ptmscout.config import strings
 from ptmscout.database import user
 from ptmscout.views.accounts.forgot_password_view import forgot_password, \
     process_forgot_password
-from pyramid import testing
 from pyramid.httpexceptions import HTTPFound
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockUser
-import unittest
 import urllib
+from tests.PTMScoutTestCase import UnitTestCase
 
-class UserForgotPasswordViewTests(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
 
-    def tearDown(self):
-        testing.tearDown()
-        
+class UserForgotPasswordViewTests(UnitTestCase):
    
     def test_forgot_password_should_display_forgot_password_form(self):
         request = DummyRequest()
@@ -34,7 +28,7 @@ class UserForgotPasswordViewTests(unittest.TestCase):
     @patch('ptmscout.utils.mail.send_automail_message')
     def test_process_forgot_password_should_display_success_reset_password_and_send_email_when_user_exists(self, patch_sendMail, patch_crypto, patch_getUser):
         user_email = "a_valid_email@institute.edu"
-        ptm_user = createMockUser("username", user_email, "password", 1)
+        ptm_user = createMockUser(email=user_email, password="some_pass")
         patch_getUser.return_value = ptm_user
         new_password = "as24jdf945"
         patch_crypto.return_value = new_password
@@ -53,7 +47,7 @@ class UserForgotPasswordViewTests(unittest.TestCase):
         login_url = request.application_url + "/login"
         account_url = request.application_url + "/account"
         
-        password_reset_message = strings.forgotten_password_email_message % (ptm_user.name, "username", new_password, login_url, account_url)
+        password_reset_message = strings.forgotten_password_email_message % (ptm_user.name, ptm_user.username, new_password, login_url, account_url)
         
         patch_sendMail.assert_called_with(request, [user_email], 
                                           strings.forgotten_password_email_subject, password_reset_message)

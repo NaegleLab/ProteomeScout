@@ -1,0 +1,4 @@
+Error Information	NAME	acc	Gene Symbol	MOD_TYPE	RSD	SITE_GRP_ID	SPECIES	MW (kD)	IN_DOMAIN	pep	PUBMED_LTP	PUBMED_MS2	CST_MS2	CST_CAT#
+Warning: Specified modification 'lysine methyl ester' does not match residue 'K' for any known species	ABCA15	Q6XBG2	Abca15	lysine methyl ester	K162	8107574	mouse	190.52		YLRFSDIkKNINSGA			1	
+Warning: Specified modification 'methylhistidine' does not match residue 'K' for any known species	ACTB	P60711	Actb	methylhistidine	H73	2103802	rat	41.74	Actin	TLkYPIEhGIVTNWD	1	1	#error on one peptide since k is not a histidine	
+Warning: Specified modification 'methylation' does not match residue 'G' for any known species	ACTB	P60711	Actb	methylation	H73	2103802	rat	41.74	Actin	TLKYPIEhgIVTNWD	1	1	#error on one peptide since g cannot be methylated	

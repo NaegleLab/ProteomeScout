@@ -2,8 +2,6 @@ from pyramid.exceptions import Forbidden
 from ptmscout.views.errors import forbidden_view
 
 def add_views(config):
-    config.include('pyramid_mailer')
-    
     config.add_static_view('static', 'static', cache_max_age=3600)
     
     config.add_route('about', '/about')
@@ -17,7 +15,15 @@ def add_views(config):
     config.add_route('experiment_predictions','/experiments/{id}/predictions')
     config.add_route('experiment_summary','/experiments/{id}/summary')
     config.add_route('experiment_browse','/experiments/{id}/browse')
+    config.add_route('experiment_errors','/experiments/{id}/errors')
+    config.add_route('experiment_download','/experiments/{id}/download')
+    
     config.add_route('upload', '/upload')
+    config.add_route('upload_config', '/upload/{id}/config')
+    config.add_route('upload_metadata', '/upload/{id}/metadata')
+    config.add_route('upload_conditions', '/upload/{id}/conditions')
+    config.add_route('upload_confirm', '/upload/{id}/confirm')
+    config.add_route('upload_cancel', '/upload/{id}/cancel')
     
     config.add_route('protein_data', '/proteins/{id}/data')
     config.add_route('protein_GO', '/proteins/{id}/GO')
@@ -48,3 +54,6 @@ def add_views(config):
     config.add_route('change_password_success', '/change_password_success')
     
     config.add_view(forbidden_view, context=Forbidden)
+    
+    
+    config.add_renderer(name='tsv', factory='ptmscout.views.renderers.TSVRenderer')

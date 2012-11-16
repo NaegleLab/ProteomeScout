@@ -1,0 +1,58 @@
+<div metal:use-macro="layout">
+    <div metal:fill-slot="header">
+        <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/forms.css')}" />
+        
+                <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js" ></script>
+        
+        <script type="text/javascript" src="${request.static_url('ptmscout:static/js/utils.js')}" ></script>
+        <script type="text/javascript" src="${request.static_url('ptmscout:static/js/base64.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('ptmscout:static/js/upload.form.js')}"></script>
+    </div>
+    <div metal:fill-slot="content">
+        <form action="" method="post" enctype="multipart/form-data">
+            <input type="hidden" value="true" name="submitted" />
+            <div class="wideform">
+                <div class="error_display" tal:condition="len(errors)>0">
+                    <ul>
+                        <li tal:repeat="error errors" tal:content="error"></li>
+                    </ul>
+                </div>
+                <div class="formcategory">Experiment Upload Type</div>
+                <table>
+                    <tr>
+                        <td class="fieldname">Upload type:</td>
+                        <td>
+                            ${formrenderer.render('load_type', id_='new_dataset')}
+                            ${formrenderer.render('load_type', id_='append_dataset')}
+                            ${formrenderer.render('load_type', id_='reload_dataset')}
+                            ${formrenderer.render('load_type', id_='extend_dataset')}
+                        </td>
+                    </tr>
+                    <tr id="parent_exp">
+                        <td class="fieldname">Parent Experiment:</td>
+                        <td>
+                            ${formrenderer.render('parent_experiment', id_='expselect', class_='stretch')}
+                        </td>
+                    </tr>
+                    <tr id="change_desc">
+                        <td class="fieldname">Change description:</td>
+                        <td>
+                            ${formrenderer.render('change_description')}
+                        </td>
+                    </tr>
+                </table>
+                                
+                <div class="formcategory">Experiment Data</div>
+                <table>
+                    <tr>
+                        <td class="fieldname">Data input file: </td>
+                        <td > ${formrenderer.render('data_file')} </td>
+                    </tr>
+                </table>
+
+                <div class="formsubmission"><input type="submit" value="Continue" /></div>
+                <div class="clear"></div>               
+            </div>
+        </form>
+    </div>
+</div>

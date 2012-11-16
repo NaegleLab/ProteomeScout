@@ -4,20 +4,32 @@ from ptmscout.database.user import NoSuchUser
 from ptmscout.views.accounts.my_experiments_view import confirm_invite_user, \
     privatize_experiment, publish_experiment, manage_experiment_permissions, \
     manage_experiments
-from pyramid import testing
 from pyramid.httpexceptions import HTTPFound
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockUser, createMockExperiment, \
     createMockPermission
-import unittest
+from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 
-class MyExperimentsViewTests(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
+class MyExperimentsViewIntegrationTests(IntegrationTestCase):
+    def test_integration(self):
+        from ptmscout.database import experiment
+        
+        exp = experiment.getExperimentById(26, None, False)
+        exp.status = 'loading'
+        exp.grantPermission(self.bot.user, 'owner')
+        exp.saveExperiment()
+        
+        self.bot.login()
+        
+        result = self.ptmscoutapp.get('/account/experiments')
+        
+        result.mustcontain(exp.name)
+        result.mustcontain('Status')
+        result.mustcontain('loading')
+        
 
-    def tearDown(self):
-        testing.tearDown()
-            
+class MyExperimentsViewTests(UnitTestCase):
+    
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_confirm_invite_should_check_confirmation(self, patch_getExperiment):
         request = DummyRequest()
@@ -312,11 +324,8 @@ class MyExperimentsViewTests(unittest.TestCase):
 
         exp1 = createMockExperiment(1, 0)
         exp2 = createMockExperiment(2, 0)
-        exp3 = createMockExperiment(3, 0)
         
-        ptm_user.permissions.append(createMockPermission(ptm_user, exp1, 'owner'))
-        ptm_user.permissions.append(createMockPermission(ptm_user, exp2, 'owner'))
-        ptm_user.permissions.append(createMockPermission(ptm_user, exp3, 'view'))
+        ptm_user.myExperiments.return_value = [exp1,exp2]
         
         info = manage_experiments(request)
         

@@ -1,0 +1,38 @@
+.conditions_form {
+	width:800px;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:20px;
+	margin-bottom:20px;
+}
+
+.condition, .add_condition {
+	border: solid 1px black;
+	padding:5px;
+	margin:10px;
+	margin-top:5px;
+	margin-bottom:5px;
+    background:lightgray;
+}
+
+.remove_condition {
+	float:right;
+}
+
+.hidden {
+	display:none;
+}
+
+.formtitle {
+	font-weight:bold;
+	font-size:18px;
+	border: solid 1px black;
+    padding:5px;
+    margin:10px;
+    margin-top:5px;
+    margin-bottom:5px;
+}
+
+body .ui-autocomplete {
+	font-size:10px;
+}

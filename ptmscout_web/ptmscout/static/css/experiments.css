@@ -20,6 +20,13 @@
 	vertical-align:top;
 }
 
+.experimenttable .status {
+	font-weight:bold;
+}
+
+.experimenttable .progress {
+	margin-left:10px;
+}
 .experimenttable .accesscontrol {
 	text-align:center;
 	border-left-style:solid;
@@ -175,4 +182,33 @@ table.experiment_summary td.listing {
 	margin-left:auto;
 	margin-right:auto;
 	width:800px;
+}
+
+.resolution_steps li {
+	text-align:left;
+}
+
+table.error_listing {
+	width:730px;
+	margin-left:auto;
+	margin-right:auto;
+	border: solid 1px black;
+	border-collapse: collapse;
+	text-align:left;
+	font-size:12px;
+}
+
+table.error_listing th {
+	color:white;
+	background:black;
+	padding-right:10px;
+	font-size:14px;
+}
+
+table.error_listing th.min {
+	width:auto;
+}
+
+table.error_listing th.max {
+	width:100%;
 }

@@ -1,10 +1,11 @@
 from mock import patch
 from ptmscout.config import strings
-from ptmscout.database.protein import Species
+from ptmscout.database.taxonomies import Species
 from ptmscout.views.protein.search_view import protein_search_view
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockProtein, createMockMeasurement, \
-    createMockPhosphopep, createMockUser
+    createMockPeptide, createMockUser, createMockPTM,\
+    createMockPeptideModification
 from tests.PTMScoutTestCase import UnitTestCase, IntegrationTestCase
 
 class TestProteinSearchViewIntegration(IntegrationTestCase):
@@ -13,7 +14,7 @@ class TestProteinSearchViewIntegration(IntegrationTestCase):
                 
 class TestProteinSearchViews(UnitTestCase):
         
-    @patch('ptmscout.database.protein.getAllSpecies')
+    @patch('ptmscout.database.taxonomies.getAllSpecies')
     def test_protein_search_view_should_get_species_list_and_show_search_forms(self, patch_getSpecies):
         request = DummyRequest()
         
@@ -31,7 +32,7 @@ class TestProteinSearchViews(UnitTestCase):
         self.assertEqual({}, result['modifications'])
         self.assertEqual(False, result['submitted'])
         
-    @patch('ptmscout.database.protein.getAllSpecies')
+    @patch('ptmscout.database.taxonomies.getAllSpecies')
     def test_protein_search_view_should_not_submit_search_if_protein_field_empty(self, patch_getSpecies):
         request = DummyRequest()
         request.POST['submitted'] = "true"
@@ -58,7 +59,7 @@ class TestProteinSearchViews(UnitTestCase):
     
     @patch('ptmscout.database.modifications.getMeasuredPeptidesByProtein')
     @patch('ptmscout.database.protein.getProteinsByAccession')
-    @patch('ptmscout.database.protein.getAllSpecies')
+    @patch('ptmscout.database.taxonomies.getAllSpecies')
     def test_protein_search_view_should_process_search_form(self, patch_getSpecies, patch_getProteins, patch_getMods):
         request = DummyRequest()
         request.POST['submitted'] = "true"
@@ -72,13 +73,15 @@ class TestProteinSearchViews(UnitTestCase):
         m1 = createMockMeasurement(p1.id, 1)
         m2 = createMockMeasurement(p1.id, 4)
         
-        pep1 = createMockPhosphopep(p1.id)
-        pep2 = createMockPhosphopep(p1.id)
-        pep3 = createMockPhosphopep(p1.id)
+        pep1 = createMockPeptide(p1.id)
+        pep2 = createMockPeptide(p1.id)
+        pep3 = createMockPeptide(p1.id)
         
-        m1.phosphopeps.append(pep1)
-        m1.phosphopeps.append(pep2)
-        m2.phosphopeps.append(pep3)
+        mod = createMockPTM()
+        
+        createMockPeptideModification( m1, pep1, mod )
+        createMockPeptideModification( m1, pep2, mod )
+        createMockPeptideModification( m2, pep3, mod )
         
         mod_list = [m1, m2]
         

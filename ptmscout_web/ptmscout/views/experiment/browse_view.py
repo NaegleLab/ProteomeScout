@@ -31,7 +31,8 @@ def browse_experiment(request):
             
             pep_list = mods.get(mod.protein_id, set())
             
-            for pep in mod.phosphopeps:
+            for p in mod.peptides:
+                pep = p.peptide
                 pep_list.add(pep)
             
             mods[mod.protein_id] = pep_list

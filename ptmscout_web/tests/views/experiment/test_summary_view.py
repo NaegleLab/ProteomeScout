@@ -1,35 +1,37 @@
-import unittest
-from pyramid import testing
 from ptmscout.views.experiment.summary_view import experiment_summary_view,\
     summarize_measurements, create_sequence_profile
 from pyramid.testing import DummyRequest
 from ptmscout.config import strings
 from tests.views.mocking import createMockExperiment, createMockProtein,\
-    createMockMeasurement, createMockPhosphopep
+    createMockMeasurement, createMockPeptide, createMockError,\
+    createMockPeptideModification, createMockPTM, createMockUser
 from mock import patch
 import json
 import base64
 import math
+from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 
-class SummaryViewsTests(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-        
-    def tearDown(self):
-        testing.tearDown()
-    
+class SummaryViewIntegrationTests(IntegrationTestCase):
+    def test_view_integration(self):
+        self.ptmscoutapp.get('/experiments/26/summary')
+        self.ptmscoutapp.get('/experiments/26')
+
+class SummaryViewsTests(UnitTestCase):
     def test_get_sequence_profile(self):
         p1 = createMockProtein()
         
         m1 = createMockMeasurement(p1.id, 1)
         m2 = createMockMeasurement(p1.id, 1)
         
-        pep1 = createMockPhosphopep(p1.id)
-        pep2 = createMockPhosphopep(p1.id)
-        pep3 = createMockPhosphopep(p1.id)
-        m1.phosphopeps.append(pep1)
-        m1.phosphopeps.append(pep2)
-        m2.phosphopeps.append(pep3)
+        pep1 = createMockPeptide(p1.id)
+        pep2 = createMockPeptide(p1.id)
+        pep3 = createMockPeptide(p1.id)
+        
+        mod = createMockPTM()
+        
+        createMockPeptideModification(m1, pep1, mod)
+        createMockPeptideModification(m1, pep2, mod)
+        createMockPeptideModification(m2, pep3, mod)
         
         pep1.pep_aligned='LKKVVALyDYMPMNA'
         pep2.pep_aligned='VSHWQQQsYLDSGIH'
@@ -80,17 +82,20 @@ class SummaryViewsTests(unittest.TestCase):
         m1.protein = p1
         m2.protein = p1
         
-        pep1 = createMockPhosphopep(p1.id)
-        pep2 = createMockPhosphopep(p1.id)
-        pep3 = createMockPhosphopep(p1.id)
+        pep1 = createMockPeptide(p1.id)
+        pep2 = createMockPeptide(p1.id)
+        pep3 = createMockPeptide(p1.id)
         
         pep1.site_type='Y'
         pep2.site_type='T'
         pep3.site_type='S'
         
-        m1.phosphopeps.append(pep1)
-        m1.phosphopeps.append(pep2)
-        m2.phosphopeps.append(pep3)
+        mod = createMockPTM(name="phosphorylation")
+        mod2 = createMockPTM(name="phosphoserine",parent=mod)
+        
+        createMockPeptideModification(m1, pep1, mod)
+        createMockPeptideModification(m1, pep2, mod)
+        createMockPeptideModification(m2, pep3, mod2)
         
         mods = [m1,m2]
         result = summarize_measurements(mods)
@@ -111,7 +116,7 @@ class SummaryViewsTests(unittest.TestCase):
         request = DummyRequest()
         exp_id = 1
         request.matchdict['id'] = exp_id
-        request.user = None
+        request.user = createMockUser()
         
         sequence_profile = ["some list of items"]
         patch_sequenceProfile.return_value = sequence_profile
@@ -123,11 +128,20 @@ class SummaryViewsTests(unittest.TestCase):
         patch_measurementSummary.return_value = mock_measurement_summary
         
         exp = createMockExperiment(exp_id, 0, 0)
+        
+        createMockError(1, "Not working", accession="QUP123", peptide="adsfgdfgt", experiment=exp)
+        createMockError(2, "Not working", accession="QUP123", peptide="adsfgdfgt", experiment=exp)
+        createMockError(3, "Not working", accession="KPU321", peptide="wertsdfgf", experiment=exp)
+        
         patch_getExperiment.return_value = exp
+        
+        request.user.experimentOwner.return_value = True
         
         result = experiment_summary_view(request)
 
-        patch_getExperiment.assert_called_once_with(exp_id, None)
+        request.user.experimentOwner.assert_called_once_With(exp)
+
+        patch_getExperiment.assert_called_once_with(exp_id, request.user)
         patch_getMeasurements.assert_called_once_with(exp_id, request.user)
         
         patch_sequenceProfile.assert_called_once_with(measurements)        
@@ -138,6 +152,6 @@ class SummaryViewsTests(unittest.TestCase):
         self.assertEqual(mock_measurement_summary, result['measurement_summary'])
         self.assertEqual(base64.b64encode(json.dumps(sequence_profile)), result['sequence_profile'])
         
-        self.assertEqual(0, result['error_count'])
-        self.assertEqual(0, result['rejected_peptides'])
+        self.assertEqual(True, result['user_owner'])
+        self.assertEqual(2, result['rejected_peptides'])
         self.assertEqual(strings.experiment_summary_page_title % (exp.name), result['pageTitle'])

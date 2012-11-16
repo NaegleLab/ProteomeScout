@@ -13,11 +13,10 @@ class UserTestCase(DBTestCase):
             exp.id = 1000 + i
             exp.name = "experiment " + str(exp.id)
             exp.author = ""
-            exp.date = ""
-            exp.published = ""
+            exp.published = 0
             exp.ambiguity = 0
             exp.export = 0
-            exp.experiment_id = 0
+            exp.experiment_id = None
             exp.dataset = ""
             exp.submitter = ""
             exp.primaryModification = "Y"

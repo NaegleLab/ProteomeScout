@@ -10,7 +10,8 @@ def protein_gene_ontology_view(request):
     
     term_dict = {'F':set(),'P':set(),'C':set()}
     
-    for term in prot.GO_terms:
+    for goe in prot.GO_terms:
+        term = goe.GO_term
         term_dict[term.aspect].add((term.GO, term.term))
         
     for aspect in term_dict:

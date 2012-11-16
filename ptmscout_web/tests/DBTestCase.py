@@ -6,7 +6,7 @@ from sqlalchemy import engine_from_config
 from ptmscout.database import DBSession, Base  # base declarative object
 
 import os
-settings = appconfig('config:/' + os.path.join('data','ptmscout','ptmscout_web', 'development.ini'))
+settings = appconfig('config:/' + os.path.join('data','ptmscout','ptmscout_web', 'test.ini'))
 
 class DBTestCase(unittest.TestCase):
     @classmethod

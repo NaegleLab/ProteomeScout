@@ -2,19 +2,12 @@ from mock import patch
 from ptmscout.config import strings
 from ptmscout.views.accounts.account_activation_view import \
     user_account_activation
-from pyramid import testing
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockUser
 import ptmscout.database.user as dbuser
-import unittest
+from tests.PTMScoutTestCase import UnitTestCase
 
-class UserAccountActivationTests(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-
-    def tearDown(self):
-        testing.tearDown()
-     
+class UserAccountActivationTests(UnitTestCase):
     def test_user_account_activation_should_fail_if_fields_not_specified(self):
         request = DummyRequest()
         
@@ -45,7 +38,7 @@ class UserAccountActivationTests(unittest.TestCase):
     
     @patch('ptmscout.database.user.getUserByUsername')
     def test_user_account_activation_should_fail_if_user_token_incorrect(self, patch_getUser):
-        patch_getUser.return_value = createMockUser("username", "email", "password", 0)
+        patch_getUser.return_value = createMockUser(active=0)
         request = DummyRequest()
         
         request.GET['username'] = "username"
@@ -61,7 +54,7 @@ class UserAccountActivationTests(unittest.TestCase):
     @patch('ptmscout.database.user.User')
     @patch('ptmscout.database.user.getUserByUsername')
     def test_user_account_activation_should_succeed_if_all_parameters_correct(self, patch_getUser, patch_user):
-        ptm_user = createMockUser("username", "email", "password", 0)
+        ptm_user = createMockUser(active=0)
         patch_getUser.return_value = ptm_user
         request = DummyRequest()
         

@@ -4,9 +4,17 @@ from ptmscout.views.experiment.browse_view import browse_experiment
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockExperiment, createMockProtein, \
-    createMockMeasurement, createMockPhosphopep, createMockScansite,\
-    createMockUser
+    createMockMeasurement, createMockPeptide, createMockScansite,\
+    createMockUser, createMockPTM, createMockPeptideModification
 import unittest
+from tests.PTMScoutTestCase import IntegrationTestCase
+
+class ExperimentBrowseViewIntegrationTests(IntegrationTestCase):
+    def test_experiment_browse_view(self):
+        self.ptmscoutapp.get('/experiments/26/browse')
+        
+    def test_experiment_browse_search(self):
+        self.ptmscoutapp.post('/experiments/26/browse', {'submitted':"true", 'acc_search':"ACK1", 'stringency':"1"})
 
 class ExperimentBrowseViewTests(unittest.TestCase):
     def setUp(self):
@@ -53,7 +61,7 @@ class ExperimentBrowseViewTests(unittest.TestCase):
         
         request = DummyRequest()
         
-        ptm_user = createMockUser("username", "email", "password", 1)
+        ptm_user = createMockUser()
         request.user = ptm_user
         
         p1 = createMockProtein()
@@ -73,14 +81,17 @@ class ExperimentBrowseViewTests(unittest.TestCase):
         m2.experiment_id = mock_experiment.id
         m3.experiment_id = mock_experiment.id
         
-        pep1 = createMockPhosphopep(p1.id)
-        pep2 = createMockPhosphopep(p1.id)
-        pep3 = createMockPhosphopep(p1.id)
-        pep4 = createMockPhosphopep(p2.id)
-        m1.phosphopeps.append(pep1)
-        m1.phosphopeps.append(pep2)
-        m2.phosphopeps.append(pep3)
-        m3.phosphopeps.append(pep4)
+        pep1 = createMockPeptide(p1.id)
+        pep2 = createMockPeptide(p1.id)
+        pep3 = createMockPeptide(p1.id)
+        pep4 = createMockPeptide(p2.id)
+        
+        mod = createMockPTM()
+        
+        createMockPeptideModification(m1, pep1, mod)
+        createMockPeptideModification(m1, pep2, mod)
+        createMockPeptideModification(m2, pep3, mod)
+        createMockPeptideModification(m3, pep4, mod)
         
         s1 = createMockScansite(pep1.id)
         s2 = createMockScansite(pep2.id)

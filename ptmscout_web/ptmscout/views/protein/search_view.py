@@ -1,5 +1,5 @@
 from ptmscout.config import strings
-from ptmscout.database import protein, modifications
+from ptmscout.database import protein, modifications, taxonomies
 from ptmscout.utils import webutils
 from pyramid.view import view_config
 
@@ -23,7 +23,7 @@ def protein_search_view(request):
             mods = modifications.getMeasuredPeptidesByProtein(p.id, request.user)
             for mod in mods:
                 peps = protein_mods.get(p.id, set())
-                [ peps.add(pep) for pep in mod.phosphopeps ]
+                [ peps.add(pep.peptide) for pep in mod.peptides ]
                 protein_mods[p.id] = peps
     
     proteins = sorted(proteins, key=lambda prot: prot.acc_gene)
@@ -32,7 +32,7 @@ def protein_search_view(request):
         protein_mods[pid] = sorted(protein_mods[pid], key=lambda mod: mod.getName())
         protein_mods[pid] = [ { 'site': pep.getName(), 'peptide': pep.getPeptide() } for pep in protein_mods[pid]]
     
-    species_list = [ species.name for species in protein.getAllSpecies() ]
+    species_list = [ species.name for species in taxonomies.getAllSpecies() ]
     
     return {'pageTitle': strings.protein_search_page_title,
             'species_list': species_list,

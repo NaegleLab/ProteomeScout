@@ -11,7 +11,8 @@ def protein_modifications_view(request):
     mod_sites = {}
     
     for MS in modifications.getMeasuredPeptidesByProtein(pid, request.user):
-        for pep in MS.phosphopeps:
+        for pepmod in MS.peptides:
+            pep = pepmod.peptide
             pep_tuple = (pep.getName(), pep.getPeptide())
             exps = mod_sites.get(pep_tuple, set())
             exps.add(MS.experiment)
