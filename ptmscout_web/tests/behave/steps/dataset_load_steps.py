@@ -39,11 +39,24 @@ def submit_incorrect_peptide_dataset(context):
 def submit_multiple_mods_correct_dataset(context):
     bot.upload_file(context, 'datasetLoad_moreThanOneMod.txt')
 
+def log_abort():
+    import logging 
+    logging.getLogger('ptmscout').debug("Transaction aborted")
 
+def session_flush():
+    import logging 
+    from ptmscout.database import DBSession
+    DBSession.flush()
+    logging.getLogger('ptmscout').debug("Transaction committed")
     
 @then(u'the user should be sent an email with a link to the experiment which contains')
+@patch('transaction.abort')
+@patch('transaction.commit')
 @patch('ptmscout.utils.mail.celery_send_mail')
-def experiment_uploaded_check_email(context, patch_mail):
+def experiment_uploaded_check_email(context, patch_mail, patch_commit, patch_abort):
+    patch_commit.side_effect = session_flush
+    patch_abort.side_effect = log_abort
+    
     result = context.form.submit()
     
     my_experiments_page = "http://localhost/account/experiments"
@@ -56,10 +69,11 @@ def experiment_uploaded_check_email(context, patch_mail):
     result.mustcontain("Experiment with some kind of data")
     result.mustcontain("loaded")
     
-    m = re.search('http://localhost/experiments/[0-9]+', str(result))
+    m = re.search('http://localhost/experiments/([0-9]+)', str(result))
     if m == None:
         print 'http://localhost/experiments/[0-9]+ not found'
     exp_link = m.group(0)
+    context.exp_id = int(m.group(1))
     
     peps = context.table[0]['peptides']
     prots = context.table[0]['proteins']
@@ -79,6 +93,41 @@ def experiment_uploaded_check_email(context, patch_mail):
     assertContains("Proteins: %s" % (prots), argstr)
     assertContains("Errors: %s" % (errors), argstr)
     assertRegexMatch('http://localhost/experiments/[0-9]+/errors', argstr)
+    
+    context.exp_link = exp_link
+    
+    browse_page = context.exp_link + "/browse"
+    result = context.ptmscoutapp.get(browse_page)
+    context.result = result
+
+@then(u'the experiment browser should contain the correct peptides')
+def check_displayed_peptides(context):
+    result = context.result
+    
+    strres = str(result).replace("\n", " ")
+    #       1390       1400       1410
+    # AGLGIRQGGK APVTPRGRGR RGRPPSRTTG
+    #   LGIRQGGk APVTPRG
+    #         GK APVTPrGRGR RGR
+    #            APVTPRGrGR RGRPP
+    #              VTPRGRGr RGRPPSR
+    #               TPRGRGR rGRPPSRT
+    #                 RGRGR RGrPPSRTTG
+    
+    assertRegexMatch("%s.*%s" % ("K1390", "LGIRQGGkAPVTPRG"), strres)
+    assertRegexMatch("%s.*%s" % ("R1396", "GKAPVTPrGRGRRGR"), strres)
+    assertRegexMatch("%s.*%s" % ("R1398", "APVTPRGrGRRGRPP"), strres)
+    assertRegexMatch("%s.*%s" % ("R1400", "VTPRGRGrRGRPPSR"), strres)
+    assertRegexMatch("%s.*%s" % ("R1401", "TPRGRGRrGRPPSRT"), strres)
+    assertRegexMatch("%s.*%s" % ("R1403", "RGRGRRGrPPSRTTG"), strres)
+    
+    assertRegexMatch("%s.*%s" % ("K317", "FSFKLLKkECPIPNV"), strres)
+    assertRegexMatch("%s.*%s" % ("H73", "TLKYPIEhGIVTNWD"), strres)
+    assertRegexMatch("%s.*%s" % ("R144", "ENFVDKLrESLMSVA"), strres)
+    assertRegexMatch("%s.*%s" % ("H73", "TLKYPIEhGIVTNWD"), strres)
+    assertRegexMatch("%s.*%s" % ("R257", "GTGPQRPrSWAAADS"), strres)
+    assertRegexMatch("%s.*%s" % ("K212", "TLNEDSYkDSTLIMQ"), strres)
+    
 
 def synchronous_assert_called(mock, limit=1):
     slept_time = 0.0

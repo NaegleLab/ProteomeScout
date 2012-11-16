@@ -20,6 +20,8 @@ Feature: Dataset Load
           Then the user should be sent an email with a link to the experiment which contains:
             | peptides | proteins | errors |
             | 7        | 7        | 3      |
+          And the experiment browser should contain the correct peptides
+
 
     Scenario: Peptide Mismatch    
           Given a user submits a dataset that has an incorrect peptide to protein match
