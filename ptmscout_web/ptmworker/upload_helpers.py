@@ -172,8 +172,7 @@ def query_peptide_predictions(pep_seq, motif_class):
         pred.value = scansite.nickname
         pred.source = scansite.parse_source()
         db_predictions.append(pred)
-        
-        log.debug("%f %s %s", scansite.score, scansite.nickname, scansite.parse_source())
+#        log.debug("%f %s %s", scansite.score, scansite.nickname, scansite.parse_source())
         
     return db_predictions
 

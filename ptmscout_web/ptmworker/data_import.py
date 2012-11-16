@@ -51,7 +51,6 @@ def load_new_peptide(prot_id, site_pos, pep_seq, taxonomy):
     elif 'saccharomyces' in taxonomy:
         motif_class="YEAST"
     
-    log.debug("motifclass %s", motif_class)
     if motif_class != None:
         pep.predictions = upload_helpers.query_peptide_predictions(pep_seq, motif_class)
         
