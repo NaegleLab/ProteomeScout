@@ -29,6 +29,8 @@ class GeneOntology(Base):
 #    def getURL(self):
 #        return settings.accession_urls['GO'] % (self.GO)
 
+    def save(self):
+        DBSession.add(self)
 
 class GeneOntologyEntry(Base):
     __tablename__='protein_GO'
@@ -39,6 +41,8 @@ class GeneOntologyEntry(Base):
     
     GO_term = relationship("GeneOntology")
 
+    def save(self):
+        DBSession.add(self)
 
 class ProteinAccession(Base):
     __tablename__='protein_acc'
@@ -96,6 +100,12 @@ class Protein(Base):
         DBSession.add(self)
         DBSession.flush()
         
+    def hasAccession(self, acc):
+        for dbacc in self.accessions:
+            if dbacc.value == acc:
+                return True
+        return False
+        
     def addTaxonomy(self, taxon):
         if taxon not in self.taxonomy:
             self.taxonomy.append(taxon)
@@ -143,4 +153,10 @@ def getProteinsByAccession(accessions, species=None):
 
 
 def getProteinDomain(prot_id, pep_site):
-    return DBSession.query(ProteinDomain).filter(and_(ProteinDomain.protein_id==prot_id, ProteinDomain.start <= pep_site, pep_site <= ProteinDomain.stop))    
+    return DBSession.query(ProteinDomain).filter(and_(ProteinDomain.protein_id==prot_id, ProteinDomain.start <= pep_site, pep_site <= ProteinDomain.stop)).first()    
+
+
+def getProteinBySequence(seq, species):
+    return DBSession.query(Protein).join(Protein.species).filter(Protein.sequence==seq, taxonomies.Species.name==species).first()
+
+
