@@ -16,4 +16,10 @@ accession_urls = {'swissprot':"http://ca.expasy.org/uniprot/%s",
                   'genbank':"http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?db=protein&amp;id=%s"}
 
 
-ptmscout_path = "/data/ptmscout/ptmscout_web" 
+ptmscout_path = "/data/ptmscout/ptmscout_web"
+
+
+DISABLE_PFAM = False
+DISABLE_SCANSITE = False
+DISABLE_QUICKGO = False
+DISABLE_PICR = False 
