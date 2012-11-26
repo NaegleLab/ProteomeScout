@@ -30,6 +30,8 @@ $ source pyramid/bin/activate
 $ easy_install pyramid
 $ easy_install docutils nose coverage zope.sqlalchemy SQLAlchemy pyramid_tm waitress pyramid_mailer
 $ pip install behave
+$ pip install webtest
+$ pip install mock
 
 
 Install ptmscout
@@ -49,6 +51,11 @@ $ cp scripts/server/modwsgi.conf /etc/apache2/modwsgi.conf
 $ sudo echo "Include modwsgi.conf" >> /etc/apache2/apache2.conf
 
 $ sudo apache2ctl restart
+
+
+Install dos2unix
+
+$ sudo apt-get install dos2unix
 
 
 Install geeneus
@@ -79,3 +86,11 @@ $ mysql -u root -p ptmscout < ptm_defs.sql
 $ mysql -u root -p ptmscout < expression_defs.sql
 $ mysql -u root -p ptmscout < condition_defs.sql
 
+
+Pre-populate the GO tables
+
+$ cd /data/ptmscout
+$ mkdir scripts/data
+$ wget -O scripts/data/gene_ontology.1_2.obo http://www.geneontology.org/ontology/obo_format_1_2/gene_ontology.1_2.obo
+$ python scripts/import_gene_ontology_terms.py
+$ python scripts/import_gene_ontology_is_a_relationships.py
