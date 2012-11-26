@@ -73,13 +73,12 @@ def batch_get_GO_annotations(protein_accessions):
     annotations = {}
     gene_symbols = {}
     
+    for acc in protein_accessions:
+        annotations[acc] = {}
+        gene_symbols[acc] = ""
+    
     if settings.DISABLE_QUICKGO:
-        for acc in protein_accessions:
-            annotations[acc] = {}
-            gene_symbols[acc] = ""
         return annotations, gene_symbols
-            
-            
     
     query_url = quick_go_annot_url % (",".join(protein_accessions))
     annot_stream = urllib2.urlopen(query_url)
