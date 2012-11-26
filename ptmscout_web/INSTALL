@@ -68,13 +68,14 @@ Initialize the database
 
 $ cd /data/ptmscout
 $ mysql -u root -p < scripts/database_defs.sql
-
+$ mysql -u root -p < scripts/create_ptmuser.sql
 
 Populate PTM, expression and species tables
 
 $ wget https://bitbucket.org/knaegle/ptmscout_dev/files/tables.tar.gz
 $ tar -zxvf tables.tar.gz
-$ mysql -u root -p ptmscout < scripts/species_defs.sql
-$ mysql -u root -p ptmscout < scripts/ptm_defs.sql
-$ mysql -u root -p ptmscout < scripts/expression_defs.sql
+$ mysql -u root -p ptmscout < species_defs.sql
+$ mysql -u root -p ptmscout < ptm_defs.sql
+$ mysql -u root -p ptmscout < expression_defs.sql
+$ mysql -u root -p ptmscout < condition_defs.sql
 
