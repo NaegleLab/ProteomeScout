@@ -33,7 +33,8 @@ CREATE TABLE `GO` (
   `date` datetime NOT NULL,
   `version` varchar(10) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uniqueEntry` (`aspect`,`GO`)
+  UNIQUE KEY `uniqueEntry` (`aspect`,`GO`),
+  KEY `GO` (`GO`)
 ) ENGINE=InnoDB AUTO_INCREMENT=45551 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -72,7 +73,7 @@ CREATE TABLE `MS` (
   KEY `FK_MS_protein` (`protein_id`),
   CONSTRAINT `FK_MS_protein` FOREIGN KEY (`protein_id`) REFERENCES `protein` (`id`),
   CONSTRAINT `MS_ibfk_1` FOREIGN KEY (`experiment_id`) REFERENCES `experiment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=431597 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=431598 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -192,7 +193,7 @@ CREATE TABLE `data` (
   PRIMARY KEY (`id`),
   KEY `FK_data_MS` (`MS_id`),
   CONSTRAINT `data_ibfk_1` FOREIGN KEY (`MS_id`) REFERENCES `MS` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=147119 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=147124 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -649,7 +650,7 @@ CREATE TABLE `users` (
   `activation_token` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`,`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2419 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2446 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -661,4 +662,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-11-26 12:33:34
+-- Dump completed on 2012-11-26 16:54:53
