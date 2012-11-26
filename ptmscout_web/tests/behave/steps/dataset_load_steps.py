@@ -113,7 +113,7 @@ def check_displayed_peptides(context):
     #              VTPRGRGr RGRPPSR
     #               TPRGRGR rGRPPSRT
     #                 RGRGR RGrPPSRTTG
-    
+    print result
     assertRegexMatch("%s.*%s" % ("K1390", "LGIRQGGkAPVTPRG"), strres)
     assertRegexMatch("%s.*%s" % ("R1396", "GKAPVTPrGRGRRGR"), strres)
     assertRegexMatch("%s.*%s" % ("R1398", "APVTPRGrGRRGRPP"), strres)

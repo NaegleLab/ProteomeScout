@@ -170,10 +170,10 @@ def create_hierarchy_for_missing_GO_annotations(created_entries):
             
             if parent_term == None:
                 log.warn("Parent term '%s' not found in GO annotations!", parent_goId)
-            
-            parent_term.children.append(go_term)
-            parent_term.save()
-            links += 1
+            else:
+                parent_term.children.append(go_term)
+                parent_term.save()
+                links += 1
     
     log.debug("Created: %d GO entries with %d edges", len(created_entries), links)        
 
@@ -184,18 +184,32 @@ def create_missing_GO_annotations(GO_annotation_map, protein_ids):
     created_go_entries = []
     created, assigned = 0, 0
     
+    complete_go_terms = set()
+    for acc in GO_annotation_map:
+        for goId in GO_annotation_map[acc]:
+            complete_go_terms.add(goId)
+
+
+    missing_terms = set()
+
     for acc in protein_ids:
         go_annotations = GO_annotation_map[acc]
         protein_id = protein_ids[acc]
         
+
         for goId in go_annotations:
             dateAdded = go_annotations[goId]
-            
             go_term = protein.getGoAnnotationById(goId)
             
             if go_term == None:
                 go_term = protein.GeneOntology()
                 version, entry = quickgo_tools.get_GO_term(goId)
+
+                for parent_goId in entry.is_a:
+                    if parent_goId not in complete_go_terms and \
+                            protein.getGoAnnotationById(parent_goId) == None:
+                        missing_terms.add(parent_goId)
+
                 go_term.GO = entry.goId
                 go_term.term = entry.goName
                 go_term.aspect = entry.goFunction
@@ -210,8 +224,32 @@ def create_missing_GO_annotations(GO_annotation_map, protein_ids):
             goe.save()
             assigned+=1
     
+    processed_missing = set()
+    missing_terms = list(missing_terms)
+    while len(missing_terms) > 0:
+        goId = missing_terms.pop(0)
+        if goId in processed_missing:
+            continue
+
+        go_term = protein.GeneOntology()
+        version, entry = quickgo_tools.get_GO_term(goId)
+
+        go_term.GO = entry.goId
+        go_term.term = entry.goName
+        go_term.aspect = entry.goFunction
+        go_term.version = version
+        go_term.save()
+        created_go_entries.append(entry)
+        created+=1
+        processed_missing.add(goId)
+
+        for parent_goId in entry.is_a:
+            if parent_goId not in complete_go_terms and \
+                    protein.getGoAnnotationById(parent_goId) == None:
+                missing_terms.append(parent_goId)
+
+
     log.debug("Assigned %d terms, created %d terms", assigned, created)
-    
     return created_go_entries
 
 

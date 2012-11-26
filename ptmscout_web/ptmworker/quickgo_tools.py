@@ -2,6 +2,9 @@ import urllib2
 import csv
 import xml.dom.minidom as xml 
 from ptmscout.config import settings
+import logging
+
+log = logging.getLogger('ptmscout')
 
 quick_go_term_url  = "http://www.ebi.ac.uk/QuickGO/GTerm?id=%s&format=oboxml"
 quick_go_annot_url = "http://www.ebi.ac.uk/QuickGO/GAnnotation?format=tsv&protein=%s&col=proteinID,proteinSymbol,goID,evidence,date"
@@ -58,6 +61,7 @@ class OBOXMLParser(object):
         return tn
     
 def get_GO_term(goId):
+#    log.debug("Getting go term: %s", goId)
     query_url = quick_go_term_url % (goId)
     annot_stream = urllib2.urlopen(query_url)
     
