@@ -1,5 +1,13 @@
+defmode='install'
+arg=${1:-$defmode}
+
+if [ ! -e logs ]
+then
+    mkdir logs/
+fi
+
 /data/pyramid/bin/python setup.py build > logs/build.log
-/data/pyramid/bin/python setup.py develop > logs/deploy.log
+/data/pyramid/bin/python setup.py $arg > logs/deploy.log
 sudo chmod -R 775 *
 sudo chown -R www-data *
 sudo chgrp -R development *

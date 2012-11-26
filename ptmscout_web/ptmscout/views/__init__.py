@@ -1,5 +1,3 @@
-from pyramid.exceptions import Forbidden
-from ptmscout.views.errors import forbidden_view
 
 def add_views(config):
     config.add_static_view('static', 'static', cache_max_age=3600)
@@ -52,8 +50,6 @@ def add_views(config):
     
     config.add_route('change_password', '/change_password')
     config.add_route('change_password_success', '/change_password_success')
-    
-    config.add_view(forbidden_view, context=Forbidden)
     
     
     config.add_renderer(name='tsv', factory='ptmscout.views.renderers.TSVRenderer')
