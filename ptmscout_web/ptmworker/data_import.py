@@ -123,13 +123,9 @@ def load_new_protein(accession, protein_information):
     
     # load additional protein accessions if available
     other_accessions = picr_tools.get_picr(accession)
+    upload_helpers.create_accession_for_protein(prot, other_accessions)
     
-    for db, acc, _ in other_accessions:
-        if not prot.hasAccession(acc):
-            dbacc = protein.ProteinAccession()
-            dbacc.type = db
-            dbacc.value = acc
-            prot.accessions.append(dbacc)
+    upload_helpers.map_expression_probesets(prot)
     
     prot.saveProtein()
     

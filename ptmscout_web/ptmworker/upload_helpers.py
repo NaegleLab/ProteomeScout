@@ -1,4 +1,5 @@
-from ptmscout.database import protein, taxonomies, modifications, experiment
+from ptmscout.database import protein, taxonomies, modifications, experiment,\
+    gene_expression
 from ptmscout.utils import uploadutils
 from ptmscout.config import strings
 import logging
@@ -55,6 +56,28 @@ def dynamic_transaction_task(fn):
             raise
     ttask.__name__ = fn.__name__
     return ttask
+
+
+
+def create_accession_for_protein(prot, other_accessions):
+    for db, acc, _ in other_accessions:
+        if not prot.hasAccession(acc):
+            dbacc = protein.ProteinAccession()
+            dbacc.type = db
+            dbacc.value = acc
+            prot.accessions.append(dbacc)
+
+
+def map_expression_probesets(prot):
+    search_accessions = [ acc.value for acc in prot.accessions ]
+    if prot.acc_gene != '' and prot.acc_gene != None:
+        search_accessions.append(prot.acc_gene)
+    
+    probesets = gene_expression.getExpressionProbeSetsForProtein(search_accessions)
+    
+    prot.expression_probes.extend(probesets)
+    
+    log.debug("Loaded %d probesets for protein %d | %s", len(probesets), prot.id, str(prot.acc_gene))
 
 
 def report_errors(exp_id, errors, line_mapping):
@@ -309,3 +332,4 @@ def create_chunked_tasks(task_method, task_args, MAX_BATCH_SIZE):
         
     return tasks
     
+

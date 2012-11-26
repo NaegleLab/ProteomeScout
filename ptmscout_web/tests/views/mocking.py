@@ -5,7 +5,7 @@ from ptmscout.database.experiment import Experiment, ExperimentData,\
     ExperimentCondition, ExperimentError
 from ptmscout.database.permissions import Permission
 from ptmscout.database.protein import Protein, GeneOntology, ProteinDomain,\
-    GeneOntologyEntry
+    GeneOntologyEntry, ProteinAccession
 import random
 from ptmscout.database.modifications import MeasuredPeptide, Peptide,\
     ScansitePrediction, PTM, PTMkeyword, PeptideModification
@@ -119,6 +119,19 @@ def createMockPermission(user, experiment, access_level='view'):
     mock.access_level = access_level
     return mock
 
+def createMockAccession(pid, value=None, type=None):
+    aid = random.randint(0,100000)
+    if value == None:
+        value = "acc|%d|%d" % (pid, aid)
+    
+    mock = Mock(spec=ProteinAccession)
+    mock.id = aid
+    mock.type = type
+    mock.value = value
+    mock.protein_id = pid
+
+    return mock
+
 def createMockProtein():
     mock = Mock(spec=Protein)
     
@@ -133,6 +146,8 @@ def createMockProtein():
     mock.species.name = "homo sapiens"
     mock.sequence="ABCDEFGHIJKLMNOP" 
     mock.GO_terms = []
+    mock.expression_probes = []
+    mock.accessions = []
     return mock
 
 

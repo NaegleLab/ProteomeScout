@@ -1,10 +1,28 @@
 from tests.PTMScoutTestCase import IntegrationTestCase
 from ptmworker import upload_helpers
 from ptmscout.database import modifications, experiment
-from tests.views.mocking import createMockExperiment
+from tests.views.mocking import createMockExperiment, createMockProtein,\
+    createMockProbe, createMockAccession
 from mock import patch
 
 class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
+
+    @patch('ptmscout.database.gene_expression.getExpressionProbeSetsForProtein')
+    def test_map_expression_probesets(self, patch_getProbes):
+        probe = createMockProbe()
+        prot = createMockProtein()
+        
+        prot.acc_gene = 'TNK2'
+        prot.accessions.append(createMockAccession(prot.id, value='ACK1_HUMAN', type='uniprot'))
+        
+        patch_getProbes.return_value = [probe]
+        
+        upload_helpers.map_expression_probesets(prot)
+        
+        patch_getProbes.assert_called_once_with(['ACK1_HUMAN', 'TNK2'])
+        
+        self.assertEqual([probe], prot.expression_probes)
+        
 
     @patch('ptmscout.database.modifications.Peptide')    
     @patch('ptmscout.database.modifications.getPeptideBySite')
