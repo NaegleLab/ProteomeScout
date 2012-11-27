@@ -139,7 +139,7 @@ class SummaryViewsTests(UnitTestCase):
         
         result = experiment_summary_view(request)
 
-        request.user.experimentOwner.assert_called_once_With(exp)
+        request.user.experimentOwner.assert_called_once_with(exp)
 
         patch_getExperiment.assert_called_once_with(exp_id, request.user)
         patch_getMeasurements.assert_called_once_with(exp_id, request.user)
