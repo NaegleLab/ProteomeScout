@@ -72,7 +72,7 @@ class ProteinTest(DBTestCase):
             self.fail("Expected IntegrityError on last DB operation")
     
     def test_getProteinsByAccession(self):
-        expected_ids = [27866, 35546, 10367, 30840, 19946, 17551, 35433]
+        expected_ids = [10367, 17551, 19946, 35546]
         
         prots = protein.getProteinsByAccession(["ACK1"])
         

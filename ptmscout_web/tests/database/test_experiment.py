@@ -66,7 +66,7 @@ class ExperimentTestCase(DBTestCase):
         exp.public = 0
         exp.saveExperiment()
         
-        exp2 = dbexperiment.getExperimentById(2, None)
+        exp2 = dbexperiment.getExperimentById(26, None)
         exp2.status = 'preload'
         exp2.saveExperiment()
         
