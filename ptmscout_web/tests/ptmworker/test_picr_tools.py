@@ -91,11 +91,11 @@ class IntegrationTestScansiteQuery(IntegrationTestCase):
     
     
     def test_get_picr(self):
-        result = picr_tools.get_picr('P29375')
+        result = picr_tools.get_picr('P29375', 9606)
 
         self.assertEqual(4, len(result))
-        self.assertEqual(('ipi', 'IPI01014284', '1'), result[0])
-        self.assertEqual(('swissprot', 'P29375', '3'), result[1])
-        self.assertEqual(('refseq', 'NP_001036068', '1'), result[2])
+        self.assertEqual(('swissprot', 'P29375', '3'), result[0])
+        self.assertEqual(('refseq', 'NP_001036068', '1'), result[1])
+        self.assertEqual(('ipi', 'IPI01014284', '1'), result[2])
         self.assertEqual(('ipi', 'IPI00021363', '3'), result[3])
         

@@ -122,7 +122,7 @@ def load_new_protein(accession, protein_information):
         upload_helpers.create_domains_for_protein(prot, domains, "COMPUTED PFAM", "pval=%f" % (PFAM_DEFAULT_CUTOFF))
     
     # load additional protein accessions if available
-    other_accessions = picr_tools.get_picr(accession)
+    other_accessions = picr_tools.get_picr(accession, prot.species.taxon_id)
     upload_helpers.create_accession_for_protein(prot, other_accessions)
     
     upload_helpers.map_expression_probesets(prot)
