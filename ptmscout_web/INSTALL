@@ -1,5 +1,5 @@
 Installation Notes
-
+------------------
 
 Install webserver
 
@@ -77,10 +77,18 @@ $ cd /data/ptmscout
 $ mysql -u root -p < scripts/database_defs.sql
 $ mysql -u root -p < scripts/create_ptmuser.sql
 
+
+Create the test database
+
+$ wget https://bitbucket.org/knaegle/ptmscout_dev/files/ptmscout_test.tar.gz
+$ tar zxvf ptmscout_test.tar.gz
+$ mysql -u root -p < ptmscout_test.sql
+
+
 Populate PTM, expression and species tables
 
 $ wget https://bitbucket.org/knaegle/ptmscout_dev/files/tables.tar.gz
-$ tar -zxvf tables.tar.gz
+$ tar zxvf tables.tar.gz
 $ mysql -u root -p ptmscout < species_defs.sql
 $ mysql -u root -p ptmscout < ptm_defs.sql
 $ mysql -u root -p ptmscout < expression_defs.sql
@@ -94,3 +102,10 @@ $ mkdir scripts/data
 $ wget -O scripts/data/gene_ontology.1_2.obo http://www.geneontology.org/ontology/obo_format_1_2/gene_ontology.1_2.obo
 $ python scripts/import_gene_ontology_terms.py
 $ python scripts/import_gene_ontology_is_a_relationships.py
+
+
+Run the tests
+
+$ cd /data/ptmscout/
+$ ./unittest.sh
+$ ./behave.sh
