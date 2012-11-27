@@ -19,6 +19,7 @@ ptmscout_web/build
 ptmscout_web/dist
 ptmscout_web/ptmscout.egg-info
 ptmscout_web/data
+ptmscout_web/scripts/db
 ptmscout_web/scripts/data
 ptmscout_web/scripts/output
 ptmscout_web/logs
