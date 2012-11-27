@@ -17,6 +17,11 @@ then
     kill `cat "logs/ptmworker.pid"`
 fi
 
-/data/pyramid/bin/pceleryd development.ini --logfile=logs/ptmworker.log --loglevel=DEBUG --pidfile=logs/ptmworker.pid > logs/ptmworker.start &
+if [ "$arg" == "develop" ]
+then
+    /data/pyramid/bin/pceleryd development.ini --logfile=logs/ptmworker.log --loglevel=DEBUG --pidfile=logs/ptmworker.pid > logs/ptmworker.start &
+else
+    /data/pyramid/bin/pceleryd production.ini --logfile=logs/ptmworker.log --loglevel=DEBUG --pidfile=logs/ptmworker.pid > logs/ptmworker.start &
+fi
 sudo apache2ctl restart
 
