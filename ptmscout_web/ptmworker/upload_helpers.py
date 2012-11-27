@@ -73,7 +73,7 @@ def map_expression_probesets(prot):
     if prot.acc_gene != '' and prot.acc_gene != None:
         search_accessions.append(prot.acc_gene)
     
-    probesets = gene_expression.getExpressionProbeSetsForProtein(search_accessions)
+    probesets = gene_expression.getExpressionProbeSetsForProtein(search_accessions, prot.species_id)
     
     prot.expression_probes.extend(probesets)
     

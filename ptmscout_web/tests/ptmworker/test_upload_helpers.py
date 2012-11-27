@@ -19,7 +19,7 @@ class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
         
         upload_helpers.map_expression_probesets(prot)
         
-        patch_getProbes.assert_called_once_with(['ACK1_HUMAN', 'TNK2'])
+        patch_getProbes.assert_called_once_with(['ACK1_HUMAN', 'TNK2'], prot.species_id)
         
         self.assertEqual([probe], prot.expression_probes)
         
