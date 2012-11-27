@@ -2,7 +2,7 @@ from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 from pyramid.testing import DummyRequest
 from mock import patch
 from tests.views.mocking import createMockExperiment, createMockMeasurement,\
-    createMockProtein, createMockGO, createMockGOE
+    createMockProtein, createMockGO, createMockGOE, createMockUser
 from ptmscout.views.experiment.GO_view import show_experiment_go_terms,\
     format_go_terms, build_go_annotation_tree
 from ptmscout.config import strings
@@ -95,8 +95,9 @@ class TestExperimentGOView(UnitTestCase):
         request = DummyRequest()
         exp_id = 1
         request.matchdict['id'] = str(exp_id)
-        request.user = None
-        
+        request.user = createMockUser()
+        request.user.experimentOwner.return_value = True
+
         exp = createMockExperiment(exp_id,0,0)
         patch_getExperiment.return_value = exp
         
@@ -111,10 +112,12 @@ class TestExperimentGOView(UnitTestCase):
         
         result = show_experiment_go_terms(request)
         
+        request.user.experimentOwner.assert_called_once_with(exp)
         patch_tree.assert_called_once_with(measures)
         patch_format.assert_called_once_with(measures)
         patch_getMeasurements.assert_called_once_with(exp_id, request.user)
         patch_getExperiment.assert_called_once_with(exp_id, request.user)
+        self.assertEqual(True, result['user_owner'])
         self.assertEqual(exp, result['experiment'])
         self.assertEqual(strings.experiment_GO_page_title % (exp.name), result['pageTitle'])
         self.assertEqual(formatted, result['go_tables'])

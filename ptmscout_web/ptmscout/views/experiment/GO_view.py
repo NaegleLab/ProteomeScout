@@ -89,7 +89,7 @@ def format_go_terms(measurements):
 def show_experiment_go_terms(request):
     exp_id = int(request.matchdict['id'])
     exp = experiment.getExperimentById(exp_id, request.user)
-    
+    user_owner = request.user != None and request.user.experimentOwner(exp)
     
     measurements = modifications.getMeasuredPeptidesByExperiment(exp_id, request.user)
     formatted_go_terms = format_go_terms(measurements)
@@ -98,4 +98,5 @@ def show_experiment_go_terms(request):
     return {'pageTitle': strings.experiment_GO_page_title % (exp.name),
             'experiment': exp,
             'go_tables': formatted_go_terms,
-            'go_tree': go_tree}
+            'go_tree': go_tree,
+            'user_owner': user_owner }
