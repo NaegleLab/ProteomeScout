@@ -23,6 +23,10 @@ def create_sequence_profile(measurements):
             frequencies[i][s] = val+1
         
     seqlogo = {'total':len(peptides), 'frequencies':[]}
+    
+    if len(peptides) == 0:
+        return seqlogo
+    
     en = 19 / (2 * math.log(2) * len(peptides)) 
     
     for i in xrange(0, 15):

@@ -1,4 +1,8 @@
 function createSeqlogo(node, data, w, h){
+	
+	if(data.frequencies.length == 0)
+		return;
+	
 	chartContainer = 
 		node
 			.append('div');
