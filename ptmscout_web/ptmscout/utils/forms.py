@@ -67,6 +67,7 @@ class FormSchema(object):
             if ref in field_dict:
                 v = field_dict[ref]
             if v != None and self.field_types[ref] != FormSchema.FILE:
+                v = str(v)
                 v = v.strip()
             self.form_values[ref] = v
     

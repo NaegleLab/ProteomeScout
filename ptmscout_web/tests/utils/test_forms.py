@@ -30,7 +30,25 @@ class FormUtilsTestCase(unittest.TestCase):
     def greater_than_1980(self, field_name, field_value, schema):
         if int(field_value) < 1980:
             return "Error: field '%s' required to be after 1980" % (field_name)
-        
+       
+    def test_parse_fields_dict_with_non_string_elements_should_convert(self):
+        field_dict = {}
+        field_dict['pmid'] = 2000
+        field_dict['URL'] = "http://somestuff.com"
+        field_dict['published'] = "yes"
+        field_dict['publication_year'] = 1979
+        field_dict['description'] = "stuff"
+        field_dict['load_type'] = "reload"
+
+        self.form_schema.parse_fields_dict(field_dict)
+
+        self.assertEqual("2000", self.form_schema.get_form_value('pmid'))
+        self.assertEqual("http://somestuff.com", self.form_schema.get_form_value('URL'))
+        self.assertEqual("yes", self.form_schema.get_form_value('published'))
+        self.assertEqual("1979", self.form_schema.get_form_value('publication_year'))
+        self.assertEqual("stuff", self.form_schema.get_form_value('description'))
+        self.assertEqual("reload", self.form_schema.get_form_value('load_type'))
+ 
     def test_add_alternate_validator_should_call_extra_validator(self):
         request = DummyRequest()
         request.POST['pmid'] = "2000"
