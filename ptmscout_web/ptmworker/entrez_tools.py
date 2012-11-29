@@ -72,8 +72,8 @@ def parse_sequence_id(seqid):
     return result
 
 class EntrezError(Exception):
-    def __init__(self, accession):
-        self.acc = accession
+    def __init__(self):
+        pass
         
     def __repr__(self):
         return "Unable to fetch protein accession: %s" % (self.acc)
@@ -82,7 +82,9 @@ def get_protein_information(pm, acc):
     seq = pm.get_protein_sequence(acc).upper()
     
     if seq == "":
-        raise EntrezError(acc)
+        e = EntrezError()
+        e.acc = acc
+        raise e
     
     XML = pm.get_raw_xml(acc)[0]
     
