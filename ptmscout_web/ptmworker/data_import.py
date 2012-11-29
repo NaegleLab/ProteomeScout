@@ -9,8 +9,8 @@ from ptmscout.utils import mail, uploadutils
 log = logging.getLogger('ptmscout')
 
 PFAM_DEFAULT_CUTOFF = 0.00001
-MAX_NCBI_BATCH_SIZE = 1000
-MAX_QUICKGO_BATCH_SIZE = 100
+MAX_NCBI_BATCH_SIZE = 500
+MAX_QUICKGO_BATCH_SIZE = 500
 
 @celery.task
 @upload_helpers.transaction_task
@@ -175,7 +175,7 @@ def create_hierarchy_for_missing_GO_annotations(created_entries):
                 parent_term.save()
                 links += 1
     
-    log.debug("Created: %d GO entries with %d edges", len(created_entries), links)        
+    log.info("Created: %d GO entries with %d edges", len(created_entries), links)        
 
 
 @celery.task
@@ -249,7 +249,7 @@ def create_missing_GO_annotations(GO_annotation_map, protein_ids):
                 missing_terms.append(parent_goId)
 
 
-    log.debug("Assigned %d terms, created %d terms", assigned, created)
+    log.info("Assigned %d terms, created %d terms", assigned, created)
     return created_go_entries
 
 
@@ -300,7 +300,7 @@ def aggregate_ncbi_results(ncbi_results, exp_id, accessions, line_mappings):
         for acc in prot_map:
             aggregate_protein_map[acc] = prot_map[acc]
     
-    log.debug("Detected %d errors", len(aggregate_errors))
+    log.info("Detected %d errors", len(aggregate_errors))
     
     #report errors
     for error in aggregate_errors:
@@ -334,7 +334,7 @@ def create_missing_proteins(protein_map):
 @celery.task
 @upload_helpers.logged_task
 def launch_loader_tasks(ncbi_result, parsed_datafile, headers, session_info):
-    log.debug("Launching loader...")
+    log.info("Launching loader...")
     protein_map, missing_proteins, new_protein_ids = ncbi_result
     exp_id, _s, user_email, application_url, units = session_info
     
@@ -354,26 +354,26 @@ def launch_loader_tasks(ncbi_result, parsed_datafile, headers, session_info):
 def start_import(exp_id, session_id, user_email, application_url):
     exp = upload_helpers.mark_experiment(exp_id, 'loading')
     
-    log.debug("Loading session info...")
+    log.info("Loading session info...")
     session = upload.getSessionById(session_id, secure=False)
     session_info = (exp_id, session_id, user_email, application_url, session.units)
     
-    log.debug("Loading data file...")
+    log.info("Loading data file...")
     accessions, peptides, mod_map, data_runs, errors, line_mapping = upload_helpers.parse_datafile(session)
 
     exp.num_measured_peptides = len(mod_map)
     exp.saveExperiment()
 
-    log.debug("Reporting data file errors...")
+    log.info("Reporting data file errors...")
     upload_helpers.report_errors(exp_id, errors, line_mapping)
     
     headers = upload_helpers.get_series_headers(session)
     parsed_datafile = (accessions, peptides, mod_map, data_runs, line_mapping)
     
-    log.debug("Running tasks...")
+    log.info("Running tasks...")
     ncbi_tasks = upload_helpers.create_chunked_tasks(get_ncbi_proteins, accessions.keys(), MAX_NCBI_BATCH_SIZE)
     
     load_task = ( group(ncbi_tasks) | aggregate_ncbi_results.s(exp_id, accessions, line_mapping) | create_missing_proteins.s() | launch_loader_tasks.s(parsed_datafile, headers, session_info) )
     load_task.apply_async(link_error=finalize_experiment_error_state.s(exp_id))
 
-    log.debug("Tasks started... now we wait")
+    log.info("Tasks started... now we wait")

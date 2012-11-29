@@ -77,7 +77,7 @@ def map_expression_probesets(prot):
     
     prot.expression_probes.extend(probesets)
     
-    log.debug("Loaded %d probesets for protein %d | %s", len(probesets), prot.id, str(prot.acc_gene))
+    log.info("Loaded %d probesets for protein %d | %s", len(probesets), prot.id, str(prot.acc_gene))
 
 
 def report_errors(exp_id, errors, line_mapping):
@@ -122,7 +122,7 @@ def create_domains_for_protein(prot, domains, source, params):
 
 
 def create_new_protein(name, gene, seq, species, accessions):
-    log.debug("Creating protein: %s SEQ: %s", str(accessions), seq)
+    log.info("Creating protein: %s SEQ: %s", str(accessions), seq)
     prot = protein.Protein()
     prot.acc_gene = gene
     prot.name = name
@@ -185,7 +185,7 @@ def parse_modifications(prot_seq, pep_seq, mods, taxonomy):
 
 
 def query_peptide_predictions(pep_seq, motif_class):
-    log.debug("Loading scansite predictions...")
+    log.info("Loading scansite predictions...")
     scansite_predictions = scansite_tools.get_scansite_motif(pep_seq, motif_class)
     
     db_predictions = []
@@ -195,7 +195,7 @@ def query_peptide_predictions(pep_seq, motif_class):
         pred.value = scansite.nickname
         pred.source = scansite.parse_source()
         db_predictions.append(pred)
-#        log.debug("%f %s %s", scansite.score, scansite.nickname, scansite.parse_source())
+#        log.info("%f %s %s", scansite.score, scansite.nickname, scansite.parse_source())
         
     return db_predictions
 
@@ -235,7 +235,7 @@ def insert_run_data(MSpeptide, line, units, series_header, run_name, series):
             data.value = y
             MSpeptide.data.append(data)
         except Exception, e:
-            log.debug("Error inserting data element on line %d: '%s' exc: %s", line, series[i], str(e))
+            log.warning("Error inserting data element on line %d: '%s' exc: %s", line, series[i], str(e))
 
 
 def get_series_headers(session):

@@ -8,7 +8,7 @@ import mock
 from geeneus import Proteome
 
 class EntrezQueryTestCase(IntegrationTestCase):
-        
+
     def test_get_pubmed_record(self):
         record = entrez_tools.get_pubmed_record_by_id(12230038)
         
@@ -42,6 +42,17 @@ class EntrezQueryTestCase(IntegrationTestCase):
         
         self.assertEqual("RPL14", gene_name)
         
+    def test_get_protein_information_should_raise_entrez_error(self):
+        mock_pm = mock.Mock(spec=Proteome.ProteinManager)
+        mock_pm.get_protein_sequence.return_value = ""
+
+        try:
+            entrez_tools.get_protein_information(mock_pm, 'P50914')
+        except entrez_tools.EntrezError, e:
+            self.assertEqual('P50914', e.acc)
+        else:
+            self.fail("Expected EntrezError")
+
     def test_get_protein_information_should_return_correct_info(self):
         path = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'test', 'json_proteinxml')
         protein_xml = json.loads(open(path, 'rb').read())

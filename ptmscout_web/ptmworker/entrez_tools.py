@@ -108,7 +108,7 @@ def get_protein_information(pm, acc):
 
 
 def load_proteins(accessions, pm):
-    log.debug("Querying for proteins: %s", str(accessions))
+    log.info("Querying for proteins: %s", str(accessions))
     pm.batch_get_protein_sequence(accessions)
 
 

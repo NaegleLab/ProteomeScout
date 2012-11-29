@@ -61,7 +61,7 @@ class OBOXMLParser(object):
         return tn
     
 def get_GO_term(goId):
-#    log.debug("Getting go term: %s", goId)
+    log.debug("Getting go term: %s", goId)
     query_url = quick_go_term_url % (goId)
     annot_stream = urllib2.urlopen(query_url)
     
@@ -70,6 +70,8 @@ def get_GO_term(goId):
     return goxml.version, goxml.entries[0]
 
 def batch_get_GO_annotations(protein_accessions):
+    log.info("Getting go annotations for %d accessions", len(protein_accessions))
+
     annotations = {}
     gene_symbols = {}
     
