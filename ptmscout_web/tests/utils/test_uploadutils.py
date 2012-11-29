@@ -2,12 +2,13 @@ import unittest
 from ptmscout.utils.uploadutils import ColumnError,\
     check_data_column_assignments, ErrorList, assign_column_defaults,\
     assign_columns_by_name, assign_columns_from_session_history, check_data_rows,\
-    ParseError, check_modification_type_matches_peptide \
-    
+    ParseError, check_modification_type_matches_peptide,\
+    load_header_and_data_rows
 from tests.views.mocking import createMockUser, createMockSession,\
     createMockSessionColumn, createMockPTM
 from mock import patch
-from ptmscout.config import strings
+from ptmscout.config import strings, settings
+import os
 
 class TestUploadUtils(unittest.TestCase):
     
@@ -331,3 +332,11 @@ class TestUploadUtils(unittest.TestCase):
             self.fail("Expected exception: ErrorList([ColumnError()])")
 
         self.assertFalse(patch_check.called)
+
+    def test_load_header_and_data_rows_should_load_only_N_rows(self):
+        datafile = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'test', 'test_dataset_formatted.txt')
+
+        header, rows = load_header_and_data_rows(datafile, 10)
+
+        self.assertEqual(10, len(rows))
+

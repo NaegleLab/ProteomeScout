@@ -281,5 +281,6 @@ def load_header_and_data_rows(data_file, N=-1):
             break
         row = row[0:width]
         rows.append(row)
-    
+        i+=1
+
     return header, rows
