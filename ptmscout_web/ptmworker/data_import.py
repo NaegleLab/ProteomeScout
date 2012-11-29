@@ -283,6 +283,7 @@ def create_GO_import_tasks(protein_map, new_protein_ids):
 @celery.task(rate_limit='3/s')
 @upload_helpers.logged_task
 def get_ncbi_proteins(protein_accessions):
+    log.info("Getting records for %d accessions", len(protein_accessions))
     prot_map, errors = entrez_tools.get_proteins_from_ncbi(protein_accessions)
     
     return prot_map, errors
@@ -367,13 +368,18 @@ def start_import(exp_id, session_id, user_email, application_url):
     log.info("Reporting data file errors...")
     upload_helpers.report_errors(exp_id, errors, line_mapping)
     
-    headers = upload_helpers.get_series_headers(session)
-    parsed_datafile = (accessions, peptides, mod_map, data_runs, line_mapping)
+    if len(accessions) == 0:
+        log.info("Nothing to do: all proteins were rejected!")
+        finalize_import.apply_async((exp_id, user_email, application_url))
+    else:
+        headers = upload_helpers.get_series_headers(session)
+        parsed_datafile = (accessions, peptides, mod_map, data_runs, line_mapping)
+        
+        log.info("Running tasks...")
+        ncbi_tasks = upload_helpers.create_chunked_tasks(get_ncbi_proteins, accessions.keys(), MAX_NCBI_BATCH_SIZE)
+        
+        load_task = ( group(ncbi_tasks) | aggregate_ncbi_results.s(exp_id, accessions, line_mapping) | create_missing_proteins.s() | launch_loader_tasks.s(parsed_datafile, headers, session_info) )
+        load_task.apply_async(link_error=finalize_experiment_error_state.s(exp_id))
     
-    log.info("Running tasks...")
-    ncbi_tasks = upload_helpers.create_chunked_tasks(get_ncbi_proteins, accessions.keys(), MAX_NCBI_BATCH_SIZE)
+        log.info("Tasks started... now we wait")
     
-    load_task = ( group(ncbi_tasks) | aggregate_ncbi_results.s(exp_id, accessions, line_mapping) | create_missing_proteins.s() | launch_loader_tasks.s(parsed_datafile, headers, session_info) )
-    load_task.apply_async(link_error=finalize_experiment_error_state.s(exp_id))
-
-    log.info("Tasks started... now we wait")

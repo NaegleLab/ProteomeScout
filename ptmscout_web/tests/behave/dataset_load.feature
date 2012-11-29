@@ -14,7 +14,6 @@ Feature: Dataset Load
             | peptides | proteins | errors |
             | 7        | 7        | 1      |
     
-    @runme
     Scenario: Load a dataset with bad amino acid assignments
           Given a user has loaded a dataset and the modification type does not match the amino acid for that species
           Then the user should be sent an email with a link to the experiment which contains:
@@ -47,6 +46,20 @@ Feature: Dataset Load
           Then the user should be sent an email with a link to the experiment which contains:
             | peptides | proteins | errors |
             | 16       | 14       | 1      |
+    
+    @runme 
+    Scenario: No peptide passes in dataset
+    	Given a user submits a dataset in which no protein accession is found
+    	Then the user should be sent an email with a link to the experiment which contains:
+    	  | peptides | proteins | errors |
+    	  | 0        | 0        | 9      |
+    
+    @pending @long
+    Scenario: Experiment loading should work for large files
+    	Given a user submits a dataset with 1000 measured peptides
+    	Then the user should be sent an email with a link to the experiment which contains:
+    	  | peptides | proteins | errors |
+    	  | 1000     | 91       | 0      |
            
     @pending
     Scenario: Handle an isoform

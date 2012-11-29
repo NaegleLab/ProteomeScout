@@ -39,6 +39,14 @@ def submit_incorrect_peptide_dataset(context):
 def submit_multiple_mods_correct_dataset(context):
     bot.upload_file(context, 'datasetLoad_moreThanOneMod.txt')
 
+@given(u'a user submits a dataset in which no protein accession is found')
+def submit_all_error_dataset(context):
+    bot.upload_file(context, 'datasetLoad_allFail.txt', True)
+
+@given(u'a user submits a dataset with 1000 measured peptides')
+def submit_big_dataset(context):
+    bot.upload_file(context, 'datasetLoad_big_dataset.txt')
+
 def log_abort():
     import logging 
     logging.getLogger('ptmscout').debug("Transaction aborted")
