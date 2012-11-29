@@ -138,6 +138,8 @@ def getMeasuredPeptidesByExperiment(eid, user=None, pids = None, secure=True, ch
         modifications = DBSession.query(MeasuredPeptide).filter_by(experiment_id=eid).all()
     return [ mod for mod in modifications if (not secure or mod.experiment.checkPermissions(user)) and (not check_ready or mod.experiment.ready()) ]
 
+def countMeasuredPeptidesForExperiment(eid):
+    return DBSession.query(MeasuredPeptide).filter_by(experiment_id=eid).count()
 
 def getPeptideBySite(pep_site, pep_type, prot_id):
     mod = DBSession.query(Peptide).filter_by(site_pos=pep_site, site_type=pep_type, protein_id=prot_id).first()

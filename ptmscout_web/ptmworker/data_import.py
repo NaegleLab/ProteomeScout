@@ -37,7 +37,7 @@ def finalize_import(exp_id, user_email, application_url):
     mail.celery_send_mail([user_email], subject, message)
 
 
-@celery.task(rate_limit='3/s')
+@celery.task(rate_limit='5/s')
 @upload_helpers.transaction_task
 def load_new_peptide(prot_id, site_pos, pep_seq, taxonomy):
     pep, _ = upload_helpers.get_peptide(prot_id, site_pos, pep_seq)
@@ -109,7 +109,7 @@ def load_protein(accession, protein_information):
     return prot.id, accession, prot.sequence, taxonomy
 
 
-@celery.task(rate_limit='3/s')
+@celery.task(rate_limit='5/s')
 @upload_helpers.transaction_task
 def load_new_protein(accession, protein_information):
     _a, _a, taxonomy, species, _accessions, domains, seq = protein_information
@@ -352,12 +352,16 @@ def launch_loader_tasks(ncbi_result, parsed_datafile, headers, session_info):
 @celery.task
 @upload_helpers.transaction_task
 def start_import(exp_id, session_id, user_email, application_url):
-    upload_helpers.mark_experiment(exp_id, 'loading')
+    exp = upload_helpers.mark_experiment(exp_id, 'loading')
     
     session = upload.getSessionById(session_id, secure=False)
     session_info = (exp_id, session_id, user_email, application_url, session.units)
     
     accessions, peptides, mod_map, data_runs, errors, line_mapping = upload_helpers.parse_datafile(session)
+
+    exp.num_measured_peptides = len(mod_map)
+    exp.saveExperiment()
+
     upload_helpers.report_errors(exp_id, errors, line_mapping)
     
     headers = upload_helpers.get_series_headers(session)

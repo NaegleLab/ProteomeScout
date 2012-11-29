@@ -82,6 +82,8 @@ class Experiment(Base):
     
     status = Column(Enum('preload','loading','loaded'), default='preload')
     submitter_id = Column(Integer(10), ForeignKey('users.id'))
+
+    num_measured_peptides = Column(Integer(10), default=0)
     
     errors = relationship("ExperimentError", cascade="all,delete-orphan")
     conditions = relationship("ExperimentCondition", cascade="all,delete-orphan")

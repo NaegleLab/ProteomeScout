@@ -4,11 +4,18 @@ from ptmscout.database.taxonomies import getSpeciesByName
 from ptmscout.database.experiment import Experiment, getExperimentById,\
     ExperimentData
 from ptmscout.database.modifications import Peptide, MeasuredPeptide,\
-    getMeasuredPeptidesByProtein, findMatchingPTM
+    getMeasuredPeptidesByProtein, findMatchingPTM, \
+    countMeasuredPeptidesForExperiment
 from ptmscout.database.user import User, getUserById
 
 
 class TestModifications(DBTestCase):
+    def test_countMeasuredPeptidesForExperiment(self):
+        exp_id = self.test_get_modifications_should_return_mods_allowed_by_user_credentials()
+        cnt = countMeasuredPeptidesForExperiment(exp_id)
+
+        self.assertEqual(2, cnt)
+
     def test_get_modifications_should_return_mods_allowed_by_user_credentials(self):
         u = User("username", "name", "email", "institution")
         u.createUser("password")
@@ -196,3 +203,5 @@ class TestModifications(DBTestCase):
         
         self.assertEqual(['time(min)']*3, [d.type for d in modifications[0].data])
         self.assertEqual([0,1,10], sorted([d.label for d in modifications[0].data]))
+
+        return exp.id
