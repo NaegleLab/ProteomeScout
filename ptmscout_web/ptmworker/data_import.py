@@ -66,11 +66,13 @@ def load_peptide_modification(protein_info, exp_id, pep_seq, mods, units, series
     try:
         mod_types, aligned_sequences = upload_helpers.parse_modifications(protein_sequence, pep_seq, mods, taxonomy)
 
-        pep_measurement = modifications.MeasuredPeptide()
-        
-        pep_measurement.experiment_id = exp_id
-        pep_measurement.peptide = pep_seq
-        pep_measurement.protein_id = protein_id
+        pep_measurement = modifications.getMeasuredPeptide(exp_id, pep_seq, protein_id)
+
+        if pep_measurement==None:
+            pep_measurement = modifications.MeasuredPeptide()
+            pep_measurement.experiment_id = exp_id
+            pep_measurement.peptide = pep_seq
+            pep_measurement.protein_id = protein_id
         
         new_peptide_tasks = []
         
@@ -80,11 +82,12 @@ def load_peptide_modification(protein_info, exp_id, pep_seq, mods, units, series
             
             pep, created = upload_helpers.get_peptide(protein_id, site_pos, pep_sequence)
             
-            pepmod = modifications.PeptideModification()
-            pepmod.modification = mod_type
-            pepmod.peptide = pep
-            pep_measurement.peptides.append(pepmod)
-            
+            if not pep_measurement.hasPeptideModification(pep, mod_type):
+                pepmod = modifications.PeptideModification()
+                pepmod.modification = mod_type
+                pepmod.peptide = pep
+                pep_measurement.peptides.append(pepmod)
+                
             for line, run_name, series in runs:
                 upload_helpers.insert_run_data(pep_measurement, line, units, series_header, run_name, series)
             

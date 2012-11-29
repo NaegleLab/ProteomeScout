@@ -58,7 +58,77 @@ class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
         self.assertEqual('loaded', exp.status)
         exp.saveExperiment.assert_called_once_with()
         self.assertEqual(exp, v)
+
+    def test_insert_run_data_when_exists_should_modify_existing(self):
+        from ptmscout.database import DBSession
+        MS_peptide = modifications.MeasuredPeptide()
+        MS_peptide.experiment_id = 1
+        MS_peptide.protein_id = 35546
+        MS_peptide.peptide = 'ABCDEFG'
         
+        data1 = experiment.ExperimentData()
+        data1.run = 'run1'
+        data1.label = '0'
+        data1.type = 'data'
+        data1.priority = 4
+        data1.value = 9
+
+        data2 = experiment.ExperimentData()
+        data2.run = 'run1'
+        data2.label = '20'
+        data2.type = 'data'
+        data2.priority = 3
+        data2.value = 10
+
+        MS_peptide.data.extend([data1, data2])
+
+        DBSession.add(MS_peptide)
+        DBSession.flush()
+        
+        series_header = [('data', '0'),('data', '5'),('data', '20'), ('stddev', '5'), ('stddev', '20')]
+        series = [0,4,1,3,2]
+        
+        upload_helpers.insert_run_data(MS_peptide, 1, 'time(min)', series_header, "run1", series)
+        
+        DBSession.flush()
+        
+        result = DBSession.query(experiment.ExperimentData).filter_by(MS_id=MS_peptide.id).all()
+        result = sorted(result, key=lambda item: item.priority)
+        
+        self.assertEqual(5, len(result))
+        
+        self.assertEqual("run1", result[0].run)
+        self.assertEqual("data", result[0].type)
+        self.assertEqual("time(min)", result[0].units)
+        self.assertEqual('0', result[0].label)
+        self.assertEqual(0, result[0].value)
+        
+        self.assertEqual("run1", result[1].run)
+        self.assertEqual("data", result[1].type)
+        self.assertEqual("time(min)", result[1].units)
+        self.assertEqual('5', result[1].label)
+        self.assertEqual(4, result[1].value)
+
+        self.assertEqual("run1", result[2].run)
+        self.assertEqual("data", result[2].type)
+        self.assertEqual("time(min)", result[2].units)
+        self.assertEqual('20', result[2].label)
+        self.assertEqual(1, result[2].value)
+
+        self.assertEqual("run1", result[3].run)
+        self.assertEqual("stddev", result[3].type)
+        self.assertEqual("time(min)", result[3].units)
+        self.assertEqual('5', result[3].label)
+        self.assertEqual(3, result[3].value)
+
+        self.assertEqual("run1", result[4].run)
+        self.assertEqual("stddev", result[4].type)
+        self.assertEqual("time(min)", result[4].units)
+        self.assertEqual('20', result[4].label)
+        self.assertEqual(2, result[4].value)
+        
+ 
+
     def test_insert_run_data_should_create_data_records_when_timeseries(self):
         from ptmscout.database import DBSession
         MS_peptide = modifications.MeasuredPeptide()
@@ -66,6 +136,7 @@ class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
         MS_peptide.protein_id = 35546
         MS_peptide.peptide = 'ABCDEFG'
         
+
         DBSession.add(MS_peptide)
         DBSession.flush()
         

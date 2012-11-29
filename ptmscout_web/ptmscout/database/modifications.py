@@ -117,7 +117,18 @@ class MeasuredPeptide(Base):
         pmod.peptide = peptide
         pmod.modification = ptm
         self.peptides.append(pmod)
-        
+
+    def hasPeptideModification(self, peptide, ptm):
+        for modpep in self.peptides:
+            if modpep.peptide_id == peptide.id and modpep.modification_id == ptm.id:
+                return True
+        return False
+
+    def getDataElement(self, run_name, tp, x):
+        for d in self.data:
+            if d.run == run_name and d.type == tp and d.label == x:
+                return d
+
 class NoSuchPeptide(Exception):
     def __init__(self, pep_site, pep_type, protein_id):
         self.site = pep_site
@@ -126,6 +137,10 @@ class NoSuchPeptide(Exception):
         
     def __repr__(self):
         return "No such peptide modification at site %d, residue: %s, protein: %d" % (self.site, self.t, self.protein_id)
+
+def getMeasuredPeptide(exp_id, pep_seq, protein_id):
+    return DBSession.query(MeasuredPeptide).filter_by(experiment_id=exp_id, peptide=pep_seq, protein_id=protein_id).first()
+
 
 def getMeasuredPeptidesByProtein(pid, user):
     modifications = DBSession.query(MeasuredPeptide).filter_by(protein_id=pid).all()

@@ -20,7 +20,6 @@ def logged_task(fn):
             return fn(*args)
         except Exception:
             log.warning(traceback.format_exc())
-            raise
     ttask.__name__ = fn.__name__
     return ttask
 
@@ -35,7 +34,6 @@ def transaction_task(fn):
         except Exception:
             log.warning(traceback.format_exc())
             transaction.abort()
-            raise
     ttask.__name__ = fn.__name__
     return ttask
 
@@ -53,7 +51,6 @@ def dynamic_transaction_task(fn):
         except Exception:
             log.warning(traceback.format_exc())
             transaction.abort()
-            raise
     ttask.__name__ = fn.__name__
     return ttask
 
@@ -221,19 +218,21 @@ def get_peptide(prot_id, pep_site, peptide_sequence):
 def insert_run_data(MSpeptide, line, units, series_header, run_name, series):
     for i in xrange(0, len(series_header)):
         try:
-            data = experiment.ExperimentData()
-            
             tp, x = series_header[i]
-            
             y = float(series[i])
-            
+
+            data = MSpeptide.getDataElement(run_name, tp, x)
+
+            if data == None:
+                data = experiment.ExperimentData()
+                MSpeptide.data.append(data)
+
             data.run = run_name
             data.priority = i + 1
             data.type = tp
             data.units = units
             data.label = x
             data.value = y
-            MSpeptide.data.append(data)
         except Exception, e:
             log.warning("Error inserting data element on line %d: '%s' exc: %s", line, series[i], str(e))
 
