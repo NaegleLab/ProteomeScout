@@ -354,20 +354,26 @@ def launch_loader_tasks(ncbi_result, parsed_datafile, headers, session_info):
 def start_import(exp_id, session_id, user_email, application_url):
     exp = upload_helpers.mark_experiment(exp_id, 'loading')
     
+    log.debug("Loading session info...")
     session = upload.getSessionById(session_id, secure=False)
     session_info = (exp_id, session_id, user_email, application_url, session.units)
     
+    log.debug("Loading data file...")
     accessions, peptides, mod_map, data_runs, errors, line_mapping = upload_helpers.parse_datafile(session)
 
     exp.num_measured_peptides = len(mod_map)
     exp.saveExperiment()
 
+    log.debug("Reporting data file errors...")
     upload_helpers.report_errors(exp_id, errors, line_mapping)
     
     headers = upload_helpers.get_series_headers(session)
     parsed_datafile = (accessions, peptides, mod_map, data_runs, line_mapping)
     
+    log.debug("Running tasks...")
     ncbi_tasks = upload_helpers.create_chunked_tasks(get_ncbi_proteins, accessions.keys(), MAX_NCBI_BATCH_SIZE)
     
     load_task = ( group(ncbi_tasks) | aggregate_ncbi_results.s(exp_id, accessions, line_mapping) | create_missing_proteins.s() | launch_loader_tasks.s(parsed_datafile, headers, session_info) )
     load_task.apply_async(link_error=finalize_experiment_error_state.s(exp_id))
+
+    log.debug("Tasks started... now we wait")
