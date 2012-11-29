@@ -2,10 +2,9 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 import ptmscout.utils.webutils as webutils
 from ptmscout.config import strings
-from ptmscout.database import experiment, user
 from ptmscout.database.user import NoSuchUser
 import ptmscout.utils.mail as mail
-from ptmscout.database import permissions
+from ptmscout.database import permissions, modifications, experiment, user
 
 @view_config(route_name='privatize_experiment', renderer='ptmscout:templates/accounts/modify_confirm.pt', permission='private')
 def privatize_experiment(request):
@@ -155,5 +154,11 @@ def manage_experiment_permissions(request):
 def manage_experiments(request):
     users_experiments = request.user.myExperiments()
     
+    pep_counts = {}
+    for exp in users_experiments:
+        if exp.status == 'loading':
+            pep_counts[exp.id] = modifications.countMeasuredPeptidesForExperiment(exp.id)
+
     return {'pageTitle':strings.my_experiments_page_title,
-            'experiments': users_experiments}
+            'experiments': users_experiments,
+            'peptide_counts': pep_counts}

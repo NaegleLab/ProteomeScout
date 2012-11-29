@@ -22,7 +22,8 @@
 						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.author"></a></td>
 						<td class="citation" tal:content="experiment.getCitationString()"></td>
 						<td>
-							<span class="status" tal:content="experiment.status"></span>
+                            <div class="status" tal:content="experiment.status"></div>
+                            <div class="progress" tal:condition="experiment.status=='loading'" tal:content="str(peptide_counts[experiment.id]) +  ' / ' + str(experiment.num_measured_peptides)"></div>
 						</td>
 						<td class="accesscontrol" tal:condition="experiment.public == 0">
 							<table>

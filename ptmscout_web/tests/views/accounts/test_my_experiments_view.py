@@ -27,6 +27,7 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         result.mustcontain(exp.name)
         result.mustcontain('Status')
         result.mustcontain('loading')
+        result.mustcontain('77 / 0')
         
 
 class MyExperimentsViewTests(UnitTestCase):
@@ -371,19 +372,24 @@ class MyExperimentsViewTests(UnitTestCase):
         self.assertEqual(strings.share_experiment_page_title, info['pageTitle'])
         self.assertEqual(None, info['reason'])
 
-    
-    def test_my_experiments_should_show_experiments(self):
+    @patch('ptmscout.database.modifications.countMeasuredPeptidesForExperiment')
+    def test_my_experiments_should_show_experiments(self, patch_countPeps):
         request = DummyRequest()
         ptm_user = createMockUser("username", "email", "password", 1)
         request.user = ptm_user
 
         exp1 = createMockExperiment(1, 0)
         exp2 = createMockExperiment(2, 0)
+        exp2.status = 'loading'
         
         ptm_user.myExperiments.return_value = [exp1,exp2]
-        
+        patch_countPeps.return_value = 100
+
         info = manage_experiments(request)
         
+        patch_countPeps.assert_called_once_with(exp2.id)
+
         self.assertEqual([exp1, exp2], info['experiments'])
         self.assertEqual(strings.my_experiments_page_title, info['pageTitle'])
+        self.assertEqual({exp2.id: 100}, info['peptide_counts'])
         
