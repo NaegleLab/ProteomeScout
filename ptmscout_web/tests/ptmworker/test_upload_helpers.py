@@ -2,8 +2,9 @@ from tests.PTMScoutTestCase import IntegrationTestCase
 from ptmworker import upload_helpers
 from ptmscout.database import modifications, experiment
 from tests.views.mocking import createMockExperiment, createMockProtein,\
-    createMockProbe, createMockAccession
+    createMockProbe, createMockAccession, createMockSpecies, createMockTaxonomy
 from mock import patch
+from ptmscout.utils import uploadutils
 
 class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
 
@@ -22,7 +23,40 @@ class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
         patch_getProbes.assert_called_once_with(['ACK1_HUMAN', 'TNK2'], prot.species_id)
         
         self.assertEqual([probe], prot.expression_probes)
+
+    @patch('ptmscout.database.taxonomies.getTaxonByName')
+    @patch('ptmscout.database.taxonomies.getSpeciesByName')
+    def test_find_or_create_species_should_raise_error_if_no_taxon(self, patch_getSpecies, patch_getTaxon):
+        patch_getSpecies.return_value = None
+        taxon = createMockTaxonomy()
+        patch_getTaxon.return_value = None
         
+        try:
+            upload_helpers.find_or_create_species('some species')
+        except uploadutils.ParseError, e:
+            self.assertEqual("Species: some species does not match any taxon node", e.message)
+        else:
+            self.fail("Expected parseerror")
+ 
+    @patch('ptmscout.database.taxonomies.getTaxonByName')
+    @patch('ptmscout.database.taxonomies.getSpeciesByName')
+    def test_find_or_create_species_should_create_species_if_taxon_node_available(self, patch_getSpecies, patch_getTaxon):
+        patch_getSpecies.return_value = None
+        taxon = createMockTaxonomy()
+        patch_getTaxon.return_value = taxon
+        
+        sp = upload_helpers.find_or_create_species('some species')
+        
+        self.assertEqual('some species', sp.name)
+        self.assertEqual(taxon.node_id, sp.taxon_id)
+
+    @patch('ptmscout.database.taxonomies.getSpeciesByName')
+    def test_find_or_create_species_should_return_species_if_available(self, patch_getSpecies):
+        exp_species = createMockSpecies()
+        patch_getSpecies.return_value = exp_species
+        
+        sp = upload_helpers.find_or_create_species('some species')
+        self.assertEqual(exp_species, sp)
 
     @patch('ptmscout.database.modifications.Peptide')    
     @patch('ptmscout.database.modifications.getPeptideBySite')

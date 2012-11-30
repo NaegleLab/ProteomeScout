@@ -98,9 +98,8 @@ def find_or_create_species(species):
         if tx == None:
             raise uploadutils.ParseError(None, None, "Species: " + species + " does not match any taxon node")
         
-        sp = taxonomies.Species()
-        sp.name = species
-        sp.taxon_id = tx.id
+        sp = taxonomies.Species(species)
+        sp.taxon_id = tx.node_id
         
     return sp
 

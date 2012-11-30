@@ -11,7 +11,7 @@ from ptmscout.database.modifications import MeasuredPeptide, Peptide,\
     ScansitePrediction, PTM, PTMkeyword, PeptideModification
 from ptmscout.database.gene_expression import ExpressionProbeset,\
     ExpressionSample, ExpressionCollection, ExpressionTissue
-from ptmscout.database.taxonomies import Species
+from ptmscout.database.taxonomies import Species, Taxonomy
 from ptmscout.database.upload import Session, SessionColumn
 import datetime
 
@@ -43,6 +43,24 @@ def createMockUser(username=None, email=None, password=None, active=1):
     mock.activation_token = crypto.generateActivationToken()
     mock.active = active
     mock.permissions = []
+    return mock
+
+
+def createMockSpecies(taxon_id=None):
+    if taxon_id == None:
+        taxon_id = random.randint(0,100000)
+    mock = Mock(spec=Species)
+    mock.id = random.randint(0,100000)
+    mock.name = "species %d"%(taxon_id)
+    mock.taxon_id = taxon_id
+    return mock
+
+def createMockTaxonomy():
+    mock = Mock(spec=Taxonomy)
+    mock.node_id = random.randint(0,100000)
+    mock.kingdom = 'eukaryota'
+    mock.name = 'species %d' % (mock.node_id)
+    mock.strain = ''
     return mock
 
 def createMockSession(user, sid=random.randint(0,100000), data_file='some_file', load_type='new', parent_experiment=None, stage = 'config', experiment_id=None, change_description='blah'):
