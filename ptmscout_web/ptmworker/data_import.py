@@ -317,7 +317,7 @@ def aggregate_ncbi_results(ncbi_results, exp_id, accessions, line_mappings):
 
 @celery.task
 @upload_helpers.transaction_task
-def create_missing_proteins(protein_map):
+def create_missing_proteins(protein_map, accessions, line_mappings, exp_id):
     #list the missing proteins
     missing_proteins = set()
     for acc in protein_map:
@@ -329,9 +329,17 @@ def create_missing_proteins(protein_map):
     protein_id_map = {}
     for acc in missing_proteins:
         name, gene, _t, species, accessions, _d, seq = protein_map[acc]
-        prot = upload_helpers.create_new_protein(name, gene, seq, species, accessions)
-        prot.saveProtein()
-        protein_id_map[acc] = prot.id
+        try:
+            prot = upload_helpers.create_new_protein(name, gene, seq, species, accessions)
+            prot.saveProtein()
+            protein_id_map[acc] = prot.id
+        except uploadutils.ParseError, e:
+            del protein_map[acc]
+
+            for line in accessions[acc]:
+                accession, peptide = line_mappings[line]
+                experiment.createExperimentError(exp_id, line, accession, peptide, e.message)
+
     
     return protein_map, missing_proteins, protein_id_map
 
@@ -381,7 +389,7 @@ def start_import(exp_id, session_id, user_email, application_url):
         log.info("Running tasks...")
         ncbi_tasks = upload_helpers.create_chunked_tasks(get_ncbi_proteins, accessions.keys(), MAX_NCBI_BATCH_SIZE)
         
-        load_task = ( group(ncbi_tasks) | aggregate_ncbi_results.s(exp_id, accessions, line_mapping) | create_missing_proteins.s() | launch_loader_tasks.s(parsed_datafile, headers, session_info) )
+        load_task = ( group(ncbi_tasks) | aggregate_ncbi_results.s(exp_id, accessions, line_mapping) | create_missing_proteins.s(accessions, line_mapping, exp_id) | launch_loader_tasks.s(parsed_datafile, headers, session_info) )
         load_task.apply_async(link_error=finalize_experiment_error_state.s(exp_id))
     
         log.info("Tasks started... now we wait")
