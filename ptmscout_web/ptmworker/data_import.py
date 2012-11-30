@@ -365,7 +365,7 @@ def start_import(exp_id, session_id, user_email, application_url):
     log.info("Loading data file...")
     accessions, peptides, mod_map, data_runs, errors, line_mapping = upload_helpers.parse_datafile(session)
 
-    exp.num_measured_peptides = len(mod_map)
+    exp.num_measured_peptides = len(mod_map) + modifications.countMeasuredPeptidesForExperiment(exp.id)
     exp.saveExperiment()
 
     log.info("Reporting data file errors...")
