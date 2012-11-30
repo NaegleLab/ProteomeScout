@@ -26,6 +26,47 @@ class TestUploadStatusView(UnitTestCase):
             pass
         else:
             self.fail("Expected exception UploadAlreadyStarted")
+
+    @patch('ptmscout.database.modifications.deleteExperimentData')
+    @patch('ptmworker.data_import.start_import.apply_async')        
+    @patch('ptmscout.database.experiment.getExperimentById')
+    @patch('ptmscout.database.upload.getSessionById')
+    def test_start_upload_view_should_start_job_and_display_confirmation_and_delete_data_if_reload(self, patch_getSession, patch_getExperiment, patch_startUpload, patch_deleteData):
+        request = DummyRequest()
+        request.POST['confirm'] = "true"
+        request.POST['terms_of_use'] = "yes"
+        request.matchdict['id'] = "102"
+        request.user = createMockUser()
+        
+        session = createMockSession(request.user, sid=102, experiment_id=26, stage='confirm')
+        session.load_type = 'reload'
+        exp = createMockExperiment(26, 0, None, 'preload')
+        
+        patch_getSession.return_value = session
+        patch_getExperiment.return_value = exp
+        exp.getUrl.return_value = "url"
+        exp.getLongCitationString.return_value = "citation"
+        
+        result = upload_confirm_view(request)
+
+        patch_deleteData.assert_called_once_with(26)
+        
+        patch_getSession.assert_called_once_with(102, request.user)
+        patch_getExperiment.assert_called_once_with(26, request.user, False)
+        session.save.assert_called_once_with()
+        patch_startUpload.assert_called_once_with((exp.id, session.id, request.user.email, request.application_url))
+        
+        exp_dict = webutils.object_to_dict(exp)
+        exp_dict['url'] = "url"
+        exp_dict['citation'] = "citation"
+        self.assertEqual(exp_dict, result['experiment'])
+        
+        self.assertEqual('complete', session.stage)
+        self.assertEqual(None, result['reason'])
+        self.assertEqual(strings.experiment_upload_started_page_title, result['pageTitle'])
+        self.assertEqual(strings.experiment_upload_started_message % (request.application_url + "/account/experiments"), result['message'])
+        self.assertEqual(102, result['session_id'])
+        self.assertEqual(True, result['confirm'])
     
     @patch('ptmworker.data_import.start_import.apply_async')        
     @patch('ptmscout.database.experiment.getExperimentById')

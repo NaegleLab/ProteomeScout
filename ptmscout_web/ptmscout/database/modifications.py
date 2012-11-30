@@ -180,4 +180,6 @@ def findMatchingPTM(mod_type, residue=None, taxons=None):
 def getPeptideById(pep_id):
     return DBSession.query(Peptide).filter(Peptide.id==pep_id).first()
 
-
+def deleteExperimentData(exp_id):
+    DBSession.query(MeasuredPeptide).filter_by(experiment_id=exp_id).delete()
+    DBSession.flush()

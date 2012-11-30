@@ -1,5 +1,5 @@
 from pyramid.view import view_config
-from ptmscout.database import experiment, upload
+from ptmscout.database import experiment, upload, modifications
 from ptmscout.config import strings
 from ptmscout.utils import webutils
 from ptmworker import data_import
@@ -34,7 +34,10 @@ def upload_confirm_view(request):
     if confirm and terms_of_use_accepted:
         session.stage = 'complete'
         session.save()
-        
+
+        if session.load_type=='reload':
+            modifications.deleteExperimentData(exp.id)
+
         data_import.start_import.apply_async((exp.id, session.id, request.user.email, request.application_url))
         
         return {'pageTitle': strings.experiment_upload_started_page_title,
