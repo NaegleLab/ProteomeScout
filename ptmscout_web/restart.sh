@@ -15,6 +15,7 @@ sudo chgrp -R development *
 if [ -e "logs/ptmworker.pid" ]
 then
     kill `cat "logs/ptmworker.pid"`
+    sleep 1
 fi
 
 if [ "$arg" == "develop" ]
