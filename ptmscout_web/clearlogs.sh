@@ -1,2 +1,3 @@
-echo "" > logs/ptmscout.log
-echo "" > logs/sql.log
+> logs/ptmscout.log
+> logs/sql.log
+> logs/ptmworker.log
