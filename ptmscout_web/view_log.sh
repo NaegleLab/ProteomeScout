@@ -1,2 +1,2 @@
 #!/bin/bash
-cat $1 | cut -c1-300 | less
+cat $1 | cut -c1-300
