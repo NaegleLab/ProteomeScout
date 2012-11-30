@@ -310,7 +310,7 @@ def aggregate_ncbi_results(ncbi_results, exp_id, accessions, line_mappings):
     for error in aggregate_errors:
         for line in accessions[error.acc]:
             accession, peptide = line_mappings[line]
-            experiment.createExperimentError(exp_id, line, accession, peptide, strings.experiment_upload_warning_accession_not_found)
+            experiment.createExperimentError(exp_id, line, accession, peptide, strings.experiment_upload_warning_accession_not_found % (accession))
     
     return aggregate_protein_map
 
