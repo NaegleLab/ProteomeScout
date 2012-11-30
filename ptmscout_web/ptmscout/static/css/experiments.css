@@ -30,8 +30,10 @@
 }
 
 .experimenttable .progress {
-	margin-left:10px;
+	color:red;
+	vertical-align:center;
 }
+
 .experimenttable .accesscontrol {
 	text-align:center;
 	border-left-style:solid;
