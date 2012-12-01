@@ -10,6 +10,7 @@ log = logging.getLogger('ptmscout')
 
 PFAM_DEFAULT_CUTOFF = 0.00001
 MAX_NCBI_BATCH_SIZE = 500
+MAX_UNIPROT_BATCH_SIZE = 10
 MAX_QUICKGO_BATCH_SIZE = 500
 
 @celery.task
