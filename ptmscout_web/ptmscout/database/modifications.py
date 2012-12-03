@@ -166,7 +166,7 @@ def getPeptideBySite(pep_site, pep_type, prot_id):
 
 
 def findMatchingPTM(mod_type, residue=None, taxons=None):
-    mods = DBSession.query(PTM).join(PTMkeyword).filter(or_(PTM.accession==mod_type, PTM.name==mod_type, PTMkeyword.keyword==mod_type)).all()
+    mods = DBSession.query(PTM).outerjoin(PTMkeyword).filter(or_(PTM.accession==mod_type, PTM.name==mod_type, PTMkeyword.keyword==mod_type)).all()
     
     mods_exist = len(mods) > 0
     
