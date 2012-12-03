@@ -1,4 +1,5 @@
 import xml.dom.minidom as xml
+from xml.parsers.expat import ExpatError
 import urllib2
 from ptmscout.config import settings
 
@@ -37,6 +38,9 @@ def get_picr(accession, taxon_id):
     
     result = urllib2.urlopen(picr_accession_query_url % (accession, taxon_id))
     
-    return PICRParser(result.read()).references
+    try:
+        return PICRParser(result.read()).references
+    except ExpatError:
+        return []
     
     
