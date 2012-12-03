@@ -95,6 +95,9 @@ def check_modification_type_matches_peptide(row, peptide, modification, taxon_no
         matches = [ mod for mod in mods if mod.target == residue ]
         parents = [ mod for mod in mods if mod.target == None ]
         
+        if len(matches) == 0:
+            raise ParseError(row, None, "Unexpected Error: PTM type '%s' had no residue specific matches." % (mod_type))
+
         selected_mod = matches[0]
         if len(matches) > 1:
             if len(parents) == 0:

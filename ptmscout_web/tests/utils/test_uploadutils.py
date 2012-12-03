@@ -94,6 +94,24 @@ class TestUploadUtils(unittest.TestCase):
             self.fail("Expected exception ParseError")
         
         patch_findPTM.assert_any_call("METH", "Q", None) 
+
+    @patch('ptmscout.database.modifications.findMatchingPTM')
+    def test_check_modification_type_matches_peptide_should_throw_error_on_ambiguous_modification_if_no_specific_residue_exists(self, patch_findPTM):
+        ptm1 = createMockPTM(name="Methylation", keywords=["METH"])
+        
+        mods = [ptm1]
+        patch_findPTM.return_value = mods, True
+        
+        try:
+            check_modification_type_matches_peptide(1, "DFERTGDYDFqERAS", "METH")
+        except ParseError, pe:
+            self.assertEqual(1, pe.row)
+            self.assertEqual("Unexpected Error: PTM type '%s' had no residue specific matches."% ('METH'), pe.msg)
+        else:
+            self.fail("Expected exception ParseError")
+        
+        patch_findPTM.assert_any_call("METH", "Q", None) 
+
     
     @patch('ptmscout.database.modifications.findMatchingPTM')
     def test_check_modification_type_matches_should_succeed(self, patch_findPTM):
