@@ -53,6 +53,18 @@ class EntrezQueryTestCase(IntegrationTestCase):
         else:
             self.fail("Expected EntrezError")
 
+    def test_get_protein_should_handle_CDS_gene_records(self):
+        
+        pm = Proteome.ProteinManager(settings.adminEmail)
+        ''
+        prot_name, gene, taxonomy, species, prot_accessions, prot_domains, seq = entrez_tools.get_protein_information(pm, 'NP_033920.1' )
+
+        exp_seq = 'madqlteeqiaefkeafslfdkdgdgtittkelgtvmrslgqnpteaelqdminevdadgngtidfpefltmmarkmkdtdseeeireafrvfdkdgngyisaaelrhvmtnlgekltdeevdemireadidgdgqvnyeefvqmmtak'.upper()
+
+        self.assertEqual('Calm1', gene)
+        self.assertEqual(exp_seq, seq)
+ 
+
     def test_get_protein_information_should_return_correct_info(self):
         path = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'test', 'json_proteinxml')
         protein_xml = json.loads(open(path, 'rb').read())

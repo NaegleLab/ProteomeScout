@@ -53,6 +53,9 @@ def get_gene_name(feature_table):
         if f['GBFeature_key'] == 'gene':
             gene_val = get_qualifier('gene', f['GBFeature_quals'])
             return gene_val
+        if f['GBFeature_key'] == 'CDS':
+            gene_val = get_qualifier('gene', f['GBFeature_quals'])
+            return gene_val
 
 
 def parse_sequence_id(seqid):
