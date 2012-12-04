@@ -1,1 +1,0 @@
-../docs/thumb.php5
