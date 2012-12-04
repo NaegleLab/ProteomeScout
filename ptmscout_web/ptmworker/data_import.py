@@ -107,7 +107,7 @@ def load_peptide_modification(protein_info, exp_id, pep_seq, mods, units, series
 @celery.task
 @upload_helpers.logged_task
 def load_protein(accession, protein_information):
-    _a, _a, taxonomy, species, _a, _d, seq = protein_information
+    _a, _b, taxonomy, species, _c, _d, seq = protein_information
     prot = protein.getProteinBySequence(seq, species)
     
     return prot.id, accession, prot.sequence, taxonomy
@@ -116,7 +116,7 @@ def load_protein(accession, protein_information):
 @celery.task(rate_limit='5/s')
 @upload_helpers.transaction_task
 def load_new_protein(accession, protein_information):
-    _a, _a, taxonomy, species, _accessions, domains, seq = protein_information
+    _a, _b, taxonomy, species, _accessions, domains, seq = protein_information
     prot = protein.getProteinBySequence(seq, species)
     
     if len(domains) == 0:
