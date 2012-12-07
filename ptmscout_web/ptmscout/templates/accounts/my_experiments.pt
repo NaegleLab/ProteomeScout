@@ -51,7 +51,26 @@
 						</td>
 					</tr>
 				</tal:experiments>
+				
+				<tal:empty tal:condition = "len(in_process) > 0">
+	    			<tr>
+	    				<th colspan="6">Experiments awaiting configuration and confirmation:</th>
+	    			</tr>
+					<tal:experiments tal:repeat="(i, experiment) enumerate(in_process)">
+						<tr tal:attributes="class 'experiment' + (' even' if i % 2 == 0 else ' odd');" >
+							<td tal:content="experiment.name"></td>
+							<td tal:content="experiment.description"></td>
+							<td tal:content="experiment.author"></td>
+							<td class="citation" tal:content="experiment.getCitationString()"></td>
+							<td>
+	                            <div class="status"><a tal:attributes="href '%s/upload/%d' % (request.application_url, sessions[experiment.id])">continue upload</a></div>
+	   						</td>
+							<td class="accesscontrol"></td>
+						</tr>
+					</tal:experiments>
+				</tal:empty>
 			</tbody>
-		</table>    	
+		</table>
+		    	
     </div>
 </div>

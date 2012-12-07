@@ -4,7 +4,8 @@ import ptmscout.utils.webutils as webutils
 from ptmscout.config import strings
 from ptmscout.database.user import NoSuchUser
 import ptmscout.utils.mail as mail
-from ptmscout.database import permissions, modifications, experiment, user
+from ptmscout.database import permissions, modifications, experiment, user,\
+    upload
 
 @view_config(route_name='privatize_experiment', renderer='ptmscout:templates/accounts/modify_confirm.pt', permission='private')
 def privatize_experiment(request):
@@ -150,9 +151,23 @@ def manage_experiment_permissions(request):
             'experiment':exp,
             'reason':reason}
 
+def get_sessions(user_experiments):
+    session_map = {}
+    
+    for exp in user_experiments:
+        session = upload.getMostRecentSession(exp.id)
+        session_map[exp.id] = session.id
+    
+    return session_map
+
 @view_config(route_name='my_experiments', renderer='ptmscout:templates/accounts/my_experiments.pt', permission='private')
 def manage_experiments(request):
     users_experiments = request.user.myExperiments()
+
+    in_process = [ exp for exp in users_experiments if exp.status == 'configuration' ]
+    available_experiments = [ exp for exp in users_experiments if exp.status != 'configuration' ]
+    
+    sessions = get_sessions(in_process)
     
     pep_counts = {}
     for exp in users_experiments:
@@ -160,5 +175,7 @@ def manage_experiments(request):
             pep_counts[exp.id] = modifications.countMeasuredPeptidesForExperiment(exp.id)
 
     return {'pageTitle':strings.my_experiments_page_title,
-            'experiments': users_experiments,
+            'in_process': in_process,
+            'sessions': sessions,
+            'experiments': available_experiments,
             'peptide_counts': pep_counts}
