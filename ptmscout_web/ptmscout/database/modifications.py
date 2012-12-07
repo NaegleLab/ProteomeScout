@@ -70,6 +70,7 @@ class Peptide(Base):
     protein_domain_id = Column(Integer(10), ForeignKey('protein_domain.id'))
     protein_id = Column(Integer(10), ForeignKey('protein.id'))
     
+    protein = relationship("Protein")
     protein_domain = relationship("ProteinDomain")
     predictions = relationship(ScansitePrediction)
     
