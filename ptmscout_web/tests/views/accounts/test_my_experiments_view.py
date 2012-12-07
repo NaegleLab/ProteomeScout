@@ -27,7 +27,7 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         result.mustcontain(exp.name)
         result.mustcontain('Status')
         result.mustcontain('loading')
-        result.mustcontain('77 / 0')
+        result.mustcontain('77 / 77')
         
 
 class MyExperimentsViewTests(UnitTestCase):

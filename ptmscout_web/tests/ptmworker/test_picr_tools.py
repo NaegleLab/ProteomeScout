@@ -98,8 +98,8 @@ class IntegrationTestPICR(IntegrationTestCase):
         result = picr_tools.get_picr('P29375', 9606)
 
         self.assertEqual(4, len(result))
-        self.assertEqual(('swissprot', 'P29375', '3'), result[0])
-        self.assertEqual(('refseq', 'NP_001036068', '1'), result[1])
-        self.assertEqual(('ipi', 'IPI01014284', '1'), result[2])
-        self.assertEqual(('ipi', 'IPI00021363', '3'), result[3])
+        self.assertTrue(('swissprot', 'P29375', '3') in result)
+        self.assertTrue(('refseq', 'NP_001036068', '1') in result)
+        self.assertTrue(('ipi', 'IPI01014284', '1') in result)
+        self.assertTrue(('ipi', 'IPI00021363', '3') in result)
         

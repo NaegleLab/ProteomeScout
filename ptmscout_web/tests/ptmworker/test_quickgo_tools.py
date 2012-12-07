@@ -78,8 +78,8 @@ class IntegrationTestQuickGoQuery(IntegrationTestCase):
         annotations, gene_symbols = quickgo_tools.batch_get_GO_annotations(['P50914', 'Q07912', 'Q8N9T8'])
         
         self.assertFalse('GO:0005622' in annotations['P50914'])
-        self.assertEqual('20121125', annotations['P50914']['GO:0005515'])
-        self.assertEqual('20121125', annotations['Q07912']['GO:0005515'])
+        self.assertEqual(8, len(annotations['P50914']['GO:0005515']))
+        self.assertEqual(8, len(annotations['Q07912']['GO:0005515']))
         self.assertEqual({}, annotations['Q8N9T8'])
         
 
