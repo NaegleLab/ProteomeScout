@@ -125,7 +125,8 @@ class TestUploadConditionsView(UnitTestCase):
         patch_getExperiment.return_value = exp
         
         session = createMockSession(user, experiment_id=exp.id)
-
+        session.stage='condition'
+        
         patch_getSession.return_value = session
         request = DummyRequest()
         request.user = user
@@ -136,6 +137,9 @@ class TestUploadConditionsView(UnitTestCase):
         
         self.assertTrue(isinstance(result, HTTPFound))
         self.assertEqual(request.application_url + "/upload/%d/confirm" % (session.id), result.location)
+        self.assertEqual('confirm', session.stage)
+        
+        session.save.assert_called_once_with()
         
         patch_getExperiment.assert_called_once_with(exp.id, request.user, False)
         mockValidator.validate.assert_called_once_with()

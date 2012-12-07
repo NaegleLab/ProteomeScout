@@ -64,7 +64,7 @@ def get_experiment_ref(session, current_user):
     
 def mark_status(nexp, session):
     session.experiment_id = nexp.id
-    session.stage = 'confirm'
+    session.stage = 'condition'
     session.save()
 
 def create_schema(request):

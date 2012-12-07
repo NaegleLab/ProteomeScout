@@ -1,7 +1,7 @@
 from tests.PTMScoutTestCase import UnitTestCase, IntegrationTestCase
 from pyramid.testing import DummyRequest
 from ptmscout.views.upload.upload_metadata import upload_metadata,\
-    write_experiment_properties, create_schema, get_experiment_ref
+    write_experiment_properties, create_schema, get_experiment_ref, mark_status
 from ptmscout.config import strings
 from tests.views.mocking import createMockUser, createMockExperiment,\
     createMockSession
@@ -131,6 +131,15 @@ class TestUploadView(UnitTestCase):
         self.assertEqual(exp_file, experiment_instance.dataset)
         self.assertEqual(current_user.id, experiment_instance.submitter_id)
     
+    def test_mark_status(self):
+        session = createMockSession(createMockUser())
+        exp = createMockExperiment(20)
+        mark_status(exp, session)
+        
+        self.assertEqual(20, session.experiment_id)
+        self.assertEqual('condition', session.stage)
+        session.save.assert_called_once_with()
+        
 
     @patch('ptmscout.views.upload.upload_metadata.mark_status')
     @patch('ptmscout.views.upload.upload_metadata.write_experiment_properties')
