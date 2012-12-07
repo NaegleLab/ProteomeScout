@@ -38,7 +38,7 @@ def finalize_import(exp_id, user_email, application_url):
     mail.celery_send_mail([user_email], subject, message)
 
 
-@celery.task(rate_limit='5/s')
+@celery.task(rate_limit='3/s')
 @upload_helpers.transaction_task
 def load_new_peptide(prot_id, site_pos, pep_seq, taxonomy):
     pep, _ = upload_helpers.get_peptide(prot_id, site_pos, pep_seq)
@@ -102,6 +102,9 @@ def load_peptide_modification(protein_info, exp_id, pep_seq, mods, units, series
     except uploadutils.ParseError, pe:
         for line, _rn, _s in runs:
             experiment.createExperimentError(exp_id, line, protein_accession, pep_seq, pe.msg)
+    except Exception, e:
+        for line, _rn, _s in runs:
+            experiment.createExperimentError(exp_id, line, protein_accession, pep_seq, "Unexpected error: " + str(e))
 
 
 @celery.task
@@ -113,7 +116,7 @@ def load_protein(accession, protein_information):
     return prot.id, accession, prot.sequence, taxonomy
 
 
-@celery.task(rate_limit='5/s')
+@celery.task(rate_limit='3/s')
 @upload_helpers.transaction_task
 def load_new_protein(accession, protein_information):
     _a, _b, taxonomy, species, _accessions, domains, seq = protein_information
