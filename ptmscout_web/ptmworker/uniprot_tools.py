@@ -104,5 +104,5 @@ def get_uniprot_records(accs):
     
     parsed_result = SeqIO.parse(result, 'uniprot-xml')
     
-    for record in parsed_result:
-        print record
+#    for record in parsed_result:
+#        print record
