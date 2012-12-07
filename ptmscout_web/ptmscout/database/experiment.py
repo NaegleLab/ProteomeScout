@@ -86,7 +86,7 @@ class Experiment(Base):
     num_measured_peptides = Column(Integer(10), default=0)
     
     errors = relationship("ExperimentError", cascade="all,delete-orphan")
-    conditions = relationship("ExperimentCondition", cascade="all,delete-orphan")
+    conditions = relationship("ExperimentCondition", cascade="all")
     permissions = relationship("Permission", backref="experiment", cascade="all,delete-orphan")
     
     def __init__(self):
@@ -98,6 +98,54 @@ class Experiment(Base):
         
     def delete(self):
         DBSession.delete(self)
+        
+    def copyData(self, exp):
+        self.name = exp.name
+        self.author = exp.author
+        self.date = exp.date
+        
+        self.description = exp.description
+        self.contact = exp.contact
+        
+        self.PMID = exp.PMID
+        self.URL = exp.URL
+        self.published = exp.published
+        
+        self.ambiguity = exp.ambiguity
+        self.export = exp.export
+        self.experiment_id = exp.experiment_id
+        
+        self.dataset = exp.dataset
+        
+        self.volume = exp.volume
+        self.page_start = exp.page_start
+        self.page_end = exp.page_end
+        self.journal = exp.journal
+        self.publication_year = exp.publication_year
+        self.publication_month = exp.publication_month
+        
+        self.public = exp.public
+        
+        self.status = exp.status
+        self.submitter_id = exp.submitter_id
+        
+        self.num_measured_peptides = exp.num_measured_peptides
+        
+        self.conditions = []
+        for c in exp.conditions:
+            expc = ExperimentCondition()
+            expc.type = c.type
+            expc.value = c.value
+            
+            self.conditions.append(expc)
+            
+        self.errors = []
+        for err in exp.errors:
+            expe = ExperimentError()
+            expe.accession = err.accession
+            expe.peptide = err.peptide
+            expe.line = err.line
+            expe.message = err.message
         
     def getCitationString(self):
         string = ""
