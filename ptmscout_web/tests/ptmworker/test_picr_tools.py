@@ -1,7 +1,7 @@
 from tests.PTMScoutTestCase import IntegrationTestCase
 from ptmworker import picr_tools
 
-class IntegrationTestScansiteQuery(IntegrationTestCase):
+class IntegrationTestPICR(IntegrationTestCase):
     
     def test_picr_parser(self):
         picrxml = \
@@ -88,7 +88,7 @@ class IntegrationTestScansiteQuery(IntegrationTestCase):
         self.assertEqual(('ipi', 'IPI01014284', '1'), response.references[0])
         self.assertEqual(('swissprot', 'P29375', '3'), response.references[1])
         self.assertEqual(('ipi', 'IPI00021363', '3'), response.references[2])
-    
+
     def test_get_picr_2(self):
         result = picr_tools.get_picr('EAX03173', 9606)
 
