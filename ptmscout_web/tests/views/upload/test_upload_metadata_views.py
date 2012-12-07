@@ -72,7 +72,7 @@ class TestUploadView(UnitTestCase):
         experiment_instance.grantPermission.assert_called_once_with(current_user, 'owner')
         experiment_instance.saveExperiment.assert_called_once_with()
         
-        self.assertEqual('preload', experiment_instance.status)
+        self.assertEqual('configuration', experiment_instance.status)
         self.assertEqual(field_dict['experiment_name'], experiment_instance.name)
         self.assertEqual(None, experiment_instance.contact)
         self.assertEqual(None, experiment_instance.author)
@@ -110,7 +110,7 @@ class TestUploadView(UnitTestCase):
         
         experiment_instance.saveExperiment.assert_called_once_with()
         
-        self.assertEqual('preload', experiment_instance.status)
+        self.assertEqual('configuration', experiment_instance.status)
         self.assertEqual(field_dict['experiment_name'], experiment_instance.name)
         self.assertEqual(field_dict['author_contact'], experiment_instance.contact)
         self.assertEqual(field_dict['authors'], experiment_instance.author)

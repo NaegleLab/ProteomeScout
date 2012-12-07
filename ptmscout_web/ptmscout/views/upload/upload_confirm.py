@@ -28,6 +28,7 @@ def prepare_experiment(session, exp, user):
         exp_target = parent_exp
 
     exp_target.export = 1
+    exp_target.status='in queue'
     exp_target.saveExperiment()
     return exp_target
 

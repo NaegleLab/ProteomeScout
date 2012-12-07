@@ -41,6 +41,7 @@ class TestUploadStatusView(UnitTestCase):
         
         exp.saveExperiment.assert_called_once_with()
         
+        self.assertEqual('in queue', exp.status)
         self.assertEqual(1, exp.export)
         self.assertEqual(exp, rval)
         
@@ -58,6 +59,7 @@ class TestUploadStatusView(UnitTestCase):
         
         exp.saveExperiment.assert_called_once_with()
         
+        self.assertEqual('in queue', exp.status)
         self.assertEqual(1, exp.export)
         self.assertEqual(exp, rval)
 
@@ -83,6 +85,7 @@ class TestUploadStatusView(UnitTestCase):
         target_exp.copyData.assert_called_once_with(exp)
         target_exp.saveExperiment.assert_called_once_with()
         
+        self.assertEqual('in queue', target_exp.status)
         self.assertEqual(0, exp.export)
         self.assertEqual(1, target_exp.export)
         self.assertEqual(target_exp, rval)
@@ -113,6 +116,7 @@ class TestUploadStatusView(UnitTestCase):
         
         target_exp.saveExperiment.assert_called_once_with()
 
+        self.assertEqual('in queue', target_exp.status)
         self.assertEqual(0, exp.export)
         self.assertEqual(1, target_exp.export)
         self.assertEqual(target_exp, rval)        
@@ -129,7 +133,7 @@ class TestUploadStatusView(UnitTestCase):
         request.user = createMockUser()
         
         session = createMockSession(request.user, sid=102, experiment_id=26, stage='confirm')
-        exp = createMockExperiment(26, 0, None, 'preload')
+        exp = createMockExperiment(26, 0, None, 'configuration')
         target_exp = createMockExperiment(28, 0, None, 'preload')
         
         patch_getSession.return_value = session
@@ -167,7 +171,7 @@ class TestUploadStatusView(UnitTestCase):
         request.POST['confirm'] = "true"
         
         session = createMockSession(request.user, sid=102, experiment_id=26, stage='confirm')
-        exp = createMockExperiment(26, 0, None, 'preload')
+        exp = createMockExperiment(26, 0, None, 'in queue')
         
         patch_getSession.return_value=session
         patch_getExperiment.return_value = exp
@@ -198,7 +202,7 @@ class TestUploadStatusView(UnitTestCase):
         request.user = createMockUser() 
         
         session = createMockSession(request.user, sid=102, experiment_id=26, stage='confirm')
-        exp = createMockExperiment(26, 0, None, 'preload')
+        exp = createMockExperiment(26, 0, None, 'in queue')
         
         patch_getSession.return_value=session
         patch_getExperiment.return_value = exp
@@ -251,7 +255,7 @@ class IntegrationTestUploadStatusView(IntegrationTestCase):
         self.bot.login()
         
         exp = experiment.getExperimentById(1, 0, False)
-        exp.status = 'preload'
+        exp.status = 'configuration'
         exp.saveExperiment()
         
         session = upload.Session()
