@@ -22,14 +22,22 @@ def prepare_experiment(session, exp, user):
         parent_exp = experiment.getExperimentById(session.parent_experiment, user, check_ready=False)
         parent_exp.copyData(exp)
         
-        if session.load_type=='reload':
-            modifications.deleteExperimentData(parent_exp.id)
-        
+        session.experiment_id = parent_exp.id
         exp_target = parent_exp
+
+    if session.load_type=='reload':
+        modifications.deleteExperimentData(parent_exp.id)
 
     exp_target.export = 1
     exp_target.status='in queue'
     exp_target.saveExperiment()
+    
+    session.stage = 'complete'
+    session.save()
+    
+    if session.load_type=='reload' or session.load_type == 'append':
+        exp.delete()
+        
     return exp_target
 
 @view_config(route_name='upload_confirm', renderer='ptmscout:/templates/upload/upload_confirm.pt')
@@ -51,8 +59,6 @@ def upload_confirm_view(request):
     exp_dict['url'] = exp.getUrl()
     
     if confirm and terms_of_use_accepted:
-        session.stage = 'complete'
-        session.save()
         
         target_exp = prepare_experiment(session, exp, request.user)
 

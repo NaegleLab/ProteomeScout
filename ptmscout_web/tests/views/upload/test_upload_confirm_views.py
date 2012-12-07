@@ -45,6 +45,10 @@ class TestUploadStatusView(UnitTestCase):
         self.assertEqual(1, exp.export)
         self.assertEqual(exp, rval)
         
+        self.assertEqual(exp.id, session.experiment_id)
+        self.assertEqual('complete', session.stage)
+        session.save.assert_called_once_with()
+        
     def test_prepare_experiment_should_return_target_on_extend(self):
         user = createMockUser()
         
@@ -62,6 +66,10 @@ class TestUploadStatusView(UnitTestCase):
         self.assertEqual('in queue', exp.status)
         self.assertEqual(1, exp.export)
         self.assertEqual(exp, rval)
+        
+        self.assertEqual(exp.id, session.experiment_id)
+        self.assertEqual('complete', session.stage)
+        session.save.assert_called_once_with()
 
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_prepare_experiment_should_copy_experiment_data_on_append(self, patch_getExperiment):
@@ -84,12 +92,16 @@ class TestUploadStatusView(UnitTestCase):
         
         target_exp.copyData.assert_called_once_with(exp)
         target_exp.saveExperiment.assert_called_once_with()
+        exp.delete.assert_called_once_with()
         
         self.assertEqual('in queue', target_exp.status)
         self.assertEqual(0, exp.export)
         self.assertEqual(1, target_exp.export)
         self.assertEqual(target_exp, rval)
-
+        
+        self.assertEqual(target_exp.id, session.experiment_id)
+        self.assertEqual('complete', session.stage)
+        session.save.assert_called_once_with()
     
     @patch('ptmscout.database.modifications.deleteExperimentData')
     @patch('ptmscout.database.experiment.getExperimentById')
@@ -119,7 +131,11 @@ class TestUploadStatusView(UnitTestCase):
         self.assertEqual('in queue', target_exp.status)
         self.assertEqual(0, exp.export)
         self.assertEqual(1, target_exp.export)
-        self.assertEqual(target_exp, rval)        
+        self.assertEqual(target_exp, rval)     
+        
+        self.assertEqual(target_exp.id, session.experiment_id)
+        self.assertEqual('complete', session.stage)
+        session.save.assert_called_once_with()   
 
     @patch('ptmworker.data_import.start_import.apply_async')        
     @patch('ptmscout.views.upload.upload_confirm.prepare_experiment')
@@ -147,7 +163,7 @@ class TestUploadStatusView(UnitTestCase):
         
         patch_getSession.assert_called_once_with(102, request.user)
         patch_getExperiment.assert_called_once_with(26, request.user, False)
-        session.save.assert_called_once_with()
+
         patch_startUpload.assert_called_once_with((target_exp.id, session.id, request.user.email, request.application_url))
         
         exp_dict = webutils.object_to_dict(exp)
@@ -155,7 +171,6 @@ class TestUploadStatusView(UnitTestCase):
         exp_dict['citation'] = "citation"
         self.assertEqual(exp_dict, result['experiment'])
         
-        self.assertEqual('complete', session.stage)
         self.assertEqual(None, result['reason'])
         self.assertEqual(strings.experiment_upload_started_page_title, result['pageTitle'])
         self.assertEqual(strings.experiment_upload_started_message % (request.application_url + "/account/experiments"), result['message'])
