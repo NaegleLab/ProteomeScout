@@ -2,7 +2,7 @@ from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 from ptmscout.config import strings
 from pyramid.testing import DummyRequest
 from ptmscout.views.upload.upload_confirm import upload_confirm_view,\
-    UploadAlreadyStarted
+    UploadAlreadyStarted, prepare_experiment
 from tests.views.mocking import createMockExperiment, createMockUser,\
     createMockSession
 from mock import patch
@@ -27,51 +27,101 @@ class TestUploadStatusView(UnitTestCase):
         else:
             self.fail("Expected exception UploadAlreadyStarted")
 
-    @patch('ptmscout.database.modifications.deleteExperimentData')
-    @patch('ptmworker.data_import.start_import.apply_async')        
-    @patch('ptmscout.database.experiment.getExperimentById')
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_start_upload_view_should_start_job_and_display_confirmation_and_delete_data_if_reload(self, patch_getSession, patch_getExperiment, patch_startUpload, patch_deleteData):
-        request = DummyRequest()
-        request.POST['confirm'] = "true"
-        request.POST['terms_of_use'] = "yes"
-        request.matchdict['id'] = "102"
-        request.user = createMockUser()
+    def test_prepare_experiment_should_return_target_on_new(self):
+        user = createMockUser()
         
-        session = createMockSession(request.user, sid=102, experiment_id=26, stage='confirm')
-        session.load_type = 'reload'
-        exp = createMockExperiment(26, 0, None, 'preload')
+        session = createMockSession(user)
+        session.load_type = 'new'
         
-        patch_getSession.return_value = session
-        patch_getExperiment.return_value = exp
-        exp.getUrl.return_value = "url"
-        exp.getLongCitationString.return_value = "citation"
+        exp = createMockExperiment()
+        exp.export = 0
+        session.experiment_id = exp.id
         
-        result = upload_confirm_view(request)
+        rval = prepare_experiment(session, exp, user)
+        
+        exp.saveExperiment.assert_called_once_with()
+        
+        self.assertEqual(1, exp.export)
+        self.assertEqual(exp, rval)
+        
+    def test_prepare_experiment_should_return_target_on_extend(self):
+        user = createMockUser()
+        
+        session = createMockSession(user)
+        session.load_type = 'extension'
+        
+        exp = createMockExperiment()
+        exp.export = 0
+        session.experiment_id = exp.id
+        
+        rval = prepare_experiment(session, exp, user)
+        
+        exp.saveExperiment.assert_called_once_with()
+        
+        self.assertEqual(1, exp.export)
+        self.assertEqual(exp, rval)
 
-        patch_deleteData.assert_called_once_with(26)
+    @patch('ptmscout.database.experiment.getExperimentById')
+    def test_prepare_experiment_should_copy_experiment_data_on_append(self, patch_getExperiment):
+        user = createMockUser()
         
-        patch_getSession.assert_called_once_with(102, request.user)
-        patch_getExperiment.assert_called_once_with(26, request.user, False)
-        session.save.assert_called_once_with()
-        patch_startUpload.assert_called_once_with((exp.id, session.id, request.user.email, request.application_url))
+        session = createMockSession(user)
+        session.load_type = 'append'
         
-        exp_dict = webutils.object_to_dict(exp)
-        exp_dict['url'] = "url"
-        exp_dict['citation'] = "citation"
-        self.assertEqual(exp_dict, result['experiment'])
+        exp = createMockExperiment()
+        exp.export = 0
+        session.experiment_id = exp.id
         
-        self.assertEqual('complete', session.stage)
-        self.assertEqual(None, result['reason'])
-        self.assertEqual(strings.experiment_upload_started_page_title, result['pageTitle'])
-        self.assertEqual(strings.experiment_upload_started_message % (request.application_url + "/account/experiments"), result['message'])
-        self.assertEqual(102, result['session_id'])
-        self.assertEqual(True, result['confirm'])
+        target_exp = createMockExperiment()
+        target_exp.export = 0
+        session.parent_experiment = target_exp.id
+        
+        patch_getExperiment.return_value = target_exp
+        
+        rval = prepare_experiment(session, exp, user)
+        
+        target_exp.copyData.assert_called_once_with(exp)
+        target_exp.saveExperiment.assert_called_once_with()
+        
+        self.assertEqual(0, exp.export)
+        self.assertEqual(1, target_exp.export)
+        self.assertEqual(target_exp, rval)
+
     
+    @patch('ptmscout.database.modifications.deleteExperimentData')
+    @patch('ptmscout.database.experiment.getExperimentById')
+    def test_prepare_experiment_should_copy_experiment_data_and_delete_existing_on_reload(self, patch_getExperiment, patch_deleteData):
+        user = createMockUser()
+        
+        session = createMockSession(user)
+        session.load_type = 'reload'
+        
+        exp = createMockExperiment()
+        exp.export = 0
+        session.experiment_id = exp.id
+        
+        target_exp = createMockExperiment()
+        target_exp.export = 0
+        session.parent_experiment = target_exp.id
+        
+        patch_getExperiment.return_value = target_exp
+        
+        rval = prepare_experiment(session, exp, user)
+        
+        target_exp.copyData.assert_called_once_with(exp)
+        patch_deleteData.assert_called_once_with(target_exp.id)
+        
+        target_exp.saveExperiment.assert_called_once_with()
+
+        self.assertEqual(0, exp.export)
+        self.assertEqual(1, target_exp.export)
+        self.assertEqual(target_exp, rval)        
+
     @patch('ptmworker.data_import.start_import.apply_async')        
+    @patch('ptmscout.views.upload.upload_confirm.prepare_experiment')
     @patch('ptmscout.database.experiment.getExperimentById')
     @patch('ptmscout.database.upload.getSessionById')
-    def test_start_upload_view_should_start_job_and_display_confirmation(self, patch_getSession, patch_getExperiment, patch_startUpload):
+    def test_start_upload_view_should_start_job_and_display_confirmation(self, patch_getSession, patch_getExperiment, patch_prepare, patch_startUpload):
         request = DummyRequest()
         request.POST['confirm'] = "true"
         request.POST['terms_of_use'] = "yes"
@@ -80,18 +130,21 @@ class TestUploadStatusView(UnitTestCase):
         
         session = createMockSession(request.user, sid=102, experiment_id=26, stage='confirm')
         exp = createMockExperiment(26, 0, None, 'preload')
+        target_exp = createMockExperiment(28, 0, None, 'preload')
         
         patch_getSession.return_value = session
         patch_getExperiment.return_value = exp
         exp.getUrl.return_value = "url"
         exp.getLongCitationString.return_value = "citation"
         
+        patch_prepare.return_value = target_exp
+        
         result = upload_confirm_view(request)
         
         patch_getSession.assert_called_once_with(102, request.user)
         patch_getExperiment.assert_called_once_with(26, request.user, False)
         session.save.assert_called_once_with()
-        patch_startUpload.assert_called_once_with((exp.id, session.id, request.user.email, request.application_url))
+        patch_startUpload.assert_called_once_with((target_exp.id, session.id, request.user.email, request.application_url))
         
         exp_dict = webutils.object_to_dict(exp)
         exp_dict['url'] = "url"

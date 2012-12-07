@@ -13,6 +13,24 @@ def upload_already_started_view(request):
             'header': strings.experiment_upload_started_page_title,
             'message': strings.experiment_upload_started_message % (request.application_url + "/account/experiments")}
 
+
+
+def prepare_experiment(session, exp, user):
+    exp_target = exp
+    
+    if session.load_type=='reload' or session.load_type == 'append':
+        parent_exp = experiment.getExperimentById(session.parent_experiment, user, check_ready=False)
+        parent_exp.copyData(exp)
+        
+        if session.load_type=='reload':
+            modifications.deleteExperimentData(parent_exp.id)
+        
+        exp_target = parent_exp
+
+    exp_target.export = 1
+    exp_target.saveExperiment()
+    return exp_target
+
 @view_config(route_name='upload_confirm', renderer='ptmscout:/templates/upload/upload_confirm.pt')
 def upload_confirm_view(request):
     confirm = webutils.post(request, "confirm", "false") == "true"
@@ -34,11 +52,10 @@ def upload_confirm_view(request):
     if confirm and terms_of_use_accepted:
         session.stage = 'complete'
         session.save()
+        
+        target_exp = prepare_experiment(session, exp, request.user)
 
-        if session.load_type=='reload':
-            modifications.deleteExperimentData(exp.id)
-
-        data_import.start_import.apply_async((exp.id, session.id, request.user.email, request.application_url))
+        data_import.start_import.apply_async((target_exp.id, session.id, request.user.email, request.application_url))
         
         return {'pageTitle': strings.experiment_upload_started_page_title,
                 'message': strings.experiment_upload_started_message % (request.application_url + "/account/experiments"),
