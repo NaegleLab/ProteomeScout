@@ -35,40 +35,6 @@ class TestUploadView(UnitTestCase):
         self.assertEqual(exp, nexp)
         
         patch_getExperiment.assert_called_once_with(exp.id, user, False)
-        
-    @patch('ptmscout.database.experiment.getExperimentById')
-    def test_get_experiment_ref_should_return_parent_experiment_if_reload(self, patch_getExperiment):
-        user = createMockUser()
-        
-        exp = createMockExperiment()
-        patch_getExperiment.return_value = exp
-        
-        session = createMockSession(user)
-        session.load_type = 'reload'
-        session.parent_experiment = exp.id
-        
-        nexp = get_experiment_ref(session, user)
-        
-        self.assertEqual(exp, nexp)
-        
-        patch_getExperiment.assert_called_once_with(exp.id, user, False)
-        
-    @patch('ptmscout.database.experiment.getExperimentById')
-    def test_get_experiment_ref_should_return_parent_experiment_if_append(self, patch_getExperiment):
-        user = createMockUser()
-        
-        exp = createMockExperiment()
-        patch_getExperiment.return_value = exp
-        
-        session = createMockSession(user)
-        session.load_type = 'append'
-        session.parent_experiment = exp.id
-        
-        nexp = get_experiment_ref(session, user)
-        
-        self.assertEqual(exp, nexp)
-        
-        patch_getExperiment.assert_called_once_with(exp.id, user, False)
     
     def create_field_dict(self):
         field_dict = {}
@@ -114,7 +80,7 @@ class TestUploadView(UnitTestCase):
         self.assertEqual(0, experiment_instance.published)
         self.assertEqual(0, experiment_instance.ambiguity)
         self.assertEqual(0, experiment_instance.public)
-        self.assertEqual(1, experiment_instance.export)
+        self.assertEqual(0, experiment_instance.export)
         self.assertEqual(None, experiment_instance.publication_year)
         self.assertEqual(None, experiment_instance.publication_month)
         self.assertEqual(None, experiment_instance.volume)
@@ -152,7 +118,7 @@ class TestUploadView(UnitTestCase):
         self.assertEqual(1, experiment_instance.published)
         self.assertEqual(0, experiment_instance.ambiguity)
         self.assertEqual(0, experiment_instance.public)
-        self.assertEqual(1, experiment_instance.export)
+        self.assertEqual(0, experiment_instance.export)
         self.assertEqual(int(field_dict['publication_year']), experiment_instance.publication_year)
         self.assertEqual(field_dict['publication_month'], experiment_instance.publication_month)
         self.assertEqual(int(field_dict['volume']), experiment_instance.volume)

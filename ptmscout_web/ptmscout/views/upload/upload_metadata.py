@@ -14,7 +14,7 @@ def write_experiment_properties(nexp, session, schema, current_user):
     nexp.published = 1 if schema.get_form_value('published') == "yes" else 0
     nexp.ambiguity = 1 if schema.get_form_value('ambiguous') == "yes" else 0
     nexp.URL = schema.get_form_value('URL')
-    nexp.export = 1
+    nexp.export = 0
 
     nexp.contact = None
     nexp.author = None
@@ -55,8 +55,6 @@ def write_experiment_properties(nexp, session, schema, current_user):
 def get_experiment_ref(session, current_user):
     if(session.experiment_id != None):
         nexp = experiment.getExperimentById(session.experiment_id, current_user, False)
-    elif(session.load_type == 'reload' or session.load_type == 'append'):
-        nexp = experiment.getExperimentById(session.parent_experiment, current_user, False)
     else: 
         nexp = experiment.Experiment()
         nexp.public = 0
