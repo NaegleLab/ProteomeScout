@@ -224,6 +224,7 @@ class TestUploadView(UnitTestCase):
         
         patch_prepopulate.assert_called_once_with(schema, session, request.user)
         
+        self.assertEqual(session_id, result['session_id'])
         self.assertEqual(strings.upload_page_title, result['pageTitle'])
         self.assertEqual([], result['errors'])
         self.assertEqual(schema, result['formrenderer'].schema)

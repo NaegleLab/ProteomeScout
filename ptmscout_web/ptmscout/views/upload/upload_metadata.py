@@ -162,4 +162,5 @@ def upload_metadata(request):
         
     return {'pageTitle': strings.upload_page_title,
             'errors':errors,
+            'session_id': session_id,
             'formrenderer':forms.FormRenderer(schema)}
