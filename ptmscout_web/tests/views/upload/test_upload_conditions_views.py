@@ -205,6 +205,7 @@ class TestUploadConditionsView(UnitTestCase):
         patch_getSchema.assert_called_once_with(exp, request)
         patch_getSession.assert_called_once_with(session.id, user)
         
+        self.assertEqual(session.id, result['session_id'])
         self.assertEqual(set(), result['added_fields'])
         self.assertEqual([], result['errors'])
         self.assertEqual(MAX_VALUES, result['MAX_FIELDS'])

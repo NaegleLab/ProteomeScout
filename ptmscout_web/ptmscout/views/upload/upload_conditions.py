@@ -78,6 +78,7 @@ def upload_conditions_view(request):
             'pageTitle': strings.experiment_upload_conditions_page_title,
             'header': strings.experiment_upload_conditions_page_title,
             'errors':errors,
+            'session_id': session_id,
             'added_fields':added_fields,
             'MAX_FIELDS':MAX_VALUES
             }

@@ -106,6 +106,7 @@ def upload_config(request):
             'data_rows': data_rows,
             'error': errors,
             'data_definitions':column_defs,
+            'session_id': session_id,
             'column_values':upload.SessionColumn.column_values,
             'pageTitle': strings.experiment_upload_configure_page_title,
             'instruction': strings.experiment_upload_configure_message}

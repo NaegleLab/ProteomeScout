@@ -21,7 +21,7 @@ ptmscout_path = "/data/ptmscout/ptmscout_web"
 email_regex = "[a-z0-9\.\-\_]+@[a-z0-9\.\-\_]+\.([a-z]+)$"
 
 DISABLE_PFAM = False
-DISABLE_SCANSITE = False
+DISABLE_SCANSITE = True
 DISABLE_QUICKGO = False
 DISABLE_PICR = False 
 DISABLE_UNIPROT_QUERY = False
