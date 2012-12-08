@@ -275,14 +275,19 @@ def load_header_and_data_rows(data_file, N=-1):
     width = len(header)
     while(width > 0 and header[width-1].strip() == ''):
         width-=1
+    
+    start_index = 0
 
-    header = header[0:width]
+    if header[0] == strings.experiment_upload_error_reasons_column_title:
+        start_index = 1
+
+    header = header[start_index:width]
     
     rows = []
     for row in ifile:
         if i >= N:
             break
-        row = row[0:width]
+        row = row[start_index:width]
         rows.append(row)
         i+=1
 
