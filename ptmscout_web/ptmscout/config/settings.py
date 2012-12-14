@@ -29,7 +29,7 @@ DISABLE_UNIPROT_QUERY = False
 valid_domain_suffixes = set(['edu','gov'])
 
 
-
+isoform_sequence_diff_pfam_threshold = 50
 
 
 

@@ -7,6 +7,7 @@ from geeneus import Proteome
 import logging
 import re
 from Bio.SubsMat import MatrixInfo
+from ptmscout.utils import protein_utils
 
 log = logging.getLogger('ptmscout')
 
@@ -128,7 +129,7 @@ def get_alignment_scores(seq1, seq2):
     return aln_seq1.count("-"), aln_seq2.count("-") 
 
 
-def create_isoform(isoform_accession, isoform_id, isoform_seq, name, gene, taxonomy, species, prot_domains, seq):
+def create_isoform(root_acc, isoform_accession, isoform_id, isoform_seq, name, gene, taxonomy, species, prot_domains, seq):
     isoform_domains = []
     isoform_name = "%s isoform %s" % (name, isoform_id)
     inserted, deleted = get_alignment_scores(seq, isoform_seq)
@@ -145,7 +146,8 @@ def create_isoform(isoform_accession, isoform_id, isoform_seq, name, gene, taxon
             
             isoform_domains.append(ndomain)
         
-    return (isoform_name, gene, taxonomy, species, [isoform_accession], isoform_domains, isoform_seq)
+    acc_type = protein_utils.get_accession_type(root_acc)
+    return (isoform_name, gene, taxonomy, species, [(acc_type, isoform_accession)], isoform_domains, isoform_seq)
 
 
 def get_proteins_from_ncbi(accessions):
@@ -167,7 +169,7 @@ def get_proteins_from_ncbi(accessions):
             for isoform_id in prot_isoforms:
                 isoform_seq = prot_isoforms[isoform_id]
                 isoform_accession = "%s-%s" % (acc, isoform_id)
-                prot_map[isoform_accession] = create_isoform(isoform_accession, isoform_id, isoform_seq, name, gene, taxonomy, species, prot_domains, seq)
+                prot_map[isoform_accession] = create_isoform(acc, isoform_accession, isoform_id, isoform_seq, name, gene, taxonomy, species, prot_domains, seq)
 
         except EntrezError, e:
             errors.append(e)

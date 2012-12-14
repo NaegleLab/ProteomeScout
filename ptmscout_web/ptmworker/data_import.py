@@ -146,21 +146,27 @@ def create_protein_import_tasks(prot_map, missing_proteins, parsed_datafile, hea
     for acc in prot_map:
         pep_tasks = []
         
-        for pep in peptides[acc]:
-            key = (acc, pep)
-            mod_str = mod_map[key]
-            
-            run_tasks = []
-            for run_name in data_runs[key]:
-                line, series = data_runs[key][run_name]
-                run_tasks.append( (line, run_name, series) )
-            
-            pep_tasks.append( load_peptide_modification.s(exp_id, pep, mod_str, units, headers, run_tasks) )
-        
+        protein_load_task = None
         if acc in missing_proteins:
-            prot_tasks.append( ( load_new_protein.s( acc, prot_map[acc] ) | group(pep_tasks) ) )
+            protein_load_task = load_new_protein.s( acc, prot_map[acc] )
         else:
-            prot_tasks.append( ( load_protein.s( acc, prot_map[acc] ) | group(pep_tasks) ) )
+            protein_load_task = load_protein.s( acc, prot_map[acc] )
+        
+        if acc in peptides:
+            for pep in peptides[acc]:
+                key = (acc, pep)
+                mod_str = mod_map[key]
+                
+                run_tasks = []
+                for run_name in data_runs[key]:
+                    line, series = data_runs[key][run_name]
+                    run_tasks.append( (line, run_name, series) )
+                
+                pep_tasks.append( load_peptide_modification.s(exp_id, pep, mod_str, units, headers, run_tasks) )
+            
+            prot_tasks.append( ( protein_load_task | group(pep_tasks) ) )
+        else:        
+            prot_tasks.append( protein_load_task )
     
     return prot_tasks
 
@@ -332,9 +338,9 @@ def create_missing_proteins(protein_map, accessions, line_mappings, exp_id):
     #create entries for the missing proteins
     protein_id_map = {}
     for acc in missing_proteins:
-        name, gene, _t, species, accessions, _d, seq = protein_map[acc]
+        name, gene, _t, species, prot_accessions, _d, seq = protein_map[acc]
         try:
-            prot = upload_helpers.create_new_protein(name, gene, seq, species, accessions)
+            prot = upload_helpers.create_new_protein(name, gene, seq, species, prot_accessions)
             prot.saveProtein()
             protein_id_map[acc] = prot.id
         except uploadutils.ParseError, e:
@@ -391,7 +397,7 @@ def start_import(exp_id, session_id, user_email, application_url):
         parsed_datafile = (accessions, peptides, mod_map, data_runs, line_mapping)
         
         log.info("Running tasks...")
-        ncbi_tasks = upload_helpers.create_chunked_tasks(get_ncbi_proteins, accessions.keys(), MAX_NCBI_BATCH_SIZE)
+        ncbi_tasks = upload_helpers.create_chunked_tasks(get_ncbi_proteins, sorted(accessions.keys()), MAX_NCBI_BATCH_SIZE)
         
         load_task = ( group(ncbi_tasks) | aggregate_ncbi_results.s(exp_id, accessions, line_mapping) | create_missing_proteins.s(accessions, line_mapping, exp_id) | launch_loader_tasks.s(parsed_datafile, headers, session_info) )
         load_task.apply_async(link_error=finalize_experiment_error_state.s(exp_id))
