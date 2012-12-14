@@ -1,11 +1,12 @@
 from celery.task import task
-from Bio import Entrez
+from Bio import Entrez, pairwise2
 from ptmscout.config import settings
 from Bio import Medline
-from ptmscout.utils import protein_utils
 from ptmworker import pfam_tools
 from geeneus import Proteome
 import logging
+import re
+from Bio.SubsMat import MatrixInfo
 
 log = logging.getLogger('ptmscout')
 
@@ -22,57 +23,46 @@ def get_pubmed_record_by_id(pmid):
     return rec_arr[0] if len(rec_arr) == 1 else None
 
 
-def get_qualifier(name, feature_quals):
-    qualifier = [ q for q in feature_quals if q['GBQualifier_name'] == name ]
-    if len(qualifier) == 1:
-        return qualifier[0]['GBQualifier_value']
-    return None
+def map_domain_to_sequence(seq1, domain, seq2):
+    domain_seq = seq1[domain.start:domain.stop+1]
+    
+    new_start = seq2.find(domain_seq)
+    
+    if new_start == -1:
+        return None
+    
+    new_stop = new_start + len(domain_seq) - 1
+    
+    new_domain = pfam_tools.PFamDomain()
+    new_domain.accession = domain.accession
+    new_domain.class_ = domain.class_
+    new_domain.label = domain.label
+    new_domain.start = new_start
+    new_domain.stop = new_stop
+    new_domain.p_value = domain.p_value
+    new_domain.significant = domain.significant
+    new_domain.release = domain.release
+    
+    return new_domain
 
-def parse_proteinxml_pfam_domains(feature_table):
+
+def parse_pfam_domains(pfam_domains):
     parsed_features = []
-    for f in feature_table:
-        note_val = get_qualifier('note', f['GBFeature_quals'])
-        if f['GBFeature_key'] == 'Region' and note_val != None and note_val.find('pfam') > 0:
-            domain = pfam_tools.PFamDomain()
-            domain.significant = 1
-            domain.release = 0
-            domain.p_value = -1
-            domain.label = get_qualifier('region_name', f['GBFeature_quals'])
-            domain.accession = f['GBFeature_intervals'][0]['GBInterval_accession']
-            domain.start = int(f['GBFeature_intervals'][0]['GBInterval_from'])
-            domain.stop = int(f['GBFeature_intervals'][0]['GBInterval_to'])
-            domain.class_ = "Domain"
-            
-            parsed_features.append(domain)
+    for pfd in pfam_domains:
+        domain = pfam_tools.PFamDomain()
+        domain.significant = 1
+        domain.release = 0
+        domain.p_value = -1
+        domain.label = pfd['label']
+        domain.accession = pfd['accession']
+        domain.start = pfd['start']
+        domain.stop = pfd['stop']
+        domain.class_ = "Domain"
+        
+        parsed_features.append(domain)
         
     return parsed_features
 
-
-def get_gene_name(feature_table):
-    for f in feature_table:
-        if f['GBFeature_key'] == 'gene':
-            gene_val = get_qualifier('gene', f['GBFeature_quals'])
-            return gene_val
-        if f['GBFeature_key'] == 'CDS':
-            gene_val = get_qualifier('gene', f['GBFeature_quals'])
-            return gene_val
-
-
-def parse_sequence_id(seqid):
-    result = []
-    if seqid.find('sp') == 0:
-        _, sp_acc, sp_locus = seqid.split("|")
-        i = sp_acc.rfind(".")
-        if i > 0:
-            sp_acc = sp_acc[0:i]
-        
-        result.append(('swissprot', sp_acc))
-        result.append(('swissprot', sp_locus))
-    else:
-        seq_type = protein_utils.get_accession_type(seqid)
-        result.append((seq_type, seqid))
-        
-    return result
 
 class EntrezError(Exception):
     def __init__(self):
@@ -80,6 +70,7 @@ class EntrezError(Exception):
         
     def __repr__(self):
         return "Unable to fetch protein accession: %s" % (self.acc)
+
 
 def get_protein_information(pm, acc):
     seq = pm.get_protein_sequence(acc).upper()
@@ -89,43 +80,95 @@ def get_protein_information(pm, acc):
         e.acc = acc
         raise e
     
-    XML = pm.get_raw_xml(acc)[0]
+    name = pm.get_protein_name(acc)
+    gene = pm.get_gene_name(acc)
+    taxonomy = pm.get_taxonomy(acc)
+    species = pm.get_species(acc)
+    prot_accessions = pm.get_other_accessions(acc)
+    prot_domains = parse_pfam_domains(pm.get_domains(acc))
+    prot_isoforms = pm.get_isoforms(acc)
     
-    name = XML['GBSeq_definition']
-    gene = get_gene_name(XML['GBSeq_feature-table'])
-    taxonomy = XML['GBSeq_taxonomy']
-    taxonomy = set([ t.strip().lower() for t in taxonomy.split(';') ])
+    for i in prot_isoforms:
+        prot_isoforms[i] = prot_isoforms[i].upper()
     
-    species = XML['GBSeq_organism']
+    return name, gene, taxonomy, species, prot_accessions, prot_domains, seq, prot_isoforms
+
+
+def parse_isoform_number(acc):
+    m = re.search(r"^.*\-([0-9]+)$", acc.strip())
+    if m:
+        return m.group(1), m.group(2)
     
-    acc_ids_to_parse = set(XML['GBSeq_other-seqids'])
-    acc_ids_to_parse.add(acc)
-    acc_ids_to_parse.add( XML['GBSeq_primary-accession'] )
+    return acc, None
+
+def get_isoform_map(accs):
+    isoform_map = {}
+    new_accs = set()
     
-    prot_accessions = []
-    for seqid in acc_ids_to_parse:
-        prot_accessions.extend(parse_sequence_id(seqid))
+    for acc in accs:
+        root, isoform = parse_isoform_number(acc)
         
-    prot_accessions = set(prot_accessions)        
-    prot_domains = parse_proteinxml_pfam_domains(XML['GBSeq_feature-table'])
+        if isoform:
+            isoform_map[acc] = root
+            new_accs.add(root)
+        else:
+            new_accs.add(acc)
+        
+    return list(new_accs), isoform_map
+
+def get_alignment_scores(seq1, seq2):
+    matrix = MatrixInfo.blosum62
+    gap_open = -10
+    gap_extend = -0.5
+
+    alns = pairwise2.align.globalds(seq1, seq2, matrix, gap_open, gap_extend)
+    top_aln = alns[0]
+    aln_seq1, aln_seq2, _score, _begin, _end = top_aln
     
-    return name, gene, taxonomy, species, prot_accessions, prot_domains, seq
+    return aln_seq1.count("-"), aln_seq2.count("-") 
 
 
-def load_proteins(accessions, pm):
-    log.info("Querying for proteins: %s", str(accessions))
-    pm.batch_get_protein_sequence(accessions)
+def create_isoform(isoform_accession, isoform_id, isoform_seq, name, gene, taxonomy, species, prot_domains, seq):
+    isoform_domains = []
+    isoform_name = "%s isoform %s" % (name, isoform_id)
+    inserted, deleted = get_alignment_scores(seq, isoform_seq)
+    
+    if inserted < settings.isoform_sequence_diff_pfam_threshold and \
+        deleted < settings.isoform_sequence_diff_pfam_threshold:
+        
+        for domain in prot_domains:
+            ndomain = map_domain_to_sequence(seq, domain, isoform_seq)
+            
+            if ndomain == None:
+                isoform_domains = []
+                break
+            
+            isoform_domains.append(ndomain)
+        
+    return (isoform_name, gene, taxonomy, species, [isoform_accession], isoform_domains, isoform_seq)
 
 
 def get_proteins_from_ncbi(accessions):
     pm = Proteome.ProteinManager(settings.adminEmail)
-    load_proteins(accessions, pm)
+    
+    query_accessions, _ = get_isoform_map(accessions)
+    
+    log.info("Querying for proteins: %s", str(query_accessions))
+    
+    pm.batch_get_protein_sequence(query_accessions)
 
     prot_map = {}
     errors = []
-    for acc in accessions:
+    for acc in query_accessions:
         try:
-            prot_map[acc] = get_protein_information(pm, acc)
+            name, gene, taxonomy, species, prot_accessions, prot_domains, seq, prot_isoforms = get_protein_information(pm, acc)
+            prot_map[acc] = (name, gene, taxonomy, species, prot_accessions, prot_domains, seq)
+            
+            for isoform_id in prot_isoforms:
+                isoform_seq = prot_isoforms[isoform_id]
+                isoform_accession = "%s-%s" % (acc, isoform_id)
+                prot_map[isoform_accession] = create_isoform(isoform_accession, isoform_id, isoform_seq, name, gene, taxonomy, species, prot_domains, seq)
+
         except EntrezError, e:
             errors.append(e)
     
