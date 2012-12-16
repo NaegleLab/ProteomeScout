@@ -34,7 +34,7 @@ class PTM(Base):
     keywords = relationship("PTMkeyword")
 
     def hasTaxon(self, search_taxons):
-        search_taxons = set(search_taxons)
+        search_taxons = set([t.lower() for t in search_taxons])
         return len(set([t.name.lower() for t in self.taxons]) & search_taxons) > 0
 
     def hasTarget(self, residue):

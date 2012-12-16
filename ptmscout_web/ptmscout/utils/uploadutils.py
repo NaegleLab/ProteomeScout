@@ -92,6 +92,7 @@ def check_modification_type_matches_peptide(row, peptide, modification, taxon_no
             else: msg = strings.experiment_upload_warning_modifications_not_valid % (mod_type)
             raise ParseError(row, None, msg)
         
+        print residue, [mod.target for mod in mods]
         matches = [ mod for mod in mods if mod.target == residue ]
         parents = [ mod for mod in mods if mod.target == None ]
         

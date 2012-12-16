@@ -9,6 +9,13 @@ from tests.views.mocking import createMockUser, createMockSession,\
 from mock import patch
 from ptmscout.config import strings, settings
 import os
+from tests.PTMScoutTestCase import IntegrationTestCase
+
+class TestUploadUtilsWithTestDB(IntegrationTestCase):
+    def test_find_mod_type(self):
+        mod_indices, mod_object = check_modification_type_matches_peptide(1, 'GTGPQRPrSWAAADS', 'dimethylation', ['Eukaryota'])
+
+        self.assertEqual(7, mod_indices[0])
 
 class TestUploadUtils(unittest.TestCase):
     
