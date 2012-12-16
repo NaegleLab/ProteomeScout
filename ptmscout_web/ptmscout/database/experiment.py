@@ -7,6 +7,9 @@ from sqlalchemy.types import Float, Enum, DateTime
 from sqlalchemy.sql.expression import null
 import datetime
 from sqlalchemy.orm import relationship
+import logging
+
+log = logging.getLogger('ptmscout')
 
 class ExperimentError(Base):
     __tablename__ = 'experiment_error'
@@ -312,6 +315,7 @@ def getValuesForField(field_name):
     return sorted([ r.value for r in results ])
 
 def createExperimentError(exp_id, line, accession, peptide, message):
+    log.debug("Error: (%s, %s) %s", accession, peptide, message)
     err = ExperimentError()
     err.experiment_id = exp_id
     err.line = line
