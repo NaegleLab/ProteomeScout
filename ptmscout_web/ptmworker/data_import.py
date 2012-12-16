@@ -317,7 +317,7 @@ def get_uniprot_proteins(protein_accessions):
 
 @celery.task
 @upload_helpers.logged_task
-def aggregate_ncbi_results(ncbi_results, exp_id, accessions, line_mappings):
+def aggregate_protein_results(ncbi_results, exp_id, accessions, line_mappings):
     
     #combine the results
     aggregate_errors = []
@@ -416,7 +416,7 @@ def start_import(exp_id, session_id, user_email, application_url):
         uniprot_tasks = upload_helpers.create_chunked_tasks_preserve_groups(get_uniprot_proteins, sorted(uniprot_ids), MAX_UNIPROT_BATCH_SIZE)
         ncbi_tasks = upload_helpers.create_chunked_tasks(get_ncbi_proteins, sorted(other_ids), MAX_NCBI_BATCH_SIZE)
         
-        load_task = ( group(ncbi_tasks + uniprot_tasks) | aggregate_ncbi_results.s(exp_id, accessions, line_mapping) | create_missing_proteins.s(accessions, line_mapping, exp_id) | launch_loader_tasks.s(parsed_datafile, headers, session_info) )
+        load_task = ( group(ncbi_tasks + uniprot_tasks) | aggregate_protein_results.s(exp_id, accessions, line_mapping) | create_missing_proteins.s(accessions, line_mapping, exp_id) | launch_loader_tasks.s(parsed_datafile, headers, session_info) )
         load_task.apply_async(link_error=finalize_experiment_error_state.s(exp_id))
     
         log.info("Tasks started... now we wait")
