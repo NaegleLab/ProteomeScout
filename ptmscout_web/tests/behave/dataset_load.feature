@@ -14,7 +14,6 @@ Feature: Dataset Load
             | peptides | proteins | errors |
             | 7        | 7        | 1      |
     
-    @runme 
     Scenario: Load a dataset with bad amino acid assignments
           Given a user has loaded a dataset and the modification type does not match the amino acid for that species
           Then the user should be sent an email with a link to the experiment which contains:
@@ -48,7 +47,6 @@ Feature: Dataset Load
             | peptides | proteins | errors |
             | 16       | 14       | 1      |
     
-    @runme 
     Scenario: No peptide passes in dataset
     	Given a user submits a dataset in which no protein accession is found
     	Then the user should be sent an email with a link to the experiment which contains:
@@ -62,7 +60,7 @@ Feature: Dataset Load
     	  | peptides | proteins | errors |
     	  | 1000     | 91       | 0      |
            
-    @pending
+    @runme 
     Scenario: Handle an isoform
           Given a user submits a dataset in which an isoform specific record is included
           Then the user should be sent an email with a link to the experiment which contains:

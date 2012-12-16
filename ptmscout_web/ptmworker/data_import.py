@@ -1,6 +1,6 @@
 import celery
 import logging 
-from ptmworker import upload_helpers, entrez_tools, pfam_tools, quickgo_tools, picr_tools
+from ptmworker import upload_helpers, entrez_tools, pfam_tools, quickgo_tools, picr_tools, uniprot_tools
 from ptmscout.database import upload, modifications, protein, experiment
 from celery.canvas import group
 from ptmscout.config import strings, settings
@@ -10,7 +10,7 @@ log = logging.getLogger('ptmscout')
 
 PFAM_DEFAULT_CUTOFF = 0.00001
 MAX_NCBI_BATCH_SIZE = 500
-MAX_UNIPROT_BATCH_SIZE = 10
+MAX_UNIPROT_BATCH_SIZE = 200
 MAX_QUICKGO_BATCH_SIZE = 500
 
 @celery.task
@@ -301,6 +301,19 @@ def get_ncbi_proteins(protein_accessions):
     
     return prot_map, errors
 
+@celery.task(rate_limit='3/s')
+@upload_helpers.logged_task
+def get_uniprot_proteins(protein_accessions):
+    log.info("Getting uniprot records for %d accessions", len(protein_accessions))
+    prot_map = uniprot_tools.get_uniprot_records(protein_accessions)
+
+    errors = []
+    for acc in protein_accessions:
+        if acc not in prot_map:
+            errors.append(entrez_tools.EntrezError())
+            errors[-1].acc = acc
+
+    return prot_map, errors
 
 @celery.task
 @upload_helpers.logged_task
@@ -397,9 +410,13 @@ def start_import(exp_id, session_id, user_email, application_url):
         parsed_datafile = (accessions, peptides, mod_map, data_runs, line_mapping)
         
         log.info("Running tasks...")
-        ncbi_tasks = upload_helpers.create_chunked_tasks(get_ncbi_proteins, sorted(accessions.keys()), MAX_NCBI_BATCH_SIZE)
+
+        uniprot_ids, other_ids = upload_helpers.extract_uniprot_accessions(accessions.keys())
+
+        uniprot_tasks = upload_helpers.create_chunked_tasks_preserve_groups(get_uniprot_proteins, sorted(uniprot_ids), MAX_UNIPROT_BATCH_SIZE)
+        ncbi_tasks = upload_helpers.create_chunked_tasks(get_ncbi_proteins, sorted(other_ids), MAX_NCBI_BATCH_SIZE)
         
-        load_task = ( group(ncbi_tasks) | aggregate_ncbi_results.s(exp_id, accessions, line_mapping) | create_missing_proteins.s(accessions, line_mapping, exp_id) | launch_loader_tasks.s(parsed_datafile, headers, session_info) )
+        load_task = ( group(ncbi_tasks + uniprot_tasks) | aggregate_ncbi_results.s(exp_id, accessions, line_mapping) | create_missing_proteins.s(accessions, line_mapping, exp_id) | launch_loader_tasks.s(parsed_datafile, headers, session_info) )
         load_task.apply_async(link_error=finalize_experiment_error_state.s(exp_id))
     
         log.info("Tasks started... now we wait")
