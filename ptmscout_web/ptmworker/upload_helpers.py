@@ -8,6 +8,7 @@ from ptmscout.database.modifications import NoSuchPeptide
 from ptmworker import scansite_tools
 import transaction
 import traceback
+import re
 from celery.canvas import group
 
 log = logging.getLogger('ptmscout')
@@ -315,6 +316,46 @@ def parse_datafile(session):
     
     return accessions, peptides, mod_map, data_runs, errors, line_mapping
     
+
+def extract_uniprot_accessions(accessions):
+    uniprot_accs = []
+    other_accs = []
+    for acc in accessions:
+        if(re.search('^[A-Z]\d[A-Z]..\d([\.\-]\d+)?$', acc) != None):
+            uniprot_accs.append(acc)
+        else:
+            other_accs.append(acc)
+    return uniprot_accs, other_accs
+
+def group_critera(group, arg):
+    if len(group) == 0:
+        return True
+    return group[-1][:6] == arg[:6]
+
+
+def create_chunked_tasks_preserve_groups(task_method, task_args, MAX_BATCH_SIZE):
+    tasks = []
+    args = []
+
+    small_groups = [[]]
+    for arg in task_args:
+        if group_critera(small_groups[-1], arg):
+            small_groups[-1].append(arg)
+        else:
+            small_groups.append([arg])
+
+    for g in small_groups:
+        if len(args) + len(g) <= MAX_BATCH_SIZE:
+            args = args + g
+        else:
+            tasks.append(task_method.s(args))
+            args = g
+
+    if len(args) > 0:
+        tasks.append( task_method.s(args) )
+
+    return tasks
+
 
 def create_chunked_tasks(task_method, task_args, MAX_BATCH_SIZE):
     tasks = []

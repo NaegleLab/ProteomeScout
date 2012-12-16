@@ -286,4 +286,36 @@ VTDPSCPASVLKCAEALQLPVVSQEWVIQCLIVGERIGFKQHPKYKHDYVSH"""
         self.assertEqual((3,  "     MSaDFJTKLJ", 'A'), aligned_peptides[1])
         self.assertEqual((8,  "MSADFJTkLJAWERP", 'K'), aligned_peptides[2])
         self.assertEqual((15, "KLJAWERpOIDFK  ", 'P'), aligned_peptides[3])
-            
+
+
+    def test_create_chunked_tasks_preserve_groups_should_build_correct_tasks(self):
+        class DummyTask(object):
+            def __init__(self, args=None):
+                self.args = args
+
+            def s(self, *args):
+                return DummyTask(args=args)
+
+        task_args = ['A53D56', 'F435D6', 'ALB432', 'Q134A5', 'Q134A5-3', 'Q134A5-5', 'P54A03', 'E45G76', 'E45G76-2']
+        
+        tasks = upload_helpers.create_chunked_tasks_preserve_groups(DummyTask(), sorted(task_args), 4)
+        
+        self.assertEqual((['A53D56', 'ALB432', 'E45G76', 'E45G76-2'],), tasks[0].args)
+        self.assertEqual((['F435D6', 'P54A03'],), tasks[1].args)
+        self.assertEqual((['Q134A5', 'Q134A5-3', 'Q134A5-5'],), tasks[2].args)
+
+    def test_create_chunked_tasks_should_build_correct_tasks(self):
+        class DummyTask(object):
+            def __init__(self, args=None):
+                self.args = args
+
+            def s(self, *args):
+                return DummyTask(args=args)
+
+        task_args = ['A53D56', 'F435D6', 'ALB432', 'Q134A5', 'Q134A5-3', 'Q134A5-5', 'P54A03', 'E45G76', 'E45G76-2']
+        
+        tasks = upload_helpers.create_chunked_tasks(DummyTask(), sorted(task_args), 4)
+        
+        self.assertEqual((['A53D56', 'ALB432', 'E45G76', 'E45G76-2'],), tasks[0].args)
+        self.assertEqual((['F435D6', 'P54A03', 'Q134A5', 'Q134A5-3'],), tasks[1].args)
+        self.assertEqual((['Q134A5-5'],), tasks[2].args)
