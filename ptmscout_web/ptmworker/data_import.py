@@ -105,7 +105,7 @@ def load_peptide_modification(protein_info, exp_id, pep_seq, mods, units, series
     except Exception, e:
         for line, _rn, _s in runs:
             experiment.createExperimentError(exp_id, line, protein_accession, pep_seq, "Unexpected error: " + str(e))
-
+        raise
 
 @celery.task
 @upload_helpers.logged_task
