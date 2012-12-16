@@ -321,7 +321,9 @@ def extract_uniprot_accessions(accessions):
     uniprot_accs = []
     other_accs = []
     for acc in accessions:
-        if(re.search('^[A-Z]\d[A-Z]..\d([\.\-]\d+)?$', acc) != None):
+        if(re.search('^[A-NR-Z]\d[A-Z]..\d([\.\-]\d+)?$', acc) != None):
+            uniprot_accs.append(acc)
+        elif(re.search('^[OPQ]\d...\d([\.\-]\d+)?$', acc) != None):
             uniprot_accs.append(acc)
         else:
             other_accs.append(acc)
