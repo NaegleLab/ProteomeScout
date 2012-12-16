@@ -112,18 +112,18 @@ def parse_xml(xml):
     domains = []
     seq = xml.seq
 
-    return name, gene, taxons, species, other_accessions, domains, seq
+    return xml.id, (name, gene, taxons, species, other_accessions, domains, seq)
 
 
-def handle_result(result, accessions):
+def handle_result(result):
     parsed_result = SeqIO.parse(result, 'uniprot-xml')
 
     result_map = {}
     i = 0
     for xml in parsed_result:
-        acc = accessions[i]
         try:
-            result_map[acc] = parse_xml(xml)
+            acc, prot_info = parse_xml(xml)
+            result_map[acc] = prot_info
         except:
             pass
         i+=1
@@ -156,7 +156,7 @@ def get_uniprot_records(accs):
         instream = save_accessions(root_accs)
         opener = urllib2.build_opener(post_handler.MultipartPostHandler())
         result = opener.open(uniprot_batch_url, {'file':instream, 'format':'xml', 'include':'yes'})
-        result_map = handle_result(result, root_accs)
+        result_map = handle_result(result)
         isoform_map = get_protein_isoforms(isoforms.keys())
 
         map_isoform_results(result_map, isoform_map)
