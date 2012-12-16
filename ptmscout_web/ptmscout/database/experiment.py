@@ -142,14 +142,9 @@ class Experiment(Base):
             
             self.conditions.append(expc)
             
+    def clearErrors(self):
         self.errors = []
-        for err in exp.errors:
-            expe = ExperimentError()
-            expe.accession = err.accession
-            expe.peptide = err.peptide
-            expe.line = err.line
-            expe.message = err.message
-        
+
     def getCitationString(self):
         string = ""
         if self.published == 1:

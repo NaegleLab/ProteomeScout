@@ -26,6 +26,7 @@ def prepare_experiment(session, exp, user):
         exp_target = parent_exp
 
     if session.load_type=='reload':
+        exp_target.clearErrors()
         modifications.deleteExperimentData(parent_exp.id)
 
     exp_target.export = 1
