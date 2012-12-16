@@ -367,22 +367,25 @@ def create_missing_proteins(protein_map, accessions, line_mappings, exp_id):
     return protein_map, missing_proteins, protein_id_map
 
 @celery.task
-@upload_helpers.logged_task
+@upload_helpers.transaction_task
 def launch_loader_tasks(ncbi_result, parsed_datafile, headers, session_info):
     log.info("Launching loader...")
-    protein_map, missing_proteins, new_protein_ids = ncbi_result
-    exp_id, _s, user_email, application_url, units = session_info
-    
-    #run go import for missing proteins
-    GO_task = create_GO_import_tasks(protein_map, new_protein_ids)
-    
-    protein_tasks = create_protein_import_tasks(protein_map, missing_proteins, parsed_datafile, headers, units, exp_id)
-    protein_tasks.append(GO_task)
-    
-    import_tasks = ( group(protein_tasks) | finalize_import.si(exp_id, user_email, application_url) )
-    
-    import_tasks.apply_async(link_error=finalize_experiment_error_state.s(exp_id))
 
+    exp_id, _s, user_email, application_url, units = session_info
+    try:
+        protein_map, missing_proteins, new_protein_ids = ncbi_result
+        
+        #run go import for missing proteins
+        GO_task = create_GO_import_tasks(protein_map, new_protein_ids)
+        
+        protein_tasks = create_protein_import_tasks(protein_map, missing_proteins, parsed_datafile, headers, units, exp_id)
+        protein_tasks.append(GO_task)
+        
+        import_tasks = ( group(protein_tasks) | finalize_import.si(exp_id, user_email, application_url) )
+        
+        import_tasks.apply_async(link_error=finalize_experiment_error_state.s(exp_id))
+    except:
+        upload_helpers.mark_experiment(exp_id, 'error')
 
 @celery.task
 @upload_helpers.transaction_task
