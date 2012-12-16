@@ -118,7 +118,7 @@ def create_domains_for_protein(prot, domains, source, params):
 
 
 def create_new_protein(name, gene, seq, species, accessions):
-    log.info("Creating protein: %s SEQ: %s", str(accessions), seq)
+    log.info("Creating protein: %s" , str(accessions))
     prot = protein.Protein()
     prot.acc_gene = gene
     prot.name = name
