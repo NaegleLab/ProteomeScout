@@ -96,7 +96,11 @@ def get_scientific_name(name):
 
 def parse_xml(xml):
     name = xml.description
-    gene = xml.annotations['gene_name_primary']
+    gene = None
+
+    if 'gene_name_primary' in xml.annotations:
+        gene = xml.annotations['gene_name_primary']
+
     taxons = xml.annotations['taxonomy']
     species = get_scientific_name(xml.annotations['organism'])
 
@@ -118,7 +122,10 @@ def handle_result(result, accessions):
     i = 0
     for xml in parsed_result:
         acc = accessions[i]
-        result_map[acc] = parse_xml(xml)
+        try:
+            result_map[acc] = parse_xml(xml)
+        except:
+            pass
         i+=1
 
     return result_map
