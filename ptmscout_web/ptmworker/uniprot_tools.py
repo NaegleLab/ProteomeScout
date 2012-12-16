@@ -100,9 +100,10 @@ def parse_xml(xml):
     taxons = xml.annotations['taxonomy']
     species = get_scientific_name(xml.annotations['organism'])
 
-    other_accessions = [(xml.id, 'swissprot'), (xml.name, 'swissprot')]
+    other_accessions = [('swissprot', xml.id), ('swissprot', xml.name)]
     if 'gene_name_synonym' in xml.annotations:
-        other_accessions.append(( xml.annotations['gene_name_synonym'], 'gene_synonym'))
+        for gene_name in xml.annotations['gene_name_synonym']:
+            other_accessions.append(('gene_synonym', gene_name))
 
     domains = []
     seq = xml.seq
@@ -129,7 +130,7 @@ def map_isoform_results(result_map, isoform_map):
         name, gene, taxons, species, _o, _d, _s = result_map[root_acc]
        
         isoform_fullname = "%s (%s)" % (name, isoform_name)
-        isoform_accs = [(iso_acc, 'swissprot')]
+        isoform_accs = [('swissprot', iso_acc)]
         result_map[iso_acc] = (isoform_fullname, gene, taxons, species, isoform_accs, [], iso_seq)
 
 
