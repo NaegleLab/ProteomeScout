@@ -87,7 +87,7 @@ def get_protein_information(pm, acc):
     species = pm.get_species(acc)
     prot_accessions = pm.get_other_accessions(acc)
     prot_domains = parse_pfam_domains(pm.get_domains(acc))
-    prot_isoforms = pm.get_isoforms(acc)
+    prot_isoforms = []#pm.get_isoforms(acc)
     
     for i in prot_isoforms:
         prot_isoforms[i] = prot_isoforms[i].upper()
@@ -96,7 +96,7 @@ def get_protein_information(pm, acc):
 
 
 def parse_isoform_number(acc):
-    m = re.search(r"^.*\-([0-9]+)$", acc.strip())
+    m = re.search(r"^(.*)\-([0-9]+)$", acc.strip())
     if m:
         return m.group(1), m.group(2)
     
@@ -152,8 +152,9 @@ def create_isoform(root_acc, isoform_accession, isoform_id, isoform_seq, name, g
 
 def get_proteins_from_ncbi(accessions):
     pm = Proteome.ProteinManager(settings.adminEmail)
-    
-    query_accessions, _ = get_isoform_map(accessions)
+ 
+    query_accessions = accessions
+#    query_accessions, _ = get_isoform_map(accessions)
     
     log.info("Querying for proteins: %s", str(query_accessions))
     
