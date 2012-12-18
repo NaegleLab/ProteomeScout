@@ -5,6 +5,7 @@ from ptmscout.database import upload, modifications, protein, experiment
 from celery.canvas import group
 from ptmscout.config import strings, settings
 from ptmscout.utils import mail, uploadutils
+import datetime
 
 log = logging.getLogger('ptmscout')
 
@@ -54,6 +55,7 @@ def load_new_peptide(prot_id, site_pos, pep_seq, taxonomy):
     
     if motif_class != None:
         pep.predictions = upload_helpers.query_peptide_predictions(pep_seq, motif_class)
+        pep.scansite_date = datetime.datetime.now()
         
         
     pep.save()

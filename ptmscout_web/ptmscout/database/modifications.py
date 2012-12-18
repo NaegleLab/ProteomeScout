@@ -1,6 +1,6 @@
 from ptmscout.database import Base, DBSession
 from sqlalchemy.schema import Column, ForeignKey, Table, UniqueConstraint
-from sqlalchemy.types import Integer, VARCHAR, CHAR, Float, Enum
+from sqlalchemy.types import Integer, VARCHAR, CHAR, Float, Enum, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import and_, or_
 
@@ -70,6 +70,7 @@ class Peptide(Base):
     
     protein_domain_id = Column(Integer(10), ForeignKey('protein_domain.id'))
     protein_id = Column(Integer(10), ForeignKey('protein.id'))
+    scansite_date = Column(DateTime)
     
     protein = relationship("Protein")
     protein_domain = relationship("ProteinDomain")
