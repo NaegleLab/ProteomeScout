@@ -110,8 +110,9 @@ class Protein(Base):
         DBSession.flush()
         
     def hasAccession(self, acc):
+        lower_acc = acc.lower()
         for dbacc in self.accessions:
-            if dbacc.value == acc:
+            if dbacc.value.lower() == lower_acc:
                 return True
         return False
         
@@ -124,7 +125,10 @@ class Protein(Base):
         goe.GO_term = GO_term
         goe.version = date_added
         self.GO_terms.append(goe)
-        
+    
+    def getGOIds(self):
+        return set([ goe.GO_term.GO for goe in self.GO_terms ])
+     
     def hasGoTerm(self, GO_id):
         for goe in self.GO_terms:
             if goe.GO_term.GO == GO_id:
