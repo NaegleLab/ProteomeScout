@@ -127,10 +127,11 @@ def create_new_protein(name, gene, seq, species, accessions):
     prot.species = find_or_create_species(species)
     
     for acc_type, acc in accessions:
-        acc_db = protein.ProteinAccession()
-        acc_db.type = acc_type
-        acc_db.value = acc
-        prot.accessions.append(acc_db)
+        if not prot.hasAccession(acc):
+            acc_db = protein.ProteinAccession()
+            acc_db.type = acc_type
+            acc_db.value = acc
+            prot.accessions.append(acc_db)
 
     return prot
 
