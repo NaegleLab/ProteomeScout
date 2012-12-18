@@ -25,7 +25,7 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         exp2.status = 'configuration'
         exp2.grantPermission(self.bot.user, 'owner')
         exp2.saveExperiment()
-        
+
         session = upload.Session()
         session.experiment_id = exp2.id
         session.user_id = self.bot.user.id
@@ -42,7 +42,7 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         result.mustcontain(exp.name)
         result.mustcontain('Status')
         result.mustcontain('loading')
-        result.mustcontain('77 / 77')
+        result.mustcontain('77 / 0')
         
         result.mustcontain('<a href="%s/upload/%d">continue upload</a>' % ("http://localhost", session.id))
         

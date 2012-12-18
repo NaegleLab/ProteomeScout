@@ -6,7 +6,7 @@ class TestUniprotQuery(IntegrationTestCase):
 
     def test_uniprot_handle_result(self):
         result_xml = open('uniprot_result.xml', 'r')
-        uniprot_tools.handle_result(result_xml, ['Q969I3'])
+        uniprot_tools.handle_result(result_xml)
 
     def test_uniprot_get_protein_by_accessions(self):
         accs = ['A0K45A', 'Q91ZU6-5', 'Q91ZU6-3', 'Q969I3-2', 'B1WC86', 'A1L112', 'B2RXC1', 'A6NF89', 'A6NH21']
