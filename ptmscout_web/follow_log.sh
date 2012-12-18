@@ -1,2 +1,4 @@
 #!/bin/bash
-tail -n20 -f $1 | cut -c1-300
+
+lines=${2:-40}
+tail -n$lines -f $1 | cut -c1-300
