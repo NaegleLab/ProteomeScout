@@ -48,5 +48,6 @@ class TestProteinExpressionViews(unittest.TestCase):
         self.assertEqual(['Human', 'NCI60'], result['collections'])
         
         exp_data = [{'probeset':probe.probeset_id, 'collection':s.collection.name, 'tissue':s.tissue.name, 'value':s.value} for s in probe.samples]
+        exp_data = sorted(exp_data, key=lambda item: item['tissue'])
         self.assertEqual(exp_data, result['expression_data'])
         
