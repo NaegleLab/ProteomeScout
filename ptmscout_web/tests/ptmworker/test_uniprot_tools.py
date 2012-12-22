@@ -12,5 +12,5 @@ class TestUniprotQuery(IntegrationTestCase):
         accs = ['A0K45A', 'Q91ZU6-5', 'Q91ZU6-3', 'Q969I3-2', 'B1WC86', 'A1L112', 'B2RXC1', 'A6NF89', 'A6NH21']
         result = uniprot_tools.get_uniprot_records(accs)
 
-        self.assertTrue(set(accs[1:]) < set(result.keys()))
+        self.assertLess(set(accs[1:]), set(result.keys()))
         self.assertEqual(14, len(result))

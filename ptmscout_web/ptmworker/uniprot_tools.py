@@ -7,6 +7,9 @@ import os
 from Bio import SeqIO
 import re
 import traceback
+import logging
+
+log = logging.getLogger('ptmscout')
 
 uniprot_url = 'http://www.uniprot.org/uniprot/?'
 uniprot_batch_url = 'http://www.uniprot.org/batch/'
@@ -60,9 +63,10 @@ MAX_RECORD_PER_ISOFORM_QUERY = 20
 
 def __query_for_isoforms(root_accessions, result_map):
     acc_q = '+OR+'.join([ 'accession:%s' % (k) for k in root_accessions ])
-    query = 'query=%s&format=fasta&include=yes' % (acc_q)
-    result = urllib2.urlopen(uniprot_url + query)
+    query = uniprot_url + 'query=%s&format=fasta&include=yes' % (acc_q)
+    result = urllib2.urlopen(query)
     parsed_result = SeqIO.parse(result, 'fasta')
+
 
     for record in parsed_result:
         name = parse_description(record.description)
@@ -75,7 +79,7 @@ def __query_for_isoforms(root_accessions, result_map):
 
 def get_protein_isoforms(root_accessions):
     if settings.DISABLE_UNIPROT_QUERY:
-        return []
+        return {}
 
     result_map = {}
 
@@ -146,7 +150,7 @@ def map_combine(r1, r2):
 
 @rate_limit(rate=3)
 def get_uniprot_records(accs):
-    print "Query:", accs
+    log.debug("Query: %s", str(accs))
     if settings.DISABLE_UNIPROT_QUERY:
         return []
 
@@ -162,7 +166,7 @@ def get_uniprot_records(accs):
         map_isoform_results(result_map, isoform_map)
         return result_map
     except urllib2.HTTPError:
-        print "Failed query..."
+        log.debug( "Failed query..." )
         if len(accs) == 1:
             return {}
         else:
