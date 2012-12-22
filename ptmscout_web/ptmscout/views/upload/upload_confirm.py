@@ -21,12 +21,12 @@ def prepare_experiment(session, exp, user):
     if session.load_type=='reload' or session.load_type == 'append':
         parent_exp = experiment.getExperimentById(session.parent_experiment, user, check_ready=False)
         parent_exp.copyData(exp)
+        exp_target.clearErrors()
         
         session.experiment_id = parent_exp.id
         exp_target = parent_exp
 
     if session.load_type=='reload':
-        exp_target.clearErrors()
         modifications.deleteExperimentData(parent_exp.id)
 
     exp_target.export = 1
