@@ -70,7 +70,42 @@ class ProteinTest(DBTestCase):
             self.fail("Unexpected exception occurred: " + str(e))
         else:
             self.fail("Expected IntegrityError on last DB operation")
-    
+   
+    def test_searchProteins(self):
+        cnt, prots = protein.searchProteins("ACK1")
+
+        expected_ids = [10367, 17551, 19946, 35546]
+        self.assertEqual(expected_ids, sorted( [p.id for p in prots] ))
+        self.assertEqual(4, cnt)
+
+    def test_searchProteins_filter_species(self):
+        expected_ids = [35546, 10367]
+        
+        cnt, prots = protein.searchProteins("ACK1", "homo sapiens")
+        
+        self.assertEqual(sorted(expected_ids), sorted([ prot.id for prot in prots ]))
+        self.assertEqual(2, cnt)
+
+    def test_searchProteins_by_acc_gene(self):
+        expected_ids = [1212, 13807]
+
+        cnt, prots = protein.searchProteins("CLEC16A")
+
+        self.assertEqual(2, cnt)
+        self.assertEqual(expected_ids, sorted( [p.id for p in prots] ))
+
+    def test_searchProteins_by_name(self):
+        cnt, prots = protein.searchProteins("ubiquitin-protein ligase", "homo sapiens")
+        self.assertEqual(88, cnt)
+        self.assertEqual(88, len(prots))
+
+    def test_searchProteins_by_sequence(self):
+        exp_ids = [7, 1212]
+        cnt, prots = protein.searchProteins("HGKTSRNIHSLDHLKYLYHVLT")
+
+        self.assertEqual(2, cnt)
+        self.assertEqual(exp_ids, sorted( [ p.id for p in prots ] ))
+ 
     def test_getProteinsByAccession(self):
         expected_ids = [10367, 17551, 19946, 35546]
         

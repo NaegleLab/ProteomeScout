@@ -164,6 +164,28 @@ def getProteinsByAccession(accessions, species=None):
     
     return q.all()
 
+def searchProteins(search, species=None, page=None):
+    search = "%" + search + "%"
+
+    q = DBSession.query(Protein.id).join(Protein.accessions).join(Protein.species)
+    or_clause = or_(Protein.acc_gene.like(search),
+            ProteinAccession.value.like(search),
+            Protein.name.like(search),
+            Protein.sequence.like(search))
+
+    if species:
+        q = q.filter(and_(or_clause, taxonomies.Species.name==species)).distinct()
+    else:
+        q = q.filter(or_clause).distinct()
+
+    if page==None:
+        sq = q.subquery()
+    else:
+        limit, offset = page
+        sq = q.limit(limit).offset(offset).subquery()
+
+    fq = DBSession.query(Protein).join(sq, Protein.id == sq.c.id)
+    return fq.count(), fq.all()
 
 def getProteinDomain(prot_id, pep_site):
     return DBSession.query(ProteinDomain).filter(and_(ProteinDomain.protein_id==prot_id, ProteinDomain.start <= pep_site, pep_site <= ProteinDomain.stop)).first()    
