@@ -17,7 +17,7 @@ def protein_search_view(request):
     proteins = []
     protein_mods={}
     if(submitted and acc_search != ""):
-        proteins = protein.getProteinsByAccession([acc_search], species=selected_species)
+        protein_cnt, proteins = protein.searchProteins(acc_search, species=selected_species)
         
         for p in proteins:
             mods = modifications.getMeasuredPeptidesByProtein(p.id, request.user)

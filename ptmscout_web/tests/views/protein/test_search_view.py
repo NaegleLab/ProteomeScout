@@ -58,7 +58,7 @@ class TestProteinSearchViews(UnitTestCase):
         self.assertEqual(True, result['submitted'])
     
     @patch('ptmscout.database.modifications.getMeasuredPeptidesByProtein')
-    @patch('ptmscout.database.protein.getProteinsByAccession')
+    @patch('ptmscout.database.protein.searchProteins')
     @patch('ptmscout.database.taxonomies.getAllSpecies')
     def test_protein_search_view_should_process_search_form(self, patch_getSpecies, patch_getProteins, patch_getMods):
         request = DummyRequest()
@@ -89,13 +89,13 @@ class TestProteinSearchViews(UnitTestCase):
         request.user = ptm_user
         
         patch_getSpecies.return_value = species_list
-        patch_getProteins.return_value = protein_list
+        patch_getProteins.return_value = len(protein_list), protein_list
         patch_getMods.return_value = mod_list
         
         result = protein_search_view(request)
         
         patch_getMods.assert_called_with(p1.id, ptm_user)
-        patch_getProteins.assert_called_with(["ACK1"], species="homo sapiens")
+        patch_getProteins.assert_called_with("ACK1", species="homo sapiens")
         patch_getSpecies.assert_called_with()
         self.assertEqual(strings.protein_search_page_title, result['pageTitle'])
         self.assertEqual(['mus musculus', 'homo sapiens'], result['species_list'])
