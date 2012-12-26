@@ -5,7 +5,7 @@ from ptmscout.config import strings
 import logging
 import sys
 from ptmscout.database.modifications import NoSuchPeptide
-from ptmworker import scansite_tools
+from ptmworker import scansite_tools, quickgo_tools
 import transaction
 import traceback
 import re
@@ -27,6 +27,7 @@ def logged_task(fn):
 
 def transaction_task(fn):
     def ttask(*args):
+        from ptmscout.database import DBSession
         log.debug("Running task: %s", fn.__name__)
         try:
             result = fn(*args)
@@ -54,6 +55,58 @@ def dynamic_transaction_task(fn):
             transaction.abort()
     ttask.__name__ = fn.__name__
     return ttask
+
+def get_go_annotation(goId, protein_id, dateAdded, complete_go_terms, missing_terms):
+    go_term = protein.getGoAnnotationById(goId)
+    entry = None
+
+    if go_term == None:
+
+        go_term = protein.GeneOntology()
+        version, entry = quickgo_tools.get_GO_term(goId)
+
+        for parent_goId in entry.is_a:
+            if parent_goId not in complete_go_terms and \
+                    protein.getGoAnnotationById(parent_goId) == None:
+                missing_terms.add(parent_goId)
+
+        go_term.GO = entry.goId
+        go_term.term = entry.goName
+        go_term.aspect = entry.goFunction
+        go_term.version = version
+
+    goe = protein.GeneOntologyEntry()
+    goe.GO_term = go_term
+    goe.protein_id = protein_id
+    goe.date = dateAdded
+    goe.save()
+
+    print "Added term:", goe.GO_term.GO
+    return entry
+
+def query_missing_GO_terms(missing_terms):
+    processed_missing = set()
+    while len(missing_terms) > 0:
+        goId = missing_terms.pop(0)
+        if goId in processed_missing:
+            continue
+
+        go_term = protein.GeneOntology()
+        version, entry = quickgo_tools.get_GO_term(goId)
+
+        go_term.GO = entry.goId
+        go_term.term = entry.goName
+        go_term.aspect = entry.goFunction
+        go_term.version = version
+        go_term.save()
+        created_go_entries.append(entry)
+        created+=1
+        processed_missing.add(goId)
+
+        for parent_goId in entry.is_a:
+            if parent_goId not in complete_go_terms and \
+                    protein.getGoAnnotationById(parent_goId) == None:
+                missing_terms.append(parent_goId)
 
 
 

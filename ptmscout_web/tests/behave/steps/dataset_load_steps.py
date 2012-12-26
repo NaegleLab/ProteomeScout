@@ -50,6 +50,7 @@ def submit_big_dataset(context):
 def log_abort():
     import logging 
     logging.getLogger('ptmscout').debug("Transaction aborted")
+    raise Exception()
 
 def session_flush():
     import logging 
