@@ -8,6 +8,7 @@ from pyramid.view import view_config
 def protein_search_view(request):
     submitted = bool(webutils.post(request, 'submitted', False))
     acc_search = webutils.post(request, 'acc_search', "")
+    pep_search = webutils.post(request, 'pep_search', "")
     stringency = webutils.post(request, 'stringency', "1")
     selected_species = webutils.post(request, 'species', None)
     
@@ -16,16 +17,18 @@ def protein_search_view(request):
     
     proteins = []
     protein_mods={}
-    if(submitted and acc_search != ""):
-        protein_cnt, proteins = protein.searchProteins(acc_search, species=selected_species)
+    if(submitted and ( acc_search != "" or pep_search != "" )):
+        protein_cnt, proteins = protein.searchProteins(search=acc_search,
+                species=selected_species, sequence=pep_search)
         
         for p in proteins:
             mods = modifications.getMeasuredPeptidesByProtein(p.id, request.user)
+            peps = set()
             for mod in mods:
-                peps = protein_mods.get(p.id, set())
                 [ peps.add(pep.peptide) for pep in mod.peptides ]
-                protein_mods[p.id] = peps
+            protein_mods[p.id] = peps
     
+
     proteins = sorted(proteins, key=lambda prot: prot.acc_gene)
     
     for pid in protein_mods:
@@ -37,6 +40,7 @@ def protein_search_view(request):
     return {'pageTitle': strings.protein_search_page_title,
             'species_list': species_list,
             'acc_search':acc_search,
+            'pep_search':pep_search,
             'stringency':stringency,
             'selected_species':selected_species,
             'proteins':proteins,

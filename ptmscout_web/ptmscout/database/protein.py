@@ -164,19 +164,21 @@ def getProteinsByAccession(accessions, species=None):
     
     return q.all()
 
-def searchProteins(search, species=None, page=None):
-    search = "%" + search + "%"
+def searchProteins(search=None, species=None, sequence=None, page=None):
+    search = ( "%" + search + "%" ) if search else "%"
 
     q = DBSession.query(Protein.id).join(Protein.accessions).join(Protein.species)
-    or_clause = or_(Protein.acc_gene.like(search),
+    clause = or_(Protein.acc_gene.like(search),
             ProteinAccession.value.like(search),
-            Protein.name.like(search),
-            Protein.sequence.like(search))
+            Protein.name.like(search))
 
+    if sequence:
+        seq_search = ( "%" + sequence + "%" ) if sequence else "%"
+        clause = and_(clause, Protein.sequence.like(seq_search))
     if species:
-        q = q.filter(and_(or_clause, taxonomies.Species.name==species)).distinct()
-    else:
-        q = q.filter(or_clause).distinct()
+        clause = and_(clause, taxonomies.Species.name==species)
+
+    q = q.filter(clause).distinct()
 
     if page==None:
         sq = q.subquery()

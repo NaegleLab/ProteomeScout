@@ -101,7 +101,7 @@ class ProteinTest(DBTestCase):
 
     def test_searchProteins_by_sequence(self):
         exp_ids = [7, 1212]
-        cnt, prots = protein.searchProteins("HGKTSRNIHSLDHLKYLYHVLT")
+        cnt, prots = protein.searchProteins(sequence="HGKTSRNIHSLDHLKYLYHVLT")
 
         self.assertEqual(2, cnt)
         self.assertEqual(exp_ids, sorted( [ p.id for p in prots ] ))
