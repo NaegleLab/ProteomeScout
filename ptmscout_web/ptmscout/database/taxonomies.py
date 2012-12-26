@@ -27,7 +27,5 @@ def getAllSpecies():
 def getTaxonomyById(txid):
     return DBSession.query(Taxonomy).filter_by(node_id=txid).first()
 
-def getTaxonByName(taxon):
-    return DBSession.query(Taxonomy).filter_by(name=taxon).first()
-
-
+def getTaxonByName(taxon, strain=None):
+    return DBSession.query(Taxonomy).filter_by(name=taxon, strain=strain).first()

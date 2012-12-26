@@ -26,6 +26,20 @@ class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
 
     @patch('ptmscout.database.taxonomies.getTaxonByName')
     @patch('ptmscout.database.taxonomies.getSpeciesByName')
+    def test_find_or_create_species_should_get_strain_or_isolate(self, patch_getSpecies, patch_getTaxon):
+        patch_getSpecies.return_value = None
+        taxon = createMockTaxonomy()
+        patch_getTaxon.return_value = taxon
+
+        species_name = 'sacchromyces cerevisiae (strain ATC2044)'
+        sp = upload_helpers.find_or_create_species(species_name)
+
+        patch_getTaxon.assert_called_once_with('sacchromyces cerevisiae', strain='strain ATC2044')
+        self.assertEqual(species_name, sp.name)
+        self.assertEqual(taxon.node_id, sp.taxon_id)
+
+    @patch('ptmscout.database.taxonomies.getTaxonByName')
+    @patch('ptmscout.database.taxonomies.getSpeciesByName')
     def test_find_or_create_species_should_raise_error_if_no_taxon(self, patch_getSpecies, patch_getTaxon):
         patch_getSpecies.return_value = None
         taxon = createMockTaxonomy()
@@ -47,6 +61,7 @@ class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
         
         sp = upload_helpers.find_or_create_species('some species')
         
+        patch_getTaxon.assert_called_once_with('some species', strain=None)
         self.assertEqual('some species', sp.name)
         self.assertEqual(taxon.node_id, sp.taxon_id)
 

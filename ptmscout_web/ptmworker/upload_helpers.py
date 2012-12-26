@@ -90,11 +90,23 @@ def mark_experiment(exp_id, status):
     exp.saveExperiment()
     return exp
 
+
+def get_strain_or_isolate(species):
+    m = re.match(r"^(.*) \(((?:strain|isolate) .*)\)$", species)
+
+    if m:
+        species_root = m.group(1)
+        strain = m.group(2)
+        return species_root, strain
+
+    return species, None
+
 def find_or_create_species(species):
     sp = taxonomies.getSpeciesByName(species)
     
     if(sp == None):
-        tx = taxonomies.getTaxonByName(species)
+        species_root, strain = get_strain_or_isolate(species)
+        tx = taxonomies.getTaxonByName(species_root, strain=strain)
         
         if tx == None:
             raise uploadutils.ParseError(None, None, "Species: " + species + " does not match any taxon node")
