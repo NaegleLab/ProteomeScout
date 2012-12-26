@@ -15,12 +15,13 @@ class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
         
         prot.acc_gene = 'TNK2'
         prot.accessions.append(createMockAccession(prot.id, value='ACK1_HUMAN', type='uniprot'))
+        prot.accessions.append(createMockAccession(prot.id, value='NP_0001709', type='refseq'))
         
         patch_getProbes.return_value = [probe]
         
         upload_helpers.map_expression_probesets(prot)
         
-        patch_getProbes.assert_called_once_with(['ACK1_HUMAN', 'TNK2'], prot.species_id)
+        patch_getProbes.assert_called_once_with(['NP_0001709', 'TNK2'], prot.species_id)
         
         self.assertEqual([probe], prot.expression_probes)
 

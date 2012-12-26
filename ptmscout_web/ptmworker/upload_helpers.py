@@ -120,7 +120,7 @@ def create_accession_for_protein(prot, other_accessions):
 
 
 def map_expression_probesets(prot):
-    search_accessions = [ acc.value for acc in prot.accessions ]
+    search_accessions = [ acc.value for acc in prot.accessions if acc.type.lower()=='refseq' ]
     if prot.acc_gene != '' and prot.acc_gene != None:
         search_accessions.append(prot.acc_gene)
     
