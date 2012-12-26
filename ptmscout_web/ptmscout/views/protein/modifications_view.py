@@ -13,13 +13,13 @@ def protein_modifications_view(request):
     for MS in modifications.getMeasuredPeptidesByProtein(pid, request.user):
         for pepmod in MS.peptides:
             pep = pepmod.peptide
-            pep_tuple = (pep.getName(), pep.getPeptide())
+            pep_tuple = (pep, pepmod.modification.name)
             exps = mod_sites.get(pep_tuple, set())
             exps.add(MS.experiment)
             mod_sites[pep_tuple] = exps
             
-    mod_sites = [{'name':name, 'peptide':pep, 'experiments':exps} for (name, pep), exps in mod_sites.items()]
-    mod_sites = sorted( mod_sites, key=lambda item: item['name'] )
+    mod_sites = [{'site':pep.site_pos, 'name':pep.getName(), 'type':mod_type, 'peptide':pep.getPeptide(), 'experiments':exps} for (pep, mod_type), exps in mod_sites.items()]
+    mod_sites = sorted( mod_sites, key=lambda item: item['site'] )
     
     return {'protein': prot,
             'pageTitle': strings.protein_modification_sites_page_title,

@@ -10,13 +10,15 @@
 				<tbody>
 					<tr>
 						<th>Site</th>
-						<th>Peptide</th>
+                        <th>Peptide</th>
+                        <th>Modification</th>
 						<th>Experiment</th>
 					</tr>
 					<tal:empty tal:repeat="(i, mod) enumerate(modification_sites)">
 						<tr valign="top" tal:attributes="class 'mod_site ' + ('even' if i % 2 == 0 else 'odd');">
 							<td><a tal:attributes="name mod['name']" tal:content="mod['name']"></a></td>
-							<td tal:content="mod['peptide']"></td>
+                            <td tal:content="mod['peptide']"></td>
+                            <td tal:content="mod['type']"></td>
 							<td>
 								<ul class="no_bullet">
 									<li tal:repeat="exp mod['experiments']">
