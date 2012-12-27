@@ -21,5 +21,5 @@ class ExpressionTestCase(DBTestCase):
         self.assertEqual(1, len(tounge_sample))
         
     def test_getExpressionProbeSet(self):
-        probesets = gene_expression.getExpressionProbeSetsForProtein(['Q2L6H3','HSPA6','Gm378'])
-        self.assertEqual([1, 3, 6695, 8274, 10210, 12799, 69693], sorted([probe.id for probe in probesets]))
+        probesets = gene_expression.getExpressionProbeSetsForProtein(['Q2L6H3','HSPA6','Gm378'], 46)
+        self.assertEqual([1, 3, 6695, 8274, 10210, 12799], sorted([probe.id for probe in probesets]))

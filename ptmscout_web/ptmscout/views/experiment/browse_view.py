@@ -19,7 +19,7 @@ def browse_experiment(request):
     if(not submitted or len(acc_search) > 0):
         
         if(submitted):
-            protein_list = protein.getProteinsByAccession([acc_search])
+            protein_cnt, protein_list = protein.searchProteins(acc_search)
             mod_list = modifications.getMeasuredPeptidesByExperiment(ptm_exp.id, request.user, [p.id for p in protein_list])
         else:
             mod_list = modifications.getMeasuredPeptidesByExperiment(ptm_exp.id, request.user)

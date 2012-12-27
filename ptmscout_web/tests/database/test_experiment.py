@@ -6,6 +6,50 @@ from mock import patch
 from ptmscout.database import user, permissions
 
 class ExperimentTestCase(DBTestCase):
+    
+    def test_experiment_copy_should_copy_all_data(self):
+        exp = dbexperiment.getExperimentById(26, None)
+        
+        nexp = dbexperiment.Experiment()
+        nexp.copyData(exp)
+        
+        self.assertEqual(exp.name, nexp.name)
+        self.assertEqual(exp.author, nexp.author)
+        self.assertEqual(exp.date, nexp.date)
+
+        self.assertEqual(exp.description, nexp.description)
+        self.assertEqual(exp.contact, nexp.contact)
+
+        self.assertEqual(exp.PMID, nexp.PMID)
+        self.assertEqual(exp.URL, nexp.URL)
+        self.assertEqual(exp.published, nexp.published)
+
+        self.assertEqual(exp.ambiguity, nexp.ambiguity)
+        self.assertEqual(exp.export, nexp.export)
+        self.assertEqual(exp.experiment_id, nexp.experiment_id)
+        
+        self.assertEqual(exp.dataset, nexp.dataset)
+        
+        self.assertEqual(exp.volume, nexp.volume)
+        self.assertEqual(exp.page_start, nexp.page_start)
+        self.assertEqual(exp.page_end, nexp.page_end)
+        self.assertEqual(exp.journal, nexp.journal)
+        self.assertEqual(exp.publication_year, nexp.publication_year)
+        self.assertEqual(exp.publication_month, nexp.publication_month)
+
+        self.assertEqual(exp.public, nexp.public)
+
+        self.assertEqual(exp.status, nexp.status)
+        self.assertEqual(exp.submitter_id, nexp.submitter_id)
+
+        self.assertEqual(exp.num_measured_peptides, nexp.num_measured_peptides)
+
+        self.assertEqual([], nexp.errors)
+        self.assertEqual([], nexp.conditions)
+        
+        
+        
+    
     def test_getExperimentById_should_succeed_on_existing_experiment(self):
         experiment = dbexperiment.getExperimentById(1, None)
         
@@ -66,7 +110,7 @@ class ExperimentTestCase(DBTestCase):
         exp.public = 0
         exp.saveExperiment()
         
-        exp2 = dbexperiment.getExperimentById(2, None)
+        exp2 = dbexperiment.getExperimentById(26, None)
         exp2.status = 'preload'
         exp2.saveExperiment()
         

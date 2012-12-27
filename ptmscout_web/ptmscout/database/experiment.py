@@ -7,6 +7,9 @@ from sqlalchemy.types import Float, Enum, DateTime
 from sqlalchemy.sql.expression import null
 import datetime
 from sqlalchemy.orm import relationship
+import logging
+
+log = logging.getLogger('ptmscout')
 
 class ExperimentError(Base):
     __tablename__ = 'experiment_error'
@@ -80,11 +83,13 @@ class Experiment(Base):
     
     public = Column(Integer(1), default=0)
     
-    status = Column(Enum('preload','loading','loaded'), default='preload')
+    status = Column(Enum('configuration', 'in queue','loading','loaded', 'error'), default='configuration')
     submitter_id = Column(Integer(10), ForeignKey('users.id'))
+
+    num_measured_peptides = Column(Integer(10), default=0)
     
     errors = relationship("ExperimentError", cascade="all,delete-orphan")
-    conditions = relationship("ExperimentCondition", cascade="all,delete-orphan")
+    conditions = relationship("ExperimentCondition", cascade="all")
     permissions = relationship("Permission", backref="experiment", cascade="all,delete-orphan")
     
     def __init__(self):
@@ -97,6 +102,49 @@ class Experiment(Base):
     def delete(self):
         DBSession.delete(self)
         
+    def copyData(self, exp):
+        self.name = exp.name
+        self.author = exp.author
+        self.date = exp.date
+        
+        self.description = exp.description
+        self.contact = exp.contact
+        
+        self.PMID = exp.PMID
+        self.URL = exp.URL
+        self.published = exp.published
+        
+        self.ambiguity = exp.ambiguity
+        self.export = exp.export
+        self.experiment_id = exp.experiment_id
+        
+        self.dataset = exp.dataset
+        
+        self.volume = exp.volume
+        self.page_start = exp.page_start
+        self.page_end = exp.page_end
+        self.journal = exp.journal
+        self.publication_year = exp.publication_year
+        self.publication_month = exp.publication_month
+        
+        self.public = exp.public
+        
+        self.status = exp.status
+        self.submitter_id = exp.submitter_id
+        
+        self.num_measured_peptides = exp.num_measured_peptides
+        
+        self.conditions = []
+        for c in exp.conditions:
+            expc = ExperimentCondition()
+            expc.type = c.type
+            expc.value = c.value
+            
+            self.conditions.append(expc)
+            
+    def clearErrors(self):
+        self.errors = []
+
     def getCitationString(self):
         string = ""
         if self.published == 1:
@@ -238,7 +286,7 @@ def getExperimentById(experiment_id, user=None, check_ready=True, secure=True):
     return value
 
 def getAllExperiments(current_user):
-    return [ exp for exp in  DBSession.query(Experiment).all() if exp.checkPermissions(current_user) and exp.ready() ]
+    return [ exp for exp in  DBSession.query(Experiment).all() if exp.checkPermissions(current_user) and exp.ready() and exp.export == 1 ]
 
 def getExperimentTree(current_user):
     experiments = getAllExperiments(current_user)
@@ -262,6 +310,7 @@ def getValuesForField(field_name):
     return sorted([ r.value for r in results ])
 
 def createExperimentError(exp_id, line, accession, peptide, message):
+    log.debug("Error: (%s, %s) %s", accession, peptide, message)
     err = ExperimentError()
     err.experiment_id = exp_id
     err.line = line

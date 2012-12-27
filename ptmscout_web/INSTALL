@@ -1,0 +1,111 @@
+Installation Notes
+------------------
+
+Install webserver
+
+$ sudo apt-get install apache2, libapache2-mod-wsgi
+$ sudo a2enmod ssl
+$ sudo apache2ctl restart
+$ sudo apt-get install mysql-server, libmysqlclient-dev
+
+
+Setup mysql root user and password
+
+$ sudo dpkg-reconfigure mysql-server-5.5
+
+
+Install build tools and python
+
+$ sudo apt-get install build-essential
+$ sudo apt-get install python2.7-dev python-mysqldb python-setuptools python-virtualenv python-biopython
+
+
+Create pyramid environment
+
+$ cd /
+$ mkdir data
+$ cd /data
+$ virtualenv --system-site-packages pyramid
+$ source pyramid/bin/activate
+$ easy_install pyramid
+$ easy_install docutils nose coverage zope.sqlalchemy SQLAlchemy pyramid_tm waitress pyramid_mailer
+$ pip install behave
+$ pip install webtest
+$ pip install mock
+
+
+Install ptmscout
+
+$ cd /data
+$ hg clone https://bitbucket.org/knaegle/ptmscout_dev
+$ cd ptmscout
+$ ./init.sh
+$ chown -R www-data *
+$ chmod -R 755 *
+
+$ cd /data/pyramid
+$ ln -s /data/ptmscout ptmscout
+
+$ cp scripts/server/pyramid.wsgi /data/pyramid/pyramid.wsgi
+$ cp scripts/server/modwsgi.conf /etc/apache2/modwsgi.conf
+$ sudo echo "Include modwsgi.conf" >> /etc/apache2/apache2.conf
+
+$ sudo apache2ctl restart
+
+
+Install dos2unix
+
+$ sudo apt-get install dos2unix
+
+
+Install geeneus
+
+$ cd /data/ptmscout/modules
+$ git clone https://github.com/rednaxela/Geeneus
+
+
+Install celery
+
+$ sudo apt-get install rabbitmq-server
+$ pip install celery
+$ pip install pyramid-celery
+
+
+Initialize the database
+
+$ cd /data/ptmscout
+$ mysql -u root -p < scripts/database_defs.sql
+$ mysql -u root -p < scripts/create_ptmuser.sql
+
+
+Create the test database
+
+$ wget https://bitbucket.org/knaegle/ptmscout_dev/files/ptmscout_test.tar.gz
+$ tar zxvf ptmscout_test.tar.gz
+$ mysql -u root -p < ptmscout_test.sql
+
+
+Populate PTM, expression and species tables
+
+$ wget https://bitbucket.org/knaegle/ptmscout_dev/files/tables.tar.gz
+$ tar zxvf tables.tar.gz
+$ mysql -u root -p ptmscout < species_defs.sql
+$ mysql -u root -p ptmscout < ptm_defs.sql
+$ mysql -u root -p ptmscout < expression_defs.sql
+$ mysql -u root -p ptmscout < condition_defs.sql
+
+
+Pre-populate the GO tables
+
+$ cd /data/ptmscout
+$ mkdir scripts/data
+$ wget -O scripts/data/gene_ontology.1_2.obo http://www.geneontology.org/ontology/obo_format_1_2/gene_ontology.1_2.obo
+$ python scripts/import_gene_ontology_terms.py
+$ python scripts/import_gene_ontology_is_a_relationships.py
+
+
+Run the tests
+
+$ cd /data/ptmscout/
+$ ./unittest.sh
+$ ./behave.sh

@@ -10,8 +10,12 @@
 				<p>
 					<label for="acc_search">Protein:</label> 
 					<input type="text" name="acc_search" value="${acc_search}">
-					<span tal:condition="submitted and acc_search == ''" class="errortext">This term is required</span>
-				</p>
+					<span tal:condition="submitted and acc_search == '' and pep_search == ''" class="errortext">Protein or peptide is required</span>
+                    </p>
+                <p>
+					<label for="pep_search">Peptide:</label> 
+                    <input type="text" name="pep_search" value="${pep_search}">
+                </p>
 				<p>
 					<label for="stringency">Prediction Stringency:</label> <br />
 					

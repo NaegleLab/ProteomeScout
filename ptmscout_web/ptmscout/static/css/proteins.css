@@ -11,6 +11,7 @@
 }
 
 .errortext {
+	color:red;
 	text-align:center;
 }
 
@@ -118,10 +119,6 @@ tr.even {
 
 tr.odd {
 	background:#CCC;
-}
-
-.errortext {
-	color:red;
 }
 
 .experiment {

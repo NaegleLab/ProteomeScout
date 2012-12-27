@@ -1,5 +1,4 @@
 from pyramid_mailer import get_mailer
-from ptmscout.config.settings import automailerEmail
 from pyramid_mailer.message import Message
 import celery.utils
 from ptmscout.config import settings
@@ -8,10 +7,8 @@ import re
 def send_automail_message(request, recipients, subject, message):
     mailer = get_mailer(request)
 
-    message = Message(subject=subject,
-          sender=automailerEmail,
-          recipients=recipients,
-          body=message)
+    message = Message(subject=subject, sender=settings.automailerEmail,
+            recipients=recipients, html=message)
 
     mailer.send_immediately(message)
     

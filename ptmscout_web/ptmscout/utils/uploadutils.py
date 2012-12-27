@@ -95,6 +95,9 @@ def check_modification_type_matches_peptide(row, peptide, modification, taxon_no
         matches = [ mod for mod in mods if mod.target == residue ]
         parents = [ mod for mod in mods if mod.target == None ]
         
+        if len(matches) == 0:
+            raise ParseError(row, None, "Unexpected Error: PTM type '%s' had no residue specific matches." % (mod_type))
+
         selected_mod = matches[0]
         if len(matches) > 1:
             if len(parents) == 0:
@@ -272,14 +275,20 @@ def load_header_and_data_rows(data_file, N=-1):
     width = len(header)
     while(width > 0 and header[width-1].strip() == ''):
         width-=1
+    
+    start_index = 0
 
-    header = header[0:width]
+    if header[0] == strings.experiment_upload_error_reasons_column_title:
+        start_index = 1
+
+    header = header[start_index:width]
     
     rows = []
     for row in ifile:
         if i >= N:
             break
-        row = row[0:width]
+        row = row[start_index:width]
         rows.append(row)
-    
+        i+=1
+
     return header, rows

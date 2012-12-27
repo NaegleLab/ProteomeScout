@@ -10,7 +10,7 @@ from tests.PTMScoutTestCase import UnitTestCase, IntegrationTestCase
 
 class TestProteinSearchViewIntegration(IntegrationTestCase):
     def test_integration(self):
-                self.ptmscoutapp.get('/proteins', {'acc_search':"ACK1", 'stringency':"2", 'submitted':"1", 'species':"all"}, status=200)
+        self.ptmscoutapp.get('/proteins', {'acc_search':"ACK1", 'stringency':"2", 'submitted':"1", 'species':"all"}, status=200)
                 
 class TestProteinSearchViews(UnitTestCase):
         
@@ -37,6 +37,7 @@ class TestProteinSearchViews(UnitTestCase):
         request = DummyRequest()
         request.POST['submitted'] = "true"
         request.POST['acc_search'] = ""
+        request.POST['pep_search'] = ""
         request.POST['stringency'] = "2"
         request.POST['species'] = "homo sapiens"
         
@@ -50,6 +51,7 @@ class TestProteinSearchViews(UnitTestCase):
         self.assertEqual(['mus musculus', 'homo sapiens'], result['species_list'])
         
         self.assertEqual("", result['acc_search'])
+        self.assertEqual("", result['pep_search'])
         self.assertEqual("2", result['stringency'])
         self.assertEqual("homo sapiens", result['selected_species'])
         self.assertEqual([], result['proteins'])
@@ -57,16 +59,8 @@ class TestProteinSearchViews(UnitTestCase):
         self.assertEqual({}, result['modifications'])
         self.assertEqual(True, result['submitted'])
     
-    @patch('ptmscout.database.modifications.getMeasuredPeptidesByProtein')
-    @patch('ptmscout.database.protein.getProteinsByAccession')
-    @patch('ptmscout.database.taxonomies.getAllSpecies')
-    def test_protein_search_view_should_process_search_form(self, patch_getSpecies, patch_getProteins, patch_getMods):
-        request = DummyRequest()
-        request.POST['submitted'] = "true"
-        request.POST['acc_search'] = "ACK1"
-        request.POST['stringency'] = "2"
-        request.POST['species'] = "homo sapiens"
-        
+
+    def run_test_of_search(self, request, patch_getProteins, patch_getSpecies, patch_getMods):
         species_list = [Species('mus musculus'), Species('homo sapiens')]
         p1 = createMockProtein()
         protein_list = [p1]
@@ -89,20 +83,22 @@ class TestProteinSearchViews(UnitTestCase):
         request.user = ptm_user
         
         patch_getSpecies.return_value = species_list
-        patch_getProteins.return_value = protein_list
+        patch_getProteins.return_value = ( len(protein_list), protein_list )
         patch_getMods.return_value = mod_list
         
         result = protein_search_view(request)
         
         patch_getMods.assert_called_with(p1.id, ptm_user)
-        patch_getProteins.assert_called_with(["ACK1"], species="homo sapiens")
+        patch_getProteins.assert_called_with(search=request.POST['acc_search'],
+            species=request.POST['species'], sequence=request.POST['pep_search'] )
         patch_getSpecies.assert_called_with()
         self.assertEqual(strings.protein_search_page_title, result['pageTitle'])
         self.assertEqual(['mus musculus', 'homo sapiens'], result['species_list'])
         
-        self.assertEqual("ACK1", result['acc_search'])
-        self.assertEqual("2", result['stringency'])
-        self.assertEqual("homo sapiens", result['selected_species'])
+        self.assertEqual(request.POST['acc_search'], result['acc_search'])
+        self.assertEqual(request.POST['pep_search'], result['pep_search'])
+        self.assertEqual(request.POST['stringency'], result['stringency'])
+        self.assertEqual(request.POST['species'], result['selected_species'])
         
         sorted_peps = sorted([pep1, pep2, pep3], key=lambda pep: pep.getName())
         parsed_peps = [{'site':pep.getName(), 'peptide':pep.getPeptide()} for pep in sorted_peps]
@@ -111,3 +107,30 @@ class TestProteinSearchViews(UnitTestCase):
         self.assertEqual(False, result['include_predictions'])
         self.assertEqual({p1.id: parsed_peps}, result['modifications'])
         self.assertEqual(True, result['submitted'])
+
+    @patch('ptmscout.database.modifications.getMeasuredPeptidesByProtein')
+    @patch('ptmscout.database.protein.searchProteins')
+    @patch('ptmscout.database.taxonomies.getAllSpecies')
+    def test_protein_search_view_should_process_search_form(self, patch_getSpecies, patch_getProteins, patch_getMods):
+        request = DummyRequest()
+        request.POST['submitted'] = "true"
+        request.POST['acc_search'] = "ACK1"
+        request.POST['pep_search'] = ""
+        request.POST['stringency'] = "2"
+        request.POST['species'] = "homo sapiens"
+        
+        self.run_test_of_search(request, patch_getProteins, patch_getSpecies, patch_getMods)
+
+
+    @patch('ptmscout.database.modifications.getMeasuredPeptidesByProtein')
+    @patch('ptmscout.database.protein.searchProteins')
+    @patch('ptmscout.database.taxonomies.getAllSpecies')
+    def test_protein_search_view_should_process_search_form(self, patch_getSpecies, patch_getProteins, patch_getMods):
+        request = DummyRequest()
+        request.POST['submitted'] = "true"
+        request.POST['acc_search'] = ""
+        request.POST['pep_search'] = "ASDFKJEC"
+        request.POST['stringency'] = "2"
+        request.POST['species'] = "homo sapiens"
+        
+        self.run_test_of_search(request, patch_getProteins, patch_getSpecies, patch_getMods)

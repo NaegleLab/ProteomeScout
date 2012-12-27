@@ -50,6 +50,10 @@ def get_form_schema(exp, request):
     
     return schema, added_fields
 
+def mark_status(session):
+    session.stage='confirm'
+    session.save()
+
 @view_config(route_name='upload_conditions', renderer='ptmscout:/templates/upload/upload_conditions.pt')
 def upload_conditions_view(request):
     submitted = webutils.post(request, 'submitted', False) == "true"
@@ -67,12 +71,14 @@ def upload_conditions_view(request):
         errors = forms.FormValidator(schema).validate()
         if len(errors) == 0:
             save_form_data(exp, schema, added_fields)
+            mark_status(session)
             return HTTPFound(request.application_url + "/upload/%d/confirm" % (session_id))
     
     return {'formrenderer':renderer,
             'pageTitle': strings.experiment_upload_conditions_page_title,
             'header': strings.experiment_upload_conditions_page_title,
             'errors':errors,
+            'session_id': session_id,
             'added_fields':added_fields,
             'MAX_FIELDS':MAX_VALUES
             }

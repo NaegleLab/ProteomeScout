@@ -1,6 +1,6 @@
 from ptmscout.database import Base, DBSession
 from sqlalchemy.schema import Column, ForeignKey, Table, UniqueConstraint
-from sqlalchemy.types import Integer, VARCHAR, CHAR, Float, Enum
+from sqlalchemy.types import Integer, VARCHAR, CHAR, Float, Enum, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import and_, or_
 
@@ -34,6 +34,7 @@ class PTM(Base):
     keywords = relationship("PTMkeyword")
 
     def hasTaxon(self, search_taxons):
+        search_taxons = set([t.lower() for t in search_taxons])
         return len(set([t.name.lower() for t in self.taxons]) & search_taxons) > 0
 
     def hasTarget(self, residue):
@@ -69,7 +70,9 @@ class Peptide(Base):
     
     protein_domain_id = Column(Integer(10), ForeignKey('protein_domain.id'))
     protein_id = Column(Integer(10), ForeignKey('protein.id'))
+    scansite_date = Column(DateTime)
     
+    protein = relationship("Protein")
     protein_domain = relationship("ProteinDomain")
     predictions = relationship(ScansitePrediction)
     
@@ -117,7 +120,18 @@ class MeasuredPeptide(Base):
         pmod.peptide = peptide
         pmod.modification = ptm
         self.peptides.append(pmod)
-        
+
+    def hasPeptideModification(self, peptide, ptm):
+        for modpep in self.peptides:
+            if modpep.peptide_id == peptide.id and modpep.modification_id == ptm.id:
+                return True
+        return False
+
+    def getDataElement(self, run_name, tp, x):
+        for d in self.data:
+            if d.run == run_name and d.type == tp and d.label == x:
+                return d
+
 class NoSuchPeptide(Exception):
     def __init__(self, pep_site, pep_type, protein_id):
         self.site = pep_site
@@ -126,6 +140,10 @@ class NoSuchPeptide(Exception):
         
     def __repr__(self):
         return "No such peptide modification at site %d, residue: %s, protein: %d" % (self.site, self.t, self.protein_id)
+
+def getMeasuredPeptide(exp_id, pep_seq, protein_id):
+    return DBSession.query(MeasuredPeptide).filter_by(experiment_id=exp_id, peptide=pep_seq, protein_id=protein_id).first()
+
 
 def getMeasuredPeptidesByProtein(pid, user):
     modifications = DBSession.query(MeasuredPeptide).filter_by(protein_id=pid).all()
@@ -138,6 +156,8 @@ def getMeasuredPeptidesByExperiment(eid, user=None, pids = None, secure=True, ch
         modifications = DBSession.query(MeasuredPeptide).filter_by(experiment_id=eid).all()
     return [ mod for mod in modifications if (not secure or mod.experiment.checkPermissions(user)) and (not check_ready or mod.experiment.ready()) ]
 
+def countMeasuredPeptidesForExperiment(eid):
+    return DBSession.query(MeasuredPeptide).filter_by(experiment_id=eid).count()
 
 def getPeptideBySite(pep_site, pep_type, prot_id):
     mod = DBSession.query(Peptide).filter_by(site_pos=pep_site, site_type=pep_type, protein_id=prot_id).first()
@@ -149,7 +169,7 @@ def getPeptideBySite(pep_site, pep_type, prot_id):
 
 
 def findMatchingPTM(mod_type, residue=None, taxons=None):
-    mods = DBSession.query(PTM).join(PTMkeyword).filter(or_(PTM.accession==mod_type, PTM.name==mod_type, PTMkeyword.keyword==mod_type)).all()
+    mods = DBSession.query(PTM).outerjoin(PTMkeyword).filter(or_(PTM.accession==mod_type, PTM.name==mod_type, PTMkeyword.keyword==mod_type)).all()
     
     mods_exist = len(mods) > 0
     
@@ -163,4 +183,6 @@ def findMatchingPTM(mod_type, residue=None, taxons=None):
 def getPeptideById(pep_id):
     return DBSession.query(Peptide).filter(Peptide.id==pep_id).first()
 
-
+def deleteExperimentData(exp_id):
+    DBSession.query(MeasuredPeptide).filter_by(experiment_id=exp_id).delete()
+    DBSession.flush()

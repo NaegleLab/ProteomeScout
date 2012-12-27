@@ -20,10 +20,10 @@
 				| <a href="${request.application_url}/experiments/${experiment.id}/GO">GO Terms</a>
 				| <a href="${request.application_url}/experiments/${experiment.id}/pfam">Protein Families</a>
 				| <a href="${request.application_url}/experiments/${experiment.id}/predictions">Scansite Predictions</a>
-				<tal:empty tal:condition="user_owner">|<a href="${request.application_url}/experiments/${experiment.id}/errors">Error Log</a></tal:empty>
+				<tal:empty tal:condition="user_owner">| <a href="${request.application_url}/experiments/${experiment.id}/errors">Error Log</a></tal:empty>
 			</div>
 		</div>
-
+        <div class="errortext" tal:condition = "len(predictions) == 0">The peptides in this experiment do not have any associated scansite predictions</div>
 		<div class="section_group" tal:repeat="(source, data) predictions.items()">
 			<div class="title" tal:content="source"></div>
 			<div class="body">

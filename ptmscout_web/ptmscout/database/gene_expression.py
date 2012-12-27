@@ -2,6 +2,7 @@ from ptmscout.database import Base, DBSession
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import VARCHAR, Text, Enum, Integer, Float
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql.expression import and_
 
 class ExpressionCollection(Base):
     __tablename__ = 'expression_collection'
@@ -53,9 +54,16 @@ class ExpressionProbeset(Base):
     
     
     
-def getExpressionProbeSetsForProtein(protein_accessions):
-    probesets = DBSession.query(ExpressionProbeset).join(ExpressionAccession).filter(ExpressionAccession.value.in_(protein_accessions)).all()
-    
+def getExpressionProbeSetsForProtein(protein_accessions, species_id):
+    probesets = \
+        DBSession \
+            .query(ExpressionProbeset) \
+            .join(ExpressionAccession) \
+            .filter(
+                and_(
+                    ExpressionAccession.value.in_(protein_accessions),
+                    ExpressionProbeset.species_id==species_id)).all()
+
     return probesets
     
     

@@ -1,7 +1,7 @@
 from tests.PTMScoutTestCase import UnitTestCase, IntegrationTestCase
 from pyramid.testing import DummyRequest
 from ptmscout.views.upload.upload_metadata import upload_metadata,\
-    write_experiment_properties, create_schema, get_experiment_ref
+    write_experiment_properties, create_schema, get_experiment_ref, mark_status
 from ptmscout.config import strings
 from tests.views.mocking import createMockUser, createMockExperiment,\
     createMockSession
@@ -29,40 +29,6 @@ class TestUploadView(UnitTestCase):
         
         session = createMockSession(user)
         session.experiment_id = exp.id
-        
-        nexp = get_experiment_ref(session, user)
-        
-        self.assertEqual(exp, nexp)
-        
-        patch_getExperiment.assert_called_once_with(exp.id, user, False)
-        
-    @patch('ptmscout.database.experiment.getExperimentById')
-    def test_get_experiment_ref_should_return_parent_experiment_if_reload(self, patch_getExperiment):
-        user = createMockUser()
-        
-        exp = createMockExperiment()
-        patch_getExperiment.return_value = exp
-        
-        session = createMockSession(user)
-        session.load_type = 'reload'
-        session.parent_experiment = exp.id
-        
-        nexp = get_experiment_ref(session, user)
-        
-        self.assertEqual(exp, nexp)
-        
-        patch_getExperiment.assert_called_once_with(exp.id, user, False)
-        
-    @patch('ptmscout.database.experiment.getExperimentById')
-    def test_get_experiment_ref_should_return_parent_experiment_if_append(self, patch_getExperiment):
-        user = createMockUser()
-        
-        exp = createMockExperiment()
-        patch_getExperiment.return_value = exp
-        
-        session = createMockSession(user)
-        session.load_type = 'append'
-        session.parent_experiment = exp.id
         
         nexp = get_experiment_ref(session, user)
         
@@ -106,7 +72,7 @@ class TestUploadView(UnitTestCase):
         experiment_instance.grantPermission.assert_called_once_with(current_user, 'owner')
         experiment_instance.saveExperiment.assert_called_once_with()
         
-        self.assertEqual('preload', experiment_instance.status)
+        self.assertEqual('configuration', experiment_instance.status)
         self.assertEqual(field_dict['experiment_name'], experiment_instance.name)
         self.assertEqual(None, experiment_instance.contact)
         self.assertEqual(None, experiment_instance.author)
@@ -114,7 +80,7 @@ class TestUploadView(UnitTestCase):
         self.assertEqual(0, experiment_instance.published)
         self.assertEqual(0, experiment_instance.ambiguity)
         self.assertEqual(0, experiment_instance.public)
-        self.assertEqual(1, experiment_instance.export)
+        self.assertEqual(0, experiment_instance.export)
         self.assertEqual(None, experiment_instance.publication_year)
         self.assertEqual(None, experiment_instance.publication_month)
         self.assertEqual(None, experiment_instance.volume)
@@ -144,7 +110,7 @@ class TestUploadView(UnitTestCase):
         
         experiment_instance.saveExperiment.assert_called_once_with()
         
-        self.assertEqual('preload', experiment_instance.status)
+        self.assertEqual('configuration', experiment_instance.status)
         self.assertEqual(field_dict['experiment_name'], experiment_instance.name)
         self.assertEqual(field_dict['author_contact'], experiment_instance.contact)
         self.assertEqual(field_dict['authors'], experiment_instance.author)
@@ -152,7 +118,7 @@ class TestUploadView(UnitTestCase):
         self.assertEqual(1, experiment_instance.published)
         self.assertEqual(0, experiment_instance.ambiguity)
         self.assertEqual(0, experiment_instance.public)
-        self.assertEqual(1, experiment_instance.export)
+        self.assertEqual(0, experiment_instance.export)
         self.assertEqual(int(field_dict['publication_year']), experiment_instance.publication_year)
         self.assertEqual(field_dict['publication_month'], experiment_instance.publication_month)
         self.assertEqual(int(field_dict['volume']), experiment_instance.volume)
@@ -165,6 +131,15 @@ class TestUploadView(UnitTestCase):
         self.assertEqual(exp_file, experiment_instance.dataset)
         self.assertEqual(current_user.id, experiment_instance.submitter_id)
     
+    def test_mark_status(self):
+        session = createMockSession(createMockUser())
+        exp = createMockExperiment(20)
+        mark_status(exp, session)
+        
+        self.assertEqual(20, session.experiment_id)
+        self.assertEqual('condition', session.stage)
+        session.save.assert_called_once_with()
+        
 
     @patch('ptmscout.views.upload.upload_metadata.mark_status')
     @patch('ptmscout.views.upload.upload_metadata.write_experiment_properties')
@@ -249,6 +224,7 @@ class TestUploadView(UnitTestCase):
         
         patch_prepopulate.assert_called_once_with(schema, session, request.user)
         
+        self.assertEqual(session_id, result['session_id'])
         self.assertEqual(strings.upload_page_title, result['pageTitle'])
         self.assertEqual([], result['errors'])
         self.assertEqual(schema, result['formrenderer'].schema)

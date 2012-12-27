@@ -1,0 +1,1814 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<uniprot xmlns="http://uniprot.org/uniprot" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://uniprot.org/uniprot http://www.uniprot.org/support/docs/uniprot.xsd">
+<entry dataset="Swiss-Prot" created="2003-04-30" modified="2012-11-28" version="104">
+<accession>Q91ZU6</accession>
+<accession>Q1KP04</accession>
+<accession>Q3I6J6</accession>
+<accession>Q60824</accession>
+<accession>Q60845</accession>
+<accession>Q8K5D4</accession>
+<accession>Q91ZU7</accession>
+<accession>Q91ZU8</accession>
+<accession>Q9WU50</accession>
+<name>DYST_MOUSE</name>
+<protein>
+<recommendedName>
+<fullName>Dystonin</fullName>
+</recommendedName>
+<alternativeName>
+<fullName>Bullous pemphigoid antigen 1</fullName>
+<shortName>BPA</shortName>
+</alternativeName>
+<alternativeName>
+<fullName>Dystonia musculorum protein</fullName>
+</alternativeName>
+<alternativeName>
+<fullName>Hemidesmosomal plaque protein</fullName>
+</alternativeName>
+<alternativeName>
+<fullName>Microtubule actin cross-linking factor 2</fullName>
+</alternativeName>
+</protein>
+<gene>
+<name type="primary">Dst</name>
+<name type="synonym">Bpag1</name>
+<name type="synonym">Macf2</name>
+</gene>
+<organism>
+<name type="scientific">Mus musculus</name>
+<name type="common">Mouse</name>
+<dbReference type="NCBI Taxonomy" id="10090"/>
+<lineage>
+<taxon>Eukaryota</taxon>
+<taxon>Metazoa</taxon>
+<taxon>Chordata</taxon>
+<taxon>Craniata</taxon>
+<taxon>Vertebrata</taxon>
+<taxon>Euteleostomi</taxon>
+<taxon>Mammalia</taxon>
+<taxon>Eutheria</taxon>
+<taxon>Euarchontoglires</taxon>
+<taxon>Glires</taxon>
+<taxon>Rodentia</taxon>
+<taxon>Sciurognathi</taxon>
+<taxon>Muroidea</taxon>
+<taxon>Muridae</taxon>
+<taxon>Murinae</taxon>
+<taxon>Mus</taxon>
+<taxon>Mus</taxon>
+</lineage>
+</organism>
+<reference key="1">
+<citation type="journal article" date="2001" name="J. Cell Biol." volume="154" first="691" last="697">
+<title>The BPAG1 locus: alternative splicing produces multiple isoforms with distinct cytoskeletal linker domains, including predominant isoforms in neurons and muscles.</title>
+<authorList>
+<person name="Leung C.L."/>
+<person name="Zheng M."/>
+<person name="Prater S.M."/>
+<person name="Liem R.K.H."/>
+</authorList>
+<dbReference type="MEDLINE" id="21405767"/>
+<dbReference type="PubMed" id="11514586"/>
+<dbReference type="DOI" id="10.1083/jcb.200012098"/>
+</citation>
+<scope>NUCLEOTIDE SEQUENCE [MRNA] (ISOFORMS 1; 2 AND 5)</scope>
+<scope>TISSUE SPECIFICITY</scope>
+<scope>DEVELOPMENTAL STAGE</scope>
+<scope>ALTERNATIVE SPLICING</scope>
+<source>
+<strain>BALB/c</strain>
+<tissue>Epithelium</tissue>
+<tissue>Muscle</tissue>
+<tissue>Neuron</tissue>
+</source>
+</reference>
+<reference key="2">
+<citation type="journal article" date="1995" name="Nat. Genet." volume="10" first="301" last="306">
+<title>The mouse dystonia musculorum gene is a neural isoform of bullous pemphigoid antigen 1.</title>
+<authorList>
+<person name="Brown A."/>
+<person name="Bernier G."/>
+<person name="Mathieu M."/>
+<person name="Rossant J."/>
+<person name="Kothary R."/>
+</authorList>
+<dbReference type="MEDLINE" id="95400297"/>
+<dbReference type="PubMed" id="7670468"/>
+<dbReference type="DOI" id="10.1038/ng0795-301"/>
+</citation>
+<scope>NUCLEOTIDE SEQUENCE [MRNA] OF 1-511 (ISOFORM 2)</scope>
+<scope>PARTIAL NUCLEOTIDE SEQUENCE [MRNA] (ISOFORM 6)</scope>
+<scope>TISSUE SPECIFICITY</scope>
+<scope>DEVELOPMENTAL STAGE</scope>
+<source>
+<tissue>Brain</tissue>
+</source>
+</reference>
+<reference key="3">
+<citation type="journal article" date="2006" name="Exp. Cell Res." volume="312" first="121" last="134">
+<title>A Bpag1 isoform involved in cytoskeletal organization surrounding the nucleus.</title>
+<authorList>
+<person name="Young K.G."/>
+<person name="Pinheiro B."/>
+<person name="Kothary R."/>
+</authorList>
+<dbReference type="PubMed" id="16289082"/>
+<dbReference type="DOI" id="10.1016/j.yexcr.2005.10.002"/>
+</citation>
+<scope>NUCLEOTIDE SEQUENCE [MRNA] OF 1-304 (ISOFORM 6)</scope>
+<scope>ALTERNATIVE SPLICING (ISOFORMS 2 AND 6)</scope>
+<scope>SUBCELLULAR LOCATION (ISOFORMS 2 AND 6)</scope>
+<source>
+<strain>C3H</strain>
+</source>
+</reference>
+<reference key="4">
+<citation type="journal article" date="2006" name="Exp. Cell Res." volume="312" first="2712" last="2725">
+<title>Dissecting the sequence specific functions of alternative N-terminal isoforms of mouse bullous pemphigoid antigen 1.</title>
+<authorList>
+<person name="Jefferson J.J."/>
+<person name="Leung C.L."/>
+<person name="Liem R.K."/>
+</authorList>
+<dbReference type="PubMed" id="16797530"/>
+<dbReference type="DOI" id="10.1016/j.yexcr.2006.04.025"/>
+</citation>
+<scope>NUCLEOTIDE SEQUENCE [MRNA] OF 1-270 (ISOFORM 7)</scope>
+<scope>ALTERNATIVE SPLICING (ISOFORMS 1; 6 AND 7)</scope>
+<scope>FUNCTION OF ISOFORMS 1; 6 AND 7</scope>
+<scope>PALMITOYLATION</scope>
+<scope>MYRISTOYLATION</scope>
+<scope>MUTAGENESIS</scope>
+<scope>SUBCELLULAR LOCATION</scope>
+<scope>TISSUE SPECIFICITY</scope>
+<source>
+<strain>C57BL/6 X CBA</strain>
+</source>
+</reference>
+<reference key="5">
+<citation type="journal article" date="2007" name="J. Mol. Biol." volume="366" first="244" last="257">
+<title>Structural analysis of the plakin domain of bullous pemphigoid antigen1 (BPAG1) suggests that plakins are members of the spectrin superfamily.</title>
+<authorList>
+<person name="Jefferson J.J."/>
+<person name="Ciatto C."/>
+<person name="Shapiro L."/>
+<person name="Liem R.K."/>
+</authorList>
+<dbReference type="PubMed" id="17161423"/>
+<dbReference type="DOI" id="10.1016/j.jmb.2006.11.036"/>
+</citation>
+<scope>PROTEIN SEQUENCE OF 580-584; 1043-1047 AND 1053-1057</scope>
+<scope>X-RAY CRYSTALLOGRAPHY (3.0 ANGSTROMS) OF 580-803</scope>
+</reference>
+<reference key="6">
+<citation type="journal article" date="2005" name="Science" volume="309" first="1559" last="1563">
+<title>The transcriptional landscape of the mammalian genome.</title>
+<authorList>
+<person name="Carninci P."/>
+<person name="Kasukawa T."/>
+<person name="Katayama S."/>
+<person name="Gough J."/>
+<person name="Frith M.C."/>
+<person name="Maeda N."/>
+<person name="Oyama R."/>
+<person name="Ravasi T."/>
+<person name="Lenhard B."/>
+<person name="Wells C."/>
+<person name="Kodzius R."/>
+<person name="Shimokawa K."/>
+<person name="Bajic V.B."/>
+<person name="Brenner S.E."/>
+<person name="Batalov S."/>
+<person name="Forrest A.R."/>
+<person name="Zavolan M."/>
+<person name="Davis M.J."/>
+<person name="Wilming L.G."/>
+<person name="Aidinis V."/>
+<person name="Allen J.E."/>
+<person name="Ambesi-Impiombato A."/>
+<person name="Apweiler R."/>
+<person name="Aturaliya R.N."/>
+<person name="Bailey T.L."/>
+<person name="Bansal M."/>
+<person name="Baxter L."/>
+<person name="Beisel K.W."/>
+<person name="Bersano T."/>
+<person name="Bono H."/>
+<person name="Chalk A.M."/>
+<person name="Chiu K.P."/>
+<person name="Choudhary V."/>
+<person name="Christoffels A."/>
+<person name="Clutterbuck D.R."/>
+<person name="Crowe M.L."/>
+<person name="Dalla E."/>
+<person name="Dalrymple B.P."/>
+<person name="de Bono B."/>
+<person name="Della Gatta G."/>
+<person name="di Bernardo D."/>
+<person name="Down T."/>
+<person name="Engstrom P."/>
+<person name="Fagiolini M."/>
+<person name="Faulkner G."/>
+<person name="Fletcher C.F."/>
+<person name="Fukushima T."/>
+<person name="Furuno M."/>
+<person name="Futaki S."/>
+<person name="Gariboldi M."/>
+<person name="Georgii-Hemming P."/>
+<person name="Gingeras T.R."/>
+<person name="Gojobori T."/>
+<person name="Green R.E."/>
+<person name="Gustincich S."/>
+<person name="Harbers M."/>
+<person name="Hayashi Y."/>
+<person name="Hensch T.K."/>
+<person name="Hirokawa N."/>
+<person name="Hill D."/>
+<person name="Huminiecki L."/>
+<person name="Iacono M."/>
+<person name="Ikeo K."/>
+<person name="Iwama A."/>
+<person name="Ishikawa T."/>
+<person name="Jakt M."/>
+<person name="Kanapin A."/>
+<person name="Katoh M."/>
+<person name="Kawasawa Y."/>
+<person name="Kelso J."/>
+<person name="Kitamura H."/>
+<person name="Kitano H."/>
+<person name="Kollias G."/>
+<person name="Krishnan S.P."/>
+<person name="Kruger A."/>
+<person name="Kummerfeld S.K."/>
+<person name="Kurochkin I.V."/>
+<person name="Lareau L.F."/>
+<person name="Lazarevic D."/>
+<person name="Lipovich L."/>
+<person name="Liu J."/>
+<person name="Liuni S."/>
+<person name="McWilliam S."/>
+<person name="Madan Babu M."/>
+<person name="Madera M."/>
+<person name="Marchionni L."/>
+<person name="Matsuda H."/>
+<person name="Matsuzawa S."/>
+<person name="Miki H."/>
+<person name="Mignone F."/>
+<person name="Miyake S."/>
+<person name="Morris K."/>
+<person name="Mottagui-Tabar S."/>
+<person name="Mulder N."/>
+<person name="Nakano N."/>
+<person name="Nakauchi H."/>
+<person name="Ng P."/>
+<person name="Nilsson R."/>
+<person name="Nishiguchi S."/>
+<person name="Nishikawa S."/>
+<person name="Nori F."/>
+<person name="Ohara O."/>
+<person name="Okazaki Y."/>
+<person name="Orlando V."/>
+<person name="Pang K.C."/>
+<person name="Pavan W.J."/>
+<person name="Pavesi G."/>
+<person name="Pesole G."/>
+<person name="Petrovsky N."/>
+<person name="Piazza S."/>
+<person name="Reed J."/>
+<person name="Reid J.F."/>
+<person name="Ring B.Z."/>
+<person name="Ringwald M."/>
+<person name="Rost B."/>
+<person name="Ruan Y."/>
+<person name="Salzberg S.L."/>
+<person name="Sandelin A."/>
+<person name="Schneider C."/>
+<person name="Schoenbach C."/>
+<person name="Sekiguchi K."/>
+<person name="Semple C.A."/>
+<person name="Seno S."/>
+<person name="Sessa L."/>
+<person name="Sheng Y."/>
+<person name="Shibata Y."/>
+<person name="Shimada H."/>
+<person name="Shimada K."/>
+<person name="Silva D."/>
+<person name="Sinclair B."/>
+<person name="Sperling S."/>
+<person name="Stupka E."/>
+<person name="Sugiura K."/>
+<person name="Sultana R."/>
+<person name="Takenaka Y."/>
+<person name="Taki K."/>
+<person name="Tammoja K."/>
+<person name="Tan S.L."/>
+<person name="Tang S."/>
+<person name="Taylor M.S."/>
+<person name="Tegner J."/>
+<person name="Teichmann S.A."/>
+<person name="Ueda H.R."/>
+<person name="van Nimwegen E."/>
+<person name="Verardo R."/>
+<person name="Wei C.L."/>
+<person name="Yagi K."/>
+<person name="Yamanishi H."/>
+<person name="Zabarovsky E."/>
+<person name="Zhu S."/>
+<person name="Zimmer A."/>
+<person name="Hide W."/>
+<person name="Bult C."/>
+<person name="Grimmond S.M."/>
+<person name="Teasdale R.D."/>
+<person name="Liu E.T."/>
+<person name="Brusic V."/>
+<person name="Quackenbush J."/>
+<person name="Wahlestedt C."/>
+<person name="Mattick J.S."/>
+<person name="Hume D.A."/>
+<person name="Kai C."/>
+<person name="Sasaki D."/>
+<person name="Tomaru Y."/>
+<person name="Fukuda S."/>
+<person name="Kanamori-Katayama M."/>
+<person name="Suzuki M."/>
+<person name="Aoki J."/>
+<person name="Arakawa T."/>
+<person name="Iida J."/>
+<person name="Imamura K."/>
+<person name="Itoh M."/>
+<person name="Kato T."/>
+<person name="Kawaji H."/>
+<person name="Kawagashira N."/>
+<person name="Kawashima T."/>
+<person name="Kojima M."/>
+<person name="Kondo S."/>
+<person name="Konno H."/>
+<person name="Nakano K."/>
+<person name="Ninomiya N."/>
+<person name="Nishio T."/>
+<person name="Okada M."/>
+<person name="Plessy C."/>
+<person name="Shibata K."/>
+<person name="Shiraki T."/>
+<person name="Suzuki S."/>
+<person name="Tagami M."/>
+<person name="Waki K."/>
+<person name="Watahiki A."/>
+<person name="Okamura-Oho Y."/>
+<person name="Suzuki H."/>
+<person name="Kawai J."/>
+<person name="Hayashizaki Y."/>
+</authorList>
+<dbReference type="PubMed" id="16141072"/>
+<dbReference type="DOI" id="10.1126/science.1112014"/>
+</citation>
+<scope>NUCLEOTIDE SEQUENCE [LARGE SCALE MRNA] OF 6693-7389 (ISOFORM 3)</scope>
+<scope>NUCLEOTIDE SEQUENCE [LARGE SCALE MRNA] OF 6870-7389 (ISOFORM 4)</scope>
+<source>
+<strain>C57BL/6J</strain>
+<tissue>Fetal skin</tissue>
+<tissue>Fetal spinal cord</tissue>
+</source>
+</reference>
+<reference key="7">
+<citation type="journal article" date="1999" name="J. Cell Biol." volume="144" first="435" last="446">
+<title>The intermediate filament protein peripherin is the specific interaction partner of mouse BPAG1-n (dystonin) in neurons.</title>
+<authorList>
+<person name="Leung C.L."/>
+<person name="Sun D."/>
+<person name="Liem R.K."/>
+</authorList>
+<dbReference type="MEDLINE" id="99268151"/>
+<dbReference type="PubMed" id="9971739"/>
+<dbReference type="DOI" id="10.1083/jcb.144.3.435"/>
+</citation>
+<scope>PARTIAL NUCLEOTIDE SEQUENCE [MRNA] (ISOFORM 5)</scope>
+<scope>FUNCTION</scope>
+<scope>INTERACTION WITH PRPH</scope>
+<source>
+<strain>BALB/c</strain>
+</source>
+</reference>
+<reference key="8">
+<citation type="submission" date="2002-05" db="EMBL/GenBank/DDBJ databases">
+<title>Molecular network in NGF-mediated neural differentiation.</title>
+<authorList>
+<person name="Kubo Y."/>
+<person name="Ohba M."/>
+<person name="Iwashita S."/>
+</authorList>
+</citation>
+<scope>PARTIAL NUCLEOTIDE SEQUENCE [MRNA] (ISOFORM 5)</scope>
+<source>
+<strain>Swiss Webster / NIH</strain>
+</source>
+</reference>
+<reference key="9">
+<citation type="journal article" date="1995" name="Cell" volume="81" first="233" last="243">
+<title>Gene targeting of BPAG1: abnormalities in mechanical strength and cell migration in stratified epithelia and neurologic degeneration.</title>
+<authorList>
+<person name="Guo L."/>
+<person name="Degenstein L."/>
+<person name="Dowling J."/>
+<person name="Yu Q.C."/>
+<person name="Wollmann R."/>
+<person name="Perman B."/>
+<person name="Fuchs E."/>
+</authorList>
+<dbReference type="PubMed" id="7736575"/>
+<dbReference type="DOI" id="10.1016/0092-8674(95)90333-X"/>
+</citation>
+<scope>ALTERNATIVE SPLICING (ISOFORM 5)</scope>
+<scope>DISRUPTION PHENOTYPE</scope>
+<scope>SUBCELLULAR LOCATION (ISOFORM 5)</scope>
+<scope>TISSUE SPECIFICITY</scope>
+</reference>
+<reference key="10">
+<citation type="journal article" date="1996" name="Cell" volume="86" first="655" last="665">
+<title>An essential cytoskeletal linker protein connecting actin microfilaments to intermediate filaments.</title>
+<authorList>
+<person name="Yang Y."/>
+<person name="Dowling J."/>
+<person name="Yu Q.C."/>
+<person name="Kouklis P."/>
+<person name="Cleveland D.W."/>
+<person name="Fuchs E."/>
+</authorList>
+<dbReference type="PubMed" id="8752219"/>
+<dbReference type="DOI" id="10.1016/S0092-8674(00)80138-5"/>
+</citation>
+<scope>ALTERNATIVE SPLICING (ISOFORMS 5 AND 6)</scope>
+<scope>SUBCELLULAR LOCATION (ISOFORMS 5 AND 6)</scope>
+<scope>TISSUE SPECIFICITY</scope>
+</reference>
+<reference key="11">
+<citation type="journal article" date="1999" name="Cell" volume="98" first="229" last="238">
+<title>Integrators of the cytoskeleton that stabilize microtubules.</title>
+<authorList>
+<person name="Yang Y."/>
+<person name="Bauer C."/>
+<person name="Strasser G."/>
+<person name="Wollman R."/>
+<person name="Julien J.P."/>
+<person name="Fuchs E."/>
+</authorList>
+<dbReference type="PubMed" id="10428034"/>
+<dbReference type="DOI" id="10.1016/S0092-8674(00)81017-X"/>
+</citation>
+<scope>DISRUPTION PHENOTYPE</scope>
+</reference>
+<reference key="12">
+<citation type="journal article" date="1999" name="Dev. Biol." volume="210" first="367" last="380">
+<title>Dystonin-deficient mice exhibit an intrinsic muscle weakness and an instability of skeletal muscle cytoarchitecture.</title>
+<authorList>
+<person name="Dalpe G."/>
+<person name="Mathieu M."/>
+<person name="Comtois A."/>
+<person name="Zhu E."/>
+<person name="Wasiak S."/>
+<person name="De Repentigny Y."/>
+<person name="Leclerc N."/>
+<person name="Kothary R."/>
+</authorList>
+<dbReference type="PubMed" id="10357897"/>
+<dbReference type="DOI" id="10.1006/dbio.1999.9263"/>
+</citation>
+<scope>INTERACTION WITH DES</scope>
+<scope>DISRUPTION PHENOTYPE</scope>
+</reference>
+<reference key="13">
+<citation type="journal article" date="2003" name="J. Cell Biol." volume="163" first="223" last="229">
+<title>BPAG1n4 is essential for retrograde axonal transport in sensory neurons.</title>
+<authorList>
+<person name="Liu J.J."/>
+<person name="Ding J."/>
+<person name="Kowal A.S."/>
+<person name="Nardine T."/>
+<person name="Allen E."/>
+<person name="Delcroix J.D."/>
+<person name="Wu C."/>
+<person name="Mobley W."/>
+<person name="Fuchs E."/>
+<person name="Yang Y."/>
+</authorList>
+<dbReference type="PubMed" id="14581450"/>
+<dbReference type="DOI" id="10.1083/jcb.200306075"/>
+</citation>
+<scope>FUNCTION</scope>
+<scope>DISRUPTION PHENOTYPE</scope>
+</reference>
+<reference key="14">
+<citation type="journal article" date="2003" name="J. Cell Sci." volume="116" first="4543" last="4555">
+<title>Bpag1 localization to actin filaments and to the nucleus is regulated by its N-terminus.</title>
+<authorList>
+<person name="Young K.G."/>
+<person name="Pool M."/>
+<person name="Kothary R."/>
+</authorList>
+<dbReference type="PubMed" id="14576348"/>
+<dbReference type="DOI" id="10.1242/jcs.00764"/>
+</citation>
+<scope>ALTERNATIVE SPLICING (ISOFORMS 2; 5 AND 6)</scope>
+<scope>HOMODIMERIZATION</scope>
+<scope>MUTAGENESIS OF ARG-1385 AND ARG-1386</scope>
+<scope>SUBCELLULAR LOCATION</scope>
+<scope>TISSUE SPECIFICITY</scope>
+</reference>
+<reference key="15">
+<citation type="journal article" date="2007" name="J. Proteome Res." volume="6" first="3174" last="3186">
+<title>A differential phosphoproteomic analysis of retinoic acid-treated P19 cells.</title>
+<authorList>
+<person name="Smith J.C."/>
+<person name="Duchesne M.A."/>
+<person name="Tozzi P."/>
+<person name="Ethier M."/>
+<person name="Figeys D."/>
+</authorList>
+<dbReference type="PubMed" id="17622165"/>
+<dbReference type="DOI" id="10.1021/pr070122r"/>
+</citation>
+<scope>PHOSPHORYLATION [LARGE SCALE ANALYSIS] AT THR-1100; SER-1527 AND THR-1533 (ISOFORM 5)</scope>
+<scope>MASS SPECTROMETRY</scope>
+<source>
+<tissue>Teratocarcinoma</tissue>
+</source>
+</reference>
+<reference key="16">
+<citation type="journal article" date="2007" name="Mol. Cell. Proteomics" volume="6" first="283" last="293">
+<title>Qualitative and quantitative analyses of protein phosphorylation in naive and stimulated mouse synaptosomal preparations.</title>
+<authorList>
+<person name="Munton R.P."/>
+<person name="Tweedie-Cullen R."/>
+<person name="Livingstone-Zatchej M."/>
+<person name="Weinandy F."/>
+<person name="Waidelich M."/>
+<person name="Longo D."/>
+<person name="Gehrig P."/>
+<person name="Potthast F."/>
+<person name="Rutishauser D."/>
+<person name="Gerrits B."/>
+<person name="Panse C."/>
+<person name="Schlapbach R."/>
+<person name="Mansuy I.M."/>
+</authorList>
+<dbReference type="PubMed" id="17114649"/>
+<dbReference type="DOI" id="10.1074/mcp.M600046-MCP200"/>
+</citation>
+<scope>PHOSPHORYLATION [LARGE SCALE ANALYSIS] AT SER-7182</scope>
+<scope>MASS SPECTROMETRY</scope>
+<source>
+<tissue>Brain cortex</tissue>
+</source>
+</reference>
+<reference key="17">
+<citation type="journal article" date="2008" name="Exp. Cell Res." volume="314" first="2750" last="2761">
+<title>Dystonin/Bpag1 is a necessary endoplasmic reticulum/nuclear envelope protein in sensory neurons.</title>
+<authorList>
+<person name="Young K.G."/>
+<person name="Kothary R."/>
+</authorList>
+<dbReference type="PubMed" id="18638474"/>
+<dbReference type="DOI" id="10.1016/j.yexcr.2008.06.021"/>
+</citation>
+<scope>ALTERNATIVE SPLICING (ISOFORM 6)</scope>
+<scope>INTERACTION WITH C14ORF49/NESPRIN-3</scope>
+<scope>SUBCELLULAR LOCATION</scope>
+<scope>TISSUE SPECIFICITY</scope>
+</reference>
+<reference key="18">
+<citation type="journal article" date="2010" name="Exp. Cell Res." volume="316" first="297" last="313">
+<title>BPAG1 isoform-b: complex distribution pattern in striated and heart muscle and association with plectin and alpha-actinin.</title>
+<authorList>
+<person name="Steiner-Champliaud M.F."/>
+<person name="Schneider Y."/>
+<person name="Favre B."/>
+<person name="Paulhe F."/>
+<person name="Praetzel-Wunder S."/>
+<person name="Faulkner G."/>
+<person name="Konieczny P."/>
+<person name="Raith M."/>
+<person name="Wiche G."/>
+<person name="Adebola A."/>
+<person name="Liem R.K."/>
+<person name="Langbein L."/>
+<person name="Sonnenberg A."/>
+<person name="Fontao L."/>
+<person name="Borradori L."/>
+</authorList>
+<dbReference type="PubMed" id="19932097"/>
+<dbReference type="DOI" id="10.1016/j.yexcr.2009.11.010"/>
+</citation>
+<scope>ALTERNATIVE SPLICING (ISOFORMS 1 AND 2)</scope>
+<scope>INTERACTION WITH PLEC</scope>
+<scope>SUBCELLULAR LOCATION (ISOFORMS 1 AND 2)</scope>
+<scope>TISSUE SPECIFICITY</scope>
+</reference>
+<reference key="19">
+<citation type="journal article" date="2010" name="PLoS ONE" volume="5" first="E9465" last="E9465">
+<title>Hearts of dystonia musculorum mice display normal morphological and histological features but show signs of cardiac stress.</title>
+<authorList>
+<person name="Boyer J.G."/>
+<person name="Bhanot K."/>
+<person name="Kothary R."/>
+<person name="Boudreau-Lariviere C."/>
+</authorList>
+<dbReference type="PubMed" id="20209123"/>
+<dbReference type="DOI" id="10.1371/journal.pone.0009465"/>
+</citation>
+<scope>ALTERNATIVE SPLICING (ISOFORM 2)</scope>
+<scope>FUNCTION OF ISOFORM 2</scope>
+<scope>SUBCELLULAR LOCATION (ISOFORM 2)</scope>
+<scope>TISSUE SPECIFICITY</scope>
+</reference>
+<comment type="function">
+<text evidence="1 2 3 4">Cytoskeletal linker protein. Acts as an integrator of intermediate filaments, actin and microtubule cytoskeleton networks. Required for anchoring either intermediate filaments to the actin cytoskeleton in neural and muscle cells or keratin-containing intermediate filaments to hemidesmosomes in epithelial cells. The proteins may self-aggregate to form filaments or a two-dimensional mesh. May regulate the organization and stability of the microtubule network of sensory neurons to allow axonal transport.</text>
+</comment>
+<comment type="function">
+<text evidence="1 2 3 4">Isoform 5: plays a structural role in the assembly of hemidesmosomes of epithelial cells; anchors keratin-containing intermediate filaments to the inner plaque of hemidesmosomes. Required for the regulation of keratinocyte polarity and motility; mediates integrin ITGB4 regulation of RAC1 activity.</text>
+</comment>
+<comment type="function">
+<text evidence="1 2 3 4">Isoform 6: required for bundling actin filaments around the nucleus.</text>
+</comment>
+<comment type="subunit">
+<text evidence="2 5 6 7 8">Homodimer. Interacts with MAPRE1; probably required for targeting to the growing microtubule plus ends. Isoform 2 interacts (via N-terminus) with ACTN2. Isoform 2 interacts (via N-terminus) with PLEC (via N-terminus). Isoform 5 interacts (via N-terminus) with COL17A1 (via cytoplasmic region). Isoform 5 interacts (via N-terminus) with ITGB4 isoform beta-4a (via cytoplasmic region). Isoform 5 interacts (via N-terminus) with ERBB2IP (via C-terminus). Isoform 5 associates (via C-terminal) with KRT5-KRT14 (via rod region) intermadiate filaments of keratins (By similarity). Isoform 2 and isoform 6 can homodimerize (via N-terminus). Isoform 2 interacts (via N-terminus) with PLEC (via N-terminus). Interacts with the neuronal intermediate filament protein, PRPH. Interacts with DES. Interacts with C14orf49/Nesprin-3.</text>
+</comment>
+<comment type="interaction">
+<interactant intactId="EBI-446159"/>
+<interactant intactId="EBI-446227">
+<id>P21807</id>
+<label>Prph</label>
+</interactant>
+<organismsDiffer>true</organismsDiffer>
+<experiments>3</experiments>
+</comment>
+<comment type="subcellular location">
+<subcellularLocation>
+<location>Cytoplasm</location>
+<location>Cytoskeleton</location>
+</subcellularLocation>
+<subcellularLocation>
+<location>Cell projection</location>
+<location>Axon</location>
+</subcellularLocation>
+<subcellularLocation>
+<location>Membrane</location>
+</subcellularLocation>
+<text evidence="1 4 6 7 8 9 10 11">Associates with axonal microtubules at the growing distal tip and intermediate filaments, but not with actin cytoskeleton, in sensory neurons (By similarity). Associates with intermediate filaments, acin and microtubule cytoskeletons. Localizes to actin stress fibers and to actin-rich ruffling at the cortex of cells.</text>
+</comment>
+<comment type="subcellular location">
+<molecule>Isoform 1</molecule>
+<subcellularLocation>
+<location>Cytoplasm</location>
+<location>Cytoskeleton</location>
+</subcellularLocation>
+<text evidence="1 4 6 7 8 9 10 11">Colocalizes both cortical and cytoplasmic actin filaments.</text>
+</comment>
+<comment type="subcellular location">
+<molecule>Isoform 2</molecule>
+<subcellularLocation>
+<location>Cell membrane</location>
+<location>Sarcolemma</location>
+</subcellularLocation>
+<subcellularLocation>
+<location>Cytoplasm</location>
+<location>Myofibril</location>
+<location>Sarcomere</location>
+<location>Z line</location>
+</subcellularLocation>
+<subcellularLocation>
+<location>Cytoplasm</location>
+<location>Myofibril</location>
+<location>Sarcomere</location>
+<location>H zone</location>
+</subcellularLocation>
+<subcellularLocation>
+<location>Cytoplasm</location>
+<location>Cytoskeleton</location>
+</subcellularLocation>
+<text evidence="1 4 6 7 8 9 10 11">Localizes to microtubules and actin microfilaments throughout the cytoplasm and at focal contact attachments at the plasma membrane.</text>
+</comment>
+<comment type="subcellular location">
+<molecule>Isoform 5</molecule>
+<subcellularLocation>
+<location>Cytoplasm</location>
+<location>Cytoskeleton</location>
+</subcellularLocation>
+<subcellularLocation>
+<location>Cell junction</location>
+<location>Hemidesmosome</location>
+</subcellularLocation>
+<text evidence="1 4 6 7 8 9 10 11">Colocalizes with the epidermal KRT5-KRT14 intermediate filaments network of keratins. Colocalizes with ITGB4 at the leading edge of migrating keratinocytes (By similarity). Localizes to actin and intermediate filaments cytoskeletons.</text>
+</comment>
+<comment type="subcellular location">
+<molecule>Isoform 6</molecule>
+<subcellularLocation>
+<location>Nucleus</location>
+</subcellularLocation>
+<subcellularLocation>
+<location>Nucleus envelope</location>
+</subcellularLocation>
+<subcellularLocation>
+<location>Membrane</location>
+<topology>Single-pass membrane protein</topology>
+</subcellularLocation>
+<subcellularLocation>
+<location>Endoplasmic reticulum membrane</location>
+<topology>Single-pass membrane protein</topology>
+</subcellularLocation>
+<subcellularLocation>
+<location>Cytoplasm</location>
+<location>Cytoskeleton</location>
+</subcellularLocation>
+<text evidence="1 4 6 7 8 9 10 11">Associates with actin cytoskeleton in sensory neurons (By similarity). Localizes to actin and intermediate filaments cytoskeletons. Localizes to central actin stress fibers around the nucleus and is excluded form focal contact sites in myoblast cells. Translocates to the nucleus.</text>
+</comment>
+<comment type="subcellular location">
+<molecule>Isoform 7</molecule>
+<subcellularLocation>
+<location>Cytoplasm</location>
+<location>Cytoskeleton</location>
+</subcellularLocation>
+<subcellularLocation>
+<location>Cytoplasm</location>
+<location>Cell cortex</location>
+</subcellularLocation>
+<subcellularLocation>
+<location>Cell membrane</location>
+<topology evidence="1 4 6 7 8 9 10 11">Lipid-anchor</topology>
+</subcellularLocation>
+</comment>
+<comment type="alternative products">
+<event type="alternative promoter"/>
+<event type="alternative splicing"/>
+<isoform>
+<id>Q91ZU6-1</id>
+<name evidence="12">2</name>
+<name>BPAG1-b</name>
+<name>BPAG1a1</name>
+<name>dystonin-1</name>
+<sequence type="displayed"/>
+</isoform>
+<isoform>
+<id>Q91ZU6-2</id>
+<name evidence="12">1</name>
+<name>BPAG1-a</name>
+<name>BPAG1a2</name>
+<sequence type="described" ref="VSP_041549"/>
+</isoform>
+<isoform>
+<id>Q91ZU6-3</id>
+<name evidence="16">3</name>
+<sequence type="described" ref="VSP_041550 VSP_041551 VSP_041552"/>
+<note>No experimental confirmation available.</note>
+</isoform>
+<isoform>
+<id>Q91ZU6-4</id>
+<name evidence="16">4</name>
+<sequence type="described" ref="VSP_041551 VSP_041552"/>
+<note>No experimental confirmation available.</note>
+</isoform>
+<isoform>
+<id>Q91ZU6-5</id>
+<name evidence="12">5</name>
+<name>BPAG1-e</name>
+<sequence type="described" ref="VSP_041541 VSP_041547 VSP_041548"/>
+<note>Ref.7 (BAB93448) sequence is in conflict in positions: 2325:G->D, 2416:A->T, 2530:K->Q. Phosphorylated on Thr-1100, Ser-1527 and Thr-1533.</note>
+</isoform>
+<isoform>
+<id>Q91ZU6-6</id>
+<name evidence="16">6</name>
+<name>BPAG1n</name>
+<name>BPAG1-n1</name>
+<name>BPAG1-n2</name>
+<name>BPAG1a2</name>
+<name>dystonin-2</name>
+<sequence type="described" ref="VSP_041543 VSP_041546"/>
+<note>Incomplete sequence. Transmembrane protein (helical transmembrane domain from amino acid 18 to 38). Ref.2 (AAC52231) sequence differs from that shown due to a frameshift in position 51. Ref.2 (AAC52231) sequence is in conflict in position: 101:E->K. Phosphorylated on Ser-163, Ser-165 and Ser-167 (By similarity).</note>
+</isoform>
+<isoform>
+<id>Q91ZU6-8</id>
+<name evidence="16">7</name>
+<name>BPAG1a3</name>
+<sequence type="described" ref="VSP_041542 VSP_041544 VSP_041545"/>
+<note>Incomplete sequence. Probably myristoylated on Gly-2. Probably S-palmitoylated on Cys-5 and Cys-7. Mutagenesis of Gly-2 to Ala inhibits cortical localization. Mutagenesis of Cys-5 to Ser inhibits cortical localization. Mutagenesis of Cys-7 to Ser inhibits cortical localization.</note>
+</isoform>
+</comment>
+<comment type="tissue specificity">
+<text evidence="1 4 6 7 8 10 11 12 13">Isoform 1 and 2 are expressed in striated and heart muscle cells. Isoform 5 is expressed in the skin. Isoform 6 is expressed in sensory neural cells of the dorsal root ganglion and with low level in the skin (at protein level). Isoform 1 is expressed predominantly in the brain and spinal cord with low levels in the heart. Isoform 2 is predominantly expressed in muscle and heart and with low levels in the brain. Isoform 5 is expressed in the skin and with low levels in myoblast cells. Isoform 6 is expressed in neurons. Isoform 7 is expressed in lung and with low levels in the brain.</text>
+</comment>
+<comment type="developmental stage">
+<text evidence="12 13">Isoform 1 is the major form expressed in the dorsal root ganglia at 14.5 dpc. Isoform 2 is predominantly expressed in the myocardium, skeletal muscles, bone cartilage and epithelia of the tongue at 14.5 dpc. Isoform 5 is expressed at high levels in the epidermis and mucosal epithelia of the digestive tracts at 14.5 dpc.</text>
+</comment>
+<comment type="domain">
+<text>Its association with epidermal and simple keratins is dependent on the tertiary structure induced by heterodimerization of these intermedaite filaments proteins and most likely involves recognition sites located in the rod domain of these keratins.</text>
+</comment>
+<comment type="domain">
+<text>The microtubule tip localization signal (MtLS) motif; mediates interaction with MAPRE1 and targeting to the growing microtubule plus ends (By similarity).</text>
+</comment>
+<comment type="disruption phenotype">
+<text evidence="3 5 10 14">Mice show progressive deterioration in motor function and sensory neurodegeneration. Exhibit axonal swellings packed with disorganized intermediate filaments (IFs) and microtubules. Show poorly defined Z lines and display a reduction in sarcomere length. Have increased accumulation of vesicles and severely disrupted retrograde axonal transport. In stratified epithelia, hemidesmosomes are normal but they lack the inner plate and have no cytoskeleton attached.</text>
+</comment>
+<comment type="similarity">
+<text evidence="17">Belongs to the plakin or cytolinker family.</text>
+</comment>
+<comment type="similarity">
+<text evidence="16">Contains 1 actin-binding domain.</text>
+</comment>
+<comment type="similarity">
+<text>Contains 2 CH (calponin-homology) domains.</text>
+</comment>
+<comment type="similarity">
+<text>Contains 2 EF-hand domains.</text>
+</comment>
+<comment type="similarity">
+<text>Contains 1 GAR domain.</text>
+</comment>
+<comment type="similarity">
+<text>Contains 5 plectin repeats.</text>
+</comment>
+<comment type="similarity">
+<text evidence="16">Contains 1 SH3 domain.</text>
+</comment>
+<comment type="similarity">
+<text>Contains 19 spectrin repeats.</text>
+</comment>
+<dbReference type="EMBL" id="AF396877">
+<property type="protein sequence ID" value="AAK83382.1"/>
+<property type="molecule type" value="mRNA"/>
+</dbReference>
+<dbReference type="EMBL" id="AF396878">
+<property type="protein sequence ID" value="AAK83383.1"/>
+<property type="molecule type" value="mRNA"/>
+</dbReference>
+<dbReference type="EMBL" id="AF396879">
+<property type="protein sequence ID" value="AAK83384.1"/>
+<property type="molecule type" value="mRNA"/>
+</dbReference>
+<dbReference type="EMBL" id="U22452">
+<property type="protein sequence ID" value="AAC52230.1"/>
+<property type="molecule type" value="mRNA"/>
+</dbReference>
+<dbReference type="EMBL" id="U25158">
+<property type="protein sequence ID" value="AAC52231.1"/>
+<property type="status" value="ALT_FRAME"/>
+<property type="molecule type" value="mRNA"/>
+</dbReference>
+<dbReference type="EMBL" id="DQ023311">
+<property type="protein sequence ID" value="AAY46942.1"/>
+<property type="molecule type" value="mRNA"/>
+</dbReference>
+<dbReference type="EMBL" id="DQ463750">
+<property type="protein sequence ID" value="ABF00406.1"/>
+<property type="molecule type" value="mRNA"/>
+</dbReference>
+<dbReference type="EMBL" id="AK051626">
+<property type="protein sequence ID" value="BAC34695.1"/>
+<property type="molecule type" value="mRNA"/>
+</dbReference>
+<dbReference type="EMBL" id="AK037206">
+<property type="protein sequence ID" value="BAC29753.1"/>
+<property type="molecule type" value="mRNA"/>
+</dbReference>
+<dbReference type="EMBL" id="AF115383">
+<property type="protein sequence ID" value="AAD22959.1"/>
+<property type="molecule type" value="mRNA"/>
+</dbReference>
+<dbReference type="EMBL" id="AB085694">
+<property type="protein sequence ID" value="BAB93448.1"/>
+<property type="molecule type" value="mRNA"/>
+</dbReference>
+<dbReference type="IPI" id="IPI00131432"/>
+<dbReference type="IPI" id="IPI00230689"/>
+<dbReference type="IPI" id="IPI00230690"/>
+<dbReference type="IPI" id="IPI00230692"/>
+<dbReference type="IPI" id="IPI00284272"/>
+<dbReference type="IPI" id="IPI00623531"/>
+<dbReference type="IPI" id="IPI01019259"/>
+<dbReference type="PIR" id="A60776">
+<property type="entry name" value="A60776"/>
+</dbReference>
+<dbReference type="PIR" id="I49290">
+<property type="entry name" value="I49290"/>
+</dbReference>
+<dbReference type="PIR" id="I49298">
+<property type="entry name" value="I49298"/>
+</dbReference>
+<dbReference type="RefSeq" id="NP_598594.2">
+<property type="nucleotide sequence ID" value="NM_133833.2"/>
+</dbReference>
+<dbReference type="RefSeq" id="NP_604443.2">
+<property type="nucleotide sequence ID" value="NM_134448.2"/>
+</dbReference>
+<dbReference type="UniGene" id="Mm.336625"/>
+<dbReference type="UniGene" id="Mm.478284"/>
+<dbReference type="UniGene" id="Mm.487428"/>
+<dbReference type="PDB" id="2IAK">
+<property type="method" value="X-ray"/>
+<property type="resolution" value="3.00"/>
+<property type="chains" value="A=580-803"/>
+</dbReference>
+<dbReference type="PDBsum" id="2IAK"/>
+<dbReference type="ProteinModelPortal" id="Q91ZU6"/>
+<dbReference type="SMR" id="Q91ZU6">
+<property type="residue range" value="3-255, 268-479, 583-1054, 1548-1927, 3848-3910, 4006-4039, 4497-4658"/>
+</dbReference>
+<dbReference type="IntAct" id="Q91ZU6">
+<property type="interactions" value="4"/>
+</dbReference>
+<dbReference type="STRING" id="Q91ZU6"/>
+<dbReference type="REPRODUCTION-2DPAGE" id="IPI00230689"/>
+<dbReference type="REPRODUCTION-2DPAGE" id="IPI00230690"/>
+<dbReference type="REPRODUCTION-2DPAGE" id="IPI00284272"/>
+<dbReference type="PaxDb" id="Q91ZU6"/>
+<dbReference type="PRIDE" id="Q91ZU6"/>
+<dbReference type="GeneID" id="13518"/>
+<dbReference type="KEGG" id="mmu:13518"/>
+<dbReference type="UCSC" id="uc007aoi.1">
+<property type="organism name" value="mouse"/>
+</dbReference>
+<dbReference type="UCSC" id="uc007aoj.1">
+<property type="organism name" value="mouse"/>
+</dbReference>
+<dbReference type="UCSC" id="uc007aol.1">
+<property type="organism name" value="mouse"/>
+</dbReference>
+<dbReference type="CTD" id="667"/>
+<dbReference type="MGI" id="MGI:104627">
+<property type="gene designation" value="Dst"/>
+</dbReference>
+<dbReference type="eggNOG" id="COG5069"/>
+<dbReference type="HOVERGEN" id="HBG031127"/>
+<dbReference type="KO" id="K10382"/>
+<dbReference type="EvolutionaryTrace" id="Q91ZU6"/>
+<dbReference type="NextBio" id="284082"/>
+<dbReference type="ArrayExpress" id="Q1KP04"/>
+<dbReference type="CleanEx" id="MM_DST"/>
+<dbReference type="Genevestigator" id="Q91ZU6"/>
+<dbReference type="GermOnline" id="ENSMUSG00000026131">
+<property type="organism name" value="Mus musculus"/>
+</dbReference>
+<dbReference type="GO" id="GO:0015629">
+<property type="term" value="C:actin cytoskeleton"/>
+<property type="evidence" value="IDA:MGI"/>
+</dbReference>
+<dbReference type="GO" id="GO:0030424">
+<property type="term" value="C:axon"/>
+<property type="evidence" value="IEA:UniProtKB-SubCell"/>
+</dbReference>
+<dbReference type="GO" id="GO:0005938">
+<property type="term" value="C:cell cortex"/>
+<property type="evidence" value="IEA:UniProtKB-SubCell"/>
+</dbReference>
+<dbReference type="GO" id="GO:0016023">
+<property type="term" value="C:cytoplasmic membrane-bounded vesicle"/>
+<property type="evidence" value="ISO:MGI"/>
+</dbReference>
+<dbReference type="GO" id="GO:0005789">
+<property type="term" value="C:endoplasmic reticulum membrane"/>
+<property type="evidence" value="IDA:UniProtKB"/>
+</dbReference>
+<dbReference type="GO" id="GO:0005925">
+<property type="term" value="C:focal adhesion"/>
+<property type="evidence" value="IDA:UniProtKB"/>
+</dbReference>
+<dbReference type="GO" id="GO:0031673">
+<property type="term" value="C:H zone"/>
+<property type="evidence" value="IDA:UniProtKB"/>
+</dbReference>
+<dbReference type="GO" id="GO:0030056">
+<property type="term" value="C:hemidesmosome"/>
+<property type="evidence" value="IDA:MGI"/>
+</dbReference>
+<dbReference type="GO" id="GO:0016021">
+<property type="term" value="C:integral to membrane"/>
+<property type="evidence" value="IEA:UniProtKB-KW"/>
+</dbReference>
+<dbReference type="GO" id="GO:0014704">
+<property type="term" value="C:intercalated disc"/>
+<property type="evidence" value="IDA:UniProtKB"/>
+</dbReference>
+<dbReference type="GO" id="GO:0005882">
+<property type="term" value="C:intermediate filament"/>
+<property type="evidence" value="IEA:UniProtKB-KW"/>
+</dbReference>
+<dbReference type="GO" id="GO:0009898">
+<property type="term" value="C:internal side of plasma membrane"/>
+<property type="evidence" value="IDA:UniProtKB"/>
+</dbReference>
+<dbReference type="GO" id="GO:0015630">
+<property type="term" value="C:microtubule cytoskeleton"/>
+<property type="evidence" value="IDA:UniProtKB"/>
+</dbReference>
+<dbReference type="GO" id="GO:0035371">
+<property type="term" value="C:microtubule plus end"/>
+<property type="evidence" value="ISS:UniProtKB"/>
+</dbReference>
+<dbReference type="GO" id="GO:0060053">
+<property type="term" value="C:neurofilament cytoskeleton"/>
+<property type="evidence" value="IDA:MGI"/>
+</dbReference>
+<dbReference type="GO" id="GO:0005635">
+<property type="term" value="C:nuclear envelope"/>
+<property type="evidence" value="IDA:UniProtKB"/>
+</dbReference>
+<dbReference type="GO" id="GO:0005634">
+<property type="term" value="C:nucleus"/>
+<property type="evidence" value="IDA:UniProtKB"/>
+</dbReference>
+<dbReference type="GO" id="GO:0097038">
+<property type="term" value="C:perinuclear endoplasmic reticulum"/>
+<property type="evidence" value="IDA:UniProtKB"/>
+</dbReference>
+<dbReference type="GO" id="GO:0042383">
+<property type="term" value="C:sarcolemma"/>
+<property type="evidence" value="IDA:UniProtKB"/>
+</dbReference>
+<dbReference type="GO" id="GO:0001725">
+<property type="term" value="C:stress fiber"/>
+<property type="evidence" value="IDA:UniProtKB"/>
+</dbReference>
+<dbReference type="GO" id="GO:0030018">
+<property type="term" value="C:Z disc"/>
+<property type="evidence" value="IDA:UniProtKB"/>
+</dbReference>
+<dbReference type="GO" id="GO:0005509">
+<property type="term" value="F:calcium ion binding"/>
+<property type="evidence" value="IEA:InterPro"/>
+</dbReference>
+<dbReference type="GO" id="GO:0007409">
+<property type="term" value="P:axonogenesis"/>
+<property type="evidence" value="IMP:MGI"/>
+</dbReference>
+<dbReference type="GO" id="GO:0007155">
+<property type="term" value="P:cell adhesion"/>
+<property type="evidence" value="IEA:UniProtKB-KW"/>
+</dbReference>
+<dbReference type="GO" id="GO:0007050">
+<property type="term" value="P:cell cycle arrest"/>
+<property type="evidence" value="IEA:InterPro"/>
+</dbReference>
+<dbReference type="GO" id="GO:0031122">
+<property type="term" value="P:cytoplasmic microtubule organization"/>
+<property type="evidence" value="IMP:MGI"/>
+</dbReference>
+<dbReference type="GO" id="GO:0045104">
+<property type="term" value="P:intermediate filament cytoskeleton organization"/>
+<property type="evidence" value="ISS:UniProtKB"/>
+</dbReference>
+<dbReference type="GO" id="GO:0046907">
+<property type="term" value="P:intracellular transport"/>
+<property type="evidence" value="IDA:UniProtKB"/>
+</dbReference>
+<dbReference type="GO" id="GO:0031110">
+<property type="term" value="P:regulation of microtubule polymerization or depolymerization"/>
+<property type="evidence" value="IMP:MGI"/>
+</dbReference>
+<dbReference type="GO" id="GO:0008090">
+<property type="term" value="P:retrograde axon cargo transport"/>
+<property type="evidence" value="IMP:MGI"/>
+</dbReference>
+<dbReference type="Gene3D" id="1.10.418.10">
+<property type="entry name" value="Calponin-homology"/>
+<property type="match status" value="2"/>
+</dbReference>
+<dbReference type="Gene3D" id="1.10.238.10">
+<property type="entry name" value="EF-Hand_type"/>
+<property type="match status" value="1"/>
+</dbReference>
+<dbReference type="Gene3D" id="3.30.920.20">
+<property type="entry name" value="GAS2_dom"/>
+<property type="match status" value="1"/>
+</dbReference>
+<dbReference type="InterPro" id="IPR001589">
+<property type="entry name" value="Actinin_actin-bd_CS"/>
+</dbReference>
+<dbReference type="InterPro" id="IPR001715">
+<property type="entry name" value="CH-domain"/>
+</dbReference>
+<dbReference type="InterPro" id="IPR011992">
+<property type="entry name" value="EF-hand-like_dom"/>
+</dbReference>
+<dbReference type="InterPro" id="IPR018247">
+<property type="entry name" value="EF_Hand_1_Ca_BS"/>
+</dbReference>
+<dbReference type="InterPro" id="IPR018249">
+<property type="entry name" value="EF_HAND_2"/>
+</dbReference>
+<dbReference type="InterPro" id="IPR002048">
+<property type="entry name" value="EF_hand_Ca-bd"/>
+</dbReference>
+<dbReference type="InterPro" id="IPR003108">
+<property type="entry name" value="GAS2_dom"/>
+</dbReference>
+<dbReference type="InterPro" id="IPR001101">
+<property type="entry name" value="Plectin_repeat"/>
+</dbReference>
+<dbReference type="InterPro" id="IPR018159">
+<property type="entry name" value="Spectrin/alpha-actinin"/>
+</dbReference>
+<dbReference type="InterPro" id="IPR002017">
+<property type="entry name" value="Spectrin_repeat"/>
+</dbReference>
+<dbReference type="Pfam" id="PF00307">
+<property type="entry name" value="CH"/>
+<property type="match status" value="2"/>
+</dbReference>
+<dbReference type="Pfam" id="PF02187">
+<property type="entry name" value="GAS2"/>
+<property type="match status" value="1"/>
+</dbReference>
+<dbReference type="Pfam" id="PF00681">
+<property type="entry name" value="Plectin"/>
+<property type="match status" value="5"/>
+</dbReference>
+<dbReference type="Pfam" id="PF00435">
+<property type="entry name" value="Spectrin"/>
+<property type="match status" value="18"/>
+</dbReference>
+<dbReference type="SMART" id="SM00033">
+<property type="entry name" value="CH"/>
+<property type="match status" value="2"/>
+</dbReference>
+<dbReference type="SMART" id="SM00054">
+<property type="entry name" value="EFh"/>
+<property type="match status" value="2"/>
+</dbReference>
+<dbReference type="SMART" id="SM00243">
+<property type="entry name" value="GAS2"/>
+<property type="match status" value="1"/>
+</dbReference>
+<dbReference type="SMART" id="SM00250">
+<property type="entry name" value="PLEC"/>
+<property type="match status" value="9"/>
+</dbReference>
+<dbReference type="SMART" id="SM00150">
+<property type="entry name" value="SPEC"/>
+<property type="match status" value="32"/>
+</dbReference>
+<dbReference type="SUPFAM" id="SSF47576">
+<property type="entry name" value="Calponin-homology"/>
+<property type="match status" value="1"/>
+</dbReference>
+<dbReference type="SUPFAM" id="SSF143575">
+<property type="entry name" value="SSF143575"/>
+<property type="match status" value="1"/>
+</dbReference>
+<dbReference type="PROSITE" id="PS00019">
+<property type="entry name" value="ACTININ_1"/>
+<property type="match status" value="1"/>
+</dbReference>
+<dbReference type="PROSITE" id="PS00020">
+<property type="entry name" value="ACTININ_2"/>
+<property type="match status" value="1"/>
+</dbReference>
+<dbReference type="PROSITE" id="PS50021">
+<property type="entry name" value="CH"/>
+<property type="match status" value="2"/>
+</dbReference>
+<dbReference type="PROSITE" id="PS00018">
+<property type="entry name" value="EF_HAND_1"/>
+<property type="match status" value="2"/>
+</dbReference>
+<dbReference type="PROSITE" id="PS50222">
+<property type="entry name" value="EF_HAND_2"/>
+<property type="match status" value="2"/>
+</dbReference>
+<dbReference type="PROSITE" id="PS51460">
+<property type="entry name" value="GAR"/>
+<property type="match status" value="1"/>
+</dbReference>
+<dbReference type="PROSITE" id="PS50002">
+<property type="entry name" value="SH3"/>
+<property type="match status" value="FALSE_NEG"/>
+</dbReference>
+<proteinExistence type="evidence at protein level"/>
+<keyword id="KW-0002">3D-structure</keyword>
+<keyword id="KW-0009">Actin-binding</keyword>
+<keyword id="KW-0877">Alternative promoter usage</keyword>
+<keyword id="KW-0025">Alternative splicing</keyword>
+<keyword id="KW-0106">Calcium</keyword>
+<keyword id="KW-0130">Cell adhesion</keyword>
+<keyword id="KW-0965">Cell junction</keyword>
+<keyword id="KW-1003">Cell membrane</keyword>
+<keyword id="KW-0966">Cell projection</keyword>
+<keyword id="KW-0175">Coiled coil</keyword>
+<keyword id="KW-0181">Complete proteome</keyword>
+<keyword id="KW-0963">Cytoplasm</keyword>
+<keyword id="KW-0206">Cytoskeleton</keyword>
+<keyword id="KW-0903">Direct protein sequencing</keyword>
+<keyword id="KW-0256">Endoplasmic reticulum</keyword>
+<keyword id="KW-0403">Intermediate filament</keyword>
+<keyword id="KW-0449">Lipoprotein</keyword>
+<keyword id="KW-0472">Membrane</keyword>
+<keyword id="KW-0479">Metal-binding</keyword>
+<keyword id="KW-0493">Microtubule</keyword>
+<keyword id="KW-0514">Muscle protein</keyword>
+<keyword id="KW-0519">Myristate</keyword>
+<keyword id="KW-0539">Nucleus</keyword>
+<keyword id="KW-0564">Palmitate</keyword>
+<keyword id="KW-0597">Phosphoprotein</keyword>
+<keyword id="KW-1185">Reference proteome</keyword>
+<keyword id="KW-0677">Repeat</keyword>
+<keyword id="KW-0728">SH3 domain</keyword>
+<keyword id="KW-0812">Transmembrane</keyword>
+<feature type="chain" description="Dystonin" id="PRO_0000078141">
+<location>
+<begin position="1"/>
+<end position="7389"/>
+</location>
+</feature>
+<feature type="domain" description="Actin-binding">
+<location>
+<begin position="35"/>
+<end position="252"/>
+</location>
+</feature>
+<feature type="domain" description="CH 1" evidence="16">
+<location>
+<begin position="35"/>
+<end position="138"/>
+</location>
+</feature>
+<feature type="domain" description="CH 2" evidence="16">
+<location>
+<begin position="151"/>
+<end position="252"/>
+</location>
+</feature>
+<feature type="repeat" description="Spectrin 1">
+<location>
+<begin position="701"/>
+<end position="801"/>
+</location>
+</feature>
+<feature type="domain" description="SH3" evidence="16">
+<location>
+<begin position="889"/>
+<end position="941"/>
+</location>
+</feature>
+<feature type="repeat" description="Plectin 1">
+<location>
+<begin position="1582"/>
+<end position="1624"/>
+</location>
+</feature>
+<feature type="repeat" description="Plectin 2">
+<location>
+<begin position="1657"/>
+<end position="1701"/>
+</location>
+</feature>
+<feature type="repeat" description="Plectin 3">
+<location>
+<begin position="1772"/>
+<end position="1815"/>
+</location>
+</feature>
+<feature type="repeat" description="Plectin 4">
+<location>
+<begin position="1816"/>
+<end position="1844"/>
+</location>
+</feature>
+<feature type="repeat" description="Plectin 5">
+<location>
+<begin position="1848"/>
+<end position="1889"/>
+</location>
+</feature>
+<feature type="repeat" description="Spectrin 2">
+<location>
+<begin position="3845"/>
+<end position="3925"/>
+</location>
+</feature>
+<feature type="repeat" description="Spectrin 3">
+<location>
+<begin position="3997"/>
+<end position="4079"/>
+</location>
+</feature>
+<feature type="repeat" description="Spectrin 4">
+<location>
+<begin position="4440"/>
+<end position="4548"/>
+</location>
+</feature>
+<feature type="repeat" description="Spectrin 5">
+<location>
+<begin position="4552"/>
+<end position="4657"/>
+</location>
+</feature>
+<feature type="repeat" description="Spectrin 6">
+<location>
+<begin position="4775"/>
+<end position="4877"/>
+</location>
+</feature>
+<feature type="repeat" description="Spectrin 7">
+<location>
+<begin position="5208"/>
+<end position="5315"/>
+</location>
+</feature>
+<feature type="repeat" description="Spectrin 8">
+<location>
+<begin position="5322"/>
+<end position="5423"/>
+</location>
+</feature>
+<feature type="repeat" description="Spectrin 9">
+<location>
+<begin position="5430"/>
+<end position="5532"/>
+</location>
+</feature>
+<feature type="repeat" description="Spectrin 10">
+<location>
+<begin position="5647"/>
+<end position="5751"/>
+</location>
+</feature>
+<feature type="repeat" description="Spectrin 11">
+<location>
+<begin position="5758"/>
+<end position="5856"/>
+</location>
+</feature>
+<feature type="repeat" description="Spectrin 12">
+<location>
+<begin position="6002"/>
+<end position="6082"/>
+</location>
+</feature>
+<feature type="repeat" description="Spectrin 13">
+<location>
+<begin position="6089"/>
+<end position="6191"/>
+</location>
+</feature>
+<feature type="repeat" description="Spectrin 14">
+<location>
+<begin position="6197"/>
+<end position="6300"/>
+</location>
+</feature>
+<feature type="repeat" description="Spectrin 15">
+<location>
+<begin position="6308"/>
+<end position="6410"/>
+</location>
+</feature>
+<feature type="repeat" description="Spectrin 16">
+<location>
+<begin position="6415"/>
+<end position="6519"/>
+</location>
+</feature>
+<feature type="repeat" description="Spectrin 17">
+<location>
+<begin position="6523"/>
+<end position="6629"/>
+</location>
+</feature>
+<feature type="repeat" description="Spectrin 18">
+<location>
+<begin position="6636"/>
+<end position="6736"/>
+</location>
+</feature>
+<feature type="repeat" description="Spectrin 19">
+<location>
+<begin position="6741"/>
+<end position="6844"/>
+</location>
+</feature>
+<feature type="domain" description="EF-hand 1">
+<location>
+<begin position="7015"/>
+<end position="7050"/>
+</location>
+</feature>
+<feature type="domain" description="EF-hand 2">
+<location>
+<begin position="7051"/>
+<end position="7086"/>
+</location>
+</feature>
+<feature type="domain" description="GAR">
+<location>
+<begin position="7091"/>
+<end position="7169"/>
+</location>
+</feature>
+<feature type="calcium-binding region" description="1" status="potential">
+<location>
+<begin position="7028"/>
+<end position="7039"/>
+</location>
+</feature>
+<feature type="calcium-binding region" description="2" status="potential">
+<location>
+<begin position="7064"/>
+<end position="7075"/>
+</location>
+</feature>
+<feature type="short sequence motif" description="Nuclear localization signal; in isoform 6">
+<location>
+<begin position="1382"/>
+<end position="1388"/>
+</location>
+</feature>
+<feature type="short sequence motif" description="Microtubule tip localization signal">
+<location>
+<begin position="7369"/>
+<end position="7372"/>
+</location>
+</feature>
+<feature type="compositionally biased region" description="Asp-rich">
+<location>
+<begin position="2362"/>
+<end position="2422"/>
+</location>
+</feature>
+<feature type="modified residue" description="Phosphothreonine" status="by similarity">
+<location>
+<position position="40"/>
+</location>
+</feature>
+<feature type="modified residue" description="Phosphothreonine" status="by similarity">
+<location>
+<position position="42"/>
+</location>
+</feature>
+<feature type="modified residue" description="Phosphoserine" status="by similarity">
+<location>
+<position position="1323"/>
+</location>
+</feature>
+<feature type="modified residue" description="Phosphoserine" status="by similarity">
+<location>
+<position position="3891"/>
+</location>
+</feature>
+<feature type="modified residue" description="Phosphothreonine" status="by similarity">
+<location>
+<position position="6582"/>
+</location>
+</feature>
+<feature type="modified residue" description="Phosphoserine" evidence="15">
+<location>
+<position position="7182"/>
+</location>
+</feature>
+<feature type="modified residue" description="Phosphoserine" status="by similarity">
+<location>
+<position position="7250"/>
+</location>
+</feature>
+<feature type="modified residue" description="Phosphothreonine" status="by similarity">
+<location>
+<position position="7259"/>
+</location>
+</feature>
+<feature type="modified residue" description="Phosphoserine" status="by similarity">
+<location>
+<position position="7329"/>
+</location>
+</feature>
+<feature type="modified residue" description="Phosphoserine" status="by similarity">
+<location>
+<position position="7332"/>
+</location>
+</feature>
+<feature type="splice variant" description="In isoform 5." id="VSP_041541">
+<original>MAGYLSPAAYMYVEEQEYLQAYEDVLERYKDERDKVQKKTFTKWINQHLMKVRKHVNDLYEDLRDGHNLISLLEVLSGDTLPREKGRMRFHRLQNVQIALDYLKRRQVKLVNIRNDDITDGNPKLTLGLIWTIILHFQISDIHVTGESEDMSAKERLLLWTQQATEGYAGVRCENFTTCWRDGKLFNAIIHKYRPDLIDMNTVAVQSNLANLEHAFYVAEKIGVIRLLDPEDVDVSSPDEKSVITYVSSLYDAFPKVPEGGEGIGANDVEVKWIEYQNMVNYLIQWIRHHVVTMSERTFPNNPLELKALYNQYLQFKEKEIPPKEMEKSKIKRLYKLLEIWIEFGRIKLLQGYHPNDIEKEWGKLIIAMLEREKALRPEVE</original>
+<variation>MRISCPFIVVPLINSCISFSNESLDGH</variation>
+<location>
+<begin position="1"/>
+<end position="381"/>
+</location>
+</feature>
+<feature type="splice variant" description="In isoform 7." id="VSP_041542">
+<original>MAGYLSPAAYMYVEEQEYLQAYEDVLERYKDERDKVQKKTFTKWINQHLMKVRKHVNDLYEDLRDGHNLISLLEVLSGDTLPREKGRMRFHRLQNVQIALDYLKRRQVKLVNIRNDDITDGNPKLTLGLIWTIILHF</original>
+<variation>MGNVCGCVRAEKEEPYFDPAKSPLSPEKYSPGRKYFRRKPCQKVVDDTEPVRQSSEREGKKGVSQPAGGQPAVSSGELPWEDPAASPTKEDAVQLGKRAATEHGDQKPLPSSVDGYPHRVTVSSAQGRYSEVQVSIPDKIISEEDSPPYCPETERHLDDVNSKHRTFLRKDNVSLSQTAASSSPILCVTEKSLKNSALMGNLSRSCHSVLEQDSDERGHPFGVHRLQLTKRRCHSLSSGVSCVSKDAPRDDGC</variation>
+<location>
+<begin position="1"/>
+<end position="137"/>
+</location>
+</feature>
+<feature type="splice variant" description="In isoform 6." id="VSP_041543">
+<original>MAGYLSPAAYMYVEEQEYLQAYEDVLERYK</original>
+<variation>MIAAAFLVLLRPYSIQCALFLLLLLLGTVATIVFFCCWHRKLQKGRHPMKSVFSGRSRSRDAALRSHHFRSEGFRASPRHIRRRVAAAAAARLEEVKPVVEVHHQSEQESSGRKRRIKKNSRVQPEFYHSVQGASTRRPSSGNASYRCSMSSSADFSDEDDFSQKSGSASPAPGDTLPWNLPKHERSKRKIQGGSVLDPAERAVLRIA</variation>
+<location>
+<begin position="1"/>
+<end position="30"/>
+</location>
+</feature>
+<feature type="splice variant" description="In isoform 7." id="VSP_041544">
+<original>VK</original>
+<variation>KG</variation>
+<location>
+<begin position="271"/>
+<end position="272"/>
+</location>
+</feature>
+<feature type="splice variant" description="In isoform 7." id="VSP_041545">
+<location>
+<begin position="273"/>
+<end position="7389"/>
+</location>
+</feature>
+<feature type="splice variant" description="In isoform 6." id="VSP_041546">
+<location>
+<begin position="305"/>
+<end position="7389"/>
+</location>
+</feature>
+<feature type="splice variant" description="In isoform 5." id="VSP_041547">
+<original>K</original>
+<variation>MKRSKENSEHGAYSDLLQRQRATMVENSKLTGKISELETMVAELKKQKSRVEEELPKVKEAAENELRKQQRNVEDIALQKLRAESEAKQYRRELETIVREKEAAERELERVRQLTAEAEARRAAVEENLRNFRSQLQENTFTRQTLEDHLRRKDSSLSDLEQQKRALVEELQRKRDHEEELLRLVKQMERDLAFQKQVAEKQLKEKQKVELEARRKITEIQFSCRESAAVAQARPQREQGRQKEEELKQQVDELTLANRKAEKEMRELKYELSAVQLEKASSEEKARLLKDKLDETNNTLKCLKEDLERKDQAQERYSQQLRDLGGQLNQTTDKAEEVRQEANDLKKIKHTYQLELESLHQEKGKLQREVDRVTRAHALAERNIQCLNSQVHASRDEKDLSEERRRLCQRKSDHLKEEFERSHAQLLQNIQAEKENNDKIQKLNKELEKSNECAETLKQKVDELTRQNNETKLMMQRIQAESKNIVREKQAIQQRCEVLRIQADGFKDQLRNTNEHLHKQTKTEQDFHRKIKSLEDDLAQSQNLVSEFKQKCDQQSMIIQKTEKEVRSLSAELSASKEEKRREEQKAQLQRAQVQELNDRLKRVQDELHLKTIEEQMTHRKMILLQEESDKFKRSADEFRKKMEKLMESKVVTETDLSGIKHDFVSLQRENFRAQENAKLWETNIRELERQLQCYREKMQQGPPVEANHYQKCRRLEEELLAQRREVENLKQKMDQQIKEHEHQLLRLQCEIQKKSTTQDHTFASAFDTAGRECHHPAEISPGNSGHLNLKTRLPLSRWTQEPHQTEGKWPHRAAEQLPKEVQFRQPGAPLDRESSQPCYSEYFSQTSTELQITFDDKNPITRLSELETMREQALHPSRPPVTYQDDKLERELVKLLTPLEIAKNKQCGMHTEVTTLKQEKRLGSSAGGWMLEGCRTSGGLKGDFLKKSVEPEASPSLDLNQACSVRDEEFQFQGLRHTVTGRQLVEAKLLDMRTVEQLRLGLKTVEEVQRSLSKFLTKATSIAGLYLESSKEKMSFTSAAQKIIIDKMIALAFLEAQAATGFIIDPVSGQTYCVEDAVLHGIVDPEFRSRLLEAEKAVLGYSHASKTLSVFQAMENRMLDRKKGKHILEAQIASGGVIDPVRGVRVPPEMAVQQGLLNNAVLQFLHEPSSNTRVFPNPNNKQALYYSELLQICVFDVDCQCFLLPFGEREISNLNIEKTHKIAVVDTKTGAELTAFEAFQRNLIDKGIYLELSGQQYQWKEATFFDSYGHPSHMLTDTKTGLQFNISEAVEQGTLDKALVQKYQEGLTTLTELADFLLSKVVPKKDLHSPIAGYWLTASGERISLLKASRRNLVDRVTALRCLEAQICTGGIIDPLTGKKYRVAEALHRGLVDEGFAQQLRQCELVITGISHPVSNKMMSVVEAVNANIISKEMGMRCLEFQYLTGGLIEPKVFSRLTIEEALHVGIIDVLIATRLKDQKSYVRDIMCPQTKRKLTYKEALEKADFDFHTGLKLLEVSEPLGTGISNLYYSSQ</variation>
+<location>
+<position position="1432"/>
+</location>
+</feature>
+<feature type="splice variant" description="In isoform 5." id="VSP_041548">
+<location>
+<begin position="1433"/>
+<end position="7389"/>
+</location>
+</feature>
+<feature type="splice variant" description="In isoform 1." id="VSP_041549" evidence="12">
+<location>
+<begin position="1549"/>
+<end position="3557"/>
+</location>
+</feature>
+<feature type="splice variant" description="In isoform 3." id="VSP_041550">
+<location>
+<begin position="7125"/>
+<end position="7130"/>
+</location>
+</feature>
+<feature type="splice variant" description="In isoform 3 and isoform 4." id="VSP_041551" evidence="16">
+<location>
+<begin position="7170"/>
+<end position="7193"/>
+</location>
+</feature>
+<feature type="splice variant" description="In isoform 3 and isoform 4." id="VSP_041552" evidence="16">
+<original>K</original>
+<variation>KILHPLTRNYGKPWLANSKMSTPCKAAECPDFPVSSAE</variation>
+<location>
+<position position="7261"/>
+</location>
+</feature>
+<feature type="mutagenesis site" description="Prevents isoform 6 from localizing to the nucleus; when associated with A-1386." evidence="6">
+<original>R</original>
+<variation>A</variation>
+<location>
+<position position="1385"/>
+</location>
+</feature>
+<feature type="mutagenesis site" description="Prevents isoform 6 from localizing to the nucleus; when associated with A-1385." evidence="6">
+<original>R</original>
+<variation>A</variation>
+<location>
+<position position="1386"/>
+</location>
+</feature>
+<feature type="sequence conflict" description="In Ref. 1; AAK83383." ref="1">
+<original>T</original>
+<variation>A</variation>
+<location>
+<position position="6193"/>
+</location>
+</feature>
+<feature type="sequence conflict" description="In Ref. 6; BAC29753/BAC34695." ref="6">
+<original>G</original>
+<variation>E</variation>
+<location>
+<position position="7097"/>
+</location>
+</feature>
+<feature type="sequence conflict" description="In Ref. 6; BAC29753/BAC34695." ref="6">
+<original>G</original>
+<variation>A</variation>
+<location>
+<position position="7241"/>
+</location>
+</feature>
+<evidence key="1" type="ECO:0000006">
+<source>
+<dbReference type="PubMed" id="16797530"/>
+</source>
+</evidence>
+<evidence key="2" type="ECO:0000006">
+<source>
+<dbReference type="PubMed" id="9971739"/>
+</source>
+</evidence>
+<evidence key="3" type="ECO:0000006">
+<source>
+<dbReference type="PubMed" id="14581450"/>
+</source>
+</evidence>
+<evidence key="4" type="ECO:0000006">
+<source>
+<dbReference type="PubMed" id="20209123"/>
+</source>
+</evidence>
+<evidence key="5" type="ECO:0000006">
+<source>
+<dbReference type="PubMed" id="10357897"/>
+</source>
+</evidence>
+<evidence key="6" type="ECO:0000006">
+<source>
+<dbReference type="PubMed" id="14576348"/>
+</source>
+</evidence>
+<evidence key="7" type="ECO:0000006">
+<source>
+<dbReference type="PubMed" id="18638474"/>
+</source>
+</evidence>
+<evidence key="8" type="ECO:0000006">
+<source>
+<dbReference type="PubMed" id="19932097"/>
+</source>
+</evidence>
+<evidence key="9" type="ECO:0000006">
+<source>
+<dbReference type="PubMed" id="16289082"/>
+</source>
+</evidence>
+<evidence key="10" type="ECO:0000006">
+<source>
+<dbReference type="PubMed" id="7736575"/>
+</source>
+</evidence>
+<evidence key="11" type="ECO:0000006">
+<source>
+<dbReference type="PubMed" id="8752219"/>
+</source>
+</evidence>
+<evidence key="12" type="ECO:0000006">
+<source>
+<dbReference type="PubMed" id="11514586"/>
+</source>
+</evidence>
+<evidence key="13" type="ECO:0000006">
+<source>
+<dbReference type="PubMed" id="7670468"/>
+</source>
+</evidence>
+<evidence key="14" type="ECO:0000006">
+<source>
+<dbReference type="PubMed" id="10428034"/>
+</source>
+</evidence>
+<evidence key="15" type="ECO:0000006">
+<source>
+<dbReference type="PubMed" id="17114649"/>
+</source>
+</evidence>
+<evidence key="16" type="ECO:0000001"/>
+<evidence key="17" type="ECO:0000044">
+<source>
+<dbReference type="UniProtKB" id="Q03001"/>
+</source>
+</evidence>
+<sequence length="7389" mass="833638" checksum="BFED827ED8A88AAD" modified="2001-12-01" version="1">
+MAGYLSPAAYMYVEEQEYLQAYEDVLERYKDERDKVQKKTFTKWINQHLMKVRKHVNDLY
+EDLRDGHNLISLLEVLSGDTLPREKGRMRFHRLQNVQIALDYLKRRQVKLVNIRNDDITD
+GNPKLTLGLIWTIILHFQISDIHVTGESEDMSAKERLLLWTQQATEGYAGVRCENFTTCW
+RDGKLFNAIIHKYRPDLIDMNTVAVQSNLANLEHAFYVAEKIGVIRLLDPEDVDVSSPDE
+KSVITYVSSLYDAFPKVPEGGEGIGANDVEVKWIEYQNMVNYLIQWIRHHVVTMSERTFP
+NNPLELKALYNQYLQFKEKEIPPKEMEKSKIKRLYKLLEIWIEFGRIKLLQGYHPNDIEK
+EWGKLIIAMLEREKALRPEVERLDMLQQIATRVQRDSVSCEDKLILARNALQSDSKRLES
+GVQFQNEAEIAGYILECENLLRQHVIDVQILIDGKYYQADQLVQRVAKLRDEIMALRNEC
+SSVYSKGRMLTTEQTKLMISGITQSLNSGFAQTLHPSLNSGLTQSLTPSLTSSSVTSGLS
+SGMTSRLTPSVTPVYAPGFPSVVAPNFSLGVEPNSLQTLKLMQIRKPLLKSSLLDQNLTE
+EEVNMKFVQDLLNWVDEMQVQLDRTEWGSDLPSVESHLENHKNVHRAIEEFESSLKEAKI
+SEIQMTAPLKLSYTDKLHRLESQYAKLLNTSRNQERHLDTLHNFVTRATNELIWLNEKEE
+SEVAYDWSERNSSVARKKSYHVELMRELEQKEESIKAVQEIAEQLLLENHPARLTIEAYR
+AAMQTQWSWILQLCQCVEQHIQENSAYFEFFNDAKEATDYLRNLKDAIQRKYSCDRSSSI
+HKLEDLVQESMEKEELLQYRSVVAGLMGRAKTVVQLKPRNPDNPLKTSIPIKAICDYRQI
+EITIYKDDECVLANNSHRAKWKVISPTGNEAVVPSVCFTVPPPNKEAVDFANRIEQQYQS
+VLTLWHESHINMKSVVSWHYLVNEIDRIRASNVASIKTMLPGEHQQVLSNLQSRLEDFLE
+DSQESQIFSGSDISQLEKEVSVCRKYYQELLKSAEREEQEESVYNLYISEVRNIRLRLES
+CEDRLIRQIRTPLERDDLHESMLRITEQEKLKKELDRLKDDLGTITNKCEEFFSQAADSP
+SVPALRSELSVVIQSLSQIYSMSSTYIEKLKTVNLVLKNTQAAEALVKLYETKLCEEEAV
+IADKNNIENLMSTLKQWRSEVDEKREVFHALEDELQKAKAISDEMFKTHKERDLDFDWHK
+EKADQLVERWQSVHVQIDNRLRDLEGIGKSLKHYRDSYHPLDDWIQHIETTQRKIQENQP
+ENSKALALQLNQQKMLVSEIEVKQSKMDECQKYSEQYSAAVKDYELQTMTYRAMVESQQK
+SPVKRRRIQSSADLVIQEFMDLRTRYTALVTLMTQYIKFAGDSLKRLEEEEKSLDEEKKQ
+HIEKAKELQKWVSNISKTLGDGEKAGKPLFSKQQMSSKEISTKKEQFSEALQTTQIFLAK
+HGDKLTEEERSDLEKQVKTLQEGYNLLFSESLKQQELQPSGESKVPEKPDKVIAGTINQT
+TGEVLSVFQAVLRGLIDYETGIRLLEAQLVITGLISPELRKCFDLRDAESHGLIDEQVLR
+QLKELNRAKQLISTASPTSIPVLDSLAQGMVSESMAIRVLEILLSAGPLLVPATGEHLTL
+QQAFQQNLISSALFSKVLERQDTCKDLIDPCTSEKVSLTDMVQRSILQENTRMWLLPVRP
+QEAGRITLKCGRSVSILRAAHEGLIDRETMFRLLGAQLLSGGLIDCNSGQKMTVEEAVAE
+GVIDRDTASSILTYQVQTGGIVHSNPAKRLTVDEAVQCELITSSSALLVLEAQRGYVGLI
+WPHSGEIFPTSSSLQQELITNELASKILNGRQKIAALYIPESSQVIGLDAAKQLGIIDNN
+TASVLKDVKLPDKMPDLGDLEDCKNAKRWLSFCKFQPSTVHDYRQEEGGSDGEEPVTAQS
+SEQTKKLFLSYLMVNSYMDAHTGQRLLLYDGDLDEAVSMLLESCGAELGADTSTRESLSV
+LTIPDAFPDCALSEEKHECSADKCHYSHPGHKESLENAKWDMNEAFCKMGNNDSNGELPR
+PENLADTTVVQKGSESPSRVRVPKPTSSSTQPEGSVLRPESGSILKGCKSQSEPVTKKYP
+DGTNHSHFLTSETSRPCDSNEREDEENIQKGPSVFDYSPRLSALLSHDELRQSQGRFSDT
+STPQNTGYLCEASTLSPSDQRVLADQSTREKFQDRFLGIAAISVSLQGAPCGQKPVDTEC
+SSSQVHYHSEESMSDASAESGATRQTDESEKTGSKVEDNSCTMVPGGGSRNDNTSDCGPL
+SHKGAIDAGDYETSLLAGQQSDTATDSDSDDYFYDTPLFEDEDHDSLILQGDDRDCLQPE
+DYDTSLQEENDRTPPPDDIFYDVMKEKENPEFPHGGMDESLGVENKVCCPQGFPVGIEKP
+ELYLAGEKEFNSGGSEQLVESVSESENPPGLWDSESDSLTEGEIIGRKERLGASLTPDGH
+WRGDREECDTSRESQSDTDGVGSIQSSESYRPYMSDGSDLDEEDNGGRSSEDSGDGRGGQ
+GVADEGGEPQYQADPTQLYTAIRKEHGGETQNVSDMIPLDKTHSYSPLETQHGAGVFQPE
+SAGKGGWDTERSSHPELTTEADEEDEASLSTHMATKGVSLSNAEGTASEEIRLVQGPDSS
+GILKAEDLENVSPEISPSSDNIVRSEAELGGGASEDGHLSFTGSDRDQQGPGRGLVKGRD
+GQSDKLVDETSIREMGFQKEGVLMSSPEEGGEEERDLEPFPNGSATESLNMGKSQVPPLL
+THTEELSHRGAPHTTTMTTTMTLEGEAKNVQTGLTESPVLLETLAEIFDTPASKVTRADL
+TSAVTASEMKSQVKEDSLTGGPEKETGPCTSLGHCDKCIHVDMLEPNEHTPSCALVAPPT
+VKDNLCSVNNAGEKSVRPQEDWPPAAEVRLSDACVEESISEGKAGILQFTPENSDSTLSR
+LPHQSVAGWGKSADSVQARLPVSGVRHTSADTLDVGCPQLESSREKASAEEEPHRERALS
+LKPQEREHHMLGFVEDGRSILKSSLDKVHMNLQEVGDPSAGTGTKISIQNLIRRAILSEL
+PNEVSNVPSHGISPISNSSEVRAESGGDPFCITSFLHLLKQNQPPQETPGISELAKVLTQ
+MDCDPEQRGLGSELLPPQLKNAFYKLLFDGYATEKDQAEALGQTSCAVPKMAEEKPHVCS
+DLRNKEGHHCPLNPQAVGEAEVEPFSVHIAALPGGEKLGELCSEPPEHSESTSGSKERSS
+DGSSKEKCSNGLQQCLQHTEKMHEYLVLLQDMKPPLDNQASVESSLEALKSQLKQLEAFE
+LGLAPIAVFLRKDLKLAEEFLKSFPSDLPRRHHEELSKSHQRLQNAFSSLSSVSSERMKL
+IKLAINSEMSKLAVRHEDFLHKLTSYSDWVSEKSRSVKAIQTVNVQDTELVKNSVKFLKN
+VLADLSHTKMQLETTAFDVQSFISDYAQDLSPSQSRQLLRLLNTTQKGFLDLQELVTTEA
+DRLEALLQLEQELGHQKVVAERQQEYREKLQGLCDLLTQTENRLISNQEAFVIGDGTVEL
+QKYQSKQEELQRDMQGSTQAMEEIVRNTELFLKESGDELSQADRALIEQKLNEVKMKCAQ
+LNLKAEQSRKELDKAVTTALKEETEKVAAVRQLEESKTKIENLLNWLSNVEEDSEGVWTK
+HTQPMEQNGTYLHEGDSKLGAGEEDEVNGNLLETDAEGHSEATKGNLNQQYEKVKAQHGK
+IMAQHQAVLLATQSAQVLLEKQGHYLSPEEKEKLQKNTQELKVHYEKVLAECEKKVKLTH
+SLQEELEKFDTDYSEFEHWLQQSEQELANLEAGADDLSGLMDKLTRQKSFSEDVISHKGD
+LRYITISGNRVIDAAKSCSKRDSDRIGKDSVETSATHREVQTKLDQVTDRFRSLYSKCSV
+LGNNLKDLVDQYQQYEDASCGLLSGLQACEAKASKHLREPIALDPKNLQRQLEETKALQG
+QISSQQVAVEKLKKTAEVLLDAKGSLLPAKNDIQKTLDDIVGRYDDLSKCVNERNEKLQI
+TLTRSLSVQDALDEMLDWMGSVESSLVKPGQVPLNSTALQDLISKDTMLEQDITGRQSSI
+NAMNEKVKTFIETTDPSTASSLQAKMKDLSARFSEASQKHKEKLAKMVELKAKVEQFEKL
+SDKLQTFLETQSQALTEVAMPGKDVPELSQHMQESTAKFLEHRKDLEALHSLLKEISSHG
+LPGDKALVFEKTNNLSRKFKEMEDTIQEKKDALSSCQEQLSAFQTLAQSLKTWIKETTKQ
+VPVVKPSLGTEDLRKSLEETKKLQEKWNLKAPEIHKASNSGVSLCNLLSALISPAKAIAA
+AKSGGVILNGEGTDTNTQDFLANKGLTSIKKDMTDISHSYEDLGLLLKDKIVELNTKLSK
+LQKAQEESSAMMQWLEKMNKTASRWRQTPTPADTESVKLQVEQNKSFEAELKQNVNKVQE
+LKDKLSELLEENPEAPEAQSWKQALAEMDTKWQELNQLTMDRQQKLEESSNNLTQFQTTE
+AQLKQWLMEKELMVSVLGPLSIDPNMLNTQKQQVQILLQEFDTRKPQYEQLTAAGQGILS
+RPGEDPSLHGIVNEQLEAVTQKWDNLTGQLRDRCDWIDQAIVKSTQYQSLLRSLSGTLTE
+LDDKLSSGLTSGALPDAVNQQLEAAQRLKQEIEQQAPKIKEAQEVCEDLSALVKEEYLKA
+ELSRQLEGILKSFKDIEQKTENHVQHLQSACASSHQFQQMSKDFQAWLDAKKEEQRDSPP
+ISAKLDVLESLLNSQKDFGKTFTEQSNIYEKTISEGENLLLKTQGAEKAALQLQLNTMKT
+DWDRFRKQVKEREEKLKDSLEKALKYREQVETLRPWIDRCQHSLDGVTFSLDPTESESSI
+AELKSLQKEMDHHFGMLELLNNTANSLLSVCEVDKEAVTEENQSLMEKVNRVTEQLQSKT
+VSLENMAQKFKEFQEVSRDTQRQLQDTKEQLEVHHSLGPQAYSNKHLSVLQAQQKSLQTL
+KQQVDEAKRLAQDLVVEAADSKGTSDVLLQAETLAEEHSELSQQVDEKCSFLETKLQGLG
+HFQNTIREMFSQFTECDDELDGMAPVGRDAETLRKQKACMQTFLKKLEALMASNDSANRT
+CKMMLATEETSPDLIGVKRDLEALSKQCNKLLDRAKTREEQVDGATEKLEEFHRKLEEFS
+TLLQKAEEHEESQGPVGTETETINQQLDVFKVFQKEEIEPLQVKQQDVNWLGQGLIQSAA
+ANTCTQGLEHDLDSVNSRWKTLNKKVAQRTSQLQEALLHCGRFQDALESLLSWMADTEEL
+VANQKPPSAEFKVVKAQIQEQKLLQRLLEDRKSTVEVIKREGEKIAASAEPADRVKLTRQ
+LSLLDSRWEALLSRAEARNRQLEGISVVAQEFHGTLEPLNEWLTAVEKKLANSEPIGTQA
+PKLEEQISQHKALQEDILLRKQSVDQALLNGLELLKQTTGDEVLIIQDKLEAIKARYKDI
+TKLSADVAKTLEHALQLAGQLQSMHKELCNWLDKVEVELLSYETQGLKGEAASQVQERQK
+ELKNEVRSNKALVDSLNEVSSALLELVPCRAKEGLEKTIADDNEPLPDCEPTQSRHKVEE
+IDAAILRSQQFEQAADAELSWITETQKKLMSLGDIRLEQDQTSAQLQVQKAFTMDILRHK
+DIIDELVTSGHKIMTTSGEEEKQSMKKKLDKVLKKYDAVCQINSERHLQLERAQSLVSQF
+WETYEELWPWLTETQRIISQLPAPALEYETFERQQEEHRQLRELIAEHKPHIDKMNKTGP
+QLLELSPKEGIYIQEKYVAADTLYSQIKEDVKKRAVVLDEAISQSTQFHDKIDQILESLE
+RIAERLRQPPSISAEVEKIKEQIGENKSVSVDMEKLQPLYETLRQRGEEMIARSEGTEKD
+VSARAVQDKLDQMVFIWGSIHTLVEEREAKLLDVMELAEKFWCDHMSLVVTIKDTQDFIR
+DLEDPGIDPSVVKQQQEAAEAIREEIDGLQEELDMVITLGSELIAACGEPDKPIVKKSID
+ELNSAWDSLNKAWKDRVDRLEEAMQAAVQYQDGLQGIFDWVDIAGDKLATMSPIGTDLET
+VKQQIEELKQFKSEAYQQQMEMERLNHQAELLLKKVTEEADKHTVQDPLMELKLIWDSLD
+ERIVSRQHKLEGTLLALGQFQHALDELLAWLTHTKGLLSEQKPVGGDPKAIEIELAKHHV
+LQNDVLAHQSTVEAVNKAGNDLIESSEGEEASNLQYKLRILNQRWQDILEKTDQRKQQLD
+SALRQAKGFHGEIEDLQQWLTDTERHLLASKPLGGLPETAKEQLNAHMEVCTAFAIKEET
+YKSLMLRGQQMLARCPRSAETNIDQDITNLKEKWESVKSKLNEKKTKLEEALHLAMNFHN
+SLQDFINWLTQAEQTLNVASRPSLILDTILFQIDEHKVFANEVNSHREQIIELDKTGTHL
+KYFSQKQDVVLIKNLLISVQSRWEKVVQRLVERGRSLDEARKRAKQFHEAWSKLMEWLEE
+SEKSLDSELEIANDPDKIKAQLVQHKEFQKSLGGKHSVYDTTNRTGRSLKEKTSLADDNL
+KLDNMLSELRDKWDTICGKSVERQNKLEEALLFSGQFTDALQALIDWLYRVEPQLAEDQP
+VHGDIDLVMSLIDNHKVFQKELGKRTSSVQALKRSARELIEGSRDDSSWVRVQMQELSTR
+WETVCALSISKQTRLESALQQAEEFHSVVHTLLEWLAEAEQTLRFHGALPDDEDALRTLI
+EQHKEFMKRLEEKRAELSKATGMGDALLAVCHPDSITTIKHWITIIQARFEEVLAWAKQH
+QQRLAGALAGLIAKQELLETLLAWLQWAETTLTEKDKEVIPQEIEEVKTLIAEHQTFMEE
+MTRKQPDVDKVTKTYKRRATDPPSLQSHIPVLDKGRAGRKRFPASGFYPSGSQTQIETKN
+PRVNLLVSKWQQVWLLALERRRKLNDALDRLEELREFANFDFDIWRKKYMRWMNHKKSRV
+MDFFRRIDKDQDGKITRQEFIDGILSSKFPTSRLEMSAVADIFDRDGDGYIDYYEFVAAL
+HPNKDAYKPITDADKIGDEVTRQVAKCKCAKRFQVEQIGDNKYRFFLGNQFGDSQQLRLV
+RILRSTVMVRVGGGWMALDEFLVKNDPCRVHHHGSKMLRSESNSSITATQPTLAKGRTNM
+ELREKFILADGASQGMAAFRPRGRRSRPSSRGASPNRSTSGSSHACQAASPPVPAAASTP
+KGTPIQGSKLRLPGYLSGKGFHSGEDSALITTAAARVRTQFAESRKTPSRPGSRAGSKAG
+SRASSRRGSDASDFDISEIQSVCSDVETVPQTHRPVPRAGSRPSTAKPSKIPTPQRRSPA
+SKLDKSSKR
+</sequence>
+</entry>
+<copyright>
+Copyrighted by the UniProt Consortium, see http://www.uniprot.org/terms
+Distributed under the Creative Commons Attribution-NoDerivs License
+</copyright>
+</uniprot>

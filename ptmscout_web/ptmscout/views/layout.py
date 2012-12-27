@@ -2,11 +2,10 @@ from pyramid.renderers import get_renderer
 from pyramid.events import subscriber
 from pyramid.events import BeforeRender
 
-from ptmscout.config.settings import homeUrl, documentationUrl, adminEmail
+from ptmscout.config.settings import documentationUrl, adminEmail
 
 @subscriber(BeforeRender)
 def add_path_definitions(event):
-    event['homeUrl'] = homeUrl
     event['documentationUrl'] = documentationUrl
     event['adminEmail'] = adminEmail 
     event['parent_link'] = None

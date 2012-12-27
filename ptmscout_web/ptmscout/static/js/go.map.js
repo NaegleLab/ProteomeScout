@@ -6,6 +6,11 @@ function compileNode(name, data){
 	return {'GO':name, 'term':"", 'value':val, 'children':data};
 }
 
+function getNodeTitle(d){
+    subtitle = d.term == '' ? '' : ": " + d.term;
+    if (d.GO != '') return d.GO + subtitle;
+}
+
 function createGOMap(json_data, container){
 	var w = 1000,
 	    h = 800,
@@ -21,6 +26,7 @@ function createGOMap(json_data, container){
 	var view_limit = 60;
 	var id_size = 36;
 	var term_size = 28;
+    var fudge_factor = 0.1
 	
 	var pack = d3.layout.pack()
 	    .size([r, r])
@@ -44,6 +50,17 @@ function createGOMap(json_data, container){
 
 	var nodes = pack.nodes(root);
 
+	
+	var isNodeVisible = function(d, k) {
+		if(k===undefined)
+			k = 1;
+		return d.children.length != 1 && k * d.r > (view_limit - fudge_factor) && k * d.r <= ( r / 2 + fudge_factor );
+	};
+	
+	var isNodeForeground = function(d, parent){
+		return d == parent || $.inArray(d, root.children) > -1;
+	};
+	
 	vis.selectAll("circle")
     		.data(nodes)
     	.enter().append("svg:circle")
@@ -51,19 +68,8 @@ function createGOMap(json_data, container){
     		.attr("cx", function(d) { return d.x; })
     		.attr("cy", function(d) { return d.y; })
     		.attr("r", function(d) { return d.r; })
+            .attr("title", function(d) { return getNodeTitle(d); })
     		.on("click", function(d) { return zoom(node == d ? root : d); });
-	
-	var isNodeVisible = function(d, k) {
-		if(k===undefined)
-			k = 1;
-		return d.children.length != 1 && k * d.r > view_limit && k * d.r <= r / 2;
-	};
-	
-	var isNodeForeground = function(d, parent){
-		return d == parent || $.inArray(d, root.children) > -1;
-	};
-	
-	
 	var getScaledSize = function(d, size, scale) {
 		if(scale == undefined)
 			return 2 * d.r / r * size;

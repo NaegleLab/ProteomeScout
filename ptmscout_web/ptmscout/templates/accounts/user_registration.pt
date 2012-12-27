@@ -4,21 +4,26 @@
 	</div>
     <div metal:fill-slot="content">
     	<div class="loginform">
-    		<div tal:condition="reason != None" class="errorbox">Submission Error: ${reason}</div>
-	        <form method="POST" action="${request.application_url}/process_registration">
+    		<div tal:condition="len(errors)>0" class="errorbox">
+    			<ol>
+					<li tal:repeat="error errors" tal:content="error"></li>    			
+    			</ol>
+    		</div>
+	        <form method="POST" action="">
+	        	<input type="hidden" name="submitted" value="true" />
 	      		<div class="formcategory">Preferred Credentials:</div>
 	        	<table>
 	        		<tr>
 	        			<td class="fieldname">Username:</td>
-	        			<td><input type="text" name="username" value="${username}" /></td>
+	        			<td>${formrenderer.render('username')}</td>
 	        		</tr>
 	        		<tr>
 	        			<td class="fieldname">Password:</td>
-	        			<td><input type="password" name="pass1" value="" /></td>
+	        			<td>${formrenderer.render('pass1')}</td>
 	        		</tr>
 	        		<tr>
 	        			<td class="fieldname">Repeat Password:</td>
-	        			<td><input type="password" name="pass2" value="" /></td>
+	        			<td>${formrenderer.render('pass2')}</td>
 	        		</tr>
 	        		
 	        	</table>
@@ -26,15 +31,15 @@
 	        	<table>
 	        		<tr>
 	        			<td class="fieldname" >Name:</td>
-	        			<td><input type="text" name="name" value="${name}" /></td>
+	        			<td>${formrenderer.render('name')}</td>
 	        		</tr>
 	        		<tr>
 	        			<td class="fieldname">E-mail Address:</td>
-	        			<td><input type="text" name="email" value="${email}" /></td>
+	        			<td>${formrenderer.render('email')}</td>
 	        		</tr>
 	        		<tr>
 	        			<td class="fieldname">Institution:</td>
-	        			<td><input type="text" name="institution" value="${institution}" /></td>
+	        			<td>${formrenderer.render('institution')}</td>
 	        		</tr>
 	        	</table>
 	        	<div class="formsubmission"><input type="submit" value="Register" /></div>

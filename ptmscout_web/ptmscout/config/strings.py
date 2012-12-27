@@ -1,5 +1,3 @@
-email_regex = "[a-z0-9\.\-\_]+@[a-z0-9\.\-\_]+\.([a-z]+)$"
-
 accession_type_strings = {'ipi':"International Protein Index", 
                      'gene_synonym':"Gene Synonym",
                      'refseq': "RefSeq",
@@ -53,6 +51,10 @@ cancel_upload_successful_page_title = "Experiment Upload"
 cancel_upload_successful_header = "Experiment Upload Cancelled"
 cancel_upload_successful_message = "Experiment upload session cancelled"
 
+cancel_upload_already_started_message = "This experiment upload session has already been completed, you cannot cancel it."
+cancel_upload_already_started_header = "Experiment Upload Could Not Be Cancelled"
+
+
 experiment_upload_error_reasons_column_title = "Error Information"
 experiment_upload_error_standard_deviation_label_does_not_match_any_data_column = "Standard deviation column number %d with label '%s' does not match any column label in data columns"
 experiment_upload_error_limit_one_column_of_type = "Error: At most one column of type '%s' can exist in your data"
@@ -97,16 +99,16 @@ forgotten_password_success_header = "Password Reset Success"
 forgotten_password_success_message = "Your username and a temporary password have been sent to your e-mail address"
 forgotten_password_email_subject = "PTMScout password reset"
 forgotten_password_email_message = \
-"""%s,
-
-Your password in PTMScout has been reset, your new login credentials are:
-Username: %s
-Password: %s
-
-Please visit <a href="%s">PTMScout</a> to login.
-After logging in, your can change your password <a href="%s">here</a>.
-
--PTMScout Administrator
+"""%s,<br>
+<br>
+Your password in PTMScout has been reset, your new login credentials are:<br>
+Username: %s<br>
+Password: %s<br>
+<br>
+Please visit <a href="%s">PTMScout</a> to login.<br>
+After logging in, your can change your password <a href="%s">here</a>.<br>
+<br>
+-PTMScout Administrator<br>
 """
 
 login_page_title = "Login"
@@ -147,14 +149,14 @@ user_invite_email_required = "Email address is required"
 user_invited = "An invitation to view your dataset has been sent to %s."
 user_invite_email_subject = "PTMScout user %s has invited you to share a dataset"
 user_invite_email_message = """
-%s,
-
-User %s has invited you to view their dataset '%s', available through PTMScout.
-
-Please <a href=\"%s\">visit</a> to access and view this data.
-
-Thanks,
--The PTMScout Team
+%s,<br>
+<br>
+User %s has invited you to view their dataset '%s', available through PTMScout.<br>
+<br>
+Please <a href=\"%s\">visit</a> to access and view this data.<br>
+<br>
+Thanks,<br>
+-The PTMScout Team<br>
 """
 
 
@@ -164,14 +166,14 @@ user_registration_success_message = "A confirmation e-mail has been sent to the 
 
 user_registration_email_subject = "PTMScout Account Activiation Details"
 user_registration_email_message = """
-%s,
-
-Thank you for choosing PTMScout for your research.
-
-You can activate your new account by visiting <a href=\"%s/activate_account?username=%s&token=%s\">this link</a>.
-
-Thanks,
--The PTMScout Team
+%s,<br>
+<br>
+Thank you for choosing PTMScout for your research.<br>
+<br>
+You can activate your new account by visiting <a href=\"%s/activate_account?username=%s&token=%s\">this link</a>.<br>
+<br>
+Thanks,<br>
+-The PTMScout Team<br>
 """
 
 view_page_title = "PTMScout Terms of Use"
@@ -195,7 +197,7 @@ failure_reason_inactive_account = "Account has not been activated"
 failure_reason_incorrect_credentials = "Credentials incorrect"
 failure_reason_username_inuse = "Username is already in use"
 failure_reason_email_not_valid = "Email address is invalid"
-failure_reason_email_not_academic = "Email address must belong to .edu domain"
+failure_reason_email_not_allowed = "Email address must belong to .edu or .gov domain"
 failure_reason_password_too_short = "Password must be at least %d characters in length"
 failure_reason_email_address_not_on_record = "E-mail address does not match any user record"
 

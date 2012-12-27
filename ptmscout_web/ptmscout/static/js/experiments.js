@@ -15,4 +15,14 @@ $(document).ready(
 					return false;
 				});
 		$("tr.subexperiment").hide();
+		
+		$("div.progress").each(function(){
+				val = $(this).text();
+				$(this).text("");
+				items = val.split(" / ");
+				n = parseInt(items[0]);
+				d = parseInt(items[1]);
+				
+				$(this).progressbar({ value: n, max: d});
+			});
 	});

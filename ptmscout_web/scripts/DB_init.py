@@ -18,6 +18,9 @@ class DatabaseInitialization():
         self.session = DBSession
         Base.session = self.session
 
+    def new_transaction(self):
+        self.trans = self.connection.begin()
+
     def rollback(self):
         testing.tearDown()
         self.trans.rollback()

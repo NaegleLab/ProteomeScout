@@ -2,12 +2,20 @@ import unittest
 from ptmscout.utils.uploadutils import ColumnError,\
     check_data_column_assignments, ErrorList, assign_column_defaults,\
     assign_columns_by_name, assign_columns_from_session_history, check_data_rows,\
-    ParseError, check_modification_type_matches_peptide \
-    
+    ParseError, check_modification_type_matches_peptide,\
+    load_header_and_data_rows
 from tests.views.mocking import createMockUser, createMockSession,\
     createMockSessionColumn, createMockPTM
 from mock import patch
-from ptmscout.config import strings
+from ptmscout.config import strings, settings
+import os
+from tests.PTMScoutTestCase import IntegrationTestCase
+
+class TestUploadUtilsWithTestDB(IntegrationTestCase):
+    def test_find_mod_type(self):
+        mod_indices, mod_object = check_modification_type_matches_peptide(1, 'GTGPQRPrSWAAADS', 'dimethylation', ['Eukaryota'])
+
+        self.assertEqual(7, mod_indices[0])
 
 class TestUploadUtils(unittest.TestCase):
     
@@ -93,6 +101,24 @@ class TestUploadUtils(unittest.TestCase):
             self.fail("Expected exception ParseError")
         
         patch_findPTM.assert_any_call("METH", "Q", None) 
+
+    @patch('ptmscout.database.modifications.findMatchingPTM')
+    def test_check_modification_type_matches_peptide_should_throw_error_on_ambiguous_modification_if_no_specific_residue_exists(self, patch_findPTM):
+        ptm1 = createMockPTM(name="Methylation", keywords=["METH"])
+        
+        mods = [ptm1]
+        patch_findPTM.return_value = mods, True
+        
+        try:
+            check_modification_type_matches_peptide(1, "DFERTGDYDFqERAS", "METH")
+        except ParseError, pe:
+            self.assertEqual(1, pe.row)
+            self.assertEqual("Unexpected Error: PTM type '%s' had no residue specific matches."% ('METH'), pe.msg)
+        else:
+            self.fail("Expected exception ParseError")
+        
+        patch_findPTM.assert_any_call("METH", "Q", None) 
+
     
     @patch('ptmscout.database.modifications.findMatchingPTM')
     def test_check_modification_type_matches_should_succeed(self, patch_findPTM):
@@ -331,3 +357,11 @@ class TestUploadUtils(unittest.TestCase):
             self.fail("Expected exception: ErrorList([ColumnError()])")
 
         self.assertFalse(patch_check.called)
+
+    def test_load_header_and_data_rows_should_load_only_N_rows(self):
+        datafile = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'test', 'test_dataset_formatted.txt')
+
+        header, rows = load_header_and_data_rows(datafile, 10)
+
+        self.assertEqual(10, len(rows))
+

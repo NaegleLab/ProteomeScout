@@ -94,7 +94,10 @@
                     </tr>
                 </table>
                 
-                <div class="formsubmission"><input type="submit" value="Continue" /></div>
+                <div class="formsubmission">
+                    <input type="submit" value="Continue" />
+                    <a tal:attributes="href '%s/upload/%d/cancel' % (request.application_url, session_id)">Cancel</a>
+                </div>
                 <div class="clear"></div>               
                 <div class="formfooter">* denotes an optional field, all other fields are required</div>
             </div>

@@ -1,7 +1,7 @@
 from tests.PTMScoutTestCase import IntegrationTestCase
 from ptmworker import picr_tools
 
-class IntegrationTestScansiteQuery(IntegrationTestCase):
+class IntegrationTestPICR(IntegrationTestCase):
     
     def test_picr_parser(self):
         picrxml = \
@@ -88,14 +88,18 @@ class IntegrationTestScansiteQuery(IntegrationTestCase):
         self.assertEqual(('ipi', 'IPI01014284', '1'), response.references[0])
         self.assertEqual(('swissprot', 'P29375', '3'), response.references[1])
         self.assertEqual(('ipi', 'IPI00021363', '3'), response.references[2])
-    
-    
+
+    def test_get_picr_2(self):
+        result = picr_tools.get_picr('EAX03173', 9606)
+
+        self.assertEqual([], result)
+
     def test_get_picr(self):
-        result = picr_tools.get_picr('P29375')
+        result = picr_tools.get_picr('P29375', 9606)
 
         self.assertEqual(4, len(result))
-        self.assertEqual(('ipi', 'IPI01014284', '1'), result[0])
-        self.assertEqual(('swissprot', 'P29375', '3'), result[1])
-        self.assertEqual(('refseq', 'NP_001036068', '1'), result[2])
-        self.assertEqual(('ipi', 'IPI00021363', '3'), result[3])
+        self.assertTrue(('swissprot', 'P29375', '3') in result)
+        self.assertTrue(('refseq', 'NP_001036068', '1') in result)
+        self.assertTrue(('ipi', 'IPI01014284', '1') in result)
+        self.assertTrue(('ipi', 'IPI00021363', '3') in result)
         

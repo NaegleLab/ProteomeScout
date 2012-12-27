@@ -3,14 +3,16 @@ from ptmscout.config import strings
 from ptmscout.database.user import NoSuchUser
 from ptmscout.views.accounts.my_experiments_view import confirm_invite_user, \
     privatize_experiment, publish_experiment, manage_experiment_permissions, \
-    manage_experiments
+    manage_experiments, get_sessions
 from pyramid.httpexceptions import HTTPFound
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockUser, createMockExperiment, \
-    createMockPermission
+    createMockPermission, createMockSession
 from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
+from ptmscout.database import upload
 
 class MyExperimentsViewIntegrationTests(IntegrationTestCase):
+    
     def test_integration(self):
         from ptmscout.database import experiment
         
@@ -19,6 +21,20 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         exp.grantPermission(self.bot.user, 'owner')
         exp.saveExperiment()
         
+        exp2 = experiment.getExperimentById(28, None, False)
+        exp2.status = 'configuration'
+        exp2.grantPermission(self.bot.user, 'owner')
+        exp2.saveExperiment()
+
+        session = upload.Session()
+        session.experiment_id = exp2.id
+        session.user_id = self.bot.user.id
+        session.data_file = ''
+        session.change_description = ''
+        session.load_type = ''
+        session.stage = 'confirm'
+        session.save()
+        
         self.bot.login()
         
         result = self.ptmscoutapp.get('/account/experiments')
@@ -26,9 +42,58 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         result.mustcontain(exp.name)
         result.mustcontain('Status')
         result.mustcontain('loading')
+        result.mustcontain('77 / 0')
+        
+        result.mustcontain('<a href="%s/upload/%d">continue upload</a>' % ("http://localhost", session.id))
         
 
 class MyExperimentsViewTests(UnitTestCase):
+    
+    @patch('ptmscout.database.experiment.getExperimentById')
+    def test_confirm_invite_should_fail_for_bad_domain(self, patch_getExperiment):
+        request = DummyRequest()
+        ptm_user = createMockUser("username", "email", "password", 1)
+        request.user = ptm_user
+        
+        exp1 = createMockExperiment(1, 1)
+        ptm_user.permissions.append(createMockPermission(ptm_user, exp1, 'owner'))
+        request.matchdict['id'] = "%d" % (exp1.id)
+        invited_email = "inviteduser@institute.com"
+        request.GET['email'] = invited_email
+                
+        patch_getExperiment.return_value = exp1
+        
+        info = confirm_invite_user(request)
+        
+        self.assertEqual(True, info['confirm'])
+        self.assertEqual("Failure", info['header'])
+        self.assertEqual(strings.user_invite_page_title, info['pageTitle'])
+        self.assertEqual(strings.failure_reason_email_not_allowed, info['message'])
+        self.assertEqual(exp1, info['experiment'])
+        self.assertEqual(request.application_url + "/account/experiments", info['redirect'])
+    
+    @patch('ptmscout.database.experiment.getExperimentById')
+    def test_confirm_invite_should_fail_for_bad_email(self, patch_getExperiment):
+        request = DummyRequest()
+        ptm_user = createMockUser("username", "email", "password", 1)
+        request.user = ptm_user
+        
+        exp1 = createMockExperiment(1, 1)
+        ptm_user.permissions.append(createMockPermission(ptm_user, exp1, 'owner'))
+        request.matchdict['id'] = "%d" % (exp1.id)
+        invited_email = "inviteduser@institute"
+        request.GET['email'] = invited_email
+                
+        patch_getExperiment.return_value = exp1
+        
+        info = confirm_invite_user(request)
+        
+        self.assertEqual(True, info['confirm'])
+        self.assertEqual("Failure", info['header'])
+        self.assertEqual(strings.user_invite_page_title, info['pageTitle'])
+        self.assertEqual(strings.failure_reason_email_not_valid, info['message'])
+        self.assertEqual(exp1, info['experiment'])
+        self.assertEqual(request.application_url + "/account/experiments", info['redirect'])
     
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_confirm_invite_should_check_confirmation(self, patch_getExperiment):
@@ -46,7 +111,8 @@ class MyExperimentsViewTests(UnitTestCase):
         
         info = confirm_invite_user(request)
         
-        self.assertEqual("false", info['confirm'])
+        self.assertEqual(False, info['confirm'])
+        self.assertEqual("Confirm", info['header'])
         self.assertEqual(strings.user_invite_page_title, info['pageTitle'])
         self.assertEqual(strings.user_invite_confirm % (invited_email), info['message'])
         self.assertEqual(exp1, info['experiment'])
@@ -80,7 +146,8 @@ class MyExperimentsViewTests(UnitTestCase):
         
         self.assertIn(strings.user_invite_email_subject % (ptm_user.name), str(patch_mail.call_args))
         self.assertIn(expected_email_body, str(patch_mail.call_args))
-        self.assertEqual("true", info['confirm'])
+        self.assertEqual(True, info['confirm'])
+        self.assertEqual("Success", info['header'])
         self.assertEqual(strings.user_invite_page_title, info['pageTitle'])
         self.assertEqual(strings.user_invited % (invited_email), info['message'])
         self.assertEqual(exp1, info['experiment'])
@@ -101,7 +168,8 @@ class MyExperimentsViewTests(UnitTestCase):
         
         info = privatize_experiment(request)
         
-        self.assertEqual("true", info['confirm'])
+        self.assertEqual(True, info['confirm'])
+        self.assertEqual("Success", info['header'])
         self.assertEqual(strings.privatize_experiment_page_title, info['pageTitle'])
         self.assertEqual(strings.privatize_experiment_already_message, info['message'])
         self.assertEqual(exp1, info['experiment'])
@@ -122,7 +190,8 @@ class MyExperimentsViewTests(UnitTestCase):
         
         info = privatize_experiment(request)
         
-        self.assertEqual("false", info['confirm'])
+        self.assertEqual(False, info['confirm'])
+        self.assertEqual("Confirm", info['header'])
         self.assertEqual(strings.privatize_experiment_page_title, info['pageTitle'])
         self.assertEqual(strings.privatize_experiment_confirm_message, info['message'])
         self.assertEqual(exp1, info['experiment'])
@@ -146,7 +215,8 @@ class MyExperimentsViewTests(UnitTestCase):
         self.assert_(exp1.makePrivate.called)
         self.assert_(exp1.saveExperiment.called)
         
-        self.assertEqual("true", info['confirm'])
+        self.assertEqual(True, info['confirm'])
+        self.assertEqual("Success", info['header'])
         self.assertEqual(strings.privatize_experiment_page_title, info['pageTitle'])
         self.assertEqual(strings.privatize_experiment_success_message, info['message'])
         self.assertEqual(exp1, info['experiment'])
@@ -167,7 +237,8 @@ class MyExperimentsViewTests(UnitTestCase):
         
         info = publish_experiment(request)
         
-        self.assertEqual("true", info['confirm'])
+        self.assertEqual(True, info['confirm'])
+        self.assertEqual("Success", info['header'])
         self.assertEqual(strings.publish_experiment_page_title, info['pageTitle'])
         self.assertEqual(strings.publish_experiment_already_message, info['message'])
         self.assertEqual(exp1, info['experiment'])
@@ -188,7 +259,8 @@ class MyExperimentsViewTests(UnitTestCase):
         
         info = publish_experiment(request)
         
-        self.assertEqual("false", info['confirm'])
+        self.assertEqual(False, info['confirm'])
+        self.assertEqual("Confirm", info['header'])
         self.assertEqual(strings.publish_experiment_page_title, info['pageTitle'])
         self.assertEqual(strings.publish_experiment_confirm_message, info['message'])
         self.assertEqual(exp1, info['experiment'])
@@ -212,7 +284,8 @@ class MyExperimentsViewTests(UnitTestCase):
         exp1.makePublic.assert_called_once()
         exp1.saveExperiment.assert_called_once()
         
-        self.assertEqual("true", info['confirm'])
+        self.assertEqual(True, info['confirm'])
+        self.assertEqual("Success", info['header'])
         self.assertEqual(strings.publish_experiment_page_title, info['pageTitle'])
         self.assertEqual(strings.publish_experiment_success_message, info['message'])
         self.assertEqual(exp1, info['experiment'])
@@ -315,20 +388,49 @@ class MyExperimentsViewTests(UnitTestCase):
         self.assertEqual(exp1, info['experiment'])
         self.assertEqual(strings.share_experiment_page_title, info['pageTitle'])
         self.assertEqual(None, info['reason'])
-
     
-    def test_my_experiments_should_show_experiments(self):
+    
+    @patch('ptmscout.database.upload.getMostRecentSession')
+    def test_get_sessions_should_get_most_recent_sessions_for_experiments(self, patch_getSession):
+        user = createMockUser()
+        exp = createMockExperiment(10)
+        session = createMockSession(user)
+        
+        patch_getSession.return_value = session
+        
+        smap = get_sessions([exp])
+        
+        patch_getSession.assert_called_once_with(10)
+        
+        self.assertEqual({exp.id: session.id}, smap)
+        
+    
+    @patch('ptmscout.views.accounts.my_experiments_view.get_sessions')
+    @patch('ptmscout.database.modifications.countMeasuredPeptidesForExperiment')
+    def test_my_experiments_should_show_experiments(self, patch_countPeps, patch_getSessions):
         request = DummyRequest()
         ptm_user = createMockUser("username", "email", "password", 1)
         request.user = ptm_user
 
         exp1 = createMockExperiment(1, 0)
         exp2 = createMockExperiment(2, 0)
+        exp3 = createMockExperiment(3, 0)
+        exp2.status = 'loading'
+        exp3.status = 'configuration'
         
-        ptm_user.myExperiments.return_value = [exp1,exp2]
+        patch_getSessions.return_value = {"some map":"of session ids"}
         
+        ptm_user.myExperiments.return_value = [exp1,exp2, exp3]
+        patch_countPeps.return_value = 100
+
         info = manage_experiments(request)
         
+        patch_getSessions.assert_called_once_with([exp3])
+        patch_countPeps.assert_called_once_with(exp2.id)
+
         self.assertEqual([exp1, exp2], info['experiments'])
+        self.assertEqual([exp3], info['in_process'])
+        self.assertEqual(patch_getSessions.return_value, info['sessions'])
         self.assertEqual(strings.my_experiments_page_title, info['pageTitle'])
+        self.assertEqual({exp2.id: 100}, info['peptide_counts'])
         

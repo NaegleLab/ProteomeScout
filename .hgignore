@@ -22,6 +22,7 @@ ptmscout_web/data
 ptmscout_web/scripts/db
 ptmscout_web/scripts/data
 ptmscout_web/scripts/output
+ptmscout_web/scripts/db
 ptmscout_web/logs
 ptmscout_web/modules
 .*\.pyc

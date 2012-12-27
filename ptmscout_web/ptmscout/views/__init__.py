@@ -1,5 +1,3 @@
-from pyramid.exceptions import Forbidden
-from ptmscout.views.errors import forbidden_view
 
 def add_views(config):
     config.add_static_view('static', 'static', cache_max_age=3600)
@@ -19,6 +17,7 @@ def add_views(config):
     config.add_route('experiment_download','/experiments/{id}/download')
     
     config.add_route('upload', '/upload')
+    config.add_route('upload_resume', '/upload/{id}')
     config.add_route('upload_config', '/upload/{id}/config')
     config.add_route('upload_metadata', '/upload/{id}/metadata')
     config.add_route('upload_conditions', '/upload/{id}/conditions')
@@ -37,7 +36,7 @@ def add_views(config):
     config.add_route('logout', '/logout')
     
     config.add_route('register', '/register')
-    config.add_route('process_registration', '/process_registration')
+    config.add_route('registration_success', '/registration_success')
     config.add_route('activate_account', '/activate_account')
     
     config.add_route('forgot_password', '/forgot_password')
@@ -52,8 +51,6 @@ def add_views(config):
     
     config.add_route('change_password', '/change_password')
     config.add_route('change_password_success', '/change_password_success')
-    
-    config.add_view(forbidden_view, context=Forbidden)
     
     
     config.add_renderer(name='tsv', factory='ptmscout.views.renderers.TSVRenderer')

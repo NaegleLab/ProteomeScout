@@ -110,8 +110,9 @@ class Protein(Base):
         DBSession.flush()
         
     def hasAccession(self, acc):
+        lower_acc = acc.lower()
         for dbacc in self.accessions:
-            if dbacc.value == acc:
+            if dbacc.value.lower() == lower_acc:
                 return True
         return False
         
@@ -124,7 +125,10 @@ class Protein(Base):
         goe.GO_term = GO_term
         goe.version = date_added
         self.GO_terms.append(goe)
-        
+    
+    def getGOIds(self):
+        return set([ goe.GO_term.GO for goe in self.GO_terms ])
+     
     def hasGoTerm(self, GO_id):
         for goe in self.GO_terms:
             if goe.GO_term.GO == GO_id:
@@ -160,6 +164,30 @@ def getProteinsByAccession(accessions, species=None):
     
     return q.all()
 
+def searchProteins(search=None, species=None, sequence=None, page=None):
+    search = ( "%" + search + "%" ) if search else "%"
+
+    q = DBSession.query(Protein.id).join(Protein.accessions).join(Protein.species)
+    clause = or_(Protein.acc_gene.like(search),
+            ProteinAccession.value.like(search),
+            Protein.name.like(search))
+
+    if sequence:
+        seq_search = ( "%" + sequence + "%" ) if sequence else "%"
+        clause = and_(clause, Protein.sequence.like(seq_search))
+    if species:
+        clause = and_(clause, taxonomies.Species.name==species)
+
+    q = q.filter(clause).distinct()
+
+    if page==None:
+        sq = q.subquery()
+    else:
+        limit, offset = page
+        sq = q.limit(limit).offset(offset).subquery()
+
+    fq = DBSession.query(Protein).join(sq, Protein.id == sq.c.id)
+    return fq.count(), fq.all()
 
 def getProteinDomain(prot_id, pep_site):
     return DBSession.query(ProteinDomain).filter(and_(ProteinDomain.protein_id==prot_id, ProteinDomain.start <= pep_site, pep_site <= ProteinDomain.stop)).first()    

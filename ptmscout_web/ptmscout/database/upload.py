@@ -26,7 +26,7 @@ class Session(Base):
     change_description=Column(Text)
     units=Column(VARCHAR(20), default='')
     
-    stage=Column(Enum(['config','metadata','confirm','complete']))
+    stage=Column(Enum(['config','metadata','confirm','condition', 'complete']))
     experiment_id=Column(Integer(10), ForeignKey('experiment.id'))
     date=Column(DateTime)
     
@@ -62,6 +62,10 @@ class NoSuchSession(Exception):
 class SessionAccessForbidden(Exception):
     pass
 
+def getMostRecentSession(exp_id):
+    ancestors = DBSession.query(Session).filter(Session.experiment_id==exp_id).all()
+    ancestors.sort(key=lambda session: session.date, reverse=True)
+    return ancestors[0]
 
 def getSessionById(session_id, user=None, secure=True):
     session = DBSession.query(Session).filter_by(id=session_id).first()

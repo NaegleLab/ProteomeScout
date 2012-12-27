@@ -1,5 +1,6 @@
 if [ $# -eq 0 ]
 then
+    exitcode=0
     for f in `find tests | grep "test_.*\.py$"`
     do
         proceed=`head -n1 $f | grep '# Skip' | wc -l`
@@ -15,14 +16,20 @@ then
             then
                 echo "Failed test..."
                 echo "$output"
-                exit $rc
+                exitcode=$rc
             fi
         else
             echo "Skipping $package"
         fi
     done
 
-    echo "Success!"
+    if [ "$exitcode" -eq "0" ]
+    then
+        echo "Success! All tests passed."
+    else
+        echo "Failed. Some tests failed."
+    fi
+    exit $exitcode
 else
     PYTHONPATH=/data/ptmscout/ptmscout_web /data/pyramid/bin/python -m unittest $@
 fi

@@ -1,1 +1,0 @@
-../../docs/config/index.php

@@ -59,5 +59,5 @@ class TestProteinModificationViews(unittest.TestCase):
         
         self.assertEqual(strings.protein_modification_sites_page_title, result['pageTitle'])
         self.assertEqual(mock_prot, result['protein'])
-        self.assertEqual([{'name':"mock_pep_name",'peptide':"mock_peptide",'experiments':set([mock_mod.experiment, mock_mod2.experiment])}], result['modification_sites'])
+        self.assertEqual([{'site': p1.site_pos, 'name':"mock_pep_name",'type':mod.name, 'peptide':"mock_peptide",'experiments':set([mock_mod.experiment, mock_mod2.experiment])}], result['modification_sites'])
     

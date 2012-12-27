@@ -1,12 +1,14 @@
-from ptmscout.database import protein, taxonomies, modifications, experiment
+from ptmscout.database import protein, taxonomies, modifications, experiment,\
+    gene_expression
 from ptmscout.utils import uploadutils
 from ptmscout.config import strings
 import logging
 import sys
 from ptmscout.database.modifications import NoSuchPeptide
-from ptmworker import scansite_tools
+from ptmworker import scansite_tools, quickgo_tools
 import transaction
 import traceback
+import re
 from celery.canvas import group
 
 log = logging.getLogger('ptmscout')
@@ -19,13 +21,13 @@ def logged_task(fn):
             return fn(*args)
         except Exception:
             log.warning(traceback.format_exc())
-            raise
     ttask.__name__ = fn.__name__
     return ttask
 
 
 def transaction_task(fn):
     def ttask(*args):
+        from ptmscout.database import DBSession
         log.debug("Running task: %s", fn.__name__)
         try:
             result = fn(*args)
@@ -34,7 +36,6 @@ def transaction_task(fn):
         except Exception:
             log.warning(traceback.format_exc())
             transaction.abort()
-            raise
     ttask.__name__ = fn.__name__
     return ttask
 
@@ -52,9 +53,82 @@ def dynamic_transaction_task(fn):
         except Exception:
             log.warning(traceback.format_exc())
             transaction.abort()
-            raise
     ttask.__name__ = fn.__name__
     return ttask
+
+def get_go_annotation(goId, protein_id, dateAdded, complete_go_terms, missing_terms):
+    go_term = protein.getGoAnnotationById(goId)
+    entry = None
+
+    if go_term == None:
+
+        go_term = protein.GeneOntology()
+        version, entry = quickgo_tools.get_GO_term(goId)
+
+        for parent_goId in entry.is_a:
+            if parent_goId not in complete_go_terms and \
+                    protein.getGoAnnotationById(parent_goId) == None:
+                missing_terms.add(parent_goId)
+
+        go_term.GO = entry.goId
+        go_term.term = entry.goName
+        go_term.aspect = entry.goFunction
+        go_term.version = version
+
+    goe = protein.GeneOntologyEntry()
+    goe.GO_term = go_term
+    goe.protein_id = protein_id
+    goe.date = dateAdded
+    goe.save()
+
+    print "Added term:", goe.GO_term.GO
+    return entry
+
+def query_missing_GO_terms(missing_terms):
+    processed_missing = set()
+    while len(missing_terms) > 0:
+        goId = missing_terms.pop(0)
+        if goId in processed_missing:
+            continue
+
+        go_term = protein.GeneOntology()
+        version, entry = quickgo_tools.get_GO_term(goId)
+
+        go_term.GO = entry.goId
+        go_term.term = entry.goName
+        go_term.aspect = entry.goFunction
+        go_term.version = version
+        go_term.save()
+        created_go_entries.append(entry)
+        created+=1
+        processed_missing.add(goId)
+
+        for parent_goId in entry.is_a:
+            if parent_goId not in complete_go_terms and \
+                    protein.getGoAnnotationById(parent_goId) == None:
+                missing_terms.append(parent_goId)
+
+
+
+def create_accession_for_protein(prot, other_accessions):
+    for db, acc, _ in other_accessions:
+        if not prot.hasAccession(acc):
+            dbacc = protein.ProteinAccession()
+            dbacc.type = db
+            dbacc.value = acc
+            prot.accessions.append(dbacc)
+
+
+def map_expression_probesets(prot):
+    search_accessions = [ acc.value for acc in prot.accessions ]
+    if prot.acc_gene != '' and prot.acc_gene != None:
+        search_accessions.append(prot.acc_gene)
+    
+    probesets = gene_expression.getExpressionProbeSetsForProtein(search_accessions, prot.species_id)
+    
+    prot.expression_probes.extend(probesets)
+    
+    log.info("Loaded %d probesets for protein %d | %s", len(probesets), prot.id, str(prot.acc_gene))
 
 
 def report_errors(exp_id, errors, line_mapping):
@@ -69,18 +143,29 @@ def mark_experiment(exp_id, status):
     exp.saveExperiment()
     return exp
 
+
+def get_strain_or_isolate(species):
+    m = re.match(r"^(.*) \(((?:strain|isolate) .*)\)$", species)
+
+    if m:
+        species_root = m.group(1)
+        strain = m.group(2)
+        return species_root, strain
+
+    return species, None
+
 def find_or_create_species(species):
     sp = taxonomies.getSpeciesByName(species)
     
     if(sp == None):
-        tx = taxonomies.getTaxonByName(species)
+        species_root, strain = get_strain_or_isolate(species)
+        tx = taxonomies.getTaxonByName(species_root, strain=strain)
         
         if tx == None:
             raise uploadutils.ParseError(None, None, "Species: " + species + " does not match any taxon node")
         
-        sp = taxonomies.Species()
-        sp.name = species
-        sp.taxon_id = tx.id
+        sp = taxonomies.Species(species)
+        sp.taxon_id = tx.node_id
         
     return sp
 
@@ -99,7 +184,7 @@ def create_domains_for_protein(prot, domains, source, params):
 
 
 def create_new_protein(name, gene, seq, species, accessions):
-    log.debug("Creating protein: %s SEQ: %s", str(accessions), seq)
+    log.info("Creating protein: %s" , str(accessions))
     prot = protein.Protein()
     prot.acc_gene = gene
     prot.name = name
@@ -107,10 +192,11 @@ def create_new_protein(name, gene, seq, species, accessions):
     prot.species = find_or_create_species(species)
     
     for acc_type, acc in accessions:
-        acc_db = protein.ProteinAccession()
-        acc_db.type = acc_type
-        acc_db.value = acc
-        prot.accessions.append(acc_db)
+        if not prot.hasAccession(acc):
+            acc_db = protein.ProteinAccession()
+            acc_db.type = acc_type
+            acc_db.value = acc
+            prot.accessions.append(acc_db)
 
     return prot
 
@@ -162,7 +248,7 @@ def parse_modifications(prot_seq, pep_seq, mods, taxonomy):
 
 
 def query_peptide_predictions(pep_seq, motif_class):
-    log.debug("Loading scansite predictions...")
+    log.info("Loading scansite predictions...")
     scansite_predictions = scansite_tools.get_scansite_motif(pep_seq, motif_class)
     
     db_predictions = []
@@ -172,7 +258,7 @@ def query_peptide_predictions(pep_seq, motif_class):
         pred.value = scansite.nickname
         pred.source = scansite.parse_source()
         db_predictions.append(pred)
-#        log.debug("%f %s %s", scansite.score, scansite.nickname, scansite.parse_source())
+#        log.info("%f %s %s", scansite.score, scansite.nickname, scansite.parse_source())
         
     return db_predictions
 
@@ -198,21 +284,23 @@ def get_peptide(prot_id, pep_site, peptide_sequence):
 def insert_run_data(MSpeptide, line, units, series_header, run_name, series):
     for i in xrange(0, len(series_header)):
         try:
-            data = experiment.ExperimentData()
-            
             tp, x = series_header[i]
-            
             y = float(series[i])
-            
+
+            data = MSpeptide.getDataElement(run_name, tp, x)
+
+            if data == None:
+                data = experiment.ExperimentData()
+                MSpeptide.data.append(data)
+
             data.run = run_name
             data.priority = i + 1
             data.type = tp
             data.units = units
             data.label = x
             data.value = y
-            MSpeptide.data.append(data)
         except Exception, e:
-            log.debug("Error inserting data element on line %d: '%s' exc: %s", line, series[i], str(e))
+            log.warning("Error inserting data element on line %d: '%s' exc: %s", line, series[i], str(e))
 
 
 def get_series_headers(session):
@@ -295,6 +383,48 @@ def parse_datafile(session):
     return accessions, peptides, mod_map, data_runs, errors, line_mapping
     
 
+def extract_uniprot_accessions(accessions):
+    uniprot_accs = []
+    other_accs = []
+    for acc in accessions:
+        if(re.search('^[A-NR-Z]\d[A-Z]..\d([\.\-]\d+)?$', acc) != None):
+            uniprot_accs.append(acc)
+        elif(re.search('^[OPQ]\d...\d([\.\-]\d+)?$', acc) != None):
+            uniprot_accs.append(acc)
+        else:
+            other_accs.append(acc)
+    return uniprot_accs, other_accs
+
+def group_critera(group, arg):
+    if len(group) == 0:
+        return True
+    return group[-1][:6] == arg[:6]
+
+
+def create_chunked_tasks_preserve_groups(task_method, task_args, MAX_BATCH_SIZE):
+    tasks = []
+    args = []
+
+    small_groups = [[]]
+    for arg in task_args:
+        if group_critera(small_groups[-1], arg):
+            small_groups[-1].append(arg)
+        else:
+            small_groups.append([arg])
+
+    for g in small_groups:
+        if len(args) + len(g) <= MAX_BATCH_SIZE:
+            args = args + g
+        else:
+            tasks.append(task_method.s(args))
+            args = g
+
+    if len(args) > 0:
+        tasks.append( task_method.s(args) )
+
+    return tasks
+
+
 def create_chunked_tasks(task_method, task_args, MAX_BATCH_SIZE):
     tasks = []
     args = []
@@ -309,3 +439,4 @@ def create_chunked_tasks(task_method, task_args, MAX_BATCH_SIZE):
         
     return tasks
     
+

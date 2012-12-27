@@ -49,6 +49,7 @@
                     <div class="right">
                         <span tal:condition="allowoverride">Ignore warnings and continue? <input type="checkbox" name="override"/></span> 
                         <input type="submit" value="Continue"/>
+                        <a tal:attributes="href '%s/upload/%d/cancel' % (request.application_url, session_id)">Cancel</a>
                     </div>
                     <div class="clear"></div>
                 </form>

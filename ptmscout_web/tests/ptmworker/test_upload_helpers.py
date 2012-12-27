@@ -1,10 +1,77 @@
 from tests.PTMScoutTestCase import IntegrationTestCase
 from ptmworker import upload_helpers
 from ptmscout.database import modifications, experiment
-from tests.views.mocking import createMockExperiment
+from tests.views.mocking import createMockExperiment, createMockProtein,\
+    createMockProbe, createMockAccession, createMockSpecies, createMockTaxonomy
 from mock import patch
+from ptmscout.utils import uploadutils
 
 class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
+
+    @patch('ptmscout.database.gene_expression.getExpressionProbeSetsForProtein')
+    def test_map_expression_probesets(self, patch_getProbes):
+        probe = createMockProbe()
+        prot = createMockProtein()
+        
+        prot.acc_gene = 'TNK2'
+        prot.accessions.append(createMockAccession(prot.id, value='ACK1_HUMAN', type='uniprot'))
+        
+        patch_getProbes.return_value = [probe]
+        
+        upload_helpers.map_expression_probesets(prot)
+        
+        patch_getProbes.assert_called_once_with(['ACK1_HUMAN', 'TNK2'], prot.species_id)
+        
+        self.assertEqual([probe], prot.expression_probes)
+
+    @patch('ptmscout.database.taxonomies.getTaxonByName')
+    @patch('ptmscout.database.taxonomies.getSpeciesByName')
+    def test_find_or_create_species_should_get_strain_or_isolate(self, patch_getSpecies, patch_getTaxon):
+        patch_getSpecies.return_value = None
+        taxon = createMockTaxonomy()
+        patch_getTaxon.return_value = taxon
+
+        species_name = 'sacchromyces cerevisiae (strain ATC2044)'
+        sp = upload_helpers.find_or_create_species(species_name)
+
+        patch_getTaxon.assert_called_once_with('sacchromyces cerevisiae', strain='strain ATC2044')
+        self.assertEqual(species_name, sp.name)
+        self.assertEqual(taxon.node_id, sp.taxon_id)
+
+    @patch('ptmscout.database.taxonomies.getTaxonByName')
+    @patch('ptmscout.database.taxonomies.getSpeciesByName')
+    def test_find_or_create_species_should_raise_error_if_no_taxon(self, patch_getSpecies, patch_getTaxon):
+        patch_getSpecies.return_value = None
+        taxon = createMockTaxonomy()
+        patch_getTaxon.return_value = None
+        
+        try:
+            upload_helpers.find_or_create_species('some species')
+        except uploadutils.ParseError, e:
+            self.assertEqual("Species: some species does not match any taxon node", e.message)
+        else:
+            self.fail("Expected parseerror")
+ 
+    @patch('ptmscout.database.taxonomies.getTaxonByName')
+    @patch('ptmscout.database.taxonomies.getSpeciesByName')
+    def test_find_or_create_species_should_create_species_if_taxon_node_available(self, patch_getSpecies, patch_getTaxon):
+        patch_getSpecies.return_value = None
+        taxon = createMockTaxonomy()
+        patch_getTaxon.return_value = taxon
+        
+        sp = upload_helpers.find_or_create_species('some species')
+        
+        patch_getTaxon.assert_called_once_with('some species', strain=None)
+        self.assertEqual('some species', sp.name)
+        self.assertEqual(taxon.node_id, sp.taxon_id)
+
+    @patch('ptmscout.database.taxonomies.getSpeciesByName')
+    def test_find_or_create_species_should_return_species_if_available(self, patch_getSpecies):
+        exp_species = createMockSpecies()
+        patch_getSpecies.return_value = exp_species
+        
+        sp = upload_helpers.find_or_create_species('some species')
+        self.assertEqual(exp_species, sp)
 
     @patch('ptmscout.database.modifications.Peptide')    
     @patch('ptmscout.database.modifications.getPeptideBySite')
@@ -40,7 +107,77 @@ class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
         self.assertEqual('loaded', exp.status)
         exp.saveExperiment.assert_called_once_with()
         self.assertEqual(exp, v)
+
+    def test_insert_run_data_when_exists_should_modify_existing(self):
+        from ptmscout.database import DBSession
+        MS_peptide = modifications.MeasuredPeptide()
+        MS_peptide.experiment_id = 1
+        MS_peptide.protein_id = 35546
+        MS_peptide.peptide = 'ABCDEFG'
         
+        data1 = experiment.ExperimentData()
+        data1.run = 'run1'
+        data1.label = '0'
+        data1.type = 'data'
+        data1.priority = 4
+        data1.value = 9
+
+        data2 = experiment.ExperimentData()
+        data2.run = 'run1'
+        data2.label = '20'
+        data2.type = 'data'
+        data2.priority = 3
+        data2.value = 10
+
+        MS_peptide.data.extend([data1, data2])
+
+        DBSession.add(MS_peptide)
+        DBSession.flush()
+        
+        series_header = [('data', '0'),('data', '5'),('data', '20'), ('stddev', '5'), ('stddev', '20')]
+        series = [0,4,1,3,2]
+        
+        upload_helpers.insert_run_data(MS_peptide, 1, 'time(min)', series_header, "run1", series)
+        
+        DBSession.flush()
+        
+        result = DBSession.query(experiment.ExperimentData).filter_by(MS_id=MS_peptide.id).all()
+        result = sorted(result, key=lambda item: item.priority)
+        
+        self.assertEqual(5, len(result))
+        
+        self.assertEqual("run1", result[0].run)
+        self.assertEqual("data", result[0].type)
+        self.assertEqual("time(min)", result[0].units)
+        self.assertEqual('0', result[0].label)
+        self.assertEqual(0, result[0].value)
+        
+        self.assertEqual("run1", result[1].run)
+        self.assertEqual("data", result[1].type)
+        self.assertEqual("time(min)", result[1].units)
+        self.assertEqual('5', result[1].label)
+        self.assertEqual(4, result[1].value)
+
+        self.assertEqual("run1", result[2].run)
+        self.assertEqual("data", result[2].type)
+        self.assertEqual("time(min)", result[2].units)
+        self.assertEqual('20', result[2].label)
+        self.assertEqual(1, result[2].value)
+
+        self.assertEqual("run1", result[3].run)
+        self.assertEqual("stddev", result[3].type)
+        self.assertEqual("time(min)", result[3].units)
+        self.assertEqual('5', result[3].label)
+        self.assertEqual(3, result[3].value)
+
+        self.assertEqual("run1", result[4].run)
+        self.assertEqual("stddev", result[4].type)
+        self.assertEqual("time(min)", result[4].units)
+        self.assertEqual('20', result[4].label)
+        self.assertEqual(2, result[4].value)
+        
+ 
+
     def test_insert_run_data_should_create_data_records_when_timeseries(self):
         from ptmscout.database import DBSession
         MS_peptide = modifications.MeasuredPeptide()
@@ -48,6 +185,7 @@ class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
         MS_peptide.protein_id = 35546
         MS_peptide.peptide = 'ABCDEFG'
         
+
         DBSession.add(MS_peptide)
         DBSession.flush()
         
@@ -163,4 +301,36 @@ VTDPSCPASVLKCAEALQLPVVSQEWVIQCLIVGERIGFKQHPKYKHDYVSH"""
         self.assertEqual((3,  "     MSaDFJTKLJ", 'A'), aligned_peptides[1])
         self.assertEqual((8,  "MSADFJTkLJAWERP", 'K'), aligned_peptides[2])
         self.assertEqual((15, "KLJAWERpOIDFK  ", 'P'), aligned_peptides[3])
-            
+
+
+    def test_create_chunked_tasks_preserve_groups_should_build_correct_tasks(self):
+        class DummyTask(object):
+            def __init__(self, args=None):
+                self.args = args
+
+            def s(self, *args):
+                return DummyTask(args=args)
+
+        task_args = ['A53D56', 'F435D6', 'ALB432', 'Q134A5', 'Q134A5-3', 'Q134A5-5', 'P54A03', 'E45G76', 'E45G76-2']
+        
+        tasks = upload_helpers.create_chunked_tasks_preserve_groups(DummyTask(), sorted(task_args), 4)
+        
+        self.assertEqual((['A53D56', 'ALB432', 'E45G76', 'E45G76-2'],), tasks[0].args)
+        self.assertEqual((['F435D6', 'P54A03'],), tasks[1].args)
+        self.assertEqual((['Q134A5', 'Q134A5-3', 'Q134A5-5'],), tasks[2].args)
+
+    def test_create_chunked_tasks_should_build_correct_tasks(self):
+        class DummyTask(object):
+            def __init__(self, args=None):
+                self.args = args
+
+            def s(self, *args):
+                return DummyTask(args=args)
+
+        task_args = ['A53D56', 'F435D6', 'ALB432', 'Q134A5', 'Q134A5-3', 'Q134A5-5', 'P54A03', 'E45G76', 'E45G76-2']
+        
+        tasks = upload_helpers.create_chunked_tasks(DummyTask(), sorted(task_args), 4)
+        
+        self.assertEqual((['A53D56', 'ALB432', 'E45G76', 'E45G76-2'],), tasks[0].args)
+        self.assertEqual((['F435D6', 'P54A03', 'Q134A5', 'Q134A5-3'],), tasks[1].args)
+        self.assertEqual((['Q134A5-5'],), tasks[2].args)

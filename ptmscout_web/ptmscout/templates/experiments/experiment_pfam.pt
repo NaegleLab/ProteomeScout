@@ -55,7 +55,7 @@
 					<table>
 						<tr>
 							<th>Domain</th>
-							<th class="value">Peptides</th>
+							<th class="value">Proteins</th>
 						</tr>
 						<tr tal:repeat="entry domains.table">
 							<td tal:content="entry[0]"></td>

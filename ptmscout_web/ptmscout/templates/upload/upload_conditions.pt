@@ -33,6 +33,7 @@
                 </div>
                 <div class="formsubmission">
                     <input type="submit" value="Continue" />
+                    <a tal:attributes="href '%s/upload/%d/cancel' % (request.application_url, session_id)">Cancel</a>
                 </div>
                 <div class="clear"></div>
             </form>

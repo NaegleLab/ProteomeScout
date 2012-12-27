@@ -23,7 +23,9 @@ def protein_expression_view(request):
                                     'collection':col_name, 
                                     'tissue': tissue_name,
                                     'value': sample.value})
-    
+
+    expression_data = sorted(expression_data, key=lambda item: item['tissue'])
+
     return {'pageTitle': strings.protein_expression_page_title,
             'protein': prot,
             'probe_ids': sorted(probe_ids),

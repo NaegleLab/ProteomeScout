@@ -17,6 +17,12 @@ class SummaryViewIntegrationTests(IntegrationTestCase):
         self.ptmscoutapp.get('/experiments/26')
 
 class SummaryViewsTests(UnitTestCase):
+    
+    def test_get_sequence_profile_with_empty_set(self):
+        result = create_sequence_profile([])
+        
+        self.assertEqual({'total':0, 'frequencies':[]}, result)
+    
     def test_get_sequence_profile(self):
         p1 = createMockProtein()
         
@@ -139,7 +145,7 @@ class SummaryViewsTests(UnitTestCase):
         
         result = experiment_summary_view(request)
 
-        request.user.experimentOwner.assert_called_once_With(exp)
+        request.user.experimentOwner.assert_called_once_with(exp)
 
         patch_getExperiment.assert_called_once_with(exp_id, request.user)
         patch_getMeasurements.assert_called_once_with(exp_id, request.user)

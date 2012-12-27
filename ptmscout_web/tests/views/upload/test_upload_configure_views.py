@@ -357,6 +357,8 @@ class TestUploadConfigureView(UnitTestCase):
         
         self.assertEqual(False, result['allowoverride'])
         self.assertEqual([], result['error'])
+
+        self.assertEqual(session.id, result['session_id'])
         
         self.assertEqual(def_column_vals, result['data_definitions'])
         self.assertEqual(expected_headers, result['headers'])

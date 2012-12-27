@@ -6,13 +6,20 @@ from ptmscout.database import upload, experiment
 def cancel_upload_view(request):
     session_id = int(request.matchdict['id'])
     session = upload.getSessionById(session_id, request.user)
-    session.delete()
+
     
-    if(session.experiment_id != None):
-        exp = experiment.getExperimentById(session.experiment_id, request.user, check_ready=False)
-        exp.delete()
-    
-    
-    return {'pageTitle':strings.cancel_upload_successful_page_title,
-            'header':strings.cancel_upload_successful_header,
-            'message':strings.cancel_upload_successful_message}
+    if session.stage == 'complete':
+        return {'pageTitle':strings.cancel_upload_successful_page_title,
+                'header':strings.cancel_upload_already_started_header,
+                'message':strings.cancel_upload_already_started_message}
+    else:
+        session.delete()
+        
+        if(session.experiment_id != None):
+            exp = experiment.getExperimentById(session.experiment_id, request.user, check_ready=False)
+            exp.delete()
+        
+        
+        return {'pageTitle':strings.cancel_upload_successful_page_title,
+                'header':strings.cancel_upload_successful_header,
+                'message':strings.cancel_upload_successful_message}

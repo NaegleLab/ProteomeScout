@@ -69,7 +69,7 @@ class ExperimentBrowseViewTests(unittest.TestCase):
         
         protein_list = sorted([p1, p2], key=lambda item: item.acc_gene)
         p1,p2 = protein_list
-        patch_getProteins.return_value = protein_list
+        patch_getProteins.return_value = len(protein_list), protein_list
 
         m1 = createMockMeasurement(p1.id, 1)
         m2 = createMockMeasurement(p1.id, 4)
@@ -111,7 +111,7 @@ class ExperimentBrowseViewTests(unittest.TestCase):
         return request, p1, p2, mock_experiment, pep1, pep2, pep3, pep4, s1, s2, s3, protein_list
 
     @patch('ptmscout.database.modifications.getMeasuredPeptidesByExperiment')
-    @patch('ptmscout.database.protein.getProteinsByAccession')
+    @patch('ptmscout.database.protein.searchProteins')
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_experiment_browse_view_when_searching(self, patch_getExperiment, patch_getProteins, patch_getMods):
         request, p1, p2, mock_experiment, pep1, pep2, pep3, pep4, _, s2, s3, protein_list = self.setup_experiment_browse_test(patch_getExperiment, patch_getProteins, patch_getMods)
@@ -123,7 +123,7 @@ class ExperimentBrowseViewTests(unittest.TestCase):
         
         result = browse_experiment(request)
         
-        patch_getProteins.assert_called_once_with(["ACK1"])
+        patch_getProteins.assert_called_once_with("ACK1")
         patch_getExperiment.assert_called_once_with(1, request.user)
         patch_getMods.assert_called_once_with(1, request.user, [p1.id, p2.id])
         self.assertEqual("ACK1", result['acc_search'])
@@ -141,7 +141,7 @@ class ExperimentBrowseViewTests(unittest.TestCase):
         self.assertEqual(True, result['submitted'])
         
     @patch('ptmscout.database.modifications.getMeasuredPeptidesByExperiment')
-    @patch('ptmscout.database.protein.getProteinsByAccession')
+    @patch('ptmscout.database.protein.searchProteins')
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_experiment_browse_view_when_no_search_parameters(self, patch_getExperiment, patch_getProteins, patch_getMods):
         request, p1, p2, mock_experiment, pep1, pep2, pep3, pep4, _, s2, s3, protein_list = self.setup_experiment_browse_test(patch_getExperiment, patch_getProteins, patch_getMods)

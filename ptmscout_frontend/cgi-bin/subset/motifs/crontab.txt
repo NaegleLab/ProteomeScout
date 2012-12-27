@@ -1,3 +1,0 @@
-MAILTO = mgymrek@mit.edu	
-* * * * * python /data/ptmscout/cgi-bin/test/subset/motifs/motifCleanup.py
-* * * * * touch /data/ptmscout/cgi-bin/test/foo.txt
