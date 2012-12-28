@@ -1,8 +1,8 @@
 <div metal:define-macro="protein_header">
 	<div id="proteinMenu">
+		<a href="${request.application_url}/proteins/${protein.id}/structure">Structure</a> |
 		<a href="${request.application_url}/proteins/${protein.id}/GO">Gene Ontology</a> |
 		<a href="${request.application_url}/proteins/${protein.id}/expression">Gene Expression</a> |
-		<a href="${request.application_url}/proteins/${protein.id}/structure">Structure</a> |
 		<a href="${request.application_url}/proteins/${protein.id}/modifications">Modification Sites</a> |
 		<a href="${request.application_url}/proteins/${protein.id}/data">Data</a>   
 	</div>
