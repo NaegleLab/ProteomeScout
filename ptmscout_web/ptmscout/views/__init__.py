@@ -27,6 +27,7 @@ def add_views(config):
     config.add_route('protein_data', '/proteins/{id}/data')
     config.add_route('protein_GO', '/proteins/{id}/GO')
     config.add_route('protein_expression', '/proteins/{id}/expression')
+    config.add_route('protein_viewer', '/proteins/{id}/structure')
     config.add_route('protein_mod_sites', '/proteins/{id}/modifications')
     config.add_route('protein_main', '/proteins/{id}')
     config.add_route('protein_search', '/proteins')

@@ -133,6 +133,7 @@ privatize_experiment_already_message = "Experiment has already been made private
 protein_data_page_title = "Experiment Measurements"
 protein_ontology_page_title = "Gene Ontologies"
 protein_expression_page_title = "Protein Expression"
+protein_structure_page_title = "Protein Structure Viewer"
 protein_modification_sites_page_title = "Protein Modification Sites"
 protein_search_page_title = "Protein Search"
 

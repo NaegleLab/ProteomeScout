@@ -225,7 +225,7 @@ def createMockPeptideModification(measurement, peptide, modification):
     
     return mock
 
-def createMockPeptide(pid):
+def createMockPeptide(pid, site_pos=None):
     mock = Mock(spec=Peptide)
     
     site_types = ['Y','T','S','P']
@@ -234,7 +234,10 @@ def createMockPeptide(pid):
     mock.protein_id = pid
     mock.protein_domain_id = None
     mock.pep_aligned = "ABCDEFHG"
-    mock.site_pos = random.randint(0, 3000)
+
+    if site_pos==None:
+        site_pos = random.randint(0, 3000)
+    mock.site_pos = site_pos
     mock.site_type = site_types[random.randint(0,3)]
     
     mock.getName.return_value = mock.site_type + str(mock.site_pos)
@@ -341,9 +344,11 @@ def createMockDomain(pid, label=None):
     return mock
      
     
-def createMockPTM(ptmid=random.randint(0,100000), name=None,  position=None, accession=None, target=None, mm=None, ma=None, parent=None, keywords=[], taxons=[]):
+def createMockPTM(ptmid=None, name=None,  position=None, accession=None, target=None, mm=None, ma=None, parent=None, keywords=[], taxons=[]):
     mock = Mock(spec=PTM)
     
+    if ptmid==None:
+        ptmid = random.randint(0,100000)
     if name==None:
         name = "PTM-" + str(ptmid)
     

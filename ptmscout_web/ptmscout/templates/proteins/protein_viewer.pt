@@ -1,0 +1,56 @@
+<div metal:use-macro="layout">
+	<div metal:fill-slot="header">
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/proteins.css')}" />
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/protein_viewer.css')}" />
+        <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/jquery-ui-1.9.1.custom.css')}" />
+
+        <script type="text/javascript" src="${request.static_url('ptmscout:static/js/export.svg.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/base64.js')}"></script>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js" ></script>
+		<script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>
+        <script type="text/javascript" src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
+        <script type="text/javascript" src="${request.static_url('ptmscout:static/js/protein_viewer.js')}" ></script>
+	</div>
+	<div metal:fill-slot="content">
+        <div metal:use-macro="protein_header"></div>
+
+        <div class="protein_viewer">
+            <div class="data">${data}</div>
+            <div class="toolkit">
+                <button class="zoomin-tool">Zoom In</button>
+                <button class="zoomout-tool">Zoom Out</button>
+                <button class="scroll-tool">Scroll</button>
+                <button class="ptm-tool">Filter PTMs</button>
+                <button class="exp-tool">Filter Experiments</button>
+                <button class="track-tool">Filter Tracks</button>
+
+                <div title="Modification Types" class="mods">
+                    <ul>
+                        <li tal:repeat="mod_type mod_types" >
+                            <input class="modtoggle" tal:attributes="id mod_type.replace(' ', '_')" type="checkbox" checked />
+                            <tal:empty tal:content="mod_type"></tal:empty>
+                        </li>
+                    </ul>
+                </div>
+                <div title="Experiments" class="exps">
+                    <ul>
+                        <li tal:repeat="exp_id experiments" >
+                            <input class="exptoggle" tal:attributes="id 'e' + str(exp_id)" type="checkbox" checked />
+                            <tal:empty tal:content="experiments[exp_id]"></tal:empty>
+                        </li>
+                    </ul>
+                </div>
+                <div title="Protein Features" class="tracks">
+                    <ul>
+                        <li tal:repeat="track tracks" >
+                            <input class="tracktoggle" tal:attributes="id track" type="checkbox" checked />
+                            <tal:empty tal:content="track"></tal:empty>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="viewer"></div>
+        </div>
+
+	</div>
+</div>	
