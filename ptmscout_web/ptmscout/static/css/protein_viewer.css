@@ -1,0 +1,67 @@
+.protein_viewer {
+    margin-left:auto;
+    margin-right:auto;
+    width:900px;
+    margin-top:20px;
+    margin-bottom:20px;
+	border:solid 1px black;
+}
+
+.protein_viewer .data{
+    display:none;
+}
+
+.protein_viewer .toolkit {
+    width:900px;
+	border-collapse: collapse;
+	margin-left:auto;
+	margin-right:auto;
+    background: #AAA;
+}
+
+.toolkit button {
+    margin:5px;
+    margin-right:0px;
+}
+
+.protein_viewer .viewer{
+    width:900px;
+}
+
+.ui-dialog ul {
+    vertical-align: top; 
+    margin: 0; 
+    padding: 0; 
+    list-style: none;
+}
+
+.viewer .strand {
+    stroke:black;
+    stroke-width:2px;
+}
+
+.viewer .domain {
+    stroke:black;
+    stroke-width:1px;
+}
+
+.viewer .bigtick {
+    stroke:gray;
+}
+
+line.bigtick {
+    stroke-width:2;
+}
+
+text.bigtick {
+    font-size:9pt;
+}
+
+.viewer .tick {
+    stroke:#BBB;
+    stroke-width:1;
+}
+
+text.tick {
+    font-size:8pt;
+}
