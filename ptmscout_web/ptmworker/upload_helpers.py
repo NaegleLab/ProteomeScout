@@ -240,6 +240,7 @@ def check_peptide_matches_protein_sequence(prot_seq, pep_seq):
     return index
 
 def parse_modifications(prot_seq, pep_seq, mods, taxonomy):
+    pep_seq = pep_seq.strip()
     index = check_peptide_matches_protein_sequence(prot_seq, pep_seq)
     mod_indices, mod_types = uploadutils.check_modification_type_matches_peptide(None, pep_seq, mods, taxonomy)
     aligned_sequences = get_aligned_peptide_sequences(mod_indices, index, pep_seq, prot_seq)
@@ -344,9 +345,9 @@ def parse_datafile(session):
         line+=1
         line_errors = uploadutils.check_data_row(line, row, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols, keys)
         
-        acc = row[acc_col.column_number]
-        pep = row[pep_col.column_number]
-        mods = row[mod_col.column_number]
+        acc = row[acc_col.column_number].strip()
+        pep = row[pep_col.column_number].strip()
+        mods = row[mod_col.column_number].strip()
         
         line_mapping[line] = (acc, pep)
         
@@ -368,12 +369,12 @@ def parse_datafile(session):
         
         series = []
         for d in data_cols:
-            series.append(row[d.column_number])
+            series.append(row[d.column_number].strip())
         for s in stddev_cols:
-            series.append(row[s.column_number])
+            series.append(row[s.column_number].strip())
             
         if run_col != None:
-            run_data[ row[run_col.column_number] ] = (line, series)
+            run_data[ row[run_col.column_number].strip() ] = (line, series)
         else:
             run_data[ 'average' ] = (line, series)
         

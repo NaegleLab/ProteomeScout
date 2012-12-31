@@ -231,7 +231,71 @@ class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
         self.assertEqual('20', result[4].label)
         self.assertEqual(2, result[4].value)
         
+   
+    def test_parse_modifications_should_find_peptides_at_start(self):
+        prot_seq = \
+"""MKPTRSQLDSDFSQQDTPCLIIEDSQPESQVLEDDSGSHFSMLSRHLPNLQTHKENPVLD
+VVSNPEQTAGEERGDGNSGFNEHLKENKVADPVDSSNLDTCGSISQVIEQLPQPNRTSSV
+LGMSVESAPAVEEEKGEELEQKEKEKEEDTSGNTTHSLGAEDTASSQLGFGVLELSQSQD
+VEENTVPYEVDKEQLQSVTTNSGYTRLSDVDANTAIKHEEQSNEDIPIAEQSSKDIPVTA
+QPSKDVHVVKEQNPPPARSEDMPFSPKASVAAMEAKEQLSAQELMESGLQIQKSPEPEVL
+STQEDLFDQSNKTVSSDGCSTPSREEGGCSLASTPATTLHLLQLSGQRSLVQDSLSTNSS
+DLVAPSPDAFRSTPFIVPSSPTEQEGRQDKPMDTSVLSEEGGEPFQKKLQSGEPVELENP
+PLLPESTVSPQASTPISQSTPVFPPGSLPIPSQPQFSHDIFIPSPSLEEQSNDGKKDGDM
+HSSSLTVECSKTSEIEPKNSPEDLGLSLTGDSCKLMLSTSEYSQSPKMESLSSHRIDEDG
+ENTQIEDTEPMSPVLNSKFVPAENDSILMNPAQDGEVQLSQNDDKTKGDDTDTRDDISIL
+"""
+        prot_seq = prot_seq.replace("\n", "")
+        pep_seq = "  MkPTrSQLDSDF"
+        
+        taxonomy = set(['eukaryota', 'chordata', 'mammalia', 'homo'])
+        mod_types, aligned_peps = upload_helpers.parse_modifications(prot_seq, pep_seq, "METHYLATION", taxonomy)
+        
+        self.assertEqual('N6-methyllysine', mod_types[0].name)
+        self.assertEqual('Omega-N-methylarginine', mod_types[1].name)
+       
+        self.assertEqual((2, "      MkPTRSQLD", 'K'), aligned_peps[0])
+        self.assertEqual((5, "   MKPTrSQLDSDF", 'R'), aligned_peps[1])
+
+    def test_protein_sequence_match_end_of_protein(self):
+        prot_seq = \
+"""
+TSDKLASRSKLPDGPTGSSEEEEEFLEIPPFNKQYTESQLRAGAGYILEDFNEAQCNTAY
+QCLLIADQHCRTRKYFLCLASGIPCVSHVWVHDSCHANQLQNYRNYLLPAGYSLEEQRIL
+DWQPRENPFQNLKVLLVSDQQQNFLELWSEILMTGGAASVKQHHSSAHNKDIALGVFDVV
+VTDPSCPASVLKCAEALQLPVVSQEWVIQCLIVGERIGFKQHPKYKHD"""        
+        prot_seq = prot_seq.replace("\n", "")
+        pep_seq = "ERIGFKQHPkYkHD      "
+        
+        taxonomy = set(['eukaryota', 'chordata', 'mammalia', 'homo'])
+        mod_types, aligned_peps = upload_helpers.parse_modifications(prot_seq, pep_seq, "METHYLATION", taxonomy)
+        
+        self.assertEqual('N6-methyllysine', mod_types[0].name)
+        self.assertEqual('N6-methyllysine', mod_types[1].name)
+       
+        self.assertEqual((224, "IGFKQHPkYKHD   ", 'K'), aligned_peps[0])
+        self.assertEqual((226, "FKQHPKYkHD     ", 'K'), aligned_peps[1])
+
+
     
+
+    def test_get_aligned_peptide_sequences_should_produce_correct_seqs(self):
+        pep_seq = "mSaDFJTkLJAWERpOID"
+        pep_up = pep_seq.upper()
+        prot_seq = "MSADFJTKLJAWERPOIDFK"
+        
+        mod_sites = [ i for i in xrange(0, len(pep_seq)) if pep_seq[i] != pep_up[i] ]
+        index = 0
+        
+        aligned_peptides = upload_helpers.get_aligned_peptide_sequences(mod_sites, index, pep_seq, prot_seq)
+        
+        self.assertEqual((1,  "       mSADFJTK", 'M'), aligned_peptides[0])
+        self.assertEqual((3,  "     MSaDFJTKLJ", 'A'), aligned_peptides[1])
+        self.assertEqual((8,  "MSADFJTkLJAWERP", 'K'), aligned_peptides[2])
+        self.assertEqual((15, "KLJAWERpOIDFK  ", 'P'), aligned_peptides[3])
+
+
+
     def test_parse_modifications_should_produce_correct_seqs(self):
         prot_seq = \
 """MDPTGSQLDSDFSQQDTPCLIIEDSQPESQVLEDDSGSHFSMLSRHLPNLQTHKENPVLD
