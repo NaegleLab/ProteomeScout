@@ -67,7 +67,6 @@ def __query_for_isoforms(root_accessions, result_map):
     result = urllib2.urlopen(query)
     parsed_result = SeqIO.parse(result, 'fasta')
 
-
     for record in parsed_result:
         name = parse_description(record.description)
         full_acc = parse_name(record.name)
@@ -136,14 +135,35 @@ def handle_result(result):
 
 
 def map_isoform_results(result_map, isoform_map):
+    isoforms_by_root = {}
+
     for iso_acc in isoform_map:
         root_acc, isoform_name, iso_number, iso_seq = isoform_map[iso_acc]
+
+        identified_isoforms = isoforms_by_root.get(root_acc, set())
+        isoforms_by_root[root_acc] = identified_isoforms | set([iso_number])
+
         name, gene, taxons, species, _o, _d, _s = result_map[root_acc]
-       
+      
         isoform_fullname = "%s (%s)" % (name, isoform_name)
         isoform_accs = [('swissprot', iso_acc)]
         result_map[iso_acc] = (isoform_fullname, gene, taxons, species, isoform_accs, [], iso_seq)
 
+    for root in isoforms_by_root:
+        isos = isoforms_by_root[root]
+        expected_isos = set( range(1, len(isos)+2) )
+
+        missing_isos = expected_isos - isos
+        if len(missing_isos) == 1:
+            canonical_isoform = missing_isos.pop()
+
+            new_isoform = "%s-%d" % (root, canonical_isoform)
+
+            isoform_fullname, gene, taxons, species, isoform_accs, domains, iso_seq = result_map[root]
+            isoform_accs.append(('swissprot', new_isoform))
+            
+            result_map[root] = isoform_fullname, gene, taxons, species, isoform_accs, domains, iso_seq
+            result_map[new_isoform] = isoform_fullname, gene, taxons, species, isoform_accs, domains, iso_seq
 
 def map_combine(r1, r2):
     return dict(r1.items() + r2.items())

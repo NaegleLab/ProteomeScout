@@ -9,8 +9,8 @@ class TestUniprotQuery(IntegrationTestCase):
         uniprot_tools.handle_result(result_xml)
 
     def test_uniprot_get_protein_by_accessions(self):
-        accs = ['A0K45A', 'Q91ZU6-5', 'Q91ZU6-3', 'Q969I3-2', 'B1WC86', 'A1L112', 'B2RXC1', 'A6NF89', 'A6NH21']
+        accs = ['A0K45A', 'Q96P48-6', 'Q91ZU6-5', 'Q91ZU6-3', 'Q969I3-2', 'B1WC86', 'A1L112', 'B2RXC1', 'A6NF89', 'A6NH21']
         result = uniprot_tools.get_uniprot_records(accs)
 
-        self.assertLess(set(accs[1:]), set(result.keys()))
-        self.assertEqual(14, len(result))
+        self.assertLess(set(accs[1:] + ['Q96P48']), set(result.keys()))
+        self.assertEqual(23, len(result))
