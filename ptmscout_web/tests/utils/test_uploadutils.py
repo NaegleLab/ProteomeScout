@@ -18,14 +18,14 @@ class TestUploadUtilsWithTestDB(IntegrationTestCase):
         self.assertEqual(7, mod_indices[0])
 
     def test_find_mod_type_phospho(self):
-        mod_indices, mod_object = check_modification_type_matches_peptide(1, 'ARALMDKyHVDNDLK', 'PHOSPHORYLATION', ['Eukaryota'])
-        self.assertEqual('Phosphotyrosine', mod_object[0].name)
-        mod_indices, mod_object = check_modification_type_matches_peptide(1, 'ETGIDSQsQGSFQAP', 'PHOSPHORYLATION', ['Eukaryota'])
-        self.assertEqual('Phosphoserine', mod_object[0].name)
-        mod_indices, mod_object = check_modification_type_matches_peptide(1, 'DVPESPFtRTGEGLD', 'PHOSPHORYLATION', ['Eukaryota'])
-        self.assertEqual('Phosphothreonine', mod_object[0].name)
-        mod_indices, mod_object = check_modification_type_matches_peptide(1, 'SFQAPQSsQSVHDHN', 'PHOSPHORYLATION', ['Eukaryota'])
-        self.assertEqual('Phosphoserine', mod_object[0].name)
+        viral_taxon = ['Viruses','dsDNA viruses, no RNA stage', 'Adenoviridae', ' Mastadenovirus']
+        try:
+            check_modification_type_matches_peptide(1, 'ARALMDKyHVDNDLK', 'PHOSPHORYLATION', viral_taxon)
+        except ParseError, p:
+            self.assertEqual(strings.experiment_upload_warning_modifications_do_not_match_species % ('PHOSPHORYLATION', 'Y'), p.msg)
+        else:
+            self.fail("Expected parser error")
+        
 
 class TestUploadUtils(unittest.TestCase):
     
@@ -123,7 +123,8 @@ class TestUploadUtils(unittest.TestCase):
             check_modification_type_matches_peptide(1, "DFERTGDYDFqERAS", "METH")
         except ParseError, pe:
             self.assertEqual(1, pe.row)
-            self.assertEqual("Unexpected Error: PTM type '%s' had no residue specific matches for residue 'Q'."% ('METH'), pe.msg)
+            self.assertEqual(strings.experiment_upload_warning_modifications_do_not_match_species % ('METH', 'Q'), pe.msg)
+            #self.assertEqual("Unexpected Error: PTM type '%s' had no residue specific matches for residue 'Q'."% ('METH'), pe.msg)
         else:
             self.fail("Expected exception ParseError")
         
