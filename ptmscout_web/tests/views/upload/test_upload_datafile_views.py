@@ -9,6 +9,7 @@ from tests.views.mocking import createMockUser, createMockExperiment,\
     createMockPermission
 from pyramid.httpexceptions import HTTPFound
 from ptmscout.utils import forms
+import shutil
 
 class TestUploaddata_fileView(UnitTestCase):
     
@@ -38,8 +39,8 @@ class TestUploaddata_fileView(UnitTestCase):
         self.assertEqual('', gen_session.change_description)
         self.assertEqual('config', gen_session.stage)
         
-        
-    def test_save_data_file_should_save_experiment_data_file_and_pass(self):
+    @patch('ptmscout.utils.to_utf8.convert_encoding_to_utf8')
+    def test_save_data_file_should_save_experiment_data_file_and_pass(self, patch_convert):
         request = DummyRequest()
         request.POST['data_file'] = cgi.FieldStorage()
         
@@ -51,6 +52,10 @@ class TestUploaddata_fileView(UnitTestCase):
         request.POST['data_file'].file = open(os.sep.join(["tests","behave","data",filename]), 'rb')
         
         exp_file = save_data_file(request)
+
+        exp_path = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, exp_file)
+        patch_convert.assert_called_once_with(exp_path + '.tmp', exp_path)
+        shutil.copy(exp_path+'.tmp', exp_path)
         
         os.chdir(os.sep.join(["tests", "behave", "data"]))
         os.system("mac2unix -q -n %s tmp_test.conv" % (filename))

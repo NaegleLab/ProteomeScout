@@ -2,7 +2,7 @@ from pyramid.view import view_config
 import time
 from ptmscout.config import settings, strings
 import os
-from ptmscout.utils import webutils, forms
+from ptmscout.utils import webutils, forms, to_utf8
 from pyramid.httpexceptions import HTTPFound
 from ptmscout.database import upload
 import logging
@@ -30,9 +30,11 @@ def create_session(request, exp_file):
     
 def save_data_file(request):
     exp_file = "experiment_data" + str(time.time())
-    
+    exp_filename = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, exp_file)
+    exp_filename_tmp = exp_filename + '.tmp'
+
     input_file = request.POST['data_file'].file
-    output_file = open(os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, exp_file), 'wb')
+    output_file = open(exp_filename_tmp, 'wb')
     
     input_file.seek(0)
     while 1:
@@ -42,8 +44,9 @@ def save_data_file(request):
         output_file.write(data)
     output_file.close()
     
-    os.system("mac2unix -q %s" % os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, exp_file))
-    os.system("dos2unix -q %s" % os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, exp_file))
+    os.system("mac2unix -q %s" % (exp_filename_tmp))
+    os.system("dos2unix -q %s" % (exp_filename_tmp))
+    to_utf8.convert_encoding_to_utf8(exp_filename_tmp, exp_filename)
 
     return exp_file
 
