@@ -3,6 +3,7 @@ import csv
 import xml.dom.minidom as xml 
 from ptmscout.config import settings
 import logging
+import httplib
 
 log = logging.getLogger('ptmscout')
 
@@ -69,22 +70,9 @@ def get_GO_term(goId):
     
     return goxml.version, goxml.entries[0]
 
-def batch_get_GO_annotations(protein_accessions):
-    log.info("Getting go annotations for %d accessions", len(protein_accessions))
+RETRY_COUNT = 3
 
-    annotations = {}
-    gene_symbols = {}
-    
-    for acc in protein_accessions:
-        annotations[acc] = {}
-        gene_symbols[acc] = ""
-    
-    if settings.DISABLE_QUICKGO:
-        return annotations, gene_symbols
-    
-    query_url = quick_go_annot_url % (",".join(protein_accessions))
-    annot_stream = urllib2.urlopen(query_url)
-    
+def parse_result(annot_stream, annotations, gene_symbols):
     reader = csv.DictReader(annot_stream, delimiter='\t')
     
     for row in reader:
@@ -101,5 +89,31 @@ def batch_get_GO_annotations(protein_accessions):
             go_terms[goId] = dateAdded
 
         annotations[proteinId] = go_terms
+
+def batch_get_GO_annotations(protein_accessions):
+    log.info("Getting go annotations for %d accessions", len(protein_accessions))
+
+    annotations = {}
+    gene_symbols = {}
+    
+    for acc in protein_accessions:
+        annotations[acc] = {}
+        gene_symbols[acc] = ""
+    
+    if settings.DISABLE_QUICKGO:
+        return annotations, gene_symbols
+
+    i = 0
+    while i < RETRY_COUNT:
+        i+=1
+        try:
+            query_url = quick_go_annot_url % (",".join(protein_accessions))
+            annot_stream = urllib2.urlopen(query_url)
+            
+            parse_result(annot_stream, annotations, gene_symbols)
+        except urllib2.HTTPError, e:
+            log.warning("HTTPError %s when querying QuickGO, retrying (%d / %d)", str(e), i, RETRY_COUNT)
+        except httplib.BadStatusLine:
+            log.warning("Got bad status line from QuickGO, retrying (%d / %d)", i, RETRY_COUNT)
     
     return annotations, gene_symbols

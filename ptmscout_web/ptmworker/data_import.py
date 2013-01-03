@@ -6,10 +6,10 @@ from celery.canvas import group
 from ptmscout.config import strings, settings
 from ptmscout.utils import mail, uploadutils
 import datetime
+from ptmscout.utils.decorators import rate_limit
 
 log = logging.getLogger('ptmscout')
 
-PFAM_DEFAULT_CUTOFF = 0.00001
 MAX_NCBI_BATCH_SIZE = 500
 MAX_UNIPROT_BATCH_SIZE = 200
 MAX_QUICKGO_BATCH_SIZE = 500
@@ -61,12 +61,16 @@ def load_new_peptide(prot_id, site_pos, pep_seq, taxonomy):
     pep.save()
 
 
+def create_errors_for_runs(exp_id, protein_accession, pep_seq, msg, runs):
+    for line, _rn, _s in runs:
+        experiment.createExperimentError(exp_id, line, protein_accession, pep_seq, msg)
+
+
 @celery.task
 @upload_helpers.dynamic_transaction_task
-def load_peptide_modification(protein_info, exp_id, pep_seq, mods, units, series_header, runs):
-    protein_id, protein_accession, protein_sequence, taxonomy = protein_info
-    
+def load_peptide_modification(protein_info, exp_id, protein_accession, pep_seq, mods, units, series_header, runs):
     try:
+        protein_id, protein_sequence, taxonomy = protein_info
         mod_types, aligned_sequences = upload_helpers.parse_modifications(protein_sequence, pep_seq, mods, taxonomy)
 
         pep_measurement = modifications.getMeasuredPeptide(exp_id, pep_seq, protein_id)
@@ -76,37 +80,37 @@ def load_peptide_modification(protein_info, exp_id, pep_seq, mods, units, series
             pep_measurement.experiment_id = exp_id
             pep_measurement.peptide = pep_seq
             pep_measurement.protein_id = protein_id
-        
+
         new_peptide_tasks = []
-        
+
         for i in xrange(0, len(aligned_sequences)):
             mod_type = mod_types[i] 
             site_pos, pep_sequence, _ = aligned_sequences[i]
-            
+
             pep, created = upload_helpers.get_peptide(protein_id, site_pos, pep_sequence)
-            
+
             if not pep_measurement.hasPeptideModification(pep, mod_type):
                 pepmod = modifications.PeptideModification()
                 pepmod.modification = mod_type
                 pepmod.peptide = pep
                 pep_measurement.peptides.append(pepmod)
-                
+
             for line, run_name, series in runs:
                 upload_helpers.insert_run_data(pep_measurement, line, units, series_header, run_name, series)
-            
+
 #            if created:
 #                new_peptide_tasks.append( load_new_peptide.s(protein_id, site_pos, pep_sequence, taxonomy) )
-    
+
         pep_measurement.save()
-        
+
         return new_peptide_tasks
 
     except uploadutils.ParseError, pe:
-        for line, _rn, _s in runs:
-            experiment.createExperimentError(exp_id, line, protein_accession, pep_seq, pe.msg)
+        create_errors_for_runs(exp_id, protein_accession, pep_seq, pe.msg, runs)
+    except TypeError:
+        create_errors_for_runs(exp_id, protein_accession, pep_seq, "Failed to get data for protein: %s" % (protein_accession), runs)
     except Exception, e:
-        for line, _rn, _s in runs:
-            experiment.createExperimentError(exp_id, line, protein_accession, pep_seq, "Unexpected error: " + str(e))
+        create_errors_for_runs(exp_id, protein_accession, pep_seq, "Unexpected error: " + str(e), runs)
         raise
 
 @celery.task
@@ -118,64 +122,32 @@ def load_protein(accession, protein_information):
     if host_organism:
         taxonomy += upload_helpers.get_taxonomic_lineage(host_organism)
     
-    return prot.id, accession, prot.sequence, taxonomy
+    return prot.id, prot.sequence, taxonomy
 
 
-@celery.task(rate_limit='3/s')
-@upload_helpers.transaction_task
-def load_new_protein(accession, protein_information):
-    _a, _b, taxonomy, species, host_organism, _accessions, domains, seq = protein_information
-    prot = protein.getProteinBySequence(seq, species)
 
-    if host_organism:
-        taxonomy += upload_helpers.get_taxonomic_lineage(host_organism)
-
-    if len(domains) == 0:
-        domains = pfam_tools.get_computed_pfam_domains(prot.sequence, PFAM_DEFAULT_CUTOFF)
-        upload_helpers.create_domains_for_protein(prot, domains, "PARSED PFAM", "ALL")
-    else:
-        upload_helpers.create_domains_for_protein(prot, domains, "COMPUTED PFAM", "pval=%f" % (PFAM_DEFAULT_CUTOFF))
-
-    # load additional protein accessions if available
-    other_accessions = picr_tools.get_picr(accession, prot.species.taxon_id)
-    upload_helpers.create_accession_for_protein(prot, other_accessions)
-
-    upload_helpers.map_expression_probesets(prot)
-
-    prot.saveProtein()
-
-    return prot.id, accession, prot.sequence, taxonomy
-
-
-def create_protein_import_tasks(prot_map, missing_proteins, parsed_datafile, headers, units, exp_id):
+def create_protein_import_tasks(prot_map, parsed_datafile, headers, units, exp_id):
     _a, peptides, mod_map, data_runs, _l = parsed_datafile
     
     prot_tasks = []
-    for acc in prot_map:
+    accessions = set( prot_map.keys() ) & set( peptides.keys() )
+
+    for acc in accessions:
         pep_tasks = []
-        
-        protein_load_task = None
-        if acc in missing_proteins:
-            protein_load_task = load_new_protein.s( acc, prot_map[acc] )
-        else:
-            protein_load_task = load_protein.s( acc, prot_map[acc] )
-        
-        if acc in peptides:
-            for pep in peptides[acc]:
-                key = (acc, pep)
-                mod_str = mod_map[key]
-                
-                run_tasks = []
-                for run_name in data_runs[key]:
-                    line, series = data_runs[key][run_name]
-                    run_tasks.append( (line, run_name, series) )
-                
-                pep_tasks.append( load_peptide_modification.s(exp_id, pep, mod_str, units, headers, run_tasks) )
+
+        for pep in peptides[acc]:
+            key = (acc, pep)
+            mod_str = mod_map[key]
             
-            prot_tasks.append( ( protein_load_task | group(pep_tasks) ) )
-        else:        
-            prot_tasks.append( protein_load_task )
-    
+            run_tasks = []
+            for run_name in data_runs[key]:
+                line, series = data_runs[key][run_name]
+                run_tasks.append( (line, run_name, series) )
+            
+            pep_tasks.append( load_peptide_modification.s(exp_id, acc, pep, mod_str, units, headers, run_tasks) )
+        
+        prot_tasks.append( ( load_protein.s( acc, prot_map[acc] ) | group(pep_tasks) ) )
+
     return prot_tasks
 
 
@@ -306,6 +278,30 @@ def aggregate_protein_results(ncbi_results, exp_id, accessions, line_mappings):
     
     return aggregate_protein_map
 
+@rate_limit(rate=3)
+def load_new_protein(prot, accession, protein_information):
+    _a, _b, taxonomy, species, host_organism, _accessions, domains, seq = protein_information
+
+    if host_organism:
+        taxonomy += upload_helpers.get_taxonomic_lineage(host_organism)
+
+    pfam_tools.parse_or_query_domains(prot, domains)
+
+    # load additional protein accessions if available
+    other_accessions = picr_tools.get_picr(accession, prot.species.taxon_id)
+    upload_helpers.create_accession_for_protein(prot, other_accessions)
+
+    upload_helpers.map_expression_probesets(prot)
+
+    prot.saveProtein()
+
+
+def report_protein_error(acc, protein_map, accessions, exp_id, message):
+    del protein_map[acc]
+
+    for line in accessions[acc]:
+        accession, peptide = line_mappings[line]
+        experiment.createExperimentError(exp_id, line, accession, peptide, message)
 
 @celery.task
 @upload_helpers.transaction_task
@@ -323,17 +319,21 @@ def create_missing_proteins(protein_map, accessions, line_mappings, exp_id):
         name, gene, _t, species, _h, prot_accessions, _d, seq = protein_map[acc]
         try:
             prot = upload_helpers.create_new_protein(name, gene, seq, species, prot_accessions)
-            prot.saveProtein()
+            load_new_protein(prot, acc, protein_map[acc])
             protein_id_map[acc] = prot.id
-        except uploadutils.ParseError, e:
-            del protein_map[acc]
 
-            for line in accessions[acc]:
-                accession, peptide = line_mappings[line]
-                experiment.createExperimentError(exp_id, line, accession, peptide, e.message)
+        except uploadutils.ParseError, e:
+            report_protein_error(acc, protein_map, accessions, exp_id, e.message)
+        except pfam_tools.PFamError:
+            report_protein_error(acc, protein_map, accessions, exp_id, "PFam query failed for protein: %s" % (acc))
+        except picr_tools.PICRError:
+            report_protein_error(acc, protein_map, accessions, exp_id, "PICR query failed for protein: %s" % (acc))
+
+
+
 
     
-    return protein_map, missing_proteins, protein_id_map
+    return protein_map, protein_id_map
 
 @celery.task
 @upload_helpers.transaction_task
@@ -342,12 +342,12 @@ def launch_loader_tasks(ncbi_result, parsed_datafile, headers, session_info):
 
     exp_id, _s, user_email, application_url, units = session_info
     try:
-        protein_map, missing_proteins, new_protein_ids = ncbi_result
+        protein_map, new_protein_ids = ncbi_result
         
         #run go import for missing proteins
         GO_task = create_GO_import_tasks(protein_map, new_protein_ids)
         
-        protein_tasks = create_protein_import_tasks(protein_map, missing_proteins, parsed_datafile, headers, units, exp_id)
+        protein_tasks = create_protein_import_tasks(protein_map, parsed_datafile, headers, units, exp_id)
         protein_tasks.append(GO_task)
         
         import_tasks = ( group(protein_tasks) | finalize_import.si(exp_id, user_email, application_url) )

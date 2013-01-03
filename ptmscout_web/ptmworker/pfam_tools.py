@@ -2,6 +2,10 @@ import urllib, urllib2
 import xml.dom.minidom as xml 
 import time
 from ptmscout.config import settings
+import logging
+from ptmscout.database import protein
+log = logging.getLogger('ptmscout')
+PFAM_DEFAULT_CUTOFF = 0.00001
 
 
 
@@ -99,14 +103,11 @@ def filter_domains(domains):
     return chosen_domains
 
 
-def get_computed_pfam_domains(prot_seq, cutoff):
-    if settings.DISABLE_PFAM:
-        return []
-    
-    args = {'seq':prot_seq, 'output':'xml', 'evalue':cutoff}
-    
-    jobrequest = urllib2.urlopen("http://pfam.sanger.ac.uk/search/sequence", urllib.urlencode(args))
-    
+PFAM_MIRRORS = ["http://pfam.janelia.org/search/sequence",
+                "http://pfam.sanger.ac.uk/search/sequence",
+                "http://pfam.sbc.su.se/search/sequence"]
+
+def wait_for_result(jobrequest):
     dom = xml.parseString(jobrequest.read())
     result_url = dom.getElementsByTagName('result_url')[0].childNodes[0].nodeValue
     
@@ -119,12 +120,51 @@ def get_computed_pfam_domains(prot_seq, cutoff):
         resultquery = urllib2.urlopen(result_url)
         code = resultquery.getcode()
         time.sleep(INTER_QUERY_INTERVAL)
-    
-    if code != 200:
-        raise PFamError("Got unexpected response code: %d" % (code))
-    
-    xmlresult = resultquery.read()
-    parsed_pfam = PFamParser(xmlresult)
-    
-    return filter_domains(parsed_pfam.domains)
+ 
+    return code, resultquery
 
+def get_computed_pfam_domains(prot_seq, cutoff):
+    if settings.DISABLE_PFAM:
+        return []
+    
+    args = {'seq':prot_seq, 'output':'xml', 'evalue':cutoff}
+
+    i = 0
+    while i < len(PFAM_MIRRORS):
+        try:
+            jobrequest = urllib2.urlopen(PFAM_MIRRORS[i], urllib.urlencode(args))
+            code, resultquery = wait_for_result(jobrequest)
+
+            if code != 200:
+                raise PFamError("Got unexpected response code: %d" % (code))
+
+            xmlresult = resultquery.read()
+            parsed_pfam = PFamParser(xmlresult)
+
+            return filter_domains(parsed_pfam.domains)
+
+        except urllib2.HTTPError:
+            i += 1
+            log.warning("PFAM query failed, trying mirror")
+
+    raise PFamError("Unable to query PFam")
+
+def parse_or_query_domains(prot, domains):
+    if len(domains) == 0:
+        domains = get_computed_pfam_domains(prot.sequence, PFAM_DEFAULT_CUTOFF)
+        source = "COMPUTED PFAM"
+        params = "pval=%f" % (PFAM_DEFAULT_CUTOFF)
+    else:
+        source = "PARSED PFAM"
+        params = "ALL"
+
+    for domain in domains:
+        dbdomain = protein.ProteinDomain()
+        dbdomain.p_value = domain.p_value
+        dbdomain.start = domain.start
+        dbdomain.stop = domain.stop
+        dbdomain.source = source
+        dbdomain.version = domain.release
+        dbdomain.label = domain.label
+        dbdomain.params = params
+        prot.domains.append(dbdomain)

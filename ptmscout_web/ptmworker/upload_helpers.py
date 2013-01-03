@@ -184,19 +184,6 @@ def find_or_create_species(species):
     return sp
 
 
-def create_domains_for_protein(prot, domains, source, params):
-    for domain in domains:
-        dbdomain = protein.ProteinDomain()
-        dbdomain.p_value = domain.p_value
-        dbdomain.start = domain.start
-        dbdomain.stop = domain.stop
-        dbdomain.source = source
-        dbdomain.version = domain.release
-        dbdomain.label = domain.label
-        dbdomain.params = params
-        prot.domains.append(dbdomain)
-
-
 def create_new_protein(name, gene, seq, species, accessions):
     log.info("Creating protein: %s" , str(accessions))
     prot = protein.Protein()

@@ -2,7 +2,7 @@ import xml.dom.minidom as xml
 from xml.parsers.expat import ExpatError
 import urllib2
 from ptmscout.config import settings
-
+from ptmscout.utils import uploadutils
 
 
 class PICRParser(object):
@@ -32,15 +32,17 @@ class PICRParser(object):
 picr_accession_query_url = "http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=%s&taxid=%d&database=IPI&database=REFSEQ&database=SWISSPROT"
 picr_sequence_query_url  = "http://www.ebi.ac.uk/Tools/picr/rest/getUPIForSequence?sequence=%s&taxid=%d&database=IPI&database=REFSEQ&database=SWISSPROT"
 
+class PICRError(Exception):
+    pass
+
 def get_picr(accession, taxon_id):
     if settings.DISABLE_PICR:
         return []
-    
-    result = urllib2.urlopen(picr_accession_query_url % (accession, taxon_id))
-    
+
     try:
+        result = urllib2.urlopen(picr_accession_query_url % (accession, taxon_id))
         return PICRParser(result.read()).references
     except ExpatError:
         return []
-    
-    
+    except:
+        raise PICRError()
