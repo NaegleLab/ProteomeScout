@@ -94,8 +94,8 @@ def load_peptide_modification(protein_info, exp_id, pep_seq, mods, units, series
             for line, run_name, series in runs:
                 upload_helpers.insert_run_data(pep_measurement, line, units, series_header, run_name, series)
             
-            if created:
-                new_peptide_tasks.append( load_new_peptide.s(protein_id, site_pos, pep_sequence, taxonomy) )
+#            if created:
+#                new_peptide_tasks.append( load_new_peptide.s(protein_id, site_pos, pep_sequence, taxonomy) )
     
         pep_measurement.save()
         
@@ -112,8 +112,11 @@ def load_peptide_modification(protein_info, exp_id, pep_seq, mods, units, series
 @celery.task
 @upload_helpers.logged_task
 def load_protein(accession, protein_information):
-    _a, _b, taxonomy, species, _c, _d, seq = protein_information
+    _a, _b, taxonomy, species, host_organism, _c, _d, seq = protein_information
     prot = protein.getProteinBySequence(seq, species)
+
+    if host_organism:
+        taxonomy += upload_helpers.get_taxonomic_lineage(host_organism)
     
     return prot.id, accession, prot.sequence, taxonomy
 
@@ -121,23 +124,26 @@ def load_protein(accession, protein_information):
 @celery.task(rate_limit='3/s')
 @upload_helpers.transaction_task
 def load_new_protein(accession, protein_information):
-    _a, _b, taxonomy, species, _accessions, domains, seq = protein_information
+    _a, _b, taxonomy, species, host_organism, _accessions, domains, seq = protein_information
     prot = protein.getProteinBySequence(seq, species)
-    
+
+    if host_organism:
+        taxonomy += upload_helpers.get_taxonomic_lineage(host_organism)
+
     if len(domains) == 0:
         domains = pfam_tools.get_computed_pfam_domains(prot.sequence, PFAM_DEFAULT_CUTOFF)
         upload_helpers.create_domains_for_protein(prot, domains, "PARSED PFAM", "ALL")
     else:
         upload_helpers.create_domains_for_protein(prot, domains, "COMPUTED PFAM", "pval=%f" % (PFAM_DEFAULT_CUTOFF))
-    
+
     # load additional protein accessions if available
     other_accessions = picr_tools.get_picr(accession, prot.species.taxon_id)
     upload_helpers.create_accession_for_protein(prot, other_accessions)
-    
+
     upload_helpers.map_expression_probesets(prot)
-    
+
     prot.saveProtein()
-    
+
     return prot.id, accession, prot.sequence, taxonomy
 
 
@@ -223,7 +229,7 @@ def create_missing_GO_annotations(GO_annotation_map, protein_ids):
             assigned+=1
     
     missing_terms = list(missing_terms)
-    upload_helpers.query_missing_GO_terms(missing_terms)
+    upload_helpers.query_missing_GO_terms(missing_terms, complete_go_terms)
 
     log.info("Assigned %d terms, created %d terms", assigned, created)
     return created_go_entries
@@ -307,14 +313,14 @@ def create_missing_proteins(protein_map, accessions, line_mappings, exp_id):
     #list the missing proteins
     missing_proteins = set()
     for acc in protein_map:
-        _n, _g, _t, species, _a, _d, seq = protein_map[acc]
+        _n, _g, _t, species, _h, _a, _d, seq = protein_map[acc]
         if protein.getProteinBySequence(seq, species) == None:
             missing_proteins.add(acc)
 
     #create entries for the missing proteins
     protein_id_map = {}
     for acc in missing_proteins:
-        name, gene, _t, species, prot_accessions, _d, seq = protein_map[acc]
+        name, gene, _t, species, _h, prot_accessions, _d, seq = protein_map[acc]
         try:
             prot = upload_helpers.create_new_protein(name, gene, seq, species, prot_accessions)
             prot.saveProtein()
