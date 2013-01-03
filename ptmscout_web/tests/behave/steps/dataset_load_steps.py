@@ -47,6 +47,10 @@ def submit_all_error_dataset(context):
 def submit_big_dataset(context):
     bot.upload_file(context, 'datasetLoad_big_dataset.txt')
 
+@given(u'a user submits a dataset in which viral proteins are included')
+def submit_viral_dataset(context):
+    bot.upload_file(context, 'datasetLoad_virus.txt')
+
 def log_abort():
     import logging 
     logging.getLogger('ptmscout').debug("Transaction aborted")

@@ -60,11 +60,15 @@ Feature: Dataset Load
     	  | peptides | proteins | errors |
     	  | 1000     | 91       | 0      |
            
-    @runme 
     Scenario: Handle an isoform
           Given a user submits a dataset in which an isoform specific record is included
           Then the user should be sent an email with a link to the experiment which contains:
             | peptides | proteins | errors |
             | 18       | 16       | 0      |
           
-    
+    @runme
+    Scenario: Handle a viral proteins by checking PTM types of host organism
+          Given a user submits a dataset in which viral proteins are included
+          Then the user should be sent an email with a link to the experiment which contains:
+            | peptides | proteins | errors |
+            | 6        | 3        | 0      |
