@@ -21,6 +21,9 @@ class DatabaseInitialization():
     def new_transaction(self):
         self.trans = self.connection.begin()
 
+    def commit(self):
+        self.trans.commit()
+
     def rollback(self):
         testing.tearDown()
         self.trans.rollback()

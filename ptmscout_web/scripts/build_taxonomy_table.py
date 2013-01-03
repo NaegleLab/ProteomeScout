@@ -45,7 +45,7 @@ def get_similar_taxons(sp, taxon_map):
 
 if __name__=='__main__':
     try:
-        settings = appconfig(os.path.join('config:', 'data', 'ptmscout', 'ptmscout_web', 'development.ini'))
+        settings = appconfig(os.path.join('config:', 'data', 'ptmscout', 'ptmscout_web', 'test.ini'))
             
         DatabaseInitialization.setUpClass(settings)
         dbinit = DatabaseInitialization()
