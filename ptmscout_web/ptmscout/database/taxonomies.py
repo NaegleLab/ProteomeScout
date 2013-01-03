@@ -1,6 +1,7 @@
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, VARCHAR
 from ptmscout.database import Base, DBSession
+from sqlalchemy.orm import relationship
 
 class Taxonomy(Base):
     __tablename__='taxonomy'
@@ -8,6 +9,10 @@ class Taxonomy(Base):
     kingdom = Column(VARCHAR(1), index=True)
     name = Column(VARCHAR(100))
     strain = Column(VARCHAR(100))
+    
+    parent_id = Column(Integer(10), ForeignKey('taxonomy.node_id'))
+
+    parent = relationship('Taxonomy', remote_side=[node_id])
     
 class Species(Base):
     __tablename__='species'
