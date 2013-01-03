@@ -72,6 +72,30 @@ class EntrezError(Exception):
     def __repr__(self):
         return "Unable to fetch protein accession: %s" % (self.acc)
 
+def get_feature(name, table):
+    for entry in table:
+        if 'GBFeature_key' in entry and entry['GBFeature_key'] == name:
+            return entry
+
+def get_qualifier(name, entry):
+    if 'GBFeature_quals' in entry:
+        for qual in entry['GBFeature_quals']:
+            if qual['GBQualifier_name'] == name:
+                return qual
+
+def parse_species_name(name):
+    m = re.match(r'(.*) \(.*\)', name)
+    if m:
+        return m.group(1)
+    return name
+
+def parse_organism_host(xml):
+    source = get_feature('source', xml['GBSeq_feature-table'])
+    if source:
+        qual = get_qualifier('host', source)
+        if qual:
+            return parse_species_name(qual['GBQualifier_value'])
+
 
 def get_protein_information(pm, acc):
     seq = pm.get_protein_sequence(acc).upper()
@@ -87,12 +111,14 @@ def get_protein_information(pm, acc):
     species = pm.get_species(acc)
     prot_accessions = pm.get_other_accessions(acc)
     prot_domains = parse_pfam_domains(pm.get_domains(acc))
+
+    host_organism = parse_organism_host(pm.get_raw_xml(acc))
     prot_isoforms = []#pm.get_isoforms(acc)
     
     for i in prot_isoforms:
         prot_isoforms[i] = prot_isoforms[i].upper()
     
-    return name, gene, taxonomy, species, prot_accessions, prot_domains, seq, prot_isoforms
+    return name, gene, taxonomy, species, host_organism, prot_accessions, prot_domains, seq, prot_isoforms
 
 
 def parse_isoform_number(acc):
@@ -129,7 +155,7 @@ def get_alignment_scores(seq1, seq2):
     return aln_seq1.count("-"), aln_seq2.count("-") 
 
 
-def create_isoform(root_acc, isoform_accession, isoform_id, isoform_seq, name, gene, taxonomy, species, prot_domains, seq):
+def create_isoform(root_acc, isoform_accession, isoform_id, isoform_seq, name, gene, taxonomy, species, host_organism, prot_domains, seq):
     isoform_domains = []
     isoform_name = "%s isoform %s" % (name, isoform_id)
     inserted, deleted = get_alignment_scores(seq, isoform_seq)
@@ -147,7 +173,7 @@ def create_isoform(root_acc, isoform_accession, isoform_id, isoform_seq, name, g
             isoform_domains.append(ndomain)
         
     acc_type = protein_utils.get_accession_type(root_acc)
-    return (isoform_name, gene, taxonomy, species, [(acc_type, isoform_accession)], isoform_domains, isoform_seq)
+    return (isoform_name, gene, taxonomy, species, host_organism, [(acc_type, isoform_accession)], isoform_domains, isoform_seq)
 
 
 def get_proteins_from_ncbi(accessions):
@@ -164,13 +190,13 @@ def get_proteins_from_ncbi(accessions):
     errors = []
     for acc in query_accessions:
         try:
-            name, gene, taxonomy, species, prot_accessions, prot_domains, seq, prot_isoforms = get_protein_information(pm, acc)
-            prot_map[acc] = (name, gene, taxonomy, species, prot_accessions, prot_domains, seq)
+            name, gene, taxonomy, species, host_organism, prot_accessions, prot_domains, seq, prot_isoforms = get_protein_information(pm, acc)
+            prot_map[acc] = (name, gene, taxonomy, species, host_organism, prot_accessions, prot_domains, seq)
             
             for isoform_id in prot_isoforms:
                 isoform_seq = prot_isoforms[isoform_id]
                 isoform_accession = "%s-%s" % (acc, isoform_id)
-                prot_map[isoform_accession] = create_isoform(acc, isoform_accession, isoform_id, isoform_seq, name, gene, taxonomy, species, prot_domains, seq)
+                prot_map[isoform_accession] = create_isoform(acc, isoform_accession, isoform_id, isoform_seq, name, gene, taxonomy, species, host_organism, prot_domains, seq)
 
         except EntrezError, e:
             errors.append(e)

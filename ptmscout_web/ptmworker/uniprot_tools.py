@@ -8,6 +8,9 @@ from Bio import SeqIO
 import re
 import traceback
 import logging
+import ptmscout.database.taxonomies
+import xml.dom.minidom as xml
+from xml.parsers.expat import ExpatError
 
 log = logging.getLogger('ptmscout')
 
@@ -115,7 +118,11 @@ def parse_xml(xml):
     domains = []
     seq = xml.seq
 
-    return xml.id, (name, gene, taxons, species, other_accessions, domains, seq)
+    host_organism = None
+    if 'organism_host' in xml.annotations:
+        host_organism = xml.annotations['organism_host'][0]
+
+    return xml.id, (name, gene, taxons, species, host_organism, other_accessions, domains, seq)
 
 
 def handle_result(result):
@@ -143,11 +150,11 @@ def map_isoform_results(result_map, isoform_map):
         identified_isoforms = isoforms_by_root.get(root_acc, set())
         isoforms_by_root[root_acc] = identified_isoforms | set([iso_number])
 
-        name, gene, taxons, species, _o, _d, _s = result_map[root_acc]
+        name, gene, taxons, species, host_organism,  _o, _d, _s = result_map[root_acc]
       
         isoform_fullname = "%s (%s)" % (name, isoform_name)
         isoform_accs = [('swissprot', iso_acc)]
-        result_map[iso_acc] = (isoform_fullname, gene, taxons, species, isoform_accs, [], iso_seq)
+        result_map[iso_acc] = (isoform_fullname, gene, taxons, species, host_organism, isoform_accs, [], iso_seq)
 
     for root in isoforms_by_root:
         isos = isoforms_by_root[root]
@@ -159,11 +166,11 @@ def map_isoform_results(result_map, isoform_map):
 
             new_isoform = "%s-%d" % (root, canonical_isoform)
 
-            isoform_fullname, gene, taxons, species, isoform_accs, domains, iso_seq = result_map[root]
+            isoform_fullname, gene, taxons, species, host_organism, isoform_accs, domains, iso_seq = result_map[root]
             isoform_accs.append(('swissprot', new_isoform))
             
-            result_map[root] = isoform_fullname, gene, taxons, species, isoform_accs, domains, iso_seq
-            result_map[new_isoform] = isoform_fullname, gene, taxons, species, isoform_accs, domains, iso_seq
+            result_map[root] = isoform_fullname, gene, taxons, species, host_organism, isoform_accs, domains, iso_seq
+            result_map[new_isoform] = isoform_fullname, gene, taxons, species, host_organism, isoform_accs, domains, iso_seq
 
 def map_combine(r1, r2):
     return dict(r1.items() + r2.items())
