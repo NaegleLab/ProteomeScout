@@ -8,6 +8,37 @@ from ptmscout.utils import uploadutils
 
 class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
 
+    def test_get_taxonomic_lineage(self):
+        human_lineage = [ \
+            'Root node of taxonomy',
+            'Eukaryota',
+            'Metazoa',
+            'Bilateria',
+            'Chordata',
+            'Craniata',
+            'Vertebrata',
+            'Gnathostomata',
+            'Euteleostomi',
+            'Sarcopterygii',
+            'Tetrapoda',
+            'Amniota',
+            'Mammalia',
+            'Theria',
+            'Eutheria',
+            'Euarchontoglires',
+            'Primates',
+            'Haplorrhini',
+            'Simiiformes',
+            'Catarrhini',
+            'Hominoidea',
+            'Hominidae',
+            'Homininae',
+            'Homo' ]
+
+        lineage = upload_helpers.get_taxonomic_lineage('Homo sapiens')
+
+        self.assertEqual(human_lineage, lineage)
+
     @patch('ptmscout.database.gene_expression.getExpressionProbeSetsForProtein')
     def test_map_expression_probesets(self, patch_getProbes):
         probe = createMockProbe()

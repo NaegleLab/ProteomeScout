@@ -84,7 +84,7 @@ def get_go_annotation(goId, protein_id, dateAdded, complete_go_terms, missing_te
     print "Added term:", goe.GO_term.GO
     return entry
 
-def query_missing_GO_terms(missing_terms):
+def query_missing_GO_terms(missing_terms, complete_go_terms):
     processed_missing = set()
     while len(missing_terms) > 0:
         goId = missing_terms.pop(0)
@@ -99,8 +99,6 @@ def query_missing_GO_terms(missing_terms):
         go_term.aspect = entry.goFunction
         go_term.version = version
         go_term.save()
-        created_go_entries.append(entry)
-        created+=1
         processed_missing.add(goId)
 
         for parent_goId in entry.is_a:
@@ -153,6 +151,22 @@ def get_strain_or_isolate(species):
         return species_root, strain
 
     return species, None
+
+def get_taxonomic_lineage(species):
+    species, strain = get_strain_or_isolate(species)
+    taxon = taxonomies.getTaxonByName(species, strain)
+
+    if taxon == None:
+        return []
+    
+    taxonomic_lineage = []
+    while taxon.parent != None:
+        taxon = taxon.parent
+        taxonomic_lineage.append(taxon.name)
+
+    taxonomic_lineage.reverse()
+
+    return taxonomic_lineage
 
 def find_or_create_species(species):
     sp = taxonomies.getSpeciesByName(species)
