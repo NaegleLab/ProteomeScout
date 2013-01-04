@@ -73,7 +73,13 @@ def load_peptide_modification(protein_info, exp_id, protein_accession, pep_seq, 
         protein_id, protein_sequence, taxonomy = protein_info
         mod_types, aligned_sequences = upload_helpers.parse_modifications(protein_sequence, pep_seq, mods, taxonomy)
 
-        pep_measurement = modifications.getMeasuredPeptide(exp_id, pep_seq, protein_id)
+        filter_mods = []
+        for i in xrange(0, len(mod_types)):
+            _, seq, _ = aligned_sequences[i]
+            mod = mod_types[i]
+            filter_mods.append((seq, mod))
+
+        pep_measurement = modifications.getMeasuredPeptide(exp_id, pep_seq, protein_id, filter_mods)
 
         if pep_measurement==None:
             pep_measurement = modifications.MeasuredPeptide()
@@ -137,16 +143,17 @@ def create_protein_import_tasks(prot_map, parsed_datafile, headers, units, exp_i
 
         for pep in peptides[acc]:
             key = (acc, pep)
-            mod_str = mod_map[key]
+            for mod_str in mod_map[key]:
+                run_key = (acc, pep, mod_str)
+
+                run_tasks = []
+                for run_name in data_runs[run_key]:
+                    line, series = data_runs[run_key][run_name]
+                    run_tasks.append( (line, run_name, series) )
+                
+                pep_tasks.append( load_peptide_modification.s(exp_id, acc, pep, mod_str, units, headers, run_tasks) )
             
-            run_tasks = []
-            for run_name in data_runs[key]:
-                line, series = data_runs[key][run_name]
-                run_tasks.append( (line, run_name, series) )
-            
-            pep_tasks.append( load_peptide_modification.s(exp_id, acc, pep, mod_str, units, headers, run_tasks) )
-        
-        prot_tasks.append( ( load_protein.s( acc, prot_map[acc] ) | group(pep_tasks) ) )
+            prot_tasks.append( ( load_protein.s( acc, prot_map[acc] ) | group(pep_tasks) ) )
 
     return prot_tasks
 

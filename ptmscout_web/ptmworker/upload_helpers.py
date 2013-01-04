@@ -126,7 +126,7 @@ def map_expression_probesets(prot):
     
     prot.expression_probes.extend(probesets)
     
-    log.info("Loaded %d probesets for protein %d | %s", len(probesets), prot.id, str(prot.acc_gene))
+    log.info("Loaded %d probesets for protein %s | %s", len(probesets), prot.accessions[0].value, str(prot.acc_gene))
 
 
 def report_errors(exp_id, errors, line_mapping):
@@ -364,9 +364,11 @@ def parse_datafile(session):
         pep_set.add(pep)
         peptides[acc] = pep_set
         
-        mod_map[(acc,pep)] = mods
-        
-        run_data = data_runs.get((acc, pep), {})
+        mod_set = mod_map.get((acc,pep), set())
+        mod_set.add(mods)
+        mod_map[(acc,pep)] = mod_set
+
+        run_data = data_runs.get((acc, pep, mods), {})
         
         series = []
         for d in data_cols:
@@ -379,7 +381,7 @@ def parse_datafile(session):
         else:
             run_data[ 'average' ] = (line, series)
         
-        data_runs[(acc,pep)] = run_data
+        data_runs[(acc, pep, mods)] = run_data
         
     
     return accessions, peptides, mod_map, data_runs, errors, line_mapping
