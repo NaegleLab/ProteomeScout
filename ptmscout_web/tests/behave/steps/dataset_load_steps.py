@@ -51,6 +51,10 @@ def submit_big_dataset(context):
 def submit_viral_dataset(context):
     bot.upload_file(context, 'datasetLoad_virus.txt')
 
+@given(u'a user submits a dataset in which the same peptide')
+def submit_dataset_with_repeat_peptides_diff_mod(context):
+    bot.upload_file(context, 'datasetLoad_samePepDiffMod.txt')
+
 def log_abort():
     import logging 
     logging.getLogger('ptmscout').debug("Transaction aborted")
