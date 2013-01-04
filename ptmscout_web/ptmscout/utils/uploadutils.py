@@ -133,12 +133,12 @@ def check_data_row(r, row, acc_col, pep_col, mod_col, run_col, data_cols, stddev
     run = None
     if run_col != None:
         run = row[run_col.column_number].strip()
-        k = (accession, peptide, run)
+        k = (accession, peptide, modification, run)
         if k in keys:
             errors.append(ParseError(r, None, strings.experiment_upload_warning_full_dupe))
         keys.add(k)
     else:
-        k = (accession, peptide)
+        k = (accession, peptide, modification)
         if k in keys:
             errors.append(ParseError(r, None, strings.experiment_upload_warning_no_run_column))
         keys.add(k)
