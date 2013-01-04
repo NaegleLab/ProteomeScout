@@ -94,8 +94,8 @@ class PeptideModification(Base):
     peptide_id = Column(Integer(10), ForeignKey('peptide.id'))
     modification_id = Column(Integer(10), ForeignKey('PTM.id'))
     
-    peptide = relationship("Peptide")
-    modification = relationship("PTM")
+    peptide = relationship("Peptide", lazy='joined')
+    modification = relationship("PTM", lazy='joined')
     
 
 class MeasuredPeptide(Base):
@@ -106,9 +106,9 @@ class MeasuredPeptide(Base):
     peptide = Column(VARCHAR(150))
     
     experiment = relationship("Experiment")
-    protein = relationship("Protein")
+    protein = relationship("Protein", lazy='joined')
     
-    peptides = relationship("PeptideModification")
+    peptides = relationship("PeptideModification", lazy='joined')
     data = relationship("ExperimentData")
 
     def save(self):
@@ -127,6 +127,18 @@ class MeasuredPeptide(Base):
                 return True
         return False
 
+    def __hasModification(self, sequence, ptm):
+        for modpep in self.peptides:
+            if modpep.peptide.pep_aligned == sequence and modpep.modification_id == ptm.id:
+                return True
+        return False
+
+    def hasModifications(self, mod_list):
+        passed = True
+        for seq, mod in mod_list:
+            passed &= self.__hasModification(seq, mod)
+        return passed
+
     def getDataElement(self, run_name, tp, x):
         for d in self.data:
             if d.run == run_name and d.type == tp and d.label == x:
@@ -141,8 +153,14 @@ class NoSuchPeptide(Exception):
     def __repr__(self):
         return "No such peptide modification at site %d, residue: %s, protein: %d" % (self.site, self.t, self.protein_id)
 
-def getMeasuredPeptide(exp_id, pep_seq, protein_id):
-    return DBSession.query(MeasuredPeptide).filter_by(experiment_id=exp_id, peptide=pep_seq, protein_id=protein_id).first()
+def getMeasuredPeptide(exp_id, pep_seq, protein_id, filter_mods=None):
+    everything = DBSession.query(MeasuredPeptide).filter_by(experiment_id=exp_id, peptide=pep_seq, protein_id=protein_id).all()
+
+    if filter_mods:
+        everything = [ e for e in everything if e.hasModifications(filter_mods) ]
+
+    if len(everything) > 0:
+        return everything[0]
 
 
 def getMeasuredPeptidesByProtein(pid, user):
@@ -167,6 +185,8 @@ def getPeptideBySite(pep_site, pep_type, prot_id):
     
     return mod
 
+def getModificationById(ptm_id):
+    return DBSession.query(PTM).filter_by(id=ptm_id).first()
 
 def findMatchingPTM(mod_type, residue=None, taxons=None):
     mods = DBSession.query(PTM).outerjoin(PTMkeyword).filter(or_(PTM.accession==mod_type, PTM.name==mod_type, PTMkeyword.keyword==mod_type)).all()
