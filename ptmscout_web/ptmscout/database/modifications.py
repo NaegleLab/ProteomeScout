@@ -1,4 +1,4 @@
-from ptmscout.database import Base, DBSession
+from ptmscout.database import Base, DBSession, protein
 from sqlalchemy.schema import Column, ForeignKey, Table, UniqueConstraint
 from sqlalchemy.types import Integer, VARCHAR, CHAR, Float, Enum, DateTime
 from sqlalchemy.orm import relationship
@@ -176,6 +176,9 @@ def getMeasuredPeptidesByExperiment(eid, user=None, pids = None, secure=True, ch
 
 def countMeasuredPeptidesForExperiment(eid):
     return DBSession.query(MeasuredPeptide).filter_by(experiment_id=eid).count()
+
+def countProteinsForExperiment(eid):
+    return DBSession.query(protein.Protein.id).join(MeasuredPeptide).filter(MeasuredPeptide.experiment_id==eid).distinct().count()
 
 def getPeptideBySite(pep_site, pep_type, prot_id):
     mod = DBSession.query(Peptide).filter_by(site_pos=pep_site, site_type=pep_type, protein_id=prot_id).first()

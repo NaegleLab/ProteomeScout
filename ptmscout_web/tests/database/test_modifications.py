@@ -5,11 +5,18 @@ from ptmscout.database.experiment import Experiment, getExperimentById,\
     ExperimentData
 from ptmscout.database.modifications import Peptide, MeasuredPeptide,\
     getMeasuredPeptidesByProtein, findMatchingPTM, \
-    countMeasuredPeptidesForExperiment, getModificationById, getMeasuredPeptide
+    countMeasuredPeptidesForExperiment, getModificationById, \
+    getMeasuredPeptide, countProteinsForExperiment
 from ptmscout.database.user import User, getUserById
 
 
 class TestModifications(DBTestCase):
+    def test_countProteinsForExperiment(self):
+        exp_id = 28
+        cnt = countProteinsForExperiment(exp_id)
+
+        self.assertEqual(52, cnt)
+
     def test_countMeasuredPeptidesForExperiment(self):
         exp_id = self.test_get_modifications_should_return_mods_allowed_by_user_credentials()
         cnt = countMeasuredPeptidesForExperiment(exp_id)
@@ -221,3 +228,7 @@ class TestModifications(DBTestCase):
         self.assertEqual([0,1,10], sorted([d.label for d in modifications[0].data]))
 
         return exp.id
+
+if __name__=='__main__':
+    import unittest
+    unittest.main()
