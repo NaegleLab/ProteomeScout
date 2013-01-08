@@ -22,13 +22,7 @@ def resume_upload_session(request):
     else:
         return HTTPFound(base_url % (session_id, session.stage))
 
-
 def prepare_experiment(session, exp):
-    exp.clearErrors()
-
-    if session.load_type=='reload':
-        modifications.deleteExperimentData(exp.id)
-
     exp.export = 1
     exp.status='in queue'
     exp.saveExperiment()
