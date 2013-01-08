@@ -4,6 +4,9 @@ import time
 from ptmscout.config import settings
 import logging
 from ptmscout.database import protein
+from xml.parsers.expat import ExpatError
+from ptmscout.utils.decorators import rate_limit
+
 log = logging.getLogger('ptmscout')
 PFAM_DEFAULT_CUTOFF = 0.00001
 
@@ -123,6 +126,7 @@ def wait_for_result(jobrequest):
  
     return code, resultquery
 
+@rate_limit(rate=3)
 def get_computed_pfam_domains(prot_seq, cutoff):
     if settings.DISABLE_PFAM:
         return []
@@ -142,10 +146,12 @@ def get_computed_pfam_domains(prot_seq, cutoff):
             parsed_pfam = PFamParser(xmlresult)
 
             return filter_domains(parsed_pfam.domains)
-
-        except urllib2.HTTPError:
+        except ExpatError, e:
             i += 1
-            log.warning("PFAM query failed, trying mirror")
+            log.warning("PFAM query failed: %s... (%d / %d)", str(e), i, len(PFAM_MIRRORS))
+        except urllib2.HTTPError, e:
+            i += 1
+            log.warning("PFAM query failed, %s... (%d / %d)", str(e), i, len(PFAM_MIRRORS))
 
     raise PFamError("Unable to query PFam")
 

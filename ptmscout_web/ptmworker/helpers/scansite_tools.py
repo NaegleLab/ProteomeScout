@@ -1,6 +1,7 @@
 import urllib2
 import xml.dom.minidom as xml 
 from ptmscout.config import settings
+from ptmscout.utils.decorators import rate_limit
 
 
 
@@ -36,6 +37,7 @@ class ScansiteParser():
             mn = MotifNode(siteNode)
             self.sites.append(mn)
 
+@rate_limit(rate=3)
 def get_scansite_motif(pep_seq, motif_class):
     if settings.DISABLE_SCANSITE:
         return []

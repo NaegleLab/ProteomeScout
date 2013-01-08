@@ -1,5 +1,5 @@
 from tests.PTMScoutTestCase import IntegrationTestCase
-from ptmworker import pfam_tools
+from ptmworker.helpers import pfam_tools
 from ptmscout.database import protein
 from mock import patch
 

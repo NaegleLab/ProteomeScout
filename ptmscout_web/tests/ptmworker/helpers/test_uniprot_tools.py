@@ -1,5 +1,5 @@
 from tests.PTMScoutTestCase import IntegrationTestCase
-from ptmworker import uniprot_tools
+from ptmworker.helpers import uniprot_tools
 
 class TestUniprotQuery(IntegrationTestCase):
 #'annotations', 'dbxrefs', 'description', 'features', 'format', 'id', 'letter_annotations', 'lower', 'name', 'reverse_complement', 'seq', 'upper'

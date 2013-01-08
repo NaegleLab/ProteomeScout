@@ -1,5 +1,5 @@
 from tests.PTMScoutTestCase import IntegrationTestCase
-from ptmworker import quickgo_tools
+from ptmworker.helpers import quickgo_tools
 
 class IntegrationTestQuickGoQuery(IntegrationTestCase):
     

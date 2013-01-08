@@ -4,6 +4,7 @@ import xml.dom.minidom as xml
 from ptmscout.config import settings
 import logging
 import httplib
+from ptmscout.utils.decorators import rate_limit
 
 log = logging.getLogger('ptmscout')
 
@@ -61,6 +62,7 @@ class OBOXMLParser(object):
 
         return tn
     
+@rate_limit(rate=10)
 def get_GO_term(goId):
     log.debug("Getting go term: %s", goId)
     query_url = quick_go_term_url % (goId)
@@ -90,6 +92,7 @@ def parse_result(annot_stream, annotations, gene_symbols):
 
         annotations[proteinId] = go_terms
 
+@rate_limit(rate=3)
 def batch_get_GO_annotations(protein_accessions):
     log.info("Getting go annotations for %d accessions", len(protein_accessions))
 
@@ -111,6 +114,7 @@ def batch_get_GO_annotations(protein_accessions):
             annot_stream = urllib2.urlopen(query_url)
             
             parse_result(annot_stream, annotations, gene_symbols)
+            break
         except urllib2.HTTPError, e:
             log.warning("HTTPError %s when querying QuickGO, retrying (%d / %d)", str(e), i, RETRY_COUNT)
         except httplib.BadStatusLine:

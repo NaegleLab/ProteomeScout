@@ -1,5 +1,5 @@
 from tests.PTMScoutTestCase import IntegrationTestCase
-from ptmworker import picr_tools
+from ptmworker.helpers import picr_tools
 
 class IntegrationTestPICR(IntegrationTestCase):
     
@@ -84,10 +84,13 @@ class IntegrationTestPICR(IntegrationTestCase):
 """
         response = picr_tools.PICRParser(picrxml)
             
-        self.assertEqual(3, len(response.references))
-        self.assertEqual(('ipi', 'IPI01014284', '1'), response.references[0])
-        self.assertEqual(('swissprot', 'P29375', '3'), response.references[1])
-        self.assertEqual(('ipi', 'IPI00021363', '3'), response.references[2])
+        self.assertEqual(6, len(response.references))
+        self.assertEqual(('ipi', 'IPI01014284'), response.references[0])
+        self.assertEqual(('ipi', 'IPI01014284.1'), response.references[1])
+        self.assertEqual(('swissprot', 'P29375'), response.references[2])
+        self.assertEqual(('swissprot', 'P29375.3'), response.references[3])
+        self.assertEqual(('ipi', 'IPI00021363'), response.references[4])
+        self.assertEqual(('ipi', 'IPI00021363.3'), response.references[5])
 
     def test_get_picr_2(self):
         result = picr_tools.get_picr('EAX03173', 9606)
@@ -97,9 +100,13 @@ class IntegrationTestPICR(IntegrationTestCase):
     def test_get_picr(self):
         result = picr_tools.get_picr('P29375', 9606)
 
-        self.assertEqual(4, len(result))
-        self.assertTrue(('swissprot', 'P29375', '3') in result)
-        self.assertTrue(('refseq', 'NP_001036068', '1') in result)
-        self.assertTrue(('ipi', 'IPI01014284', '1') in result)
-        self.assertTrue(('ipi', 'IPI00021363', '3') in result)
+        self.assertEqual(8, len(result))
+        self.assertTrue(('swissprot', 'P29375') in result)
+        self.assertTrue(('swissprot', 'P29375.3') in result)
+        self.assertTrue(('refseq', 'NP_001036068') in result)
+        self.assertTrue(('refseq', 'NP_001036068.1') in result)
+        self.assertTrue(('ipi', 'IPI01014284') in result)
+        self.assertTrue(('ipi', 'IPI01014284.1') in result)
+        self.assertTrue(('ipi', 'IPI00021363') in result)
+        self.assertTrue(('ipi', 'IPI00021363.3') in result)
         

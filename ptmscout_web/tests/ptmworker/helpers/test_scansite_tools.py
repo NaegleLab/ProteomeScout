@@ -1,5 +1,5 @@
 from tests.PTMScoutTestCase import IntegrationTestCase
-from ptmworker import scansite_tools
+from ptmworker.helpers import scansite_tools
 
 class IntegrationTestScansiteQuery(IntegrationTestCase):
     

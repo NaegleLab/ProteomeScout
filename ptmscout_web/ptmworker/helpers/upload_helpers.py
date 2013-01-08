@@ -21,6 +21,7 @@ def logged_task(fn):
             return fn(*args)
         except Exception:
             log.warning(traceback.format_exc())
+            raise
     ttask.__name__ = fn.__name__
     return ttask
 
@@ -36,6 +37,7 @@ def transaction_task(fn):
         except Exception:
             log.warning(traceback.format_exc())
             transaction.abort()
+            raise
     ttask.__name__ = fn.__name__
     return ttask
 
@@ -53,15 +55,15 @@ def dynamic_transaction_task(fn):
         except Exception:
             log.warning(traceback.format_exc())
             transaction.abort()
+            raise
     ttask.__name__ = fn.__name__
     return ttask
 
-def get_go_annotation(goId, protein_id, dateAdded, complete_go_terms, missing_terms):
+def get_go_annotation(goId, complete_go_terms, missing_terms):
     go_term = protein.getGoAnnotationById(goId)
     entry = None
 
     if go_term == None:
-
         go_term = protein.GeneOntology()
         version, entry = quickgo_tools.get_GO_term(goId)
 
@@ -74,15 +76,9 @@ def get_go_annotation(goId, protein_id, dateAdded, complete_go_terms, missing_te
         go_term.term = entry.goName
         go_term.aspect = entry.goFunction
         go_term.version = version
+        go_term.save()
 
-    goe = protein.GeneOntologyEntry()
-    goe.GO_term = go_term
-    goe.protein_id = protein_id
-    goe.date = dateAdded
-    goe.save()
-
-    print "Added term:", goe.GO_term.GO
-    return entry
+    return go_term, entry
 
 def query_missing_GO_terms(missing_terms, complete_go_terms):
     processed_missing = set()
@@ -107,39 +103,10 @@ def query_missing_GO_terms(missing_terms, complete_go_terms):
                 missing_terms.append(parent_goId)
 
 
-
-def create_accession_for_protein(prot, other_accessions):
-    for db, acc, _ in other_accessions:
-        if not prot.hasAccession(acc):
-            dbacc = protein.ProteinAccession()
-            dbacc.type = db
-            dbacc.value = acc
-            prot.accessions.append(dbacc)
-
-
-def map_expression_probesets(prot):
-    search_accessions = [ acc.value for acc in prot.accessions ]
-    if prot.acc_gene != '' and prot.acc_gene != None:
-        search_accessions.append(prot.acc_gene)
-    
-    probesets = gene_expression.getExpressionProbeSetsForProtein(search_accessions, prot.species_id)
-    
-    prot.expression_probes.extend(probesets)
-    
-    log.info("Loaded %d probesets for protein %s | %s", len(probesets), prot.accessions[0].value, str(prot.acc_gene))
-
-
 def report_errors(exp_id, errors, line_mapping):
     for e in errors:
         accession, peptide = line_mapping[e.row]
         experiment.createExperimentError(exp_id, e.row, accession, peptide, e.msg)
-
-
-def mark_experiment(exp_id, status):
-    exp = experiment.getExperimentById(exp_id, check_ready=False, secure=False)
-    exp.status = status
-    exp.saveExperiment()
-    return exp
 
 
 def get_strain_or_isolate(species):
@@ -184,21 +151,39 @@ def find_or_create_species(species):
     return sp
 
 
-def create_new_protein(name, gene, seq, species, accessions):
-    log.info("Creating protein: %s" , str(accessions))
+def create_accession_for_protein(prot, other_accessions):
+    added_accessions = []
+
+    for db, acc in other_accessions:
+        db = db.lower()
+        if not prot.hasAccession(acc):
+            dbacc = protein.ProteinAccession()
+            dbacc.type = db
+            dbacc.value = acc
+            prot.accessions.append(dbacc)
+            added_accessions.append((db,acc))
+
+    return added_accessions
+
+
+def map_expression_probesets(prot):
+    search_accessions = [ acc.value for acc in prot.accessions ]
+    if prot.acc_gene != '' and prot.acc_gene != None:
+        search_accessions.append(prot.acc_gene)
+    
+    probesets = gene_expression.getExpressionProbeSetsForProtein(search_accessions, prot.species_id)
+    
+    prot.expression_probes.extend(probesets)
+    
+    log.info("Loaded %d probesets for protein %s | %s", len(probesets), prot.accessions[0].value, str(prot.acc_gene))
+
+
+def create_new_protein(name, gene, seq, species):
     prot = protein.Protein()
     prot.acc_gene = gene
     prot.name = name
     prot.sequence = seq
     prot.species = find_or_create_species(species)
-    
-    for acc_type, acc in accessions:
-        if not prot.hasAccession(acc):
-            acc_db = protein.ProteinAccession()
-            acc_db.type = acc_type
-            acc_db.value = acc
-            prot.accessions.append(acc_db)
-
     return prot
 
 def get_related_proteins(prot_accessions, species):
@@ -405,7 +390,7 @@ def group_critera(group, arg):
     return group[-1][:6] == arg[:6]
 
 
-def create_chunked_tasks_preserve_groups(task_method, task_args, MAX_BATCH_SIZE):
+def create_chunked_tasks_preserve_groups(task_args, MAX_BATCH_SIZE):
     tasks = []
     args = []
 
@@ -420,26 +405,26 @@ def create_chunked_tasks_preserve_groups(task_method, task_args, MAX_BATCH_SIZE)
         if len(args) + len(g) <= MAX_BATCH_SIZE:
             args = args + g
         else:
-            tasks.append(task_method.s(args))
+            tasks.append( args )
             args = g
 
     if len(args) > 0:
-        tasks.append( task_method.s(args) )
+        tasks.append( args )
 
     return tasks
 
 
-def create_chunked_tasks(task_method, task_args, MAX_BATCH_SIZE):
+def create_chunked_tasks(task_args, MAX_BATCH_SIZE):
     tasks = []
     args = []
     
     for arg in task_args:
         args.append(arg)
         if len(args) == MAX_BATCH_SIZE:
-            tasks.append( task_method.s(args) )
+            tasks.append( args )
             args = []
     if len(args) > 0:
-        tasks.append( task_method.s(args) )
+        tasks.append( args )
         
     return tasks
     

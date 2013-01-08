@@ -1,18 +1,17 @@
 from tests.PTMScoutTestCase import IntegrationTestCase
 from ptmscout.config import settings
 from Bio import Entrez
-from ptmworker import entrez_tools, pfam_tools
+from ptmworker.helpers import entrez_tools, pfam_tools
 import mock
 from geeneus import Proteome
 
 class EntrezQueryTestCase(IntegrationTestCase):
 
     def test_get_viral_protein(self):
-        result, errors = entrez_tools.get_proteins_from_ncbi(['118734'])
-
-        name, gene, taxonomy, species, host_organism, prot_accessions, prot_domains, seq = result['118734']
-
-        self.assertEqual('Homo sapiens', host_organism)
+        result = entrez_tools.get_proteins_from_ncbi(['118734'])
+        
+        name, gene, taxonomy, species, host_organism, accessions, domains, seq = result[0]
+        print result[0]
 
     def test_get_pubmed_record(self):
         record = entrez_tools.get_pubmed_record_by_id(12230038)
@@ -98,7 +97,7 @@ class EntrezQueryTestCase(IntegrationTestCase):
     def test_get_protein_information(self):
         pm = Proteome.ProteinManager(settings.adminEmail)
         
-        name, gene, taxonomy, species, host_organism, _accessions, domains, seq, isoforms = entrez_tools.get_protein_information(pm, 'A6NC57')
+        name, gene, taxonomy, species, _host_organism, _accessions, domains, seq, isoforms = entrez_tools.get_protein_information(pm, 'A6NC57')
         
         self.assertEqual('Ankyrin repeat domain-containing protein 62', name) 
         self.assertEqual(None, gene)
@@ -108,7 +107,6 @@ class EntrezQueryTestCase(IntegrationTestCase):
                 u'Euarchontoglires', u'Primates', u'Haplorrhini',
                 u'Catarrhini', u'Hominidae', u'Homo']
 
-        self.assertEqual(None, host_organism)
         self.assertEqual('Homo sapiens', species)
         self.assertEqual([t.lower() for t in taxons], taxonomy)
         self.assertEqual('MEVRGSFLAACRRRMATWRKNRDKDGFSNPGYRVRQKDLGMIHKAAIAGDVNKVMESILLRLNDLNDRDKKNRTALLLACAHGRPGVVADLVARKCQLNLTDSENRTALIKAVQCQEEVCASILLEHGANPNVRDMYGNTALHYAIDNENISMARKLLAYGADIEARSQDGHTSLLLAVNRKKEQMVAFLLKKKPDLTAIDNFGRTALILAARNGSTSVVYQLLQHNIDVFCQDISGWTAEDYAVASKFQAIRGMISEYKANKRCKSLQNSNSEQDLEMTSEGEQERLEGCESSQPQVEEKMKKCRNKKMEVSRNVHADDSDNYNDDVDELIHKIKNRKPDNHQSPGKENGEFDRLARKTSNEKSKVKSQIYFTDDLNDISGSSEKTSEDDELPYSDDENFMLLIEQSGMECKDFVSLSKSKNATAACGRSIEDQKCYCERLKVKFQKMKNNISVLQKVLSETDKTKSQSEHQNLQGKKKLCNLRFILQQQEEERIKAEELYEKDIEELKIMEEQYRTQTEVKKQSKLTLKSLEVELKTVRSNSNQNFHTHERERDLWQENHLMRDEIARLRLEIDTIKHQNQETENKYFKDIEIIKENNEDLEKTLKRNEEALTKTITRYSKELNVLMDENTMLNSELQKEKQSMSRLETEMESYRCRLAAALCDHDQRQSSKRDLQLAFQSTVNEWCHLQEDTNSHIQILSQQLSKAESTSSGLETELHYEREALKEKTLHIEHMQGVLSRTQRRLEDIEHMYQNDQPILEKYVRKQQSVEDGLFQLQSQNLLYQQQCNDARKKADNQEKTIINIQVKCEDTVEKLQAECRKLEENNKGLMKECTLLKERQCQYEKEKEEREVVRRQLQREVDDALNKQLLLEAMLEISSERRINLEDEAQSLKKKLGQMRSQVCMKLSMSTVTL', seq) 
