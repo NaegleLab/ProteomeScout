@@ -18,22 +18,47 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         
         exp = experiment.getExperimentById(26, None, False)
         exp.status = 'loading'
+        exp.loading_stage = 'proteins'
+        exp.max_progress = 10000
+        exp.progress = 1000
         exp.grantPermission(self.bot.user, 'owner')
         exp.saveExperiment()
         
-        exp2 = experiment.getExperimentById(28, None, False)
-        exp2.status = 'configuration'
+        exp2 = experiment.getExperimentById(25, None, False)
+        exp2.status = 'loading'
+        exp2.loading_stage = 'GO terms'
+        exp2.progress=0
+        exp2.max_progress=0
         exp2.grantPermission(self.bot.user, 'owner')
         exp2.saveExperiment()
 
+        exp3 = experiment.getExperimentById(28, None, False)
+        exp3.status = 'configuration'
+        exp3.grantPermission(self.bot.user, 'owner')
+        exp3.saveExperiment()
+
+        exp4 = experiment.getExperimentById(1, None, False)
+        exp4.status = 'error'
+        exp4.grantPermission(self.bot.user, 'owner')
+        exp4.saveExperiment()
+
         session = upload.Session()
-        session.experiment_id = exp2.id
+        session.experiment_id = exp3.id
         session.user_id = self.bot.user.id
         session.data_file = ''
         session.change_description = ''
         session.load_type = ''
         session.stage = 'confirm'
         session.save()
+
+        session2 = upload.Session()
+        session2.experiment_id = exp4.id
+        session2.user_id = self.bot.user.id
+        session2.data_file = ''
+        session2.change_description = ''
+        session2.load_type = ''
+        session2.stage = 'confirm'
+        session2.save()
         
         self.bot.login()
         
@@ -41,8 +66,12 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         
         result.mustcontain(exp.name)
         result.mustcontain('Status')
-        result.mustcontain('loading')
-        result.mustcontain('77 / 0')
+        result.mustcontain('loading: proteins')
+        result.mustcontain('1000 / 10000')
+        result.mustcontain('loading: GO terms')
+        result.mustcontain('error')
+        result.mustcontain('retry')
+        result.mustcontain('continue upload')
         
         result.mustcontain('<a href="%s/upload/%d">continue upload</a>' % ("http://localhost", session.id))
         
@@ -415,20 +444,22 @@ class MyExperimentsViewTests(UnitTestCase):
         exp1 = createMockExperiment(1, 0)
         exp2 = createMockExperiment(2, 0)
         exp3 = createMockExperiment(3, 0)
+        exp4 = createMockExperiment(4, 0)
         exp2.status = 'loading'
         exp3.status = 'configuration'
+        exp4.status = 'error'
         
         patch_getSessions.return_value = {"some map":"of session ids"}
         
-        ptm_user.myExperiments.return_value = [exp1,exp2, exp3]
+        ptm_user.myExperiments.return_value = [exp1, exp2, exp3, exp4]
         patch_countPeps.return_value = 100
 
         info = manage_experiments(request)
         
-        patch_getSessions.assert_called_once_with([exp3])
+        patch_getSessions.assert_called_once_with([exp3, exp4])
         patch_countPeps.assert_called_once_with(exp2.id)
 
-        self.assertEqual([exp1, exp2], info['experiments'])
+        self.assertEqual([exp1, exp2, exp4], info['experiments'])
         self.assertEqual([exp3], info['in_process'])
         self.assertEqual(patch_getSessions.return_value, info['sessions'])
         self.assertEqual(strings.my_experiments_page_title, info['pageTitle'])

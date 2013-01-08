@@ -166,8 +166,9 @@ def manage_experiments(request):
 
     in_process = [ exp for exp in users_experiments if exp.status == 'configuration' ]
     available_experiments = [ exp for exp in users_experiments if exp.status != 'configuration' ]
+    error_state = [ exp for exp in users_experiments if exp.status == 'error' ]
     
-    sessions = get_sessions(in_process)
+    sessions = get_sessions(in_process + error_state)
     
     pep_counts = {}
     for exp in users_experiments:

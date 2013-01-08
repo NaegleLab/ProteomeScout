@@ -25,8 +25,12 @@
 						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.author"></a></td>
 						<td class="citation" tal:content="experiment.getCitationString()"></td>
 						<td>
-                            <div class="status" tal:content="experiment.status"></div>
-                            <div class="progress" tal:condition="experiment.status=='loading'" tal:content="str(peptide_counts[experiment.id]) +  ' / ' + str(experiment.num_measured_peptides)"></div>
+                            <div class="status">
+                                <div tal:condition="experiment.status == 'loading'" tal:content="experiment.status + ': ' + experiment.loading_stage"></div>
+                                <div tal:condition="experiment.status != 'loading'" tal:content="experiment.status"></div>
+                                <a tal:condition="experiment.status == 'error'" tal:attributes="href '%s/upload/%d/restart' % (request.application_url, sessions[experiment.id])">retry</a>
+                            </div>
+                            <div class="progress" tal:condition="experiment.max_progress != 0 and experiment.status == 'loading'" tal:content="str(experiment.progress) +  ' / ' + str(experiment.max_progress)"></div>
 						</td>
 						<td class="accesscontrol" tal:condition="experiment.public == 0">
 							<table>
