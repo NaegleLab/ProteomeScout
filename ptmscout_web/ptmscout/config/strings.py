@@ -220,9 +220,15 @@ error_resource_not_ready_message = "The resource you are trying to access is cur
 experiment_upload_failed_subject = "PTMScout experiment upload failed"
 experiment_upload_failed_message = \
 """
-Upload of experiment '%s' failed. Please check the error logs and correct the issue.
+The upload process for the experiment '%s' failed during the '%s' loading stage with the following error message:
 
--PTMScout
+    %s
+
+You can restart the upload by visiting <a href="%s/accounts/experiments">this page</a>.
+
+The PTMScout administrator has been notified of this error. If problems persist please contribute a bug report at our <a href="http://bitbucket.org/knaegle/ptmscout_dev">issue tracker</a>.
+
+-The PTMScout Team
 """
 
 
