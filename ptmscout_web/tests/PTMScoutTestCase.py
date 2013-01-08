@@ -4,7 +4,8 @@ from ptmscout import main
 from webtest.app import TestApp
 from tests.behave.steps.bot import Bot
 from paste.deploy.loadwsgi import appconfig
-import os
+import os, sys
+import logging
 
 class IntegrationTestCase(unittest.TestCase):
     def setUp(self):
@@ -13,7 +14,13 @@ class IntegrationTestCase(unittest.TestCase):
         self.ptmscoutapp = TestApp(app)
         self.bot = Bot(self.ptmscoutapp)
         self.bot.register_and_login()
-        
+
+    def log_capture(self):
+        logger = logging.getLogger('ptmscout')
+        logger.level = logging.DEBUG
+        stream_handler = logging.StreamHandler(sys.stdout)
+        logger.addHandler(stream_handler)
+       
     def tearDown(self):
         from ptmscout.database import DBSession
         del self.ptmscoutapp
