@@ -40,6 +40,7 @@ class GeneOntology(Base):
 
     def save(self):
         DBSession.add(self)
+        DBSession.flush()
 
 class GeneOntologyEntry(Base):
     __tablename__='protein_GO'
@@ -49,9 +50,6 @@ class GeneOntologyEntry(Base):
     date = Column(DateTime)
     
     GO_term = relationship("GeneOntology")
-
-    def save(self):
-        DBSession.add(self)
 
 class ProteinAccession(Base):
     __tablename__='protein_acc'
@@ -95,11 +93,11 @@ class Protein(Base):
     date = Column(DateTime)
     species_id = Column(Integer(10), ForeignKey('species.id'))
     
-    accessions = relationship("ProteinAccession", order_by=ProteinAccession.type)
-    domains = relationship("ProteinDomain")
+    accessions = relationship("ProteinAccession", lazy='joined', order_by=ProteinAccession.type)
+    domains = relationship("ProteinDomain", lazy='joined')
     
-    species = relationship("Species")
-    GO_terms = relationship("GeneOntologyEntry")
+    species = relationship("Species", lazy='joined')
+    GO_terms = relationship("GeneOntologyEntry", lazy='joined')
     expression_probes = relationship("ExpressionProbeset", secondary=expression_association_table)
     
     def __init__(self):
@@ -108,7 +106,10 @@ class Protein(Base):
     def saveProtein(self):
         DBSession.add(self)
         DBSession.flush()
-        
+   
+    def saveNoFlush(self):
+        DBSession.add(self)
+
     def hasAccession(self, acc):
         lower_acc = acc.lower()
         for dbacc in self.accessions:
@@ -123,7 +124,8 @@ class Protein(Base):
     def addGoTerm(self, GO_term, date_added=datetime.datetime.now()):
         goe = GeneOntologyEntry()
         goe.GO_term = GO_term
-        goe.version = date_added
+        goe.date = date_added
+
         self.GO_terms.append(goe)
     
     def getGOIds(self):
@@ -131,10 +133,11 @@ class Protein(Base):
      
     def hasGoTerm(self, GO_id):
         for goe in self.GO_terms:
-            if goe.GO_term.GO == GO_id:
+            if goe.GO_term.GO.lower() == GO_id.lower():
                 return True
-        
         return False
+
+    
 
 class NoSuchProtein(Exception):
     def __init__(self, prot):
