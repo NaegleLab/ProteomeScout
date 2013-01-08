@@ -130,10 +130,15 @@ class TestUploaddata_fileView(UnitTestCase):
         
         request.user = createMockUser()
         e1 = createMockExperiment(2, 0, 0)
+        e1.status='loaded'
         e2 = createMockExperiment(3, 0, 0)
+        e2.status='loaded'
+        e3 = createMockExperiment(4, 0, 0)
+        e3.status='error'
         p1 = createMockPermission(request.user, e1, 'owner')
         p2 = createMockPermission(request.user, e2, 'view')
-        request.user.permissions = [p1,p2]
+        p3 = createMockPermission(request.user, e3, 'owner')
+        request.user.permissions = [p1,p2,p3]
         
         result = upload_data_file(request)
         
