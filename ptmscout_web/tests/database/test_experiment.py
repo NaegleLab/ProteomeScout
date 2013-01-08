@@ -42,8 +42,6 @@ class ExperimentTestCase(DBTestCase):
         self.assertEqual(exp.status, nexp.status)
         self.assertEqual(exp.submitter_id, nexp.submitter_id)
 
-        self.assertEqual(exp.num_measured_peptides, nexp.num_measured_peptides)
-
         self.assertEqual([], nexp.errors)
         self.assertEqual([], nexp.conditions)
         
