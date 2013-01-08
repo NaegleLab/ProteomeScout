@@ -38,19 +38,19 @@ Feature: Protein Viewer
 		  When the user toggles the track box
 		  Then the track should appear or disappear accordingly
 
+	Scenario: Viewing a protein anchored in an experiment
+		  Given a user is viewing a protein
+		  When they chose that protein from within an experiment
+		  Then indicate the sites of modification that are site specific by highlighting the representative box and give them an option to filter out all modifications not captured in that experiment
+
+    @pending
 	Scenario: Export peptide sequence      #where to put this feature
 		  Given a user requests the export of a peptide sequence
 		  When some modifications have been filtered
 		  Then export the requested sequence with lowercase letters indicating the sites of modifications
 
+    @pending
 	Scenario: Export peptide sequence      #where to put this feature
 		  Given a user requests the export of a peptide sequence
 		  When non-synonymous SNPs exist in the sequence
 		  Then export the requested sequence with lowercase letters indicating the sites of modifications and multiple sequences with wild-type and alternate sequences as captured by the SNPs
-
-	Scenario: Viewieng a protein anchored in an experiment
-		  Given a user is viewing a protein
-		  When they chose that protein from within an experiment
-		  Then indicate the sites of modification that are site specific by highlighting the representative box and give them an option to filter out all modifications not captured in that experiment
-
-		 

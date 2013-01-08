@@ -1,7 +1,6 @@
 from ptmworker import GO_tasks
 from tests.PTMScoutTestCase import IntegrationTestCase
 from tests.views.mocking import createMockExperiment, createMockError
-import pickle
 from mock import patch
 from ptmscout.config import settings, strings
 from ptmscout.database import experiment, protein

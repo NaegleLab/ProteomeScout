@@ -1,7 +1,6 @@
 from ptmworker import notify_tasks
 from tests.PTMScoutTestCase import IntegrationTestCase
 from tests.views.mocking import createMockExperiment, createMockError
-import pickle
 from mock import patch
 from ptmscout.config import settings, strings
 
@@ -48,7 +47,7 @@ class NotifyTasksTest(IntegrationTestCase):
         patch_getExp.assert_called_once_with(exp.id, check_ready=False, secure=False)
         
 
-        self.assertEqual(stage_input, pickle.loads(exp.last_stage_result))
+        exp.store_last_result.assert_called_once_with(stage_input)
         self.assertEqual('proteins', exp.loading_stage)
         self.assertEqual(0, exp.progress)
         self.assertEqual(1000, exp.max_progress)

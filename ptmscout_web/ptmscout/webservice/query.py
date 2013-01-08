@@ -1,5 +1,5 @@
 from pyramid.view import view_config
-from ptmworker import entrez_tools
+from ptmworker.helpers import entrez_tools
 from ptmscout.database import experiment
 
 @view_config(route_name='pmid_fetch', renderer='json', permission='private')

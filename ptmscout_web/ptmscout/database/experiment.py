@@ -8,6 +8,7 @@ from sqlalchemy.sql.expression import null
 import datetime
 from sqlalchemy.orm import relationship
 import logging
+import pickle
 
 log = logging.getLogger('ptmscout')
 
@@ -99,6 +100,15 @@ class Experiment(Base):
     
     def __init__(self):
         self.date = datetime.datetime.now()
+
+    def store_last_result(self, result):
+        self.last_stage_result = pickle.dumps(result)
+
+    def get_last_result(self):
+        try:
+            return pickle.loads(self.last_stage_result)
+        except:
+            return None
 
     def saveExperiment(self):
         DBSession.add(self)

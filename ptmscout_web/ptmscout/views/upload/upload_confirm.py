@@ -3,7 +3,6 @@ from ptmscout.database import experiment, upload, modifications
 from ptmscout.config import strings
 from ptmscout.utils import webutils
 from ptmworker import data_import
-import pickle
 
 class UploadAlreadyStarted(Exception):
     pass
@@ -29,8 +28,7 @@ def prepare_experiment(session, exp, user):
 
     if session.load_type=='reload':
         modifications.deleteExperimentData(parent_exp.id)
-
-    exp_target.last_stage_result = pickle.dumps(None)
+    
     exp_target.export = 1
     exp_target.status='in queue'
     exp_target.saveExperiment()

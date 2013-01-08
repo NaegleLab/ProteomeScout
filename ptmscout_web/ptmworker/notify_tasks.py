@@ -1,10 +1,9 @@
 import celery
 import logging
-from ptmworker.helpers import upload_helpers, entrez_tools, pfam_tools, quickgo_tools, picr_tools, uniprot_tools
+from ptmworker.helpers import upload_helpers
 from ptmscout.database import experiment, modifications
 from ptmscout.config import strings, settings
 from ptmscout.utils import mail
-import pickle
 
 @celery.task
 @upload_helpers.transaction_task
@@ -18,7 +17,7 @@ def set_loading_status(exp_id, status):
 def set_loading_stage(exp_id, stage, stage_input, max_value):
     exp = experiment.getExperimentById(exp_id, check_ready=False, secure=False)
     exp.loading_stage = stage
-    exp.last_stage_result = pickle.dumps(stage_input)
+    exp.store_last_result(stage_input)
     exp.progress = 0
     exp.max_progress = max_value
     exp.saveExperiment()

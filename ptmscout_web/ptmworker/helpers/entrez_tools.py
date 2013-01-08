@@ -2,7 +2,7 @@ from celery.task import task
 from Bio import Entrez, pairwise2
 from ptmscout.config import settings
 from Bio import Medline
-from ptmworker import pfam_tools
+from ptmworker.helpers import pfam_tools
 from geeneus import Proteome
 import logging
 import re

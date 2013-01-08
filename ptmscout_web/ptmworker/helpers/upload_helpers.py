@@ -5,7 +5,7 @@ from ptmscout.config import strings
 import logging
 import sys
 from ptmscout.database.modifications import NoSuchPeptide
-from ptmworker import scansite_tools, quickgo_tools
+from ptmworker.helpers import scansite_tools, quickgo_tools
 import transaction
 import traceback
 import re
