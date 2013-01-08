@@ -86,7 +86,12 @@ class Experiment(Base):
     status = Column(Enum('configuration', 'in queue','loading','loaded', 'error'), default='configuration')
     submitter_id = Column(Integer(10), ForeignKey('users.id'))
 
-    num_measured_peptides = Column(Integer(10), default=0)
+    loading_stage = Column(Enum('query', 'proteins', 'GO terms', 'peptides', 'scansite'), default='query')
+    progress = Column(Integer(10), default=0)
+    max_progress = Column(Integer(10), default=0)
+
+    last_stage_result = Column(Text, default=0)
+    failure_reason = Column(Text, default=0)
     
     errors = relationship("ExperimentError", cascade="all,delete-orphan")
     conditions = relationship("ExperimentCondition", cascade="all")
@@ -132,7 +137,11 @@ class Experiment(Base):
         self.status = exp.status
         self.submitter_id = exp.submitter_id
         
-        self.num_measured_peptides = exp.num_measured_peptides
+        self.loading_stage = 'query'
+        self.progress = 0
+        self.max_progress = 0
+        self.last_stage_result = ''
+        self.failure_reason = ''
         
         self.conditions = []
         for c in exp.conditions:
