@@ -1,4 +1,4 @@
-from DB_init import DatabaseInitialization
+from scripts.DB_init import DatabaseInitialization
 from ptmscout.database import DBSession, modifications, taxonomies
 from paste.deploy.loadwsgi import appconfig
 import time, datetime

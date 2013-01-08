@@ -1,8 +1,8 @@
-from DB_init import DatabaseInitialization
+from scripts.DB_init import DatabaseInitialization
 from ptmscout.database import DBSession, protein
 from paste.deploy.loadwsgi import appconfig
 import time, datetime
-from ptmworker import upload_helpers, quickgo_tools, data_import
+from ptmworker.helpers import upload_helpers, quickgo_tools
 import sys, os
 from ptmscout.utils.decorators import rate_limit
 import traceback
@@ -30,7 +30,8 @@ def create_missing_GO_annotations(GO_annotation_map, protein_ids):
 
     for protein_id in uniq_ids:
         go_annotations = {}
-        
+        prot = protein.getProteinById(protein_id)
+
         for acc in protein_accessions[protein_id]:
             for goId in GO_annotation_map[acc]:
                 dateAdded = GO_annotation_map[acc][goId]
@@ -38,15 +39,18 @@ def create_missing_GO_annotations(GO_annotation_map, protein_ids):
                     go_annotations[goId] = dateAdded
         
         for goId in go_annotations:
-            dateAdded = go_annotations[goId]
-            entry = upload_helpers.get_go_annotation(goId, protein_id, dateAdded, complete_go_terms, missing_terms)
+            if not prot.hasGoTerm(goId):
+                dateAdded = go_annotations[goId]
+                go_term, entry = upload_helpers.get_go_annotation(goId, protein_id, dateAdded, complete_go_terms, missing_terms)
 
-            if entry:
-                created_go_entries.append(entry)
-                created+=1
+                prot.addGoTerm(go_term, dateAdded)
 
-            assigned+=1
-    
+                if entry:
+                    created_go_entries.append(entry)
+                    created+=1
+
+                assigned+=1
+        
     missing_terms = list(missing_terms)
     upload_helpers.query_missing_GO_terms(missing_terms)
 
@@ -83,7 +87,7 @@ def get_quickgo_annotations(dbconn, protein_map):
 
     total_duplicated = 0
     new_terms = 0
-    go_terms = data_import.get_GO_annotations(protein_accessions)
+    go_terms, _ = quickgo_tools.batch_get_GO_annotations(protein_accessions)
     for acc in go_terms:
         duplicated = set()
         for goId in go_terms[acc]:
