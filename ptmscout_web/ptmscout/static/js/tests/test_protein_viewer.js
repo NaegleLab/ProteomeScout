@@ -1,36 +1,5 @@
 QUnit.config.reorder = false;
 
-test( "enable-zoomin", function() {
-    ok( window.tool != "z+", "Zoom disabled" );
-    $('.zoomin-tool').click()
-    if (jQuery.browser.mozilla) {
-        ok( $('.viewer').css( 'cursor' ) == '-moz-zoom-in', "Cursor Set" );
-    }
-    else if (jQuery.browser.webkit) {
-        ok( $('.viewer').css( 'cursor' ) == '-webkit-zoom-in', "Cursor Set" );
-    }
-    ok( window.tool == "z+", "Zoom enabled" );
-});
-
-test( "enable-zoomout", function() {
-    ok( window.tool != "z-"  , "Zoom disabled" );
-    $('.zoomout-tool').click()
-    if (jQuery.browser.mozilla) {
-        ok( $('.viewer').css( 'cursor' ) == '-moz-zoom-out', "Cursor Set" );
-    }
-    else if (jQuery.browser.webkit) {
-        ok( $('.viewer').css( 'cursor' ) == '-webkit-zoom-out', "Cursor Set" );
-    }
-    ok( window.tool == "z-", "Zoom enabled" );
-});
-
-test( "enable-scroll", function() {
-    ok( window.tool != "s", "Scroll disabled" );
-    $('.scroll-tool').click()
-    ok( $('.viewer').css( 'cursor' ) == 'move', "Cursor Set" );
-    ok( window.tool == "s", "scroll enabled" );
-});
-
 test( "draw-domains", function() {
     ok( 2 == $('svg rect.domain').length );
 });

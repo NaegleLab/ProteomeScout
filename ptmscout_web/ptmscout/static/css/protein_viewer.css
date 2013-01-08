@@ -65,3 +65,21 @@ text.bigtick {
 text.tick {
     font-size:8pt;
 }
+
+text.aminoacid {
+}
+
+.viewer .zoomwindow {
+    opacity: 0.3;
+    fill: #666;
+    cursor: move;
+}
+
+.viewer .expander {
+}
+
+.viewer .handle {
+    opacity: 0;
+    cursor: col-resize;
+}
+
