@@ -12,20 +12,16 @@ sudo chmod -R 775 *
 sudo chown -R www-data *
 sudo chgrp -R development *
 
-if [ -e "logs/ptmworker.pid" ]
-then
-    kill `cat "logs/ptmworker.pid"`
-    while [ -f "logs/ptmworker.pid" ]
-    do
-        sleep 1
-    done
-fi
+./stop.sh
 
 if [ "$arg" == "develop" ]
 then
-    /data/pyramid/bin/pceleryd development.ini --logfile=logs/ptmworker.log --loglevel=DEBUG --pidfile=logs/ptmworker.pid > logs/ptmworker.start &
+    loglevel="DEBUG"
+    config="development.ini"
 else
-    /data/pyramid/bin/pceleryd production.ini --logfile=logs/ptmworker.log --loglevel=INFO --pidfile=logs/ptmworker.pid > logs/ptmworker.start &
+    loglevel="INFO"
+    config="production.ini"
 fi
+/data/pyramid/bin/pceleryd $config -Q celery --concurrency=11 --logfile=logs/ptmworker.log --loglevel=$loglevel --pidfile=logs/ptmworker.0.pid > logs/ptmworker.0.start &
+/data/pyramid/bin/pceleryd $config -Q notify --concurrency=1 --logfile=logs/ptmworker.log --loglevel=$loglevel --pidfile=logs/ptmworker.1.pid > logs/ptmworker.1.start &
 sudo apache2ctl restart
-

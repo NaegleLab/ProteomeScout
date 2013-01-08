@@ -1,15 +1,15 @@
 #!/bin/bash
 
-if [ -e "logs/ptmworker.pid" ]
-then
-    echo "Stopping workers..."
-    kill `cat "logs/ptmworker.pid"`
-    while [ -f "logs/ptmworker.pid" ]
+files=$(ls logs/ptmworker.*.pid 2> /dev/null)
+
+for f in $files
+do
+    echo "Stopping workers... $f"
+    kill `cat "$f"`
+    while [ -f "$f" ]
     do
         sleep 1
     done
-else
-    echo "No workers to stop."
-fi
+done
 
 echo "Done."
