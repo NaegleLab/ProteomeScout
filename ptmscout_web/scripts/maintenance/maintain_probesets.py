@@ -1,4 +1,4 @@
-from DB_init import DatabaseInitialization
+from scripts.DB_init import DatabaseInitialization
 from ptmscout.database import DBSession, protein, gene_expression
 from paste.deploy.loadwsgi import appconfig
 import time, datetime
@@ -29,18 +29,16 @@ if __name__ == "__main__":
         queries = []
         for prot in proteins:
             paccessions = [ acc.value.lower() for acc in prot.accessions ]
-            
-            print "Getting probesets for: %s" % (str(paccessions))
             probesets = gene_expression.getExpressionProbeSetsForProtein(paccessions, prot.species_id)
-            print "Got %d probesets" % (len(probesets))
             
-            changed = False
+            added = 0
             for probeset in probesets:
                 if probeset not in prot.expression_probes:
                     prot.expression_probes.append(probeset)
-                    changed = True
-
-            if changed:
+                    added+=1
+            
+            if added > 0:
+                print "Added %d / %d probesets" % (added, len(probesets))
                 DBSession.add(prot)
 
             i+=1
