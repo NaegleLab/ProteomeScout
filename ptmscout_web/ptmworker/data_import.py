@@ -17,7 +17,7 @@ def start_import(exp_id, session_id, user_email, application_url):
     log.info("Loading data file...")
     accessions, peptides, mod_map, data_runs, errors, line_mapping = upload_helpers.parse_datafile(session)
 
-    if exp.loading_stage == 'query' and exp.status != 'error':
+    if exp.loading_stage == 'query' or exp.status != 'error':
         exp.clearErrors()
         log.info("Reporting data file errors...")
         upload_helpers.report_errors(exp_id, errors, line_mapping)
@@ -38,7 +38,7 @@ def start_import(exp_id, session_id, user_email, application_url):
         finalize_task = notify_tasks.finalize_import.si(exp_id, user_email, application_url)
 
         last_stage_arg = exp.get_last_result()
-        
+
         if exp.loading_stage == 'query':
             load_task = ( query_task | proteins_task | GO_task | peptide_task | finalize_task )
         elif exp.loading_stage == 'proteins':

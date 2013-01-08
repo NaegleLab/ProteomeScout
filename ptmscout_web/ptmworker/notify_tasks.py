@@ -51,6 +51,7 @@ def finalize_experiment_error_state(uuid, exp_id, user_email, application_url):
 @upload_helpers.transaction_task
 def finalize_import(exp_id, user_email, application_url):
     exp = experiment.getExperimentById(exp_id, check_ready=False, secure=False)
+    exp.store_last_result(None)
     exp.status = 'loaded'
     exp.saveExperiment()
 
