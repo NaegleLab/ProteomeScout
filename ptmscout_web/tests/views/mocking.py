@@ -110,6 +110,12 @@ def createMockExperiment(eid=random.randint(0,100000), public=0, parent_id=None,
     mock.date = datetime.datetime.now()
     mock.experiment_id = None
     mock.errors = []
+
+    mock.status = status
+    mock.progress=0
+    mock.max_progress=0
+    mock.loading_stage='peptides'
+
     return mock
 
 def createMockError(line, message, accession="SOMEACC", peptide="ASDFGJEW", eid=random.randint(0,100000), experiment=None):
