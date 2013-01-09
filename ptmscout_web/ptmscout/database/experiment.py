@@ -6,7 +6,7 @@ from sqlalchemy.schema import ForeignKey
 from sqlalchemy.types import Float, Enum, DateTime
 from sqlalchemy.sql.expression import null
 import datetime
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, deferred
 import logging
 import pickle
 
@@ -91,8 +91,8 @@ class Experiment(Base):
     progress = Column(Integer(10), default=0)
     max_progress = Column(Integer(10), default=0)
 
-    last_stage_result = Column(Text, default=0)
-    failure_reason = Column(Text, default=0)
+    last_stage_result = deferred(Column(Text, default="N."))
+    failure_reason = Column(Text, default="")
     
     errors = relationship("ExperimentError", cascade="all,delete-orphan")
     conditions = relationship("ExperimentCondition", cascade="all")
