@@ -50,7 +50,7 @@ class IntegrationTestScansiteQuery(IntegrationTestCase):
         self.assertEqual("KVVALYDyMPMNA**", parser.sites[2].sequence)
        
     def test_get_scansite_motif_should_return_relevant_motif_data_for_partial_peps(self):
-        pep = 'CCRAFLEkAH'
+        pep = 'CCRAFLEkAH    '
         sites = scansite_tools.get_scansite_motif(pep, "MAMMALIAN")
 
         for site in sites:

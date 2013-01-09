@@ -42,7 +42,7 @@ def get_scansite_motif(pep_seq, motif_class):
     if settings.DISABLE_SCANSITE:
         return []
     
-    query_url = scansite_url  % (pep_seq, motif_class)
+    query_url = scansite_url  % (pep_seq.strip(), motif_class)
     
     result = urllib2.urlopen(query_url)
     
