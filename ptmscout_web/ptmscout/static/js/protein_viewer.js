@@ -4,11 +4,9 @@ function ZoomWindow(structure_viewer, svg_container, width, height) {
     this.width = width;
     this.height = height;
     this.max = structure_viewer.protein_data.seq.length;
-    this.minwidth = 20;
+    this.minwidth = 50;
 
-    console.log(this.max)
-
-    grab_width = 10;
+    grab_width = 8;
 
     var axis = structure_viewer.axis;
     var zoomer = this;
@@ -26,8 +24,8 @@ function ZoomWindow(structure_viewer, svg_container, width, height) {
 
     this.zoom_window =
         svg_container
-                .append('rect')
-                    .attr('class', "zoomwindow")
+                .insert('rect', ":first-child")
+                    .attr('class', "zoom window")
                     .attr('x', axis(zoomer.residue))
                     .attr('width', axis(width))
                     .attr('y', 0)
@@ -36,9 +34,9 @@ function ZoomWindow(structure_viewer, svg_container, width, height) {
 
     this.left_expander =
         svg_container
-            .append('rect')
-                .attr('class', "handle")
-                .attr('x', axis(zoomer.residue))
+            .insert('rect', ":first-child")
+                .attr('class', "zoom handle")
+                .attr('x', axis(zoomer.residue) - grab_width/2)
                 .attr('width', grab_width)
                 .attr('y', 0)
                 .attr('height', height+50)
@@ -46,9 +44,9 @@ function ZoomWindow(structure_viewer, svg_container, width, height) {
 
     this.right_expander =
         svg_container
-            .append('rect')
-                .attr('class', "handle")
-                .attr('x', axis(zoomer.residue+width)-grab_width)
+            .insert('rect', ":first-child")
+                .attr('class', "zoom handle")
+                .attr('x', axis(zoomer.residue+width)-grab_width/2)
                 .attr('width', grab_width)
                 .attr('y', 0)
                 .attr('height', height+50)
@@ -85,10 +83,11 @@ function ZoomWindow(structure_viewer, svg_container, width, height) {
             .attr("stop-color", "#666")
                 .attr("stop-opacity", 0);
 
+    this.gradient = gradient;
     this.expand_gradient =
         svg_container.selectAll('path.expander')
                 .data([this.polygon_vertices])
-            .enter().append('path')
+            .enter().insert('path', ":first-child")
                 .attr('class', "expander")
                 .attr('d', line)
                 .style("fill", "url(#gradient)");
@@ -106,9 +105,9 @@ function ZoomWindow(structure_viewer, svg_container, width, height) {
             .attr('x', nx)
             .attr('width', nw);
         zoomer.left_expander
-            .attr('x', nx);
+            .attr('x', nx - grab_width/2);
         zoomer.right_expander
-            .attr('x', nx + nw - grab_width);
+            .attr('x', nx + nw - grab_width/2);
 
         if(zoomer.track_viewer != undefined){
             zoomer.track_viewer.view_residues(zoomer.residue, zoomer.width);
@@ -154,6 +153,14 @@ ZoomWindow.prototype.set_zoom_viewer = function(track_viewer) {
     this.track_viewer.view_residues(this.residue, this.width);
 }
 
+ZoomWindow.prototype.remove = function() {
+    this.zoom_window.remove();
+    this.gradient.remove();
+    this.expand_gradient.remove();
+    this.left_expander.remove();
+    this.right_expander.remove();
+}
+
 ZoomWindow.prototype.hide = function() {
     this.zoom_window.style('opacity', 0);
     this.expand_gradient.style('opacity', 0);
@@ -164,8 +171,18 @@ ZoomWindow.prototype.hide = function() {
     this.expand_gradient.style('opacity', 1);
 };
 
+function get_residue_tooltip_text(data) {
+    var site = data.key;
+    var amino = data.value.residue;
+    var mod_types = d3.keys(data.value.mods);
 
-function TrackViewer(structure_viewer, svg_container, offset, small_ticks) {
+    var text = "Residue: {0}{1} Modifications: {2}".format(amino, site, mod_types.join(', '));
+
+    return text;
+}
+
+
+function TrackViewer(structure_viewer, svg_container, offset, cls) {
     this.domain_height = 20;
     this.dom_offset = 30;
     this.baseline = offset;
@@ -174,6 +191,7 @@ function TrackViewer(structure_viewer, svg_container, offset, small_ticks) {
     var viewer =
             svg_container
                 .append('g')
+                    .attr('class', cls)
                     .attr('transform', 'translate(0,{0})scale(1,1)'.format(this.baseline));
 
     this.viewer = viewer;
@@ -184,6 +202,7 @@ function TrackViewer(structure_viewer, svg_container, offset, small_ticks) {
     var yaxis = structure_viewer.yaxis;
     var residue_colors = structure_viewer.residue_colors;
     var protein_data = structure_viewer.protein_data;
+    var track_viewer = this;
 
     viewer
         .append('line')
@@ -203,22 +222,28 @@ function TrackViewer(structure_viewer, svg_container, offset, small_ticks) {
                 .attr('width', function(d) { return axis(1); })
                 .attr('y', function(d) { return yaxis( d.value.num_mods ); })
                 .attr('height', function(d) { return yaxis(0) - yaxis( d.value.num_mods ); })
-                .style('fill', function(d) { return residue_colors(d.value.residue); });
+                .attr('title', get_residue_tooltip_text)
+                .style('fill', function(d) { return residue_colors(d.value.residue); })
+                .on('mouseover', function() { track_viewer.track_mouse_over(this, 'residue', true); })
+                .on('mouseout', function() {  track_viewer.track_mouse_over(this, 'residue', false); });
 
+    this.tick_levels = [5000,1000,500,100,50,10];
     ticks = [];
-    bigticks = [];
+    for(var t in this.tick_levels)
+        ticks.push([]);
+
     for(var i = 0; i < protein_data.seq.length; i+=10){
-        if(i % 50 == 0)
-            bigticks.push(i);
-        else
-            ticks.push(i);
+        for(var j in this.tick_levels){
+            if(i % this.tick_levels[j] == 0){
+                ticks[j].push(i);
+                break;
+            }
+        }
     }
 
-    this.tick_classes = ['tick', 'bigtick'];
-    if(small_ticks){
-        this.generate_ticks(viewer, 5, ticks, 'tick');
+    for(var j in this.tick_levels){
+        this.generate_ticks(viewer, 5, ticks[j], this.tick_levels[j]);
     }
-    this.generate_ticks(viewer, 5, bigticks, 'bigtick');
 };
 
 TrackViewer.prototype.hide = function() {
@@ -229,37 +254,41 @@ TrackViewer.prototype.show = function() {
     this.viewer.style('opacity', '1');
 };
 
-TrackViewer.prototype.update_view = function(axis, yaxis, hide_small_ticks) {
+TrackViewer.prototype.update_view = function(axis, yaxis) {
     this.viewer.selectAll('rect.residue')
                 .attr('x', function(d) { return axis(d.key - 1); })
                 .attr('width', function(d) { return axis(d.key) - axis(d.key - 1); })
                 .attr('y', function(d) { return yaxis( d.value.num_mods ); })
                 .attr('height', function(d) { return yaxis(0) - yaxis( d.value.num_mods ); });
 
-    var tick_opacity = 1;
-    if(hide_small_ticks){
+    
+
+    for (var i in this.tick_levels){
+        size = this.tick_levels[i];
+        cls = 't{0}'.format(size);
+
         tick_opacity = 0;
-    }
+        if(this.parent_viewer.width / (axis(size) - axis(0)) < 20){
+            tick_opacity = 1;
+        }
 
-    this.viewer.selectAll('line.tick')
-        .style('opacity', tick_opacity);
-    this.viewer.selectAll('text.tick')
-        .style('opacity', tick_opacity);
-
-    for (var i in this.tick_classes){
-        cls = this.tick_classes[i];
         this.viewer.selectAll('line.'+cls)
                 .attr('x1', function(d) { return axis(d); })
-                .attr('x2', function(d) { return axis(d); });
+                .attr('x2', function(d) { return axis(d); })
+                .style('opacity', tick_opacity);
 
         this.viewer.selectAll('text.'+cls)
-                .attr('x', function(d) { return axis(d); });
+                .attr('x', function(d) { return axis(d); })
+                .style('opacity', tick_opacity);
     }
 
     this.viewer.selectAll('text.aminoacid')
                 .attr('x', function(d,i){ return axis(i+0.5); })
                 .style('font-size', Math.min(16, axis(1) - axis(0)));
 
+    this.viewer.selectAll('rect.domain')
+                .attr('x', function(d) { return axis(d.start); })
+                .attr('width', function(d) { return axis(d.stop) - axis(d.start); });
 }
 
 TrackViewer.prototype.show_residues = function() {
@@ -282,7 +311,7 @@ TrackViewer.prototype.view_residues = function(residue, width) {
 };
 
 TrackViewer.prototype.show_domains = function() {
-    var axis = this.parent_viewer.axis;
+    var axis = this.axis;
     var yaxis = this.parent_viewer.yaxis;
     var domain_colors = this.parent_viewer.domain_colors;
     var track_viewer = this;
@@ -291,7 +320,7 @@ TrackViewer.prototype.show_domains = function() {
 
     this.viewer
         .append('line')
-            .attr('class', "strand")
+            .attr('class', "domain")
             .attr('x1', 0)
             .attr('x2', width)
             .attr('y1', track_viewer.dom_offset)
@@ -307,11 +336,33 @@ TrackViewer.prototype.show_domains = function() {
                 .attr('height', track_viewer.domain_height)
                 .attr('title', function(d) { return d.label; })
                 .style('fill', function(d) { return domain_colors( d.label ); } )
+                .on('mouseover', function() { track_viewer.track_mouse_over(this, 'domain', true); })
+                .on('mouseout', function() { track_viewer.track_mouse_over(this, 'domain', false); });
 };
 
-TrackViewer.prototype.generate_ticks = function(parent_element, h, values, cls){
+TrackViewer.prototype.track_mouse_over = function(d3element, cls, isover){
+    var opacity=0;
+
+    if(this.parent_viewer.track_display_modes[cls]) {
+        if(isover)
+            opacity=0.8;
+        else
+            opacity=1.0;
+    }
+
+    d3.select(d3element)
+        .style('opacity', opacity);
+}
+
+TrackViewer.prototype.generate_ticks = function(parent_element, h, values, size){
     var track_viewer = this;
     var axis = this.parent_viewer.axis;
+
+    cls = 't{0}'.format(size);
+    tick_opacity = 0;
+    if(this.parent_viewer.width / (axis(size) - axis(0)) < 20){
+        tick_opacity = 1;
+    }
 
     parent_element.selectAll('line.'+cls)
         .data( values )
@@ -320,7 +371,8 @@ TrackViewer.prototype.generate_ticks = function(parent_element, h, values, cls){
                 .attr('x1', function(d) { return axis(d); })
                 .attr('x2', function(d) { return axis(d); })
                 .attr('y1', 0)
-                .attr('y2', h);
+                .attr('y2', h)
+                .style('opacity', tick_opacity);
 
     parent_element.selectAll('text.'+cls)
         .data( values )
@@ -329,14 +381,18 @@ TrackViewer.prototype.generate_ticks = function(parent_element, h, values, cls){
                 .attr('x', function(d) { return axis(d); })
                 .attr('y', h)
                 .attr('dy', '1em')
-                .text(function(d) { return "" + d; } );
+                .text(function(d) { return "" + d; } )
+                .style('opacity', tick_opacity);
 };
 
 
 function StructureViewer(protein_data) {
+    this.show_residues_size_limit = 100;
     this.protein_data = protein_data
     this.width = 900;
-    this.height = 550;
+    this.height = 250;
+    this.default_height=250;
+    this.zoom_window_height=550;
 
     this.macro_viewer_position = 150;
     this.zoom_viewer_position = 400;
@@ -347,17 +403,21 @@ function StructureViewer(protein_data) {
                     .attr('width', this.width)
                     .attr('height', this.height);
 
-    this.experiment_display_modes = {}
+    this.experiment_display_modes = {};
     for(var exp_id in protein_data.exps){
         this.experiment_display_modes[exp_id] = true;
     }
 
-    this.ptm_display_modes = {}
+    this.ptm_display_modes = {};
     for (var i in protein_data.mod_types){
         this.ptm_display_modes[protein_data.mod_types[i]] = true;
     }
 
-    var max_mods = 0
+    this.track_display_modes = {};
+    this.track_display_modes['residue'] = true;
+    this.track_display_modes['domain'] = true;
+
+    var max_mods = 0;
     for(var k in protein_data.mods) {
         var num_mods = d3.keys(protein_data.mods[k].mods).length;
         protein_data.mods[k].num_mods = num_mods;
@@ -366,7 +426,6 @@ function StructureViewer(protein_data) {
         }
     }
 
-    console.log(protein_data);
     this.barheight=100;
 
     this.axis = d3.scale.linear().domain([0, protein_data.seq.length]).range([0, this.width]);
@@ -375,17 +434,51 @@ function StructureViewer(protein_data) {
     this.domain_colors = d3.scale.category20();
     this.residue_colors = d3.scale.category20();
 
-    this.zoom_window = new ZoomWindow(this, this.svg_container, 50, this.macro_viewer_position);
-
-    this.macro_viewer = new TrackViewer(this, this.svg_container, this.macro_viewer_position, protein_data.seq.length < 100);
-    this.zoom_viewer = new TrackViewer(this, this.svg_container, this.zoom_viewer_position, true);
-    this.zoom_viewer.show_residues();
-
-    this.zoom_window.set_zoom_viewer(this.zoom_viewer);
-
-
+    this.macro_viewer = new TrackViewer(this, this.svg_container, this.macro_viewer_position, 'macro_track_viewer');
     this.macro_viewer.show_domains();
+    if(protein_data.seq.length < this.show_residues_size_limit){
+        this.macro_viewer.show_residues();
+    }
 
+    this.zoom_viewer = new TrackViewer(this, this.svg_container, this.zoom_viewer_position, 'zoom_track_viewer');
+    this.zoom_viewer.show_residues();
+    this.zoom_viewer.show_domains();
+    this.zoom_viewer.hide();
+
+    this.zoom_enabled = false;
+};
+
+StructureViewer.prototype.zoom_off = function(){
+    if(this.zoom_enabled){
+        this.zoom_enabled=false;
+
+        this.height = this.default_height;
+        var viewer = this;
+
+        $('.protein_viewer svg').animate({
+                height: viewer.height
+          }, 750, function() {
+            viewer.zoom_window.remove();
+            viewer.zoom_viewer.hide();
+          });
+    }
+}
+
+StructureViewer.prototype.zoom_on = function() {
+    if(!this.zoom_enabled){
+        this.zoom_enabled=true;
+
+        this.zoom_window = new ZoomWindow(this, this.svg_container, 50, this.macro_viewer_position);
+        this.zoom_window.set_zoom_viewer(this.zoom_viewer);
+        this.zoom_viewer.show();
+
+        this.height = this.zoom_window_height;
+
+        $('.protein_viewer svg').animate({
+                height: this.height
+          }, 750, function() {
+          });
+    }
 };
 
 StructureViewer.prototype.update_display = function() {
@@ -425,8 +518,9 @@ StructureViewer.prototype.toggle_exp = function(exp_id, mode){
 }
 
 StructureViewer.prototype.toggle_track = function(track_name, mode){
+    this.track_display_modes[ track_name ] = mode;
     t = this.svg_container.transition().duration(250);
-    t.selectAll('rect.'+track_name)
+    t.selectAll(".{0}".format(track_name))
         .style('opacity', mode ? 1.0 : 0);
 }
 
@@ -442,6 +536,16 @@ $(function(){
                     track: true
                 });
 
+    $('.zoomin-tool').button({ icons: { primary: 'ui-icon-zoomin' }, text:false })
+                     .click(function(){
+                         window.structure_viewer.zoom_on();
+                      });
+
+    $('.zoomout-tool').button({ icons: { primary: 'ui-icon-zoomout' }, text:false })
+                      .click(function(){
+                         window.structure_viewer.zoom_off();
+                       });
+
     $('.ptm-tool').button()
                   .click(function(){
                     $('.mods').dialog()
@@ -454,6 +558,7 @@ $(function(){
                   .click(function(){
                     $('.tracks').dialog()
                   });
+
     $('.mods').toggle();
     $('.exps').toggle();
     $('.tracks').toggle();

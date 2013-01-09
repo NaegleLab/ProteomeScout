@@ -1,14 +1,14 @@
 QUnit.config.reorder = false;
 
 test( "draw-domains", function() {
-    ok( 2 == $('svg rect.domain').length );
+    ok( 4 == $('svg rect.domain').length );
 });
 
 test( "draw-ptms", function() {
-    equal( $('svg rect.residue').length, 27 );
-    equal( $('svg rect#Y518').length, 1 );
-    equal( $('svg rect#S856').length, 1 );
-    equal( $('svg rect#T857').length, 1 );
+    equal( $('svg rect.residue').length, 54 );
+    equal( $('svg rect#Y518').length, 2 );
+    equal( $('svg rect#S856').length, 2 );
+    equal( $('svg rect#T857').length, 2 );
 });
 
 test( "toggle-ptms", function() {
@@ -59,7 +59,43 @@ test( "toggle-exp", function() {
         $('svg rect.residue').each(function(){
             cnt += $(this).attr('height') == 0 ? 0 : 1;
         });
-        equal( cnt, 5, "Wrong number of visible residues" );
+        equal( cnt, 10, "Wrong number of visible residues" );
         start();
     }, 500);
+});
+
+test( "toggle-zoom", function() {
+    cur_height = $('svg').attr('height');
+    $('.zoomin-tool').click()
+    stop();
+
+    setTimeout(function() {
+        equal( $('svg rect.window').length, 1 );
+        equal( $('svg rect.handle').length, 2 );
+        equal( $('svg g.zoom_track_viewer').css('opacity'), 1 );
+
+        new_height = $('svg').css('height');
+        console.log(cur_height + " " + new_height);
+        ok( cur_height <= new_height );
+
+        start();
+    }, 1000);
+});
+
+test( "toggle-zoom-off", function() {
+    cur_height = $('svg').css('height');
+    $('.zoomout-tool').click()
+    stop();
+
+    setTimeout(function() {
+        equal( $('svg rect.window').length, 0 );
+        equal( $('svg rect.handle').length, 0 );
+        equal( $('svg g.zoom_track_viewer').css('opacity'), 0 );
+
+        new_height = $('svg').css('height');
+        console.log(cur_height + " " + new_height);
+        ok( cur_height >= new_height );
+
+        start();
+    }, 1000);
 });
