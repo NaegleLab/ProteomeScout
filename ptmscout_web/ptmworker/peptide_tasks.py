@@ -5,7 +5,7 @@ from ptmworker.helpers import upload_helpers
 from ptmscout.database import modifications, protein, experiment
 from ptmscout.utils import mail, uploadutils
 import datetime
-import pickle
+import traceback
 log = logging.getLogger('ptmscout')
 
 def load_new_peptide(prot_id, site_pos, pep_seq, taxonomy):
