@@ -40,10 +40,17 @@
     stroke-width:2px;
 }
 
-.viewer rect.domain {
+.viewer .domain {
     stroke:black;
     stroke-width:1px;
     cursor:pointer;
+}
+
+.viewer text.domain {
+    stroke:none;
+    fill:black;
+    font-size: 12pt;
+    cursor:default;
 }
 
 .viewer line.tick {

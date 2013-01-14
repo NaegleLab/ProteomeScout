@@ -2,7 +2,17 @@ QUnit.config.reorder = false;
 
 test( "draw-domains", function() {
     ok( 4 == $('svg rect.domain').length );
-    ok( 3 == $('svg text.domain').length );
+    ok( 4 == $('svg text.domain').length );
+    
+    visible = [];
+    $('svg text.domain').each( function() {
+        if( '1' == $(this).css('opacity'))
+            visible.push($(this).text());
+    });
+    
+    equal( visible.length, 2 );
+    equal( visible[0], "Pkinase_Tyr" );
+    equal( visible[1], "Pkinase_Tyr" );
 });
 
 test( "draw-ptms", function() {
@@ -84,7 +94,6 @@ test( "toggle-zoom", function() {
         equal( $('svg g.zoom_track_viewer').css('opacity'), 1 );
 
         new_height = $('svg').css('height');
-        console.log(cur_height + " " + new_height);
         ok( cur_height <= new_height );
 
         start();
@@ -102,7 +111,6 @@ test( "toggle-zoom-off", function() {
         equal( $('svg g.zoom_track_viewer').css('opacity'), 0 );
 
         new_height = $('svg').css('height');
-        console.log(cur_height + " " + new_height);
         ok( cur_height >= new_height );
 
         start();

@@ -320,7 +320,7 @@ TrackViewer.prototype.show_domains = function() {
     var yaxis = this.parent_viewer.yaxis;
     var domain_colors = this.parent_viewer.domain_colors;
     var track_viewer = this;
-    var protein_data = this.parent_viewer.protein_data
+    var protein_data = $.extend(true, [], this.parent_viewer.protein_data);
     var width = track_viewer.parent_viewer.width;
 
     this.viewer
@@ -528,6 +528,9 @@ StructureViewer.prototype.update_display = function() {
 
 
     domain_mode = this.track_display_modes['domain']
+
+    t.selectAll("line.domain")
+        .style('opacity', domain_mode ? 1 : 0);
     t.selectAll("rect.domain")
         .style('opacity', domain_mode ? 1 : 0);
     t.selectAll("text.domain")
