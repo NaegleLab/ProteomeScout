@@ -94,11 +94,11 @@ def parse_organism_host(xml):
     if source:
         qual = get_qualifier('host', source)
         if qual:
-            return parse_species_name(qual['GBQualifier_value'])
+            return parse_species_name(qual['GBQualifier_value']).strip()
 
 
 def get_protein_information(pm, acc):
-    seq = pm.get_protein_sequence(acc).upper()
+    seq = pm.get_protein_sequence(acc).strip().upper()
     
     if seq == "":
         e = EntrezError()
@@ -108,7 +108,7 @@ def get_protein_information(pm, acc):
     name = pm.get_protein_name(acc)
     gene = pm.get_gene_name(acc)
     taxonomy = pm.get_taxonomy(acc)
-    species = pm.get_species(acc)
+    species = pm.get_species(acc).strip()
     prot_accessions = pm.get_other_accessions(acc)
     prot_domains = parse_pfam_domains(pm.get_domains(acc))
 
@@ -116,7 +116,7 @@ def get_protein_information(pm, acc):
     prot_isoforms = []#pm.get_isoforms(acc)
     
     for i in prot_isoforms:
-        prot_isoforms[i] = prot_isoforms[i].upper()
+        prot_isoforms[i] = prot_isoforms[i].strip().upper()
     
     return name, gene, taxonomy, species, host_organism, prot_accessions, prot_domains, seq, prot_isoforms
 

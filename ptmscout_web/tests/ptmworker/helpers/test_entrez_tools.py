@@ -9,9 +9,8 @@ class EntrezQueryTestCase(IntegrationTestCase):
 
     def test_get_viral_protein(self):
         result = entrez_tools.get_proteins_from_ncbi(['118734'])
-        
-        name, gene, taxonomy, species, host_organism, accessions, domains, seq = result[0]
-        print result[0]
+
+        name, gene, taxonomy, species, host_organism, accessions, domains, seq = result[0]['118734']
 
     def test_get_pubmed_record(self):
         record = entrez_tools.get_pubmed_record_by_id(12230038)
