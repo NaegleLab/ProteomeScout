@@ -1,5 +1,5 @@
 from pyramid.view import view_config
-from ptmscout.config import strings
+from ptmscout.config import strings, settings
 from ptmscout.database import protein, modifications
 import json, base64
 
@@ -58,7 +58,8 @@ def protein_structure_viewer(request):
             'domains': formatted_domains, 
             'mods': formatted_mods,
             'mod_types': formatted_mod_types,
-            'exps': formatted_exps}
+            'exps': formatted_exps,
+            'pfam_url': settings.pfam_family_url}
     encoded_data = base64.b64encode( json.dumps( data ) )
 
     return {'pageTitle': strings.protein_structure_page_title,

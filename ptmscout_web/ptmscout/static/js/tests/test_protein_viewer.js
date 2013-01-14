@@ -2,6 +2,7 @@ QUnit.config.reorder = false;
 
 test( "draw-domains", function() {
     ok( 4 == $('svg rect.domain').length );
+    ok( 3 == $('svg text.domain').length );
 });
 
 test( "draw-ptms", function() {
@@ -9,6 +10,14 @@ test( "draw-ptms", function() {
     equal( $('svg rect#Y518').length, 2 );
     equal( $('svg rect#S856').length, 2 );
     equal( $('svg rect#T857').length, 2 );
+});
+
+test( "draw-ticks", function() {
+    equal( $('svg line.t10').length, 83 )
+    equal( $('svg line.t50').length, 10 )
+    equal( $('svg line.t100').length, 16 )
+    equal( $('svg line.t500').length, 2 )
+    equal( $('svg line.t1000').length, 2 )
 });
 
 test( "toggle-ptms", function() {

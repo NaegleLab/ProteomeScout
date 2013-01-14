@@ -40,41 +40,54 @@
     stroke-width:2px;
 }
 
-.viewer .domain {
+.viewer rect.domain {
     stroke:black;
     stroke-width:1px;
+    cursor:pointer;
 }
 
-.viewer .tick {
+.viewer line.tick {
     stroke-width:1;
 }
-
-.viewer .t5000 {
+.viewer line.t5000 {
     stroke:#000;
 }
-
-.viewer .t1000 {
+.viewer line.t1000 {
     stroke:#222;
 }
-
-.viewer .t500 {
+.viewer line.t500 {
     stroke:#444;
 }
-
-.viewer .t100 {
+.viewer line.t100 {
     stroke:#666;
 }
-
-.viewer .t50 {
+.viewer line.t50 {
     stroke:#888;
 }
-
-.viewer .t10 {
+.viewer line.t10 {
     stroke:#AAA;
 }
 
 .viewer text.tick {
     font-size:8pt;
+}
+.viewer text.t5000 {
+    fill:#000;
+}
+.viewer text.t1000 {
+    fill:#222;
+}
+.viewer text.t500 {
+    fill:#444;
+}
+.viewer text.t100 {
+    fill:#666;
+}
+.viewer text.t50 {
+    fill:#888;
+}
+.viewer text.t10 {
+    fill:#AAA;
 }
 
 .viewer text.aminoacid {

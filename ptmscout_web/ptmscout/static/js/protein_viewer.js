@@ -182,7 +182,7 @@ function get_residue_tooltip_text(data) {
 }
 
 
-function TrackViewer(structure_viewer, svg_container, offset, cls) {
+function TrackViewer(structure_viewer, svg_container, offset, cls, zoomable) {
     this.domain_height = 20;
     this.dom_offset = 30;
     this.baseline = offset;
@@ -232,7 +232,7 @@ function TrackViewer(structure_viewer, svg_container, offset, cls) {
     for(var t in this.tick_levels)
         ticks.push([]);
 
-    for(var i = 0; i < protein_data.seq.length; i+=10){
+    for(var i = 10; i < protein_data.seq.length; i+=10){
         for(var j in this.tick_levels){
             if(i % this.tick_levels[j] == 0){
                 ticks[j].push(i);
@@ -242,7 +242,7 @@ function TrackViewer(structure_viewer, svg_container, offset, cls) {
     }
 
     for(var j in this.tick_levels){
-        this.generate_ticks(viewer, 5, ticks[j], this.tick_levels[j]);
+        this.generate_ticks(viewer, 5, ticks[j], this.tick_levels[j], zoomable);
     }
 };
 
@@ -289,6 +289,11 @@ TrackViewer.prototype.update_view = function(axis, yaxis) {
     this.viewer.selectAll('rect.domain')
                 .attr('x', function(d) { return axis(d.start); })
                 .attr('width', function(d) { return axis(d.stop) - axis(d.start); });
+
+    this.viewer.selectAll('text.domain')
+                .each(function(d) { d.show = axis(d.stop) - axis(d.start) > d.label.length * 8 })
+                .style('opacity', function(d) { return d.show ? 1 : 0; })
+                .attr('x', function(d) { return (axis(d.start) + axis(d.stop)) / 2; });
 }
 
 TrackViewer.prototype.show_residues = function() {
@@ -337,7 +342,20 @@ TrackViewer.prototype.show_domains = function() {
                 .attr('title', function(d) { return d.label; })
                 .style('fill', function(d) { return domain_colors( d.label ); } )
                 .on('mouseover', function() { track_viewer.track_mouse_over(this, 'domain', true); })
-                .on('mouseout', function() { track_viewer.track_mouse_over(this, 'domain', false); });
+                .on('mouseout', function() { track_viewer.track_mouse_over(this, 'domain', false); })
+                .on('click', function(d) { window.open(protein_data.pfam_url + d.label, '_blank'); });
+
+    this.viewer.selectAll('text.domain')
+        .data(protein_data.domains)
+            .enter().append('text')
+                .attr('class', 'domain')
+                .attr('x', function(d) { return ( axis(d.start) + axis(d.stop) ) / 2; })
+                .attr('y', track_viewer.dom_offset+track_viewer.domain_height)
+                .attr('dy', '1em')
+                .attr('text-anchor', 'middle')
+                .each(function(d) { d.show = ( axis(d.stop) - axis(d.start) ) > d.label.length * 8; })
+                .style('opacity', function(d) { return d.show ? 1 : 0; })
+                .text(function(d) { return d.label; });
 };
 
 TrackViewer.prototype.track_mouse_over = function(d3element, cls, isover){
@@ -354,7 +372,7 @@ TrackViewer.prototype.track_mouse_over = function(d3element, cls, isover){
         .style('opacity', opacity);
 }
 
-TrackViewer.prototype.generate_ticks = function(parent_element, h, values, size){
+TrackViewer.prototype.generate_ticks = function(parent_element, h, values, size, zoomable){
     var track_viewer = this;
     var axis = this.parent_viewer.axis;
 
@@ -363,7 +381,9 @@ TrackViewer.prototype.generate_ticks = function(parent_element, h, values, size)
     if(this.parent_viewer.width / (axis(size) - axis(0)) < 20){
         tick_opacity = 1;
     }
-
+    if(!zoomable && tick_opacity == 0){
+        return;
+    }
     parent_element.selectAll('line.'+cls)
         .data( values )
             .enter().append('line')
@@ -434,13 +454,13 @@ function StructureViewer(protein_data) {
     this.domain_colors = d3.scale.category20();
     this.residue_colors = d3.scale.category20();
 
-    this.macro_viewer = new TrackViewer(this, this.svg_container, this.macro_viewer_position, 'macro_track_viewer');
+    this.macro_viewer = new TrackViewer(this, this.svg_container, this.macro_viewer_position, 'macro_track_viewer', false);
     this.macro_viewer.show_domains();
     if(protein_data.seq.length < this.show_residues_size_limit){
         this.macro_viewer.show_residues();
     }
 
-    this.zoom_viewer = new TrackViewer(this, this.svg_container, this.zoom_viewer_position, 'zoom_track_viewer');
+    this.zoom_viewer = new TrackViewer(this, this.svg_container, this.zoom_viewer_position, 'zoom_track_viewer', true);
     this.zoom_viewer.show_residues();
     this.zoom_viewer.show_domains();
     this.zoom_viewer.hide();
@@ -505,6 +525,16 @@ StructureViewer.prototype.update_display = function() {
         })
         .attr('y', function(d) { return protein_viewer.yaxis(d.value.num_mods); })
         .attr('height', function(d) { return protein_viewer.yaxis(0) - protein_viewer.yaxis( d.value.num_mods ); });
+
+
+    domain_mode = this.track_display_modes['domain']
+    t.selectAll("rect.domain")
+        .style('opacity', domain_mode ? 1 : 0);
+    t.selectAll("text.domain")
+        .style('opacity', function(d) { return domain_mode && d.show ? 1 : 0; });
+
+    t.selectAll(".residue")
+        .style('opacity', this.track_display_modes['residue'] ? 1 : 0);
 }
 
 StructureViewer.prototype.toggle_ptm = function(ptm_name, mode) {
@@ -519,9 +549,7 @@ StructureViewer.prototype.toggle_exp = function(exp_id, mode){
 
 StructureViewer.prototype.toggle_track = function(track_name, mode){
     this.track_display_modes[ track_name ] = mode;
-    t = this.svg_container.transition().duration(250);
-    t.selectAll(".{0}".format(track_name))
-        .style('opacity', mode ? 1.0 : 0);
+    this.update_display();
 }
 
 function get_browser(){

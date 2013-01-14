@@ -1,5 +1,5 @@
 from mock import patch
-from ptmscout.config import strings
+from ptmscout.config import strings, settings
 from pyramid.testing import DummyRequest
 from tests.PTMScoutTestCase import UnitTestCase, IntegrationTestCase
 from ptmscout.views.protein.structure_view import protein_structure_viewer, \
@@ -129,7 +129,8 @@ class TestProteinStructureViews(UnitTestCase):
                     'domains': formatted_domains,
                     'mods': formatted_mods,
                     'exps': formatted_exps,
-                    'mod_types': formatted_mod_types
+                    'mod_types': formatted_mod_types,
+                    'pfam_url': settings.pfam_family_url
                 }
 
         self.assertEqual(exp_data, decoded_data)
