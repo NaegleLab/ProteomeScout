@@ -6,6 +6,7 @@ import logging
 from ptmscout.database import protein
 from xml.parsers.expat import ExpatError
 from ptmscout.utils.decorators import rate_limit
+import traceback
 
 log = logging.getLogger('ptmscout')
 PFAM_DEFAULT_CUTOFF = 0.00001
@@ -111,7 +112,8 @@ PFAM_MIRRORS = ["http://pfam.janelia.org/search/sequence",
                 "http://pfam.sbc.su.se/search/sequence"]
 
 def wait_for_result(jobrequest):
-    dom = xml.parseString(jobrequest.read())
+    job_xml = jobrequest.read()
+    dom = xml.parseString(job_xml)
     result_url = dom.getElementsByTagName('result_url')[0].childNodes[0].nodeValue
     
     code = 202
@@ -130,7 +132,10 @@ def wait_for_result(jobrequest):
 def get_computed_pfam_domains(prot_seq, cutoff):
     if settings.DISABLE_PFAM:
         return []
-    
+   
+    if len(prot_seq) > 10000:
+        raise PFamError("Protein Sequence is too long to query")
+
     args = {'seq':prot_seq, 'output':'xml', 'evalue':cutoff}
 
     i = 0
@@ -148,7 +153,7 @@ def get_computed_pfam_domains(prot_seq, cutoff):
             return filter_domains(parsed_pfam.domains)
         except ExpatError, e:
             i += 1
-            log.warning("PFAM query failed: %s... (%d / %d)", str(e), i, len(PFAM_MIRRORS))
+            log.warning("PFAM result parsing failed: %s... (%d / %d)", str(e), i, len(PFAM_MIRRORS))
         except urllib2.HTTPError, e:
             i += 1
             log.warning("PFAM query failed, %s... (%d / %d)", str(e), i, len(PFAM_MIRRORS))
