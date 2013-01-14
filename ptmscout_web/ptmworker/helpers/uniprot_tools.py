@@ -1,6 +1,7 @@
 from ptmscout.config import settings
 from ptmscout.utils.decorators import rate_limit
 import urllib2
+import httplib
 import MultipartPostHandler as post_handler
 from ptmscout.utils import crypto
 import os
@@ -11,6 +12,7 @@ import logging
 import ptmscout.database.taxonomies
 import xml.dom.minidom as xml
 from xml.parsers.expat import ExpatError
+import mmap
 
 log = logging.getLogger('ptmscout')
 
@@ -126,7 +128,16 @@ def parse_xml(xml):
 
 
 def handle_result(result):
-    parsed_result = SeqIO.parse(result, 'uniprot-xml')
+    try:
+        str_result = result.read()
+    except httplib.IncompleteRead, e:
+        str_result = e.partial
+
+    handle = mmap.mmap(-1, len(str_result))
+    handle.write(str_result)
+    handle.seek(0)
+
+    parsed_result = SeqIO.parse(handle, 'uniprot-xml')
 
     result_map = {}
     i = 0
@@ -175,6 +186,8 @@ def map_isoform_results(result_map, isoform_map):
 def map_combine(r1, r2):
     return dict(r1.items() + r2.items())
 
+MAX_RETRIES = 3
+
 @rate_limit(rate=3)
 def get_uniprot_records(accs):
     log.debug("Query: %s", str(accs))
@@ -183,22 +196,31 @@ def get_uniprot_records(accs):
 
     root_accs, isoforms = get_isoform_map(accs)
 
-    try:
-        instream = save_accessions(root_accs)
-        opener = urllib2.build_opener(post_handler.MultipartPostHandler())
-        result = opener.open(uniprot_batch_url, {'file':instream, 'format':'xml', 'include':'yes'})
-        result_map = handle_result(result)
-        isoform_map = get_protein_isoforms(isoforms.keys())
+    i = 0
+    while i < MAX_RETRIES:
+        try:
+            try:
+                instream = save_accessions(root_accs)
+                opener = urllib2.build_opener(post_handler.MultipartPostHandler())
+                result = opener.open(uniprot_batch_url, {'file':instream, 'format':'xml', 'include':'yes'})
 
-        map_isoform_results(result_map, isoform_map)
-        return result_map
-    except urllib2.HTTPError:
-        log.debug( "Failed query..." )
-        if len(accs) == 1:
-            return {}
-        else:
-            bisect = len(accs) / 2
-            r1 = get_uniprot_records(accs[:bisect])
-            r2 = get_uniprot_records(accs[bisect:])
+                result_map = handle_result(result)
+                isoform_map = get_protein_isoforms(isoforms.keys())
 
-            return map_combine(r1, r2)
+                map_isoform_results(result_map, isoform_map)
+                return result_map
+            except urllib2.HTTPError:
+                log.debug( "Failed query..." )
+                if len(accs) == 1:
+                    return {}
+                else:
+                    bisect = len(accs) / 2
+                    r1 = get_uniprot_records(accs[:bisect])
+                    r2 = get_uniprot_records(accs[bisect:])
+
+                    return map_combine(r1, r2)
+        except:
+            i+=1
+            log.info("Uniprot query failed (retry %d / %d)", i, MAX_RETRIES)
+
+    return {}
