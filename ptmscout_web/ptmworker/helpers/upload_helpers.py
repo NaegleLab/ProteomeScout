@@ -1,15 +1,15 @@
-from ptmscout.database import protein, taxonomies, modifications, experiment,\
-    gene_expression
+from celery.canvas import group
+from ptmscout.database import protein, taxonomies, modifications, experiment, gene_expression
 from ptmscout.utils import uploadutils
-from ptmscout.config import strings
-import logging
-import sys
+from ptmscout.config import strings, settings
 from ptmscout.database.modifications import NoSuchPeptide
 from ptmworker.helpers import scansite_tools, quickgo_tools
+import logging
+import pickle
+import re
+import sys, os
 import transaction
 import traceback
-import re
-from celery.canvas import group
 
 log = logging.getLogger('ptmscout')
 
@@ -428,4 +428,26 @@ def create_chunked_tasks(task_args, MAX_BATCH_SIZE):
         
     return tasks
     
+def store_stage_input(exp_id, stage, result):
+    result_path = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'e%d') % (exp_id)
+    if not os.path.exists(result_path):
+        os.mkdir(result_path)
+    result_file = '%s.input' % (stage)
 
+    writable = open(os.path.join(result_path, result_file), 'w')
+    writable.write(pickle.dumps(result))
+    writable.close()
+
+def get_stage_input(exp_id, stage):
+    result_path = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'e%d') % (exp_id)
+    result_file = '%s.input' % (stage)
+
+    file_path = os.path.join(result_path, result_file)
+    if not os.path.exists(file_path):
+        return None
+
+    readable = open(file_path, 'r')
+    result = pickle.loads(readable.read())
+    readable.close()
+
+    return result

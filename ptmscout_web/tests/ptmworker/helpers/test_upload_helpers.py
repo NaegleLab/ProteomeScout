@@ -5,6 +5,9 @@ from tests.views.mocking import createMockExperiment, createMockProtein,\
     createMockProbe, createMockAccession, createMockSpecies, createMockTaxonomy
 from mock import patch
 from ptmscout.utils import uploadutils
+from ptmscout.config import settings
+import os
+import pickle
 
 class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
 
@@ -400,3 +403,21 @@ VTDPSCPASVLKCAEALQLPVVSQEWVIQCLIVGERIGFKQHPKYKHDYVSH"""
         self.assertEqual(['A53D56', 'ALB432', 'E45G76', 'E45G76-2'], tasks[0])
         self.assertEqual(['F435D6', 'P54A03', 'Q134A5', 'Q134A5-3'], tasks[1])
         self.assertEqual(['Q134A5-5'], tasks[2])
+
+    def test_store_last_stage_result_should_save_result_to_file(self):
+        exp = createMockExperiment()
+        exp.id = 1002304052435
+        exp.loading_stage = 'proteins'
+        result = {"some":"pyobject", "which":"canbe", "pickled":"."}
+
+        upload_helpers.store_stage_input(exp.id, exp.loading_stage, result)
+
+        result_path = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'e%d') % (exp.id)
+        result_file = 'proteins.input'
+
+        loaded_result = upload_helpers.get_stage_input(exp.id, exp.loading_stage)
+
+        self.assertEqual(result, loaded_result)
+
+        os.remove(os.path.join(result_path, result_file))
+        os.removedirs(result_path)
