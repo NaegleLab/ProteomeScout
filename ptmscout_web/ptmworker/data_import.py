@@ -37,7 +37,7 @@ def start_import(exp_id, session_id, user_email, application_url):
         peptide_task = peptide_tasks.run_peptide_import.s(exp_id, peptides, mod_map, data_runs, headers, session.units)
         finalize_task = notify_tasks.finalize_import.si(exp_id, user_email, application_url)
 
-        last_stage_arg = exp.get_last_result()
+        last_stage_arg = upload_helpers.get_stage_input(exp.id, exp.loading_stage)
 
         if exp.loading_stage == 'query':
             load_task = ( query_task | proteins_task | GO_task | peptide_task | finalize_task )

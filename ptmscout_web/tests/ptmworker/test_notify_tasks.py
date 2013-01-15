@@ -37,8 +37,9 @@ class NotifyTasksTest(IntegrationTestCase):
 
 
     @patch('transaction.commit')
+    @patch('ptmworker.helpers.upload_helpers.store_stage_input')
     @patch('ptmscout.database.experiment.getExperimentById')
-    def test_set_loading_stage(self, patch_getExp, patch_commit):
+    def test_set_loading_stage(self, patch_getExp, patch_store, patch_commit):
         exp = createMockExperiment()
         patch_getExp.return_value = exp
         
@@ -47,7 +48,7 @@ class NotifyTasksTest(IntegrationTestCase):
         patch_getExp.assert_called_once_with(exp.id, check_ready=False, secure=False)
         
 
-        exp.store_last_result.assert_called_once_with(stage_input)
+        patch_store.assert_called_once_with(exp.id, 'proteins', stage_input)
         self.assertEqual('proteins', exp.loading_stage)
         self.assertEqual(0, exp.progress)
         self.assertEqual(1000, exp.max_progress)
@@ -95,7 +96,7 @@ class NotifyTasksTest(IntegrationTestCase):
     @patch('ptmscout.database.modifications.countMeasuredPeptidesForExperiment')
     @patch('ptmscout.database.modifications.countProteinsForExperiment')
     @patch('ptmscout.database.experiment.getExperimentById')
-    def test_finalize_experiment_error_stage(self, patch_getExp, patch_countProteins, patch_countPeptides, patch_commit, patch_sendmail):
+    def test_finalize_import(self, patch_getExp, patch_countProteins, patch_countPeptides, patch_commit, patch_sendmail):
         exp = createMockExperiment()
         exp.errors = [createMockError(2, 'failed for peptide')]
         err_cnt = len(exp.errors)

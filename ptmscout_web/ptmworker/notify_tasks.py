@@ -17,10 +17,11 @@ def set_loading_status(exp_id, status):
 def set_loading_stage(exp_id, stage, stage_input, max_value):
     exp = experiment.getExperimentById(exp_id, check_ready=False, secure=False)
     exp.loading_stage = stage
-    exp.store_last_result(stage_input)
     exp.progress = 0
     exp.max_progress = max_value
     exp.saveExperiment()
+
+    upload_helpers.store_stage_input(exp_id, stage, stage_input)
 
 @celery.task
 @upload_helpers.transaction_task
@@ -51,7 +52,6 @@ def finalize_experiment_error_state(uuid, exp_id, user_email, application_url):
 @upload_helpers.transaction_task
 def finalize_import(exp_id, user_email, application_url):
     exp = experiment.getExperimentById(exp_id, check_ready=False, secure=False)
-    exp.store_last_result(None)
     exp.status = 'loaded'
     exp.saveExperiment()
 
