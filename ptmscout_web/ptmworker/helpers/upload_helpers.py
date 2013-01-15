@@ -13,19 +13,6 @@ import traceback
 
 log = logging.getLogger('ptmscout')
 
-
-def logged_task(fn):
-    def ttask(*args):
-        log.debug("Running task: %s", fn.__name__)
-        try:
-            return fn(*args)
-        except Exception:
-            log.warning(traceback.format_exc())
-            raise
-    ttask.__name__ = fn.__name__
-    return ttask
-
-
 def transaction_task(fn):
     def ttask(*args):
         from ptmscout.database import DBSession
@@ -35,7 +22,6 @@ def transaction_task(fn):
             transaction.commit()
             return result
         except Exception:
-            log.warning(traceback.format_exc())
             transaction.abort()
             raise
     ttask.__name__ = fn.__name__
@@ -53,7 +39,6 @@ def dynamic_transaction_task(fn):
                 new_tasks = group(result)
                 new_tasks.apply_async()
         except Exception:
-            log.warning(traceback.format_exc())
             transaction.abort()
             raise
     ttask.__name__ = fn.__name__
