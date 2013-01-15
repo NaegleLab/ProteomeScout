@@ -8,7 +8,6 @@ from sqlalchemy.sql.expression import null
 import datetime
 from sqlalchemy.orm import relationship, deferred
 import logging
-import pickle
 
 log = logging.getLogger('ptmscout')
 
@@ -91,7 +90,6 @@ class Experiment(Base):
     progress = Column(Integer(10), default=0)
     max_progress = Column(Integer(10), default=0)
 
-    last_stage_result = deferred(Column(Text, default="N."))
     failure_reason = Column(Text, default="")
     
     errors = relationship("ExperimentError", cascade="all,delete-orphan")
@@ -100,15 +98,6 @@ class Experiment(Base):
     
     def __init__(self):
         self.date = datetime.datetime.now()
-
-    def store_last_result(self, result):
-        self.last_stage_result = pickle.dumps(result)
-
-    def get_last_result(self):
-        try:
-            return pickle.loads(self.last_stage_result)
-        except:
-            return None
 
     def saveExperiment(self):
         DBSession.add(self)
@@ -150,7 +139,6 @@ class Experiment(Base):
         self.loading_stage = 'query'
         self.progress = 0
         self.max_progress = 0
-        self.last_stage_result = ''
         self.failure_reason = ''
         
         self.conditions = []
