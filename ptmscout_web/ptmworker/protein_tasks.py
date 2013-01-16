@@ -44,16 +44,18 @@ def load_new_protein(accession, protein_information):
     if prot == None:
         prot = upload_helpers.create_new_protein(name, gene, seq, species)
 
+    # load additional protein accessions if available
+
     other_accessions = picr_tools.get_picr(accession, prot.species.taxon_id)
     added_accessions = upload_helpers.create_accession_for_protein(prot, prot_accessions + other_accessions)
+
+    # viruses need the taxonomy of their host organism to query scansite and
+    # check for valid PTMs
 
     if host_organism:
         taxonomy += upload_helpers.get_taxonomic_lineage(host_organism)
 
     pfam_tools.parse_or_query_domains(prot, domains)
-
-    # load additional protein accessions if available
-
     upload_helpers.map_expression_probesets(prot)
 
     prot.saveProtein()
@@ -70,6 +72,7 @@ def report_protein_error(acc, protein_map, accessions, line_mappings, exp_id, me
             accession, peptide = line_mappings[line]
             experiment.createExperimentError(exp_id, line, accession, peptide, message)
 
+UPDATE_EVERY = 100
 def create_missing_proteins(protein_map, missing_proteins, accessions, exp_id, line_mappings):
 
     i = 0
@@ -91,8 +94,10 @@ def create_missing_proteins(protein_map, missing_proteins, accessions, exp_id, l
             report_protein_error(acc, protein_map, accessions, line_mappings, exp_id, "Unexpected Error: %s" % (str(e)))
 
         i+=1
-        notify_tasks.set_progress.apply_async((exp_id, i, len(missing_proteins)))
+        if i % UPDATE_EVERY == 0:
+            notify_tasks.set_progress.apply_async((exp_id, i, len(missing_proteins)))
 
+    notify_tasks.set_progress.apply_async((exp_id, i, len(missing_proteins)))
     return protein_map, protein_id_map
 
 
