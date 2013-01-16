@@ -23,3 +23,10 @@ class ExpressionTestCase(DBTestCase):
     def test_getExpressionProbeSet(self):
         probesets = gene_expression.getExpressionProbeSetsForProtein(['Q2L6H3','HSPA6','Gm378'], 46)
         self.assertEqual([1, 3, 6695, 8274, 10210, 12799], sorted([probe.id for probe in probesets]))
+
+    def test_getExpressionProbes(self):
+        accessions = [('swissprot', 'O43248'), ('swissprot', 'HXC11_HUMAN'), ('gene_synonym', 'HOX3H'), ('ipi', 'IPI00011610'), ('ipi', 'IPI00011610.1'), ('swissprot', 'O43248.1')]
+
+        probesets = gene_expression.getExpressionProbeSetsForProtein([acc[1] for acc in accessions], 46)
+
+        self.assertEqual([6271], [probe.id for probe in probesets])
