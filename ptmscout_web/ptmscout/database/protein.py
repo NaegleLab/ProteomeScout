@@ -93,7 +93,7 @@ class Protein(Base):
     date = Column(DateTime)
     species_id = Column(Integer(10), ForeignKey('species.id'))
     
-    accessions = relationship("ProteinAccession", lazy='joined', order_by=ProteinAccession.type)
+    accessions = relationship("ProteinAccession", lazy='joined', order_by=ProteinAccession.type, cascade="all,delete-orphan")
     domains = relationship("ProteinDomain", lazy='joined')
     
     species = relationship("Species", lazy='joined')
