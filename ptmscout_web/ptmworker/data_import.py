@@ -3,11 +3,11 @@ import logging
 from ptmworker.helpers import upload_helpers
 from ptmworker import notify_tasks, protein_tasks, GO_tasks, peptide_tasks
 from ptmscout.database import upload, modifications, protein, experiment
-
+import transaction
 log = logging.getLogger('ptmscout')
 
 @celery.task
-@upload_helpers.transaction_task
+@upload_helpers.dynamic_transaction_task
 def start_import(exp_id, session_id, user_email, application_url):
     exp = experiment.getExperimentById(exp_id, check_ready=False, secure=False)
 
@@ -18,7 +18,7 @@ def start_import(exp_id, session_id, user_email, application_url):
     accessions, peptides, mod_map, data_runs, errors, line_mapping = upload_helpers.parse_datafile(session)
 
     if exp.loading_stage == 'query' or exp.status != 'error':
-        exp.clearErrors()
+        #exp.clearErrors()
         log.info("Reporting data file errors...")
         upload_helpers.report_errors(exp_id, errors, line_mapping)
         exp.saveExperiment()
@@ -48,7 +48,8 @@ def start_import(exp_id, session_id, user_email, application_url):
         elif exp.loading_stage == 'peptides':
             load_task = ( peptide_task | finalize_task )
 
-        load_task.apply_async((last_stage_arg,), link_error=notify_tasks.finalize_experiment_error_state.s(exp_id, user_email, application_url))
+        callback_task = notify_tasks.finalize_experiment_error_state.s(exp_id, user_email, application_url)
 
-        log.info("Tasks started... now we wait")
-    
+        log.info("Tasks created... now we wait")
+
+        return load_task, last_stage_arg, callback_task
