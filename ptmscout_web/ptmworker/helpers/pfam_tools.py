@@ -6,6 +6,7 @@ import logging
 from ptmscout.database import protein
 from xml.parsers.expat import ExpatError
 from ptmscout.utils.decorators import rate_limit
+from ptmscout.utils import protein_utils
 import traceback
 
 log = logging.getLogger('ptmscout')
@@ -28,9 +29,16 @@ class PFamDomain(object):
 class PFamParser(object):
     
     def __init__(self, pfam_xml):
-        dom = xml.parseString(pfam_xml).getElementsByTagName('results')[0]
         self.domains = []
-        self.parseDom(dom)
+        dom = xml.parseString(pfam_xml)
+        
+        results = dom.getElementsByTagName('results')
+        if len(results) > 0:
+            self.parseResults(results[0])
+        else:
+            db_release = dom.getElementsByTagName('pfam')[0].getAttribute('release')
+            entry = dom.getElementsByTagName('entry')[0]
+            self.parseEntry(entry, db_release)
         
     def __get_node_text(self, node):
         txt = ""
@@ -38,7 +46,14 @@ class PFamParser(object):
             txt += str(c.nodeValue) 
         return txt
 
-    def parseDom(self, dom):
+    def parseEntry(self, entry, db_release):
+        matches = entry.getElementsByTagName('matches')
+        if len(matches)>0:
+            matches = matches[0]
+            for node in matches.getElementsByTagName('match'):
+                self.parseMatch(node, db_release)
+
+    def parseResults(self, dom):
         for node in dom.getElementsByTagName('matches'):
             for pnode in node.getElementsByTagName('protein'):
                 self.parseProtein(pnode)
@@ -57,7 +72,7 @@ class PFamParser(object):
         match_id = dom.getAttribute('id')
         match_class = dom.getAttribute('class')
         match_acc =  dom.getAttribute('accession')
-        
+
         for node in dom.getElementsByTagName('location'):
             self.parseLocation(node, match_acc, match_class, match_id, db_release)
         
@@ -65,7 +80,11 @@ class PFamParser(object):
         pep_start = int(dom.getAttribute('start'))
         pep_end = int(dom.getAttribute('end'))
         pvalue = float(dom.getAttribute('evalue'))
-        issignificant = int(dom.getAttribute('significant'))
+
+        try:
+            issignificant = int(dom.getAttribute('significant'))
+        except:
+            issignificant = 1
         
         domain = PFamDomain()
         domain.accession = accession
@@ -90,7 +109,7 @@ class PFamError(Exception):
 
 
 def filter_domains(domains):
-    domains = [domain for domain in domains if domain.class_=="Domain" and domain.significant==1]
+    domains = [domain for domain in domains if domain.significant==1]
     domains = sorted(domains, key=lambda domain: domain.p_value)
     
     used_sites = set()
@@ -107,9 +126,9 @@ def filter_domains(domains):
     return chosen_domains
 
 
-PFAM_MIRRORS = ["http://pfam.janelia.org/search/sequence",
-                "http://pfam.sanger.ac.uk/search/sequence",
-                "http://pfam.sbc.su.se/search/sequence"]
+PFAM_MIRRORS = ["http://pfam.janelia.org",
+                "http://pfam.sanger.ac.uk",
+                "http://pfam.sbc.su.se"]
 
 def wait_for_result(jobrequest):
     job_xml = jobrequest.read()
@@ -141,7 +160,7 @@ def get_computed_pfam_domains(prot_seq, cutoff):
     i = 0
     while i < len(PFAM_MIRRORS):
         try:
-            jobrequest = urllib2.urlopen(PFAM_MIRRORS[i], urllib.urlencode(args))
+            jobrequest = urllib2.urlopen("%s/search/sequence" % (PFAM_MIRRORS[i]), urllib.urlencode(args))
             code, resultquery = wait_for_result(jobrequest)
 
             if code != 200:
@@ -160,9 +179,45 @@ def get_computed_pfam_domains(prot_seq, cutoff):
 
     raise PFamError("Unable to query PFam")
 
-def parse_or_query_domains(prot, domains):
+@rate_limit(rate=10)
+def get_stored_pfam_domains(uniprot_acc):
+    if settings.DISABLE_PFAM:
+        return []
+
+    i = 0
+    while i < len(PFAM_MIRRORS):
+        try:
+            query_url = "%s/protein/%s?output=xml" % (PFAM_MIRRORS[i], uniprot_acc)
+            result = urllib2.urlopen(query_url)
+
+            xmlresult = result.read()
+
+            if xmlresult.find('There was a system error on your last request') > -1:
+                raise PFamError("Protein record not found")
+
+            parsed_pfam = PFamParser(xmlresult)
+
+            return filter_domains(parsed_pfam.domains)
+        except ExpatError, e:
+            i += 1
+            log.warning("PFAM result parsing failed: %s... (%d / %d)", str(e), i, len(PFAM_MIRRORS))
+        except urllib2.HTTPError, e:
+            i += 1
+            log.warning("PFAM query failed, %s... (%d / %d)", str(e), i, len(PFAM_MIRRORS))
+
+    raise PFamError("Unable to query PFam")
+
+def parse_or_query_domains(prot, domains, query_accession):
+
+    if len(domains) == 0 and protein_utils.get_accession_type(query_accession) == 'swissprot':
+        try:
+            domains = get_stored_pfam_domains(query_accession)
+        except PFamError:
+            domains = []
+
     if len(domains) == 0:
         domains = get_computed_pfam_domains(prot.sequence, PFAM_DEFAULT_CUTOFF)
+
         source = "COMPUTED PFAM"
         params = "pval=%f" % (PFAM_DEFAULT_CUTOFF)
     else:

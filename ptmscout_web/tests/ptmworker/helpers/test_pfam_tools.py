@@ -146,12 +146,18 @@ class IntegrationTestPFamQuery(IntegrationTestCase):
         cutoff = 0.00001
         domains = pfam_tools.get_computed_pfam_domains(prot_seq, cutoff)
         
-        self.assertEqual(2, len(domains))
+        self.assertEqual(4, len(domains))
         
         d = domains[0]
-        self.assertEqual(('ABC_tran', 565, 685), (d.label, d.start, d.stop))
-        
+        self.assertEqual(('ABC2_membrane_3', 891, 1293), (d.label, d.start, d.stop))
+
         d = domains[1]
+        self.assertEqual(('ABC_tran', 565, 685), (d.label, d.start, d.stop))
+
+        d = domains[2]
+        self.assertEqual(('ABC2_membrane_3', 24, 464), (d.label, d.start, d.stop))
+
+        d = domains[3]
         self.assertEqual(('ABC_tran', 1396, 1516), (d.label, d.start, d.stop))
 
     @patch('ptmworker.helpers.pfam_tools.get_computed_pfam_domains')
@@ -166,7 +172,7 @@ class IntegrationTestPFamQuery(IntegrationTestCase):
         prot = protein.Protein()
         patch_query.return_value = [d1]
 
-        pfam_tools.parse_or_query_domains(prot, [])
+        pfam_tools.parse_or_query_domains(prot, [], 'NP_005772')
         result = prot.domains
 
         self.assertEqual(1, len(result))
@@ -763,6 +769,35 @@ class IntegrationTestPFamQuery(IntegrationTestCase):
         else:
             self.fail("Expected PFAM error")
 
+    def test_get_computed_and_stored_domains_should_return_same_result(self):
+        uniprot_acc = 'O00472'
+        prot_seq = 'MAAGGTGGLREEQRYGLSCGRLGQDNITVLHVKLTETAIRALETYQSHKNLIPFRPSIQFQGLHGLVKIPKNDPLNEVHNFNFYLSNVGKDNPQGSFDCIQQTFSSSGASQLNCLGFIQDKITVCATNDSYQMTRERMTQAEEESRNRSTKVIKPGGPYVGKRVQIRKAPQAVSDTVPERKRSTPMNPANTIRKTHSSSTISQRPYRDRVIHLLALKAYKKPELLARLQKDGVNQKDKNSLGAILQQVANLNSKDLSYTLKDYVFKELQRDWPGYSEIDRRSLESVLSRKLNPSQNAAGTSRSESPVCSSRDAVSSPQKRLLDSEFIDPLMNKKARISHLTNRVPPTLNGHLNPTSEKSAAGLPLPPAAAAIPTPPPLPSTYLPISHPPQIVNSNSNSPSTPEGRGTQDLPVDSFSQNDSIYEDQQDKYTSRTSLETLPPGSVLLKCPKPMEENHSMSHKKSKKKSKKHKEKDQIKKHDIETIEEKEEDLKREEEIAKLNNSSPNSSGGVKEDCTASMEPSAIELPDYLIKYIAIVSYEQRQNYKDDFNAEYDEYRALHARMETVARRFIKLDAQRKRLSPGSKEYQNVHEEVLQEYQKIKQSSPNYHEEKYRCEYLHNKLAHIKRLIGEFDQQQAESWS'
+
+        c_domains = pfam_tools.get_computed_pfam_domains(prot_seq, 0.00001)
+        p_domains = pfam_tools.get_stored_pfam_domains(uniprot_acc)
+
+        test_set_1 = sorted([ (d.start, d.label) for d in p_domains ], key = lambda item: item[0])
+        test_set_2 = sorted([ (d.start, d.label) for d in c_domains ], key = lambda item: item[0])
+
+        self.assertEqual(test_set_1, test_set_2)
+
+    def test_get_stored_domains_should_not_fail_if_result_returned_empty(self):
+        uniprot_acc = 'Q5T4S2'
+
+        domains = pfam_tools.get_stored_pfam_domains(uniprot_acc)
+
+        self.assertEqual([], domains)
+
+    def test_get_stored_domains_should_throw_exception_if_record_missing(self):
+        uniprot_acc = 'A43X5D'
+
+        try:
+            domains = pfam_tools.get_stored_pfam_domains(uniprot_acc)
+        except pfam_tools.PFamError, e:
+            self.assertEqual("Protein record not found", e.msg)
+        else:
+            self.fail("Expected PFamError")
+
 
     def test_parse_or_query_domains_should_not_query_if_domains_provided(self):
         d1 = pfam_tools.PFamDomain()
@@ -774,7 +809,7 @@ class IntegrationTestPFamQuery(IntegrationTestCase):
 
         prot = protein.Protein()
 
-        pfam_tools.parse_or_query_domains(prot, [d1])
+        pfam_tools.parse_or_query_domains(prot, [d1], 'NP_005722')
         result = prot.domains
 
         self.assertEqual(1, len(result))

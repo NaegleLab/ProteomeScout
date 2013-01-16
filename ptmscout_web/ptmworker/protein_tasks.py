@@ -55,7 +55,7 @@ def load_new_protein(accession, protein_information):
     if host_organism:
         taxonomy += upload_helpers.get_taxonomic_lineage(host_organism)
 
-    pfam_tools.parse_or_query_domains(prot, domains)
+    pfam_tools.parse_or_query_domains(prot, domains, accession)
     upload_helpers.map_expression_probesets(prot)
 
     prot.saveProtein()
