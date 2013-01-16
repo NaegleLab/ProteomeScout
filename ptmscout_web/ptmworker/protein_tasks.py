@@ -40,27 +40,25 @@ def log_errors(query_errors, exp_id, accessions, line_mappings):
 def load_new_protein(accession, protein_information):
     name, gene, taxonomy, species, host_organism, prot_accessions, domains, seq = protein_information
 
+    created = False
     prot = protein.getProteinBySequence(seq, species)
     if prot == None:
         prot = upload_helpers.create_new_protein(name, gene, seq, species)
+        created = True
 
     # load additional protein accessions if available
 
     other_accessions = picr_tools.get_picr(accession, prot.species.taxon_id)
     added_accessions = upload_helpers.create_accession_for_protein(prot, prot_accessions + other_accessions)
 
-    # viruses need the taxonomy of their host organism to query scansite and
-    # check for valid PTMs
-
-    if host_organism:
-        taxonomy += upload_helpers.get_taxonomic_lineage(host_organism)
-
-    pfam_tools.parse_or_query_domains(prot, domains, accession)
     upload_helpers.map_expression_probesets(prot)
+
+    if created:
+        pfam_tools.parse_or_query_domains(prot, domains, accession)
 
     prot.saveProtein()
 
-    log.info("Created protein: %s | %s" , accession, str(added_accessions))
+    log.info("%s protein: %s | %s" , "Created" if created else "Updated", accession, str(added_accessions))
     return prot
 
 def report_protein_error(acc, protein_map, accessions, line_mappings, exp_id, message):
