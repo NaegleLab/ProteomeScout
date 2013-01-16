@@ -111,7 +111,9 @@ def query_protein_metadata(external_db_result, accessions, exp_id, line_mapping)
         if protein.getProteinBySequence(seq, species) == None:
             missing_proteins.add(acc)
 
-    notify_tasks.set_loading_stage.apply_async((exp_id, 'proteins', external_db_result, len(missing_proteins)))
+    upload_helpers.store_stage_input(exp_id, 'proteins', external_db_result)
+    notify_tasks.set_loading_stage.apply_async((exp_id, 'proteins', len(missing_proteins)))
+
     return create_missing_proteins(external_db_result, missing_proteins, accessions, exp_id, line_mapping)
 
 @celery.task
@@ -123,7 +125,7 @@ def get_proteins_from_external_databases(ignored, accessions, exp_id, line_mappi
     ncbi_tasks = upload_helpers.create_chunked_tasks(sorted(other_ids), MAX_NCBI_BATCH_SIZE)
     total_task_cnt = len(uniprot_tasks) + len(ncbi_tasks)
 
-    notify_tasks.set_loading_stage.apply_async((exp_id, 'query', None, total_task_cnt))
+    notify_tasks.set_loading_stage.apply_async((exp_id, 'query', total_task_cnt))
 
     i = 0
     protein_map = {}

@@ -14,14 +14,12 @@ def set_loading_status(exp_id, status):
 
 @celery.task
 @upload_helpers.transaction_task
-def set_loading_stage(exp_id, stage, stage_input, max_value):
+def set_loading_stage(exp_id, stage, max_value):
     exp = experiment.getExperimentById(exp_id, check_ready=False, secure=False)
     exp.loading_stage = stage
     exp.progress = 0
     exp.max_progress = max_value
     exp.saveExperiment()
-
-    upload_helpers.store_stage_input(exp_id, stage, stage_input)
 
 @celery.task
 @upload_helpers.transaction_task

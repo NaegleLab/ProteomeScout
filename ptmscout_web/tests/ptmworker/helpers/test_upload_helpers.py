@@ -407,13 +407,13 @@ VTDPSCPASVLKCAEALQLPVVSQEWVIQCLIVGERIGFKQHPKYKHDYVSH"""
     def test_store_last_stage_result_should_save_result_to_file(self):
         exp = createMockExperiment()
         exp.id = 1002304052435
-        exp.loading_stage = 'proteins'
+        exp.loading_stage = 'GO terms'
         result = {"some":"pyobject", "which":"canbe", "pickled":"."}
 
         upload_helpers.store_stage_input(exp.id, exp.loading_stage, result)
 
         result_path = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'e%d') % (exp.id)
-        result_file = 'proteins.input'
+        result_file = 'GO_terms.input'
 
         loaded_result = upload_helpers.get_stage_input(exp.id, exp.loading_stage)
 

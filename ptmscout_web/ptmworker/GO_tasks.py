@@ -86,13 +86,13 @@ def build_accession_map(protein_ids):
     return protein_accession_map, protein_map
 
 
-
 @celery.task
 @upload_helpers.transaction_task
 def import_go_terms(protein_result, exp_id):
     protein_map, new_protein_ids = protein_result
 
-    notify_tasks.set_loading_stage.apply_async((exp_id, 'GO terms', protein_result, 0))
+    upload_helpers.store_stage_input(exp_id, 'GO terms', protein_result)
+    notify_tasks.set_loading_stage.apply_async((exp_id, 'GO terms', 0))
 
     protein_accession_multimap, protein_id_map = build_accession_map(new_protein_ids.values())
 

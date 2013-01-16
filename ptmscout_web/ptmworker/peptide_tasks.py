@@ -103,7 +103,8 @@ def run_peptide_import(prot_map, exp_id, peptides, mod_map, data_runs, headers, 
     for acc in accessions:
         total_peptides += len(peptides[acc])
 
-    notify_tasks.set_loading_stage.apply_async((exp_id, 'peptides', prot_map, total_peptides))
+    upload_helpers.store_stage_input(exp_id, 'peptides', prot_map)
+    notify_tasks.set_loading_stage.apply_async((exp_id, 'peptides', total_peptides))
 
     i = 0
     for acc in accessions:

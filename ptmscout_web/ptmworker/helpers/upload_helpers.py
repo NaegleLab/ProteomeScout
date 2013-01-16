@@ -414,6 +414,7 @@ def create_chunked_tasks(task_args, MAX_BATCH_SIZE):
     return tasks
     
 def store_stage_input(exp_id, stage, result):
+    stage = stage.replace(" ", "_")
     result_path = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'e%d') % (exp_id)
     if not os.path.exists(result_path):
         os.mkdir(result_path)
@@ -424,6 +425,7 @@ def store_stage_input(exp_id, stage, result):
     writable.close()
 
 def get_stage_input(exp_id, stage):
+    stage = stage.replace(" ", "_")
     result_path = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'e%d') % (exp_id)
     result_file = '%s.input' % (stage)
 

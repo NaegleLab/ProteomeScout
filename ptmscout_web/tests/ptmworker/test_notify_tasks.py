@@ -37,18 +37,14 @@ class NotifyTasksTest(IntegrationTestCase):
 
 
     @patch('transaction.commit')
-    @patch('ptmworker.helpers.upload_helpers.store_stage_input')
     @patch('ptmscout.database.experiment.getExperimentById')
-    def test_set_loading_stage(self, patch_getExp, patch_store, patch_commit):
+    def test_set_loading_stage(self, patch_getExp, patch_commit):
         exp = createMockExperiment()
         patch_getExp.return_value = exp
         
-        stage_input = {'some':'input', 'structure':''}
-        notify_tasks.set_loading_stage(exp.id, 'proteins', stage_input, 1000)
+        notify_tasks.set_loading_stage(exp.id, 'proteins', 1000)
         patch_getExp.assert_called_once_with(exp.id, check_ready=False, secure=False)
         
-
-        patch_store.assert_called_once_with(exp.id, 'proteins', stage_input)
         self.assertEqual('proteins', exp.loading_stage)
         self.assertEqual(0, exp.progress)
         self.assertEqual(1000, exp.max_progress)
