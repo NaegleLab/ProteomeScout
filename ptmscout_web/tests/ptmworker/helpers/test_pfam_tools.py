@@ -146,18 +146,12 @@ class IntegrationTestPFamQuery(IntegrationTestCase):
         cutoff = 0.00001
         domains = pfam_tools.get_computed_pfam_domains(prot_seq, cutoff)
         
-        self.assertEqual(4, len(domains))
+        self.assertEqual(2, len(domains))
         
         d = domains[0]
-        self.assertEqual(('ABC2_membrane_3', 891, 1293), (d.label, d.start, d.stop))
-
-        d = domains[1]
         self.assertEqual(('ABC_tran', 565, 685), (d.label, d.start, d.stop))
 
-        d = domains[2]
-        self.assertEqual(('ABC2_membrane_3', 24, 464), (d.label, d.start, d.stop))
-
-        d = domains[3]
+        d = domains[1]
         self.assertEqual(('ABC_tran', 1396, 1516), (d.label, d.start, d.stop))
 
     @patch('ptmworker.helpers.pfam_tools.get_computed_pfam_domains')

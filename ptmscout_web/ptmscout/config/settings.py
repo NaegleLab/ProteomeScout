@@ -16,6 +16,7 @@ accession_urls = {'swissprot':"http://www.uniprot.org/uniprot/%s",
 pfam_family_url = 'http://pfam.sanger.ac.uk/family/'
 ptmscout_scratch_space = "/tmp"
 experiment_data_file_path = "data/experiments"
+pfam_map_file_path = "ptmworker/helpers/pfam.map"
 ptmscout_path = "/data/ptmscout/ptmscout_web"
 
 email_regex = "[a-z0-9\.\-\_]+@[a-z0-9\.\-\_]+\.([a-z]+)$"

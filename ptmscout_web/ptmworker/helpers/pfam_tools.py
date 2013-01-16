@@ -8,11 +8,23 @@ from xml.parsers.expat import ExpatError
 from ptmscout.utils.decorators import rate_limit
 from ptmscout.utils import protein_utils
 import traceback
+import pickle
+import os
 
 log = logging.getLogger('ptmscout')
 PFAM_DEFAULT_CUTOFF = 0.00001
 
+pfam_family_type_map = None
 
+def get_pfam_class(family_id):
+    global pfam_family_type_map
+    if pfam_family_type_map == None:
+        pfam_file = open(os.path.join(settings.ptmscout_path, settings.pfam_map_file_path),'r')
+        pfam_family_type_map = pickle.load(pfam_file)
+        pfam_file.close()
+
+    if family_id in pfam_family_type_map:
+        return pfam_family_type_map[family_id]
 
 class PFamDomain(object):
     def __init__(self):
@@ -70,7 +82,12 @@ class PFamParser(object):
     
     def parseMatch(self, dom, db_release):
         match_id = dom.getAttribute('id')
-        match_class = dom.getAttribute('class')
+
+        if dom.hasAttribute('class'):
+            match_class = dom.getAttribute('class')
+        else:
+            match_class = get_pfam_class(match_id)
+
         match_acc =  dom.getAttribute('accession')
 
         for node in dom.getElementsByTagName('location'):
@@ -109,7 +126,7 @@ class PFamError(Exception):
 
 
 def filter_domains(domains):
-    domains = [domain for domain in domains if domain.significant==1]
+    domains = [domain for domain in domains if domain.significant==1 and domain.class_ == 'Domain']
     domains = sorted(domains, key=lambda domain: domain.p_value)
     
     used_sites = set()
