@@ -63,7 +63,8 @@ class PFamParser(object):
         if len(matches)>0:
             matches = matches[0]
             for node in matches.getElementsByTagName('match'):
-                self.parseMatch(node, db_release)
+                if node.getAttribute('type') == 'Pfam-A':
+                    self.parseMatch(node, db_release)
 
     def parseResults(self, dom):
         for node in dom.getElementsByTagName('matches'):

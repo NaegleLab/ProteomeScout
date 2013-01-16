@@ -793,6 +793,13 @@ class IntegrationTestPFamQuery(IntegrationTestCase):
             self.fail("Expected PFamError")
 
 
+    def test_get_stored_pfam_domains_should_exclude_families_not_from_PFAM_A(self):
+        uniprot_acc = 'O15320'
+
+        domains = pfam_tools.get_stored_pfam_domains(uniprot_acc)
+
+        self.assertEqual([], domains)
+
     def test_parse_or_query_domains_should_not_query_if_domains_provided(self):
         d1 = pfam_tools.PFamDomain()
         d1.p_value = 0.01
