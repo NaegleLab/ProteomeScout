@@ -21,6 +21,20 @@ class EntrezQueryTestCase(IntegrationTestCase):
         self.assertEqual('296-302', record['PG'])
         self.assertEqual('2002 Sep', record['DP'])
 
+    def test_get_record_with_pipe_format_accessions(self):
+        pm = Proteome.ProteinManager(settings.adminEmail)
+        _n, _g, _t, _s, _h, prot_accessions, _d, _q, _i = entrez_tools.get_protein_information(pm, 'CAI16470.1')
+        self.assertEqual(3, len(prot_accessions))
+        self.assertEqual(set([('gi', 'gi|55958964'), ('embl', 'CAI16470'), ('embl', 'CAI16470.1')]), set(prot_accessions))
+
+        _n, _g, _t, _s, _h, prot_accessions, _d, _q, _i = entrez_tools.get_protein_information(pm, 'O75643')
+        self.assertEqual(4, len(prot_accessions))
+        self.assertEqual(set([('swissprot', 'O75643.2'), ('swissprot', 'U520_HUMAN'), ('gi', 'gi|56405304'), ('swissprot', 'O75643')]), set(prot_accessions))
+
+        _n, _g, _t, _s, _h, prot_accessions, _d, _q, _i = entrez_tools.get_protein_information(pm, 'CAA94089')
+        self.assertEqual(3, len(prot_accessions))
+        self.assertEqual(set([('embl', 'CAA94089'), ('gi', 'gi|3255965'), ('embl', 'CAA94089.1')]), set(prot_accessions))
+
     def test_get_alignment_scores(self):
         seq1 = "MASWESRKLLLLLWKNFTLKRRKFGTLVSEIVLVLLLSIVLLTTRHLLSIKKIEALYFPDQPISTVPSFFR"
         seq2 = "KSDFMASWESRKLLLLLWKNFTLKRRKFGTLLTTRHLLSIKKIEALYFPDQPISTVPSFFRABDFGALYFPDQP"

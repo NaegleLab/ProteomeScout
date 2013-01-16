@@ -96,6 +96,28 @@ def parse_organism_host(xml):
         if qual:
             return parse_species_name(qual['GBQualifier_value']).strip()
 
+def filter_update_other_accessions(other_accessions):
+    type_map = {'ref':'refseq', 'gb':'genbank', 'emb': 'embl'}
+    filtered_accessions = set()
+    for tp, value in other_accessions:
+        m = re.match('^([a-zA-Z]+)\|(.*)\|$', value)
+        gi_re = re.match('^[0-9]+$', value)
+        if m:
+            tp = m.group(1).lower()
+            val = m.group(2)
+            if tp in type_map:
+                filtered_accessions.add(( type_map[tp], val ))
+
+        elif tp=='GI' and gi_re:
+            tp = tp.lower()
+            val = "gi|%s" % (value)
+            filtered_accessions.add(( tp, val ))
+        else:
+            filtered_accessions.add(( tp.lower(), value ))
+    return list(filtered_accessions)
+
+
+
 
 def get_protein_information(pm, acc):
     seq = pm.get_protein_sequence(acc).strip().upper()
@@ -110,6 +132,9 @@ def get_protein_information(pm, acc):
     taxonomy = pm.get_taxonomy(acc)
     species = pm.get_species(acc).strip()
     prot_accessions = pm.get_other_accessions(acc)
+
+    prot_accessions = filter_update_other_accessions(prot_accessions)
+
     prot_domains = parse_pfam_domains(pm.get_domains(acc))
 
     host_organism = parse_organism_host(pm.get_raw_xml(acc))
