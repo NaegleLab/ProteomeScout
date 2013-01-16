@@ -33,7 +33,7 @@ class PICRParser(object):
 
 picr_accession_query_url = "http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=%s&taxid=%d&database=IPI&database=REFSEQ&database=SWISSPROT"
 picr_sequence_query_url  = "http://www.ebi.ac.uk/Tools/picr/rest/getUPIForSequence?sequence=%s&taxid=%d&database=IPI&database=REFSEQ&database=SWISSPROT"
-
+PICR_QUERY_TIMEOUT=5
 class PICRError(Exception):
     pass
 
@@ -43,7 +43,7 @@ def get_picr(accession, taxon_id):
         return []
 
     try:
-        result = urllib2.urlopen(picr_accession_query_url % (accession, taxon_id))
+        result = urllib2.urlopen(picr_accession_query_url % (accession, taxon_id), timeout=PICR_QUERY_TIMEOUT)
         return PICRParser(result.read()).references
     except ExpatError:
         return []
