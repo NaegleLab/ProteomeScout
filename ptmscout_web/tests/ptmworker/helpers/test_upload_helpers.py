@@ -42,21 +42,20 @@ class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
 
         self.assertEqual(human_lineage, lineage)
 
-    @patch('ptmscout.database.gene_expression.getExpressionProbeSetsForProtein')
-    def test_map_expression_probesets(self, patch_getProbes):
-        probe = createMockProbe()
+    def test_map_expression_probesets(self):
         prot = createMockProtein()
+        prot.species_id = 46
+        accessions = [('swissprot', 'O43248'), ('swissprot', 'HXC11_HUMAN'), ('gene_synonym', 'HOX3H'), ('ipi', 'IPI00011610'), ('ipi', 'IPI00011610.1'), ('swissprot', 'O43248.1')]
         
-        prot.acc_gene = 'TNK2'
-        prot.accessions.append(createMockAccession(prot.id, value='ACK1_HUMAN', type='uniprot'))
-        
-        patch_getProbes.return_value = [probe]
+        prot.acc_gene = 'SIRPB1'
+        prot.accessions = []
+        for acc in accessions:
+            prot.accessions.append(createMockAccession(prot.id, value=acc[1], type=acc[0]))
         
         upload_helpers.map_expression_probesets(prot)
+
+        self.assertEqual(set([6271,6460,16607]), set([probe.id for probe in prot.expression_probes]))
         
-        patch_getProbes.assert_called_once_with(['ACK1_HUMAN', 'TNK2'], prot.species_id)
-        
-        self.assertEqual([probe], prot.expression_probes)
 
     @patch('ptmscout.database.taxonomies.getTaxonByName')
     @patch('ptmscout.database.taxonomies.getSpeciesByName')

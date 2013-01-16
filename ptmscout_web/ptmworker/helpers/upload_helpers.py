@@ -34,10 +34,10 @@ def dynamic_transaction_task(fn):
         try:
             result = fn(*args)
             transaction.commit()
-            
-            if result != None and len(result) > 0:
-                new_tasks = group(result)
-                new_tasks.apply_async()
+
+            if result != None and len(result) == 3:
+                new_task, task_arg, errback = result
+                new_task.apply_async((task_arg,), link_error=errback )
         except Exception:
             transaction.abort()
             raise
@@ -158,6 +158,7 @@ def map_expression_probesets(prot):
     
     probesets = gene_expression.getExpressionProbeSetsForProtein(search_accessions, prot.species_id)
     
+    prot.expression_probes = []
     prot.expression_probes.extend(probesets)
     
     log.info("Loaded %d probesets for protein %s | %s", len(probesets), prot.accessions[0].value, str(prot.acc_gene))
@@ -169,6 +170,7 @@ def create_new_protein(name, gene, seq, species):
     prot.name = name
     prot.sequence = seq
     prot.species = find_or_create_species(species)
+    prot.species_id = prot.species.id
     return prot
 
 def get_related_proteins(prot_accessions, species):
