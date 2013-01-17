@@ -30,7 +30,7 @@
                                 <div tal:condition="experiment.status != 'loading'" tal:content="experiment.status"></div>
                                 <a tal:condition="experiment.status == 'error'" tal:attributes="href '%s/upload/%d/retry' % (request.application_url, sessions[experiment.id])">retry</a>
                             </div>
-                            <div class="progress" tal:condition="experiment.max_progress != 0 and experiment.status == 'loading'" tal:content="str(experiment.progress) +  ' / ' + str(experiment.max_progress)"></div>
+                            <div class="progress" tal:condition="experiment.status == 'loading' and experiment.max_progress != 0" tal:content="str(experiment.progress) +  ' / ' + str(experiment.max_progress)"></div>
 						</td>
 						<td class="accesscontrol" tal:condition="experiment.public == 0">
 							<table>

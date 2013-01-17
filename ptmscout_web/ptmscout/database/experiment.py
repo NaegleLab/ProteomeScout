@@ -52,6 +52,14 @@ class ExperimentData(Base):
     def save(self):
         DBSession.add(self)
 
+
+class ExperimentProgress(Base):
+    __tablename__ = 'experiment_progress'
+    experiment_id = Column(Integer(10), primary_key=True)
+    value = Column(Integer(10))
+    max_value = Column(Integer(10))
+ 
+
 class Experiment(Base):
     __tablename__ = 'experiment'
     
@@ -87,8 +95,6 @@ class Experiment(Base):
     submitter_id = Column(Integer(10), ForeignKey('users.id'))
 
     loading_stage = Column(Enum('query', 'proteins', 'GO terms', 'peptides', 'scansite'), default='query')
-    progress = Column(Integer(10), default=0)
-    max_progress = Column(Integer(10), default=0)
 
     failure_reason = Column(Text, default="")
     
@@ -326,4 +332,21 @@ def createExperimentError(exp_id, line, accession, peptide, message):
     err.message = message
     
     DBSession.add(err)
-    
+   
+def setExperimentProgress(exp_id, value, max_value):
+    entry = DBSession.query(ExperimentProgress).filter_by(experiment_id=exp_id).first()
+    if entry == None:
+        entry = ExperimentProgress()
+        entry.experiment_id = exp_id
+
+    entry.value = value
+    entry.max_value = max_value
+
+    DBSession.add(entry)
+
+def getExperimentProgress(exp_id):
+    entry = DBSession.query(ExperimentProgress).filter_by(experiment_id=exp_id).first()
+    if entry == None:
+        return 0, 0
+    return entry.value, entry.max_value
+

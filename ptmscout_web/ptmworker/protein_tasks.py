@@ -70,7 +70,7 @@ def report_protein_error(acc, protein_map, accessions, line_mappings, exp_id, me
             accession, peptide = line_mappings[line]
             experiment.createExperimentError(exp_id, line, accession, peptide, message)
 
-UPDATE_EVERY = 100
+UPDATE_EVERY = 30
 def create_missing_proteins(protein_map, missing_proteins, accessions, exp_id, line_mappings):
 
     i = 0

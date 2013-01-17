@@ -21,34 +21,28 @@ class NotifyTasksTest(IntegrationTestCase):
         patch_commit.assert_called_once_with()
 
     @patch('transaction.commit')
-    @patch('ptmscout.database.experiment.getExperimentById')
-    def test_set_progress(self, patch_getExp, patch_commit):
-        exp = createMockExperiment()
-        patch_getExp.return_value = exp
-        
-        notify_tasks.set_progress(exp.id, 100, 1000)
-        patch_getExp.assert_called_once_with(exp.id, check_ready=False, secure=False)
-        
-        self.assertEqual(100, exp.progress)
-        self.assertEqual(1000, exp.max_progress)
-        exp.saveExperiment.assert_called_once_with()
-
+    @patch('ptmscout.database.experiment.setExperimentProgress')
+    def test_set_progress(self, patch_setProgress, patch_commit):
+        notify_tasks.set_progress(2000, 100, 1000)
+        patch_setProgress.assert_called_once_with(2000, 100, 1000)
         patch_commit.assert_called_once_with()
 
 
     @patch('transaction.commit')
     @patch('ptmscout.database.experiment.getExperimentById')
-    def test_set_loading_stage(self, patch_getExp, patch_commit):
+    @patch('ptmscout.database.experiment.setExperimentProgress')
+    def test_set_loading_stage(self, patch_setProgress, patch_getExp, patch_commit):
         exp = createMockExperiment()
+        exp.loading_stage = 'query'
         patch_getExp.return_value = exp
         
         notify_tasks.set_loading_stage(exp.id, 'proteins', 1000)
         patch_getExp.assert_called_once_with(exp.id, check_ready=False, secure=False)
         
         self.assertEqual('proteins', exp.loading_stage)
-        self.assertEqual(0, exp.progress)
-        self.assertEqual(1000, exp.max_progress)
         exp.saveExperiment.assert_called_once_with()
+
+        patch_setProgress.assert_called_once_with(exp.id, 0, 1000)
 
         patch_commit.assert_called_once_with()
 

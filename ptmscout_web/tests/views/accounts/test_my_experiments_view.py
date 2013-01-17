@@ -19,18 +19,18 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         exp = experiment.getExperimentById(26, None, False)
         exp.status = 'loading'
         exp.loading_stage = 'proteins'
-        exp.max_progress = 10000
-        exp.progress = 1000
         exp.grantPermission(self.bot.user, 'owner')
         exp.saveExperiment()
+
+        experiment.setExperimentProgress(26, 1000, 10000)
         
         exp2 = experiment.getExperimentById(25, None, False)
         exp2.status = 'loading'
         exp2.loading_stage = 'GO terms'
-        exp2.progress=0
-        exp2.max_progress=0
         exp2.grantPermission(self.bot.user, 'owner')
         exp2.saveExperiment()
+
+        experiment.setExperimentProgress(25, 0, 0)
 
         exp3 = experiment.getExperimentById(28, None, False)
         exp3.status = 'configuration'
@@ -433,10 +433,10 @@ class MyExperimentsViewTests(UnitTestCase):
         
         self.assertEqual({exp.id: session.id}, smap)
         
-    
+    @patch('ptmscout.database.experiment.getExperimentProgress')
     @patch('ptmscout.views.accounts.my_experiments_view.get_sessions')
     @patch('ptmscout.database.modifications.countMeasuredPeptidesForExperiment')
-    def test_my_experiments_should_show_experiments(self, patch_countPeps, patch_getSessions):
+    def test_my_experiments_should_show_experiments(self, patch_countPeps, patch_getSessions, patch_getProgress):
         request = DummyRequest()
         ptm_user = createMockUser("username", "email", "password", 1)
         request.user = ptm_user
@@ -449,6 +449,7 @@ class MyExperimentsViewTests(UnitTestCase):
         exp3.status = 'configuration'
         exp4.status = 'error'
         
+        patch_getProgress.return_value = 100, 1000
         patch_getSessions.return_value = {"some map":"of session ids"}
         
         ptm_user.myExperiments.return_value = [exp1, exp2, exp3, exp4]
@@ -456,9 +457,12 @@ class MyExperimentsViewTests(UnitTestCase):
 
         info = manage_experiments(request)
         
+        patch_getProgress.assert_called_once_with(exp2.id)
         patch_getSessions.assert_called_once_with([exp3, exp4])
         patch_countPeps.assert_called_once_with(exp2.id)
 
+        self.assertEqual(100, info['experiments'][1].progress)
+        self.assertEqual(1000, info['experiments'][1].max_progress)
         self.assertEqual([exp1, exp2, exp4], info['experiments'])
         self.assertEqual([exp3], info['in_process'])
         self.assertEqual(patch_getSessions.return_value, info['sessions'])

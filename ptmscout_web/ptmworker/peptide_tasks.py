@@ -92,7 +92,7 @@ def load_peptide_modification(exp_id, protein_accession, protein_info, pep_seq, 
         create_errors_for_runs(exp_id, protein_accession, pep_seq, "Unexpected error: " + str(e), runs)
 
 
-UPDATE_EVERY=100
+UPDATE_EVERY=30
 
 @celery.task
 @upload_helpers.transaction_task

@@ -170,6 +170,13 @@ def manage_experiments(request):
     
     sessions = get_sessions(in_process + error_state)
     
+    for exp in available_experiments:
+        if exp.status == 'loading':
+            progress, max_progress = experiment.getExperimentProgress(exp.id)
+
+            exp.progress = progress
+            exp.max_progress = max_progress
+
     pep_counts = {}
     for exp in users_experiments:
         if exp.status == 'loading':
