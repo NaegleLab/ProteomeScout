@@ -69,9 +69,10 @@ def reset_password_received(context, patch_mail):
     context.result = context.form.submit()
     patch_mail.assert_called_once()
     
-    regex = re.compile("Username: ([a-zA-Z0-9\_\-]+)\\\\nPassword: ([a-z0-9A-Z]+)\\\\n")
+    regex = re.compile("Username: ([a-zA-Z0-9\_\-]+)<br>\\\\nPassword: ([a-z0-9A-Z]+)<br>\\\\n")
     regex_result = regex.search(str(patch_mail.call_args))
     
+    print str(patch_mail.call_args)
     new_username = regex_result.group(1)
     new_password = regex_result.group(2)
     
