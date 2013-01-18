@@ -1,10 +1,10 @@
 import xml.dom.minidom as xml
 from xml.parsers.expat import ExpatError
-import urllib2
+import urllib2, httplib
 from ptmscout.config import settings
 from ptmscout.utils import uploadutils
 from ptmscout.utils.decorators import rate_limit
-
+import traceback
 
 class PICRParser(object):
 
@@ -34,6 +34,9 @@ class PICRParser(object):
 picr_accession_query_url = "http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=%s&taxid=%d&database=IPI&database=REFSEQ&database=SWISSPROT"
 picr_sequence_query_url  = "http://www.ebi.ac.uk/Tools/picr/rest/getUPIForSequence?sequence=%s&taxid=%d&database=IPI&database=REFSEQ&database=SWISSPROT"
 PICR_QUERY_TIMEOUT=10
+PICR_QUERY_RETRIES=3
+
+
 class PICRError(Exception):
     pass
 
@@ -42,10 +45,21 @@ def get_picr(accession, taxon_id):
     if settings.DISABLE_PICR:
         return []
 
-    try:
-        result = urllib2.urlopen(picr_accession_query_url % (accession, taxon_id), timeout=PICR_QUERY_TIMEOUT)
-        return PICRParser(result.read()).references
-    except ExpatError:
-        return []
-    except:
-        raise PICRError()
+    i = 0
+    while i  < PICR_QUERY_RETRIES:
+        i+=1
+        try:
+            result = urllib2.urlopen(picr_accession_query_url % (accession, taxon_id), timeout=PICR_QUERY_TIMEOUT)
+            xml_result = result.read()
+            if xml_result == '':
+                return []
+
+            return PICRParser(xml_result).references
+        except ExpatError, e:
+            log.warning("ExpatError '%s' when querying PICR, retrying (%d / %d)", str(e), i, PICR_QUERY_RETRIES)
+        except urllib2.HTTPError, e:
+            log.warning("HTTPError '%s' when querying PICR, retrying (%d / %d)", str(e), i, PICR_QUERY_RETRIES)
+        except httplib.BadStatusLine:
+            log.warning("Got bad status line from PICR, retrying (%d / %d)", i, PICR_QUERY_RETRIES)
+
+    raise PICRError()
