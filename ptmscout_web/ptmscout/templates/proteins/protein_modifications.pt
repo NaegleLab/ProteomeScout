@@ -21,8 +21,9 @@
                             <td tal:content="mod['type']"></td>
 							<td>
 								<ul class="no_bullet">
-									<li tal:repeat="exp mod['experiments']">
-										<a tal:attributes="href request.application_url + '/experiments/' + str(exp.id)" tal:content="exp.name"></a>
+                                    <li tal:repeat="exp mod['experiments']">
+										<a tal:attributes="href request.application_url + '/experiments/' + str(exp.id)" tal:content="exp.name" tal:condition="exp.export==1"></a>
+										<div tal:content="exp.name" tal:condition="exp.export==0"></div>
 									</li>
 								</ul>
 							</td>

@@ -12,7 +12,11 @@ from tests.PTMScoutTestCase import IntegrationTestCase
 
 class TestProteinModificationViewsIntegration(IntegrationTestCase):
     def test_integration(self):
-        self.ptmscoutapp.get('/proteins/35546/modifications')
+        result = self.ptmscoutapp.get('/proteins/667/modifications')
+
+        str_result = str(result)
+        print str_result
+        self.assertEqual(-1, str_result.find("http://localhost/experiments/1"))
 
 class TestProteinModificationViews(unittest.TestCase):
     def setUp(self):
