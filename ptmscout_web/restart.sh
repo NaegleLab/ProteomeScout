@@ -20,7 +20,7 @@ then
     loglevel="DEBUG"
     config="development.ini"
 else
-    loglevel="DEBUG"
+    loglevel="INFO"
     config="production.ini"
 fi
 
