@@ -91,19 +91,24 @@ def build_accession_map(protein_ids):
 def import_go_terms(protein_result, exp_id):
     protein_map, new_protein_ids = protein_result
 
-    upload_helpers.store_stage_input(exp_id, 'GO terms', protein_result)
-    notify_tasks.set_loading_stage.apply_async((exp_id, 'GO terms', 0))
-
     protein_accession_multimap, protein_id_map = build_accession_map(new_protein_ids.values())
-
     GO_map = {}
     GO_annotation_task_args = upload_helpers.create_chunked_tasks(protein_accession_multimap, MAX_QUICKGO_BATCH_SIZE)
+    max_progress = len(GO_annotation_task_args) + 1
 
+    upload_helpers.store_stage_input(exp_id, 'GO terms', protein_result)
+    notify_tasks.set_loading_stage.apply_async((exp_id, 'GO terms', max_progress))
+
+    i=0
     for protein_accessions in GO_annotation_task_args:
         go_terms, _ = quickgo_tools.batch_get_GO_annotations(protein_accessions)
         GO_map.update( go_terms )
+        i+=1
+        notify_tasks.set_progress.apply_async((exp_id, i, max_progress))
 
     created_entries = create_missing_GO_annotations(GO_map, protein_accession_multimap, protein_id_map)
     create_hierarchy_for_missing_GO_annotations(created_entries)
+
+    notify_tasks.set_progress.apply_async((exp_id, max_progress, max_progress))
 
     return protein_map
