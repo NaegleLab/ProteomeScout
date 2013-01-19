@@ -15,11 +15,11 @@ class TestProteinSearchViewIntegration(IntegrationTestCase):
 
     def test_integration(self):
         result = self.ptmscoutapp.get('/proteins', {'acc_search':"ACK1", 'submitted':"true", 'species':"all"}, status=200)
-        result.mustcontain("4 results")
+        result.mustcontain("Showing 1 - 4 of 4 results")
 
     def test_integration_pep_search(self):
         result = self.ptmscoutapp.get('/proteins', {'pep_search':"RGR", 'submitted':"true", 'species':"all", 'page':'4'}, status=200)
-        result.showbrowser()
+        result.mustcontain("Showing 151 - 200 of 3585 results")
 
 class TestProteinSearchViews(UnitTestCase):
        

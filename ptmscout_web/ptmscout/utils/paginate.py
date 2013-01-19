@@ -15,6 +15,7 @@ class Paginator():
             self.current_page = 1
 
     def set_result_size(self, result_set_size):
+        self.size = result_set_size
         self.last_page = result_set_size / self.items_per_page
 
         if result_set_size % self.items_per_page != 0:
@@ -45,8 +46,17 @@ class Paginator():
     def prev_page_url(self):
         return self.get_page_url(self.current_page - 1)
 
+    def get_range(self):
+        first = (self.current_page - 1) * self.items_per_page + 1
+        last = self.current_page * self.items_per_page
+
+        if last > self.size:
+            last = self.size
+
+        return "Showing %d - %d of %d results" % (first, last, self.size)
+
     def build(self):
-        paginator_html = ""
+        paginator_html = "<div class=\"pager\">"
         if self.has_prev_page():
             paginator_html += '<a href="%s">&lt;&lt;</a>\n' % (self.prev_page_url())
         else:
@@ -62,6 +72,9 @@ class Paginator():
             paginator_html += '<a href="%s">&gt;&gt;</a>\n' % (self.next_page_url())
         else:
             paginator_html += '<span>&gt;&gt;</span>\n'
+
+        paginator_html += "<div class=\"range\">%s</div>" % (self.get_range())
+        paginator_html += "</div>"
 
         return paginator_html
 

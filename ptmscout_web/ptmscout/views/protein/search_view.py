@@ -45,8 +45,6 @@ def perform_query(form_schema, pager):
     limit, offset = pager.get_pager_limits()
     protein_cnt, proteins = protein.searchProteins(search=acc_search, species=selected_species, sequence=pep_search, page=(limit, offset))
 
-    print protein_cnt, limit, offset
-
     pager.set_result_size(protein_cnt)
 
     return sorted(proteins, key=lambda prot: prot.acc_gene)
@@ -67,7 +65,7 @@ def get_protein_metadata(prot, metadata_map, user):
             sites.add(mspep.peptide.site_pos)
             ptms.add(mspep.modification.name)
 
-    metadata_map[prot.id] = ( len(exp_ids), len(sites), ','.join(residues), ', '.join(ptms) )
+    metadata_map[prot.id] = ( len(prot.sequence), len(exp_ids), len(sites), ','.join(residues), ', '.join(ptms) )
 
 @view_config(route_name='protein_search', renderer='ptmscout:templates/proteins/protein_search.pt')
 def protein_search_view(request):
@@ -77,6 +75,7 @@ def protein_search_view(request):
     pager = paginate.Paginator(form_schema, QUERY_PAGE_LIMIT)
     pager.parse_parameters(request)
 
+    protein_cnt = 0
     proteins = []
     protein_metadata = {}
     errors = []

@@ -1,5 +1,4 @@
 <div metal:define-macro="protein_list">
-	<div tal:condition="submitted" class="result_count">${len(proteins)} results</div>
 	<div tal:condition="len(proteins) > 0" class="protein_list">
 		<table>
 			<thead>
@@ -7,6 +6,7 @@
                     <th>Protein</th>
                     <th>Gene</th>
                     <th>Species</th>
+                    <th>Sequence Length</th>
                     <th>#Reported Sources</th>
                     <th>#Modified Residues</th>
                     <th>Modified Amino Acids</th>
@@ -20,11 +20,12 @@
 						<a tal:attributes="href request.application_url + '/proteins/' + str(protein.id) + ('/data?experiment_id=%d' % experiment.id if experiment != None else '')" tal:content="protein.name"></a>
                     </td>
                     <td tal:content="protein.acc_gene"></td>
-					<td tal:content="protein.species.name"></td>
+                    <td tal:content="protein.species.name"></td>
 					<td tal:content="protein_metadata[protein.id][0]"></td>
 					<td tal:content="protein_metadata[protein.id][1]"></td>
 					<td tal:content="protein_metadata[protein.id][2]"></td>
 					<td tal:content="protein_metadata[protein.id][3]"></td>
+					<td tal:content="protein_metadata[protein.id][4]"></td>
                 </tr>
 			</tbody>
 		</table>
