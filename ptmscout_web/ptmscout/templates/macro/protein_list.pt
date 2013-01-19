@@ -4,36 +4,28 @@
 		<table>
 			<thead>
 				<tr align="left" class="header">
-					<th>Protein</th>
-					<th>Species</th>
-					<th>Site</th>
-					<th>Aligned Sequence</th>
-					<th tal:condition="include_predictions">Predictions</th>
+                    <th>Protein</th>
+                    <th>Gene</th>
+                    <th>Species</th>
+                    <th>#Reported Sources</th>
+                    <th>#Modified Residues</th>
+                    <th>Modified Amino Acids</th>
+                    <th>Modification Types</th>
 				</tr>
 			</thead>
 
 			<tbody>
 				<tr valign="top" tal:repeat="(r, protein) enumerate(proteins)" tal:attributes="class 'row ' + 'even' if r % 2 == 0 else 'odd';" >
 					<td>
-						<a tal:attributes="href request.application_url + '/proteins/' + str(protein.id) + ('/data?experiment_id=%d' % experiment.id if experiment != None else '')" tal:content="protein.acc_gene"></a>
-					</td>
+						<a tal:attributes="href request.application_url + '/proteins/' + str(protein.id) + ('/data?experiment_id=%d' % experiment.id if experiment != None else '')" tal:content="protein.name"></a>
+                    </td>
+                    <td tal:content="protein.acc_gene"></td>
 					<td tal:content="protein.species.name"></td>
-					<td class="modsite">
-						<div tal:repeat="phosphopep modifications[protein.id]" class="phosphopep_data" tal:content="phosphopep['site']"></div>
-					</td>
-					<td class="peptide">
-						<div tal:repeat="phosphopep modifications[protein.id]" class="phosphopep_data" tal:content="phosphopep['peptide']"></div>
-					</td>
-					<td tal:condition="include_predictions" class="predictions">
-						<tal:empty tal:repeat="source scansites[protein.id]">
-						<div class="source" tal:content="source"></div>
-						<div tal:repeat="prediction scansites[protein.id][source]">
-							<span class="name" tal:content="prediction[0]"></span>
-							<span class="value" tal:content="'%.2f' % (prediction[1])"></span>
-						</div>
-						</tal:empty>						
-					</td>
-				</tr>
+					<td tal:content="protein_metadata[protein.id][0]"></td>
+					<td tal:content="protein_metadata[protein.id][1]"></td>
+					<td tal:content="protein_metadata[protein.id][2]"></td>
+					<td tal:content="protein_metadata[protein.id][3]"></td>
+                </tr>
 			</tbody>
 		</table>
 	</div>

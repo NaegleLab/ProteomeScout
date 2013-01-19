@@ -187,10 +187,10 @@ def searchProteins(search=None, species=None, sequence=None, page=None):
         sq = q.subquery()
     else:
         limit, offset = page
-        sq = q.limit(limit).offset(offset).subquery()
+        sq = q.order_by(Protein.acc_gene).limit(limit).offset(offset).subquery()
 
     fq = DBSession.query(Protein).join(sq, Protein.id == sq.c.id)
-    return fq.count(), fq.all()
+    return q.count(), fq.all()
 
 def getProteinDomain(prot_id, pep_site):
     return DBSession.query(ProteinDomain).filter(and_(ProteinDomain.protein_id==prot_id, ProteinDomain.start <= pep_site, pep_site <= ProteinDomain.stop)).first()    
@@ -198,5 +198,4 @@ def getProteinDomain(prot_id, pep_site):
 
 def getProteinBySequence(seq, species):
     return DBSession.query(Protein).join(Protein.species).filter(Protein.sequence==seq, taxonomies.Species.name==species).first()
-
 
