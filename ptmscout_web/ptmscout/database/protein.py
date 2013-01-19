@@ -93,11 +93,11 @@ class Protein(Base):
     date = Column(DateTime)
     species_id = Column(Integer(10), ForeignKey('species.id'))
     
-    accessions = relationship("ProteinAccession", lazy='joined', order_by=ProteinAccession.type, cascade="all,delete-orphan")
-    domains = relationship("ProteinDomain", lazy='joined')
+    accessions = relationship("ProteinAccession", order_by=ProteinAccession.type, cascade="all,delete-orphan")
+    domains = relationship("ProteinDomain")
     
-    species = relationship("Species", lazy='joined')
-    GO_terms = relationship("GeneOntologyEntry", lazy='joined')
+    species = relationship("Species")
+    GO_terms = relationship("GeneOntologyEntry")
     expression_probes = relationship("ExpressionProbeset", secondary=expression_association_table)
     
     def __init__(self):
