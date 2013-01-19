@@ -106,7 +106,7 @@ class MeasuredPeptide(Base):
     peptide = Column(VARCHAR(150))
     
     experiment = relationship("Experiment")
-    protein = relationship("Protein", lazy='joined')
+    protein = relationship("Protein")
     
     peptides = relationship("PeptideModification", lazy='joined')
     data = relationship("ExperimentData")
