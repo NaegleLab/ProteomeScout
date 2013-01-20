@@ -5,7 +5,7 @@ from assertions import assertContains, assertRegexMatch
 from mock import patch
 import re
 from tests.behave.steps import bot
-
+import helpers, assertions
 
 @given(u'a user submits a dataset with an accession that looks like a GenPept accession, but is not a valid accession number')
 def submit_bad_accession(context):
@@ -119,32 +119,24 @@ def experiment_uploaded_check_email(context, patch_mail, patch_commit, patch_abo
 
 @then(u'the experiment browser should contain the correct peptides')
 def check_displayed_peptides(context):
-    result = context.result
+    p = context.result.pyquery
     
-    strres = str(result).replace("\n", " ")
-    #       1390       1400       1410
-    # AGLGIRQGGK APVTPRGRGR RGRPPSRTTG
-    #   LGIRQGGk APVTPRG
-    #         GK APVTPrGRGR RGR
-    #            APVTPRGrGR RGRPP
-    #              VTPRGRGr RGRPPSR
-    #               TPRGRGR rGRPPSRT
-    #                 RGRGR RGrPPSRTTG
-    print result
-    assertRegexMatch("%s.*%s" % ("K1390", "LGIRQGGkAPVTPRG"), strres)
-    assertRegexMatch("%s.*%s" % ("R1396", "GKAPVTPrGRGRRGR"), strres)
-    assertRegexMatch("%s.*%s" % ("R1398", "APVTPRGrGRRGRPP"), strres)
-    assertRegexMatch("%s.*%s" % ("R1400", "VTPRGRGrRGRPPSR"), strres)
-    assertRegexMatch("%s.*%s" % ("R1401", "TPRGRGRrGRPPSRT"), strres)
-    assertRegexMatch("%s.*%s" % ("R1403", "RGRGRRGrPPSRTTG"), strres)
+    table_tag = p('table')
+    pytable = helpers.parse_table(p, table_tag)
     
-    assertRegexMatch("%s.*%s" % ("K317", "FSFKLLKkECPIPNV"), strres)
-    assertRegexMatch("%s.*%s" % ("H73", "TLKYPIEhGIVTNWD"), strres)
-    assertRegexMatch("%s.*%s" % ("R144", "ENFVDKLrESLMSVA"), strres)
-    assertRegexMatch("%s.*%s" % ("H73", "TLKYPIEhGIVTNWD"), strres)
-    assertRegexMatch("%s.*%s" % ("R257", "GTGPQRPrSWAAADS"), strres)
-    assertRegexMatch("%s.*%s" % ("K212", "TLNEDSYkDSTLIMQ"), strres)
-    
+    exp_table = \
+    [['Protein', 'Gene', 'Species', 'Sequence Length', '#Reported Sources', '#Modified Residues', 'Modified Amino Acids', 'Modification Types'],
+     ['AP2-associated protein kinase 1', 'AAK1', 'homo sapiens', '961', '1', '1', 'K', 'Trimethylation'],
+     ['4-aminobutyrate aminotransferase, mitochondrial', 'Abat', 'rattus norvegicus', '500', '1', '1', 'R', 'Asymmetric dimethylarginine'],
+     ['Actin, cytoplasmic 1; AltName: Full=Beta-actin; Contains: Actin, cytopla', 'Actb', 'rattus norvegicus', '375', '2', '1', 'H', 'Phosphohistidine'],
+     ['Actin, cytoplasmic 1; AltName: Full=Beta-actin; Contains: Actin, cytopla', 'ACTB', 'homo sapiens', '375', '2', '1', 'H', 'Methylhistidine'],
+     ['Protein FAM228A', 'Fam228a', 'mus musculus', '299', '1', '1', 'R', 'Dimethylation'],
+     ['Tumor suppressor p53-binding protein 1; Short=p53-binding protein 1; Short=p53BP1; Sho', 'TP53BP1', 'homo sapiens', '1972', '2', '6', 'K,R', 'N6-methyllysine, Omega-N-methylarginine'],
+     ['14-3-3 protein theta; AltName: Full=14-3-3 protein tau; AltName: Full=14-3-3 protein T', 'YWHAQ', 'homo sapiens', '245', '2', '1', 'K', 'N6-methyllysine']]
+
+    assertions.assertEqual(8, len(pytable))
+    for i in xrange(0, 8):
+        assertions.assertIn(exp_table[i], pytable)
 
 def synchronous_assert_called(mock, limit=1):
     slept_time = 0.0

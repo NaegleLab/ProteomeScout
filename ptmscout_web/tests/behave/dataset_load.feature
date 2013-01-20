@@ -14,6 +14,7 @@ Feature: Dataset Load
             | peptides | proteins | errors |
             | 7        | 7        | 1      |
     
+    @runme
     Scenario: Load a dataset with bad amino acid assignments
           Given a user has loaded a dataset and the modification type does not match the amino acid for that species
           Then the user should be sent an email with a link to the experiment which contains:
@@ -47,7 +48,6 @@ Feature: Dataset Load
             | peptides | proteins | errors |
             | 16       | 14       | 1      |
 
-    @runme
     Scenario: Handle a dataset where the same peptide is reported
           Given a user submits a dataset in which the same peptide
           Then the user should be sent an email with a link to the experiment which contains:

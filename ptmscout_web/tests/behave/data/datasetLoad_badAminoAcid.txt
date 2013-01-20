@@ -8,4 +8,4 @@ ABCA15	Q6XBG2	Abca15	lysine methyl ester	K162	8107574	mouse	190.52		YLRFSDIkKNIN
 ACTB	P60709	ACTB	methylhistidine	H73	2103802	human	41.74	Actin	TLKYPIEhGIVTNWD		1		
 ACTB	P60711	Actb	methylhistidine	H73	2103802	rat	41.74	Actin	TLkYPIEhGIVTNWD	1	1	#error on one peptide since k is not a histidine	
 ACTB	P60711	Actb	methylation	H73	2103802	rat	41.74	Actin	TLKYPIEhgIVTNWD	1	1	#error on one peptide since g cannot be methylated	
-ACTB	P60711	Actb	phosphorylation	H73	2103802	rat	41.74	Actin	TLKYPIEhGIVTNWD	1	1	#error since histidine cannot be phosphorylated in verterbrates/eukaryotes	
+ACTB	P60711	Actb	phosphorylation	H73	2103802	rat	41.74	Actin	TLKYPIEhGIVTNWD	1	1	#error since histidine cannot be phosphorylated in verterbrates/eukaryotes (this is not true)	

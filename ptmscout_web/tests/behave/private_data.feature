@@ -31,7 +31,7 @@ Feature: Private Data
 		Given I have loaded a dataset and marked it private
 		When I press the "publish" button on my experiments page
 		Then everyone should be able to see my experiment
-		
+
 	Scenario: Private data does not appear in protein search
 		Given I have loaded a dataset and marked it private
 		When other users search for proteins in my dataset

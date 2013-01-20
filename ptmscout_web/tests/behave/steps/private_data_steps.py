@@ -4,6 +4,8 @@ from assertions import assertDoesNotContain, assertContains
 from ptmscout.config import strings
 from mock import patch
 from ptmscout.database import permissions
+import assertions
+import helpers
 
 @given(u'I have loaded a dataset and marked it private')
 def create_owning_user_with_datasets(context):
@@ -53,7 +55,6 @@ def user_search_for_ack1_and_homo_sapiens(context):
     form = context.result.form
     
     form.set('acc_search', "ACK1")
-    form.set('stringency',1)
     form.set('species',"homo sapiens")
     
     context.result = form.submit()
@@ -141,10 +142,16 @@ def error_403_forbidden(context):
     
 @then(u'my experimental data should not appear in the protein listing')
 def ack1_exp_data_not_on_search_page(context):
-    context.result.mustcontain("Y518")
-    assertDoesNotContain("Y857", context.result.normal_body)
-    assertDoesNotContain("Y858", context.result.normal_body)
-    
+    p = context.result.pyquery
+
+    table_tag = p('table')
+    pytable = helpers.parse_table(p, table_tag)
+
+    assertions.assertEqual(['activated p21cdc42Hs kinase [Homo sapiens].', 'ACK1', 'homo sapiens', '1036', '1', '1', 'Y', 'Phosphotyrosine'], pytable[1])
+    assertions.assertEqual(['Activated CDC42 kinase 1; Short=ACK-1; AltName: Full=Tyrosine kinase non-receptor prot', 'TNK2', 'homo sapiens', '1038', '1', '22', 'Y,S,T', 'Phosphoserine, Phosphotyrosine, Phosphothreonine'], pytable[2])
+    assertions.assertEqual(len(pytable), 3)
+
+
 @then(u'my experimental data should not appear in the protein summary')
 def ack1_exp_data_not_on_protein_page(context):
     context.result.mustcontain("Y518")
