@@ -86,7 +86,7 @@ class TestProteinSearchViews(UnitTestCase):
         result = protein_search_view(request)
         
         patch_getMods.assert_called_with(p1.id, ptm_user)
-        patch_getProteins.assert_called_with(search=request.GET['acc_search'],
+        patch_getProteins.assert_called_with(exp_id=None, search=request.GET['acc_search'],
             species=request.GET['species'], sequence=request.GET['pep_search']
         , page=(50,0))
         patch_getSpecies.assert_called_with()

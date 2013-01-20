@@ -1,6 +1,7 @@
 if [ $# -eq 0 ]
 then
     exitcode=0
+    failed_tests=()
     for f in `find tests | grep "test_.*\.py$"`
     do
         proceed=`head -n1 $f | grep '# Skip' | wc -l`
@@ -16,6 +17,7 @@ then
             then
                 echo "Failed test..."
                 echo "$output"
+                failed_tests+=("$package")
                 exitcode=$rc
             fi
         else
@@ -27,7 +29,11 @@ then
     then
         echo "Success! All tests passed."
     else
-        echo "Failed. Some tests failed."
+        echo "Failed. Some tests failed:"
+        for package in "${failed_tests[@]}"
+        do
+            echo "$package"
+        done
     fi
     exit $exitcode
 else

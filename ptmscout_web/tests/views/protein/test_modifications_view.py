@@ -15,7 +15,6 @@ class TestProteinModificationViewsIntegration(IntegrationTestCase):
         result = self.ptmscoutapp.get('/proteins/667/modifications')
 
         str_result = str(result)
-        print str_result
         self.assertEqual(-1, str_result.find("http://localhost/experiments/1"))
 
 class TestProteinModificationViews(unittest.TestCase):
