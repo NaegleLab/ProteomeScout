@@ -34,7 +34,7 @@ def build_validator(form_schema):
     return validator
 
 
-def perform_query(form_schema, pager):
+def perform_query(form_schema, pager, exp_id=None):
     acc_search = form_schema.get_form_value('acc_search')
     pep_search = form_schema.get_form_value('pep_search')
     selected_species = form_schema.get_form_value('species')
@@ -43,15 +43,15 @@ def perform_query(form_schema, pager):
         selected_species=None
 
     limit, offset = pager.get_pager_limits()
-    protein_cnt, proteins = protein.searchProteins(search=acc_search, species=selected_species, sequence=pep_search, page=(limit, offset))
+    protein_cnt, proteins = protein.searchProteins(search=acc_search, species=selected_species, sequence=pep_search, page=(limit, offset), exp_id=exp_id)
 
     pager.set_result_size(protein_cnt)
 
     return sorted(proteins, key=lambda prot: prot.acc_gene)
 
-def get_protein_metadata(prot, metadata_map, user):
+def get_protein_metadata(prot, metadata_map, user, exp_id=None):
     measured = modifications.getMeasuredPeptidesByProtein(prot.id, user)
-    
+
     exp_ids = set()
     residues = set()
     ptms = set()
@@ -60,6 +60,10 @@ def get_protein_metadata(prot, metadata_map, user):
     for ms in measured:
         exp_ids.add(ms.experiment_id)
 
+    if exp_id:
+        measured = [ ms for ms in measured if ms.experiment_id == exp_id ]
+
+    for ms in measured:
         for mspep in ms.peptides:
             residues.add(mspep.peptide.site_type)
             sites.add(mspep.peptide.site_pos)

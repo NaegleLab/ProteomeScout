@@ -167,6 +167,9 @@ def getMeasuredPeptidesByProtein(pid, user):
     modifications = DBSession.query(MeasuredPeptide).filter_by(protein_id=pid).all()
     return [ mod for mod in modifications if mod.experiment.checkPermissions(user) and mod.experiment.ready() ]
 
+def queryProteinsByExperiment(exp_id):
+    return DBSession.query(MeasuredPeptide.protein_id).filter(MeasuredPeptide.experiment_id==exp_id).distinct()
+
 def getMeasuredPeptidesByExperiment(eid, user=None, pids = None, secure=True, check_ready=True):
     if(pids != None):
         modifications = DBSession.query(MeasuredPeptide).filter(and_(MeasuredPeptide.experiment_id==eid, MeasuredPeptide.protein_id.in_(pids))).all()

@@ -1,5 +1,6 @@
-from mock import patch
+from mock import patch, call
 from ptmscout.config import strings
+from ptmscout.database import Species
 from ptmscout.views.experiment.browse_view import browse_experiment
 from pyramid import testing
 from pyramid.testing import DummyRequest
@@ -11,10 +12,12 @@ from tests.PTMScoutTestCase import IntegrationTestCase
 
 class ExperimentBrowseViewIntegrationTests(IntegrationTestCase):
     def test_experiment_browse_view(self):
-        self.ptmscoutapp.get('/experiments/26/browse')
+        result = self.ptmscoutapp.get('/experiments/26/browse')
+        result.mustcontain('Showing 1 - 50 of 58')
         
     def test_experiment_browse_search(self):
-        self.ptmscoutapp.post('/experiments/26/browse', {'submitted':"true", 'acc_search':"ACK1", 'stringency':"1"})
+        result = self.ptmscoutapp.get('/experiments/26/browse', {'submitted':"true", 'acc_search':"ACK1"})
+        result.mustcontain('Showing 1 - 1 of 1 results')
 
 class ExperimentBrowseViewTests(unittest.TestCase):
     def setUp(self):
@@ -23,36 +26,6 @@ class ExperimentBrowseViewTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
         
-    @patch('ptmscout.database.experiment.getExperimentById')
-    def test_experiment_browse_view_should_show_error_when_search_acc_gene_empty(self, patch_getExperiment):
-        mock_experiment = createMockExperiment(1, 0, 0)
-        patch_getExperiment.return_value = mock_experiment
-        
-        mock_experiment.name = "experiment name"
-        
-        request = DummyRequest()
-        
-        request.POST['submitted'] = "true"
-        request.POST['acc_search'] = "   "
-        request.POST['stringency'] = "2 "
-
-        request.user = None
-        request.matchdict['id'] = 1
-    
-        result = browse_experiment(request)
-    
-        self.assertEqual([], result['proteins'])
-        self.assertEqual(True, result['include_predictions'])
-        self.assertEqual({}, result['modifications'])
-        self.assertEqual(True, result['submitted'])
-        
-        self.assertEqual(mock_experiment, result['experiment'])
-        self.assertEqual(strings.experiment_browse_page_title % ("experiment name"), result['pageTitle'])
-        
-        self.assertEqual("", result['acc_search'])
-        self.assertEqual("2", result['stringency'])
-        self.assertEqual(mock_experiment, result['experiment'])
-    
     def setup_experiment_browse_test(self, patch_getExperiment, patch_getProteins, patch_getMods):
         mock_experiment = createMockExperiment(1, 0, 0)
         patch_getExperiment.return_value = mock_experiment
@@ -110,57 +83,50 @@ class ExperimentBrowseViewTests(unittest.TestCase):
         
         return request, p1, p2, mock_experiment, pep1, pep2, pep3, pep4, s1, s2, s3, protein_list
 
-    @patch('ptmscout.database.modifications.getMeasuredPeptidesByExperiment')
+    @patch('ptmscout.database.taxonomies.getAllSpecies')
+    @patch('ptmscout.database.modifications.getMeasuredPeptidesByProtein')
     @patch('ptmscout.database.protein.searchProteins')
     @patch('ptmscout.database.experiment.getExperimentById')
-    def test_experiment_browse_view_when_searching(self, patch_getExperiment, patch_getProteins, patch_getMods):
+    def test_experiment_browse_view_when_searching(self, patch_getExperiment, patch_getProteins, patch_getMods, patch_getSpecies):
+        species_list = [Species('mus musculus'), Species('homo sapiens')]
+        patch_getSpecies.return_value = species_list
         request, p1, p2, mock_experiment, pep1, pep2, pep3, pep4, _, s2, s3, protein_list = self.setup_experiment_browse_test(patch_getExperiment, patch_getProteins, patch_getMods)
         
-        request.POST['submitted'] = "true"
-        request.POST['acc_search'] = "ACK1"
-        request.POST['stringency'] = "2"
+        request.GET['submitted'] = "true"
+        request.GET['acc_search'] = "ACK1"
         request.matchdict['id'] = 1
         
         result = browse_experiment(request)
         
-        patch_getProteins.assert_called_once_with("ACK1")
+        patch_getProteins.assert_called_once_with(exp_id=1, search='ACK1', page=(50, 0), species=None, sequence='')
         patch_getExperiment.assert_called_once_with(1, request.user)
-        patch_getMods.assert_called_once_with(1, request.user, [p1.id, p2.id])
-        self.assertEqual("ACK1", result['acc_search'])
-        self.assertEqual("2", result['stringency'])
+        self.assertIn(call(p1.id, request.user), patch_getMods.call_args_list)
+        self.assertIn(call(p2.id, request.user), patch_getMods.call_args_list)
+
         self.assertEqual(mock_experiment, result['experiment'])
         self.assertEqual(strings.experiment_browse_page_title % ("experiment name"), result['pageTitle'])
         
-        sorted_peps = sorted([pep1, pep2, pep3], key=lambda pep: pep.getName())
-        parsed_peps = [{'site':pep.getName(), 'peptide':pep.getPeptide()} for pep in sorted_peps]
-        
         self.assertEqual(protein_list, result['proteins'])
-        self.assertEqual(True, result['include_predictions'])
-        self.assertEqual({p1.id: parsed_peps, p2.id: [{'site':pep4.getName(), 'peptide':pep4.getPeptide()}]}, result['modifications'])
-        self.assertEqual({p1.id: {}, p2.id: {'scansite':[(s3.value, s3.score)], 'scansite_kinase':[(s2.value, s2.score)]}}, result['scansites'])
         self.assertEqual(True, result['submitted'])
         
-    @patch('ptmscout.database.modifications.getMeasuredPeptidesByExperiment')
-    @patch('ptmscout.database.protein.searchProteins')
+    @patch('ptmscout.database.taxonomies.getAllSpecies')
+    @patch('ptmscout.database.modifications.getMeasuredPeptidesByProtein')
+    @patch('ptmscout.database.protein.getProteinsByExperiment')
     @patch('ptmscout.database.experiment.getExperimentById')
-    def test_experiment_browse_view_when_no_search_parameters(self, patch_getExperiment, patch_getProteins, patch_getMods):
+    def test_experiment_browse_view_when_no_search_parameters(self, patch_getExperiment, patch_getProteins, patch_getMods, patch_getSpecies):
+        species_list = [Species('mus musculus'), Species('homo sapiens')]
+        patch_getSpecies.return_value = species_list
         request, p1, p2, mock_experiment, pep1, pep2, pep3, pep4, _, s2, s3, protein_list = self.setup_experiment_browse_test(patch_getExperiment, patch_getProteins, patch_getMods)
         request.matchdict['id'] = 1
         
         result = browse_experiment(request)
         
         patch_getExperiment.assert_called_once_with(1, request.user)
-        patch_getMods.assert_called_once_with(1, request.user)
-        self.assertEqual("", result['acc_search'])
-        self.assertEqual("1", result['stringency'])
+        self.assertIn(call(p1.id, request.user), patch_getMods.call_args_list)
+        self.assertIn(call(p2.id, request.user), patch_getMods.call_args_list)
+
         self.assertEqual(mock_experiment, result['experiment'])
         self.assertEqual(strings.experiment_browse_page_title % ("experiment name"), result['pageTitle'])
         
-        sorted_peps = sorted([pep1, pep2, pep3], key=lambda pep: pep.getName())
-        parsed_peps = [{'site':pep.getName(), 'peptide':pep.getPeptide()} for pep in sorted_peps]
-        
         self.assertEqual(protein_list, result['proteins'])
-        self.assertEqual(True, result['include_predictions'])
-        self.assertEqual({p1.id: parsed_peps, p2.id: [{'site':pep4.getName(), 'peptide':pep4.getPeptide()}]}, result['modifications'])
-        self.assertEqual({p1.id: {}, p2.id: {'scansite':[(s3.value, s3.score)], 'scansite_kinase':[(s2.value, s2.score)]}}, result['scansites'])
         self.assertEqual(False, result['submitted'])

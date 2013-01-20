@@ -1,73 +1,49 @@
 from ptmscout.config import strings
-from ptmscout.database import experiment, protein, modifications
-from ptmscout.utils import webutils
+from ptmscout.database import experiment, taxonomies
+from ptmscout.config import strings
+from ptmscout.database import protein, modifications, taxonomies
+from ptmscout.utils import webutils, forms, paginate
+from ptmscout.views.protein import search_view
 from pyramid.view import view_config
+
+def query_all(exp_id, pager):
+    protein_cnt, proteins = protein.getProteinsByExperiment(exp_id, pager.get_pager_limits())
+    pager.set_result_size(protein_cnt)
+
+    return proteins
+
 @view_config(route_name='experiment_browse', renderer='ptmscout:templates/experiments/experiment_browse.pt')
 def browse_experiment(request):
-    submitted = webutils.post(request, 'submitted', False)
-    acc_search = webutils.post(request, 'acc_search', "").strip()
-    stringency = webutils.post(request, 'stringency', "1").strip()
-    submitted = (submitted == "true")
-    
-    experiment_id = request.matchdict['id']
+    species_list = [ species.name for species in taxonomies.getAllSpecies() ]
+    submitted, form_schema = search_view.build_schema(request, species_list)
+
+    pager = paginate.Paginator(form_schema, search_view.QUERY_PAGE_LIMIT)
+    pager.parse_parameters(request)
+
+    experiment_id = int(request.matchdict['id'])
     ptm_exp = experiment.getExperimentById(experiment_id, request.user)
     
+    protein_cnt = 0
     proteins = []
-    mods = {}
-    predictions = {}
-    
-    if(not submitted or len(acc_search) > 0):
-        
-        if(submitted):
-            protein_cnt, protein_list = protein.searchProteins(acc_search)
-            mod_list = modifications.getMeasuredPeptidesByExperiment(ptm_exp.id, request.user, [p.id for p in protein_list])
-        else:
-            mod_list = modifications.getMeasuredPeptidesByExperiment(ptm_exp.id, request.user)
-        
-        prots = {}
-        
-        for mod in mod_list:
-            prots[mod.protein_id] = mod.protein
-            
-            pep_list = mods.get(mod.protein_id, set())
-            
-            for p in mod.peptides:
-                pep = p.peptide
-                pep_list.add(pep)
-            
-            mods[mod.protein_id] = pep_list
-        
-        proteins = sorted( [ prots[pid] for pid in prots ], key=lambda prot: prot.acc_gene )
-        
-        for pid in mods:
-            predictions[pid] = []
-            if len(mods[pid])==1:
-                for pep in mods[pid]:
-                    predictions[pid].extend(pep.predictions)
-            
-            mods[pid] = [ {'site':pep.getName(), 'peptide':pep.getPeptide()} for pep in mods[pid] ]
-            mods[pid] = sorted( mods[pid], key=lambda pep: pep['site'] )
-            
-        for pid in predictions:
-            pid_predictions = predictions[pid]
-            predictions[pid] = {}
-            
-            for scansite in pid_predictions:
-                predictions[pid][scansite.source] = []
-                
-            for scansite in pid_predictions:
-                predictions[pid][scansite.source].append((scansite.value, scansite.score)) 
-                
-            for source in predictions[pid]:
-                predictions[pid][source] = sorted(predictions[pid][source], key=lambda item: item[0])           
-            
-    
-    return {'acc_search': acc_search,
-            'stringency': stringency,
+    protein_metadata = {}
+    errors = []
+
+    if submitted:
+        errors = search_view.build_validator(form_schema).validate()
+        if len(errors) == 0:
+            proteins = search_view.perform_query(form_schema, pager, experiment_id)
+    else:
+        proteins = query_all(experiment_id, pager)
+
+    for p in proteins:
+        search_view.get_protein_metadata(p, protein_metadata, request.user, experiment_id)
+
+    form_renderer = forms.FormRenderer(form_schema)
+    return {'pageTitle': strings.experiment_browse_page_title % (ptm_exp.name),
             'experiment': ptm_exp,
-            'submitted': submitted,
-            'pageTitle': strings.experiment_browse_page_title % (ptm_exp.name),
-            'proteins': proteins,
-            'include_predictions': True,
-            'scansites': predictions,
-            'modifications': mods}
+            'form':form_renderer,
+            'pager': pager,
+            'proteins':proteins,
+            'protein_metadata':protein_metadata,
+            'errors': errors,
+            'submitted': submitted}

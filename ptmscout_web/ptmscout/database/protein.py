@@ -167,7 +167,7 @@ def getProteinsByAccession(accessions, species=None):
     
     return q.all()
 
-def searchProteins(search=None, species=None, sequence=None, page=None):
+def searchProteins(search=None, species=None, sequence=None, page=None, exp_id=None):
     search = ( "%" + search + "%" ) if search else "%"
 
     q = DBSession.query(Protein.id).join(Protein.accessions).join(Protein.species)
@@ -178,19 +178,39 @@ def searchProteins(search=None, species=None, sequence=None, page=None):
     if sequence:
         seq_search = ( "%" + sequence + "%" ) if sequence else "%"
         clause = and_(clause, Protein.sequence.like(seq_search))
+
+    if exp_id:
+        from ptmscout.database import modifications
+        sq = modifications.queryProteinsByExperiment(exp_id).subquery()
+        q = q.join(sq, Protein.id == sq.c.protein_id)
+
     if species:
         clause = and_(clause, taxonomies.Species.name==species)
 
-    q = q.filter(clause).distinct()
+    q = q.filter(clause).distinct().order_by(Protein.acc_gene)
 
     if page==None:
         sq = q.subquery()
     else:
         limit, offset = page
-        sq = q.order_by(Protein.acc_gene).limit(limit).offset(offset).subquery()
+        sq = q.limit(limit).offset(offset).subquery()
 
     fq = DBSession.query(Protein).join(sq, Protein.id == sq.c.id)
     return q.count(), fq.all()
+
+def getProteinsByExperiment(exp_id, page=None):
+    from ptmscout.database import modifications
+
+    sq = modifications.queryProteinsByExperiment(exp_id).subquery()
+    q = DBSession.query(Protein.id).join(sq, Protein.id == sq.c.protein_id).order_by(Protein.acc_gene)
+    result_size = q.count()
+
+    if page:
+        limit, offset = page
+        q = q.limit(limit).offset(offset)
+    sq = q.subquery()
+
+    return result_size, DBSession.query(Protein).join(sq, Protein.id == sq.c.id).all()
 
 def getProteinDomain(prot_id, pep_site):
     return DBSession.query(ProteinDomain).filter(and_(ProteinDomain.protein_id==prot_id, ProteinDomain.start <= pep_site, pep_site <= ProteinDomain.stop)).first()    
