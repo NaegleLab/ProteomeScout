@@ -100,6 +100,7 @@ class TestProteinStructureViews(UnitTestCase):
         request = DummyRequest()
         request.user = createMockUser()
         request.matchdict['id'] = '35546'
+        request.GET['experiment_id']=1302
 
         prot = createMockProtein()
         prot.id = 35546
@@ -130,7 +131,8 @@ class TestProteinStructureViews(UnitTestCase):
                     'mods': formatted_mods,
                     'exps': formatted_exps,
                     'mod_types': formatted_mod_types,
-                    'pfam_url': settings.pfam_family_url
+                    'pfam_url': settings.pfam_family_url,
+                    'experiment':1302
                 }
 
         self.assertEqual(exp_data, decoded_data)

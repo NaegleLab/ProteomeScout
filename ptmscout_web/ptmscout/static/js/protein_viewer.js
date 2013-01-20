@@ -175,8 +175,9 @@ function get_residue_tooltip_text(data) {
     var site = data.key;
     var amino = data.value.residue;
     var mod_types = d3.keys(data.value.mods);
+    var peptide = data.value.peptide;
 
-    var text = "Residue: {0}{1} Modifications: {2}".format(amino, site, mod_types.join(', '));
+    var text = "Residue: {0}{1}<br>15-mer: {2}<br>Modifications: {3}<br>".format(amino, site, peptide, mod_types.join(', '));
 
     return text;
 }
@@ -406,6 +407,20 @@ TrackViewer.prototype.generate_ticks = function(parent_element, h, values, size,
 };
 
 
+function get_15mer(k, seq) {
+    k = parseInt(k) - 1;
+    var start = k - 7;
+    var end = k + 8;
+
+    if(start < 0)
+        start = 0;
+    if(end > seq.length)
+        end = seq.length;
+
+    return seq.substring(start, k) + seq.substring(k,k+1).toLowerCase() + seq.substring(k+1, end);
+}
+
+
 function StructureViewer(protein_data) {
     this.show_residues_size_limit = 100;
     this.protein_data = protein_data
@@ -440,7 +455,9 @@ function StructureViewer(protein_data) {
     var max_mods = 0;
     for(var k in protein_data.mods) {
         var num_mods = d3.keys(protein_data.mods[k].mods).length;
+        var peptide = get_15mer(k, protein_data.seq)
         protein_data.mods[k].num_mods = num_mods;
+        protein_data.mods[k].peptide = peptide;
         if(num_mods > max_mods){
             max_mods = num_mods;
         }
@@ -532,12 +549,15 @@ StructureViewer.prototype.update_display = function() {
     t.selectAll("line.domain")
         .style('opacity', domain_mode ? 1 : 0);
     t.selectAll("rect.domain")
-        .style('opacity', domain_mode ? 1 : 0);
+        .style('opacity', domain_mode ? 1 : 0)
+        .style('cursor', domain_mode ? 'pointer' : 'default');
     t.selectAll("text.domain")
         .style('opacity', function(d) { return domain_mode && d.show ? 1 : 0; });
 
+    residue_mode = this.track_display_modes['residue'];
     t.selectAll(".residue")
-        .style('opacity', this.track_display_modes['residue'] ? 1 : 0);
+        .style('opacity', residue_mode ? 1 : 0)
+        .style('cursor', residue_mode ? 'pointer' : 'default');
 }
 
 StructureViewer.prototype.toggle_ptm = function(ptm_name, mode) {
@@ -619,6 +639,15 @@ $(function(){
 
     $('.protein_viewer').each( function() {
         data = Base64.decode( $(this).find('.data').text() );
-        window.structure_viewer = new StructureViewer( JSON.parse( data ));
+        json_data = JSON.parse( data );
+        window.structure_viewer = new StructureViewer( json_data );
+        if(json_data.experiment != null && json_data.experiment != undefined){
+            $('.exps input.exptoggle').each(
+                function(){
+                    exp = parseInt($(this).attr('id').substring(1));
+                    if(exp != json_data.experiment)
+                        $(this).click();
+                });
+        }
     });
 });

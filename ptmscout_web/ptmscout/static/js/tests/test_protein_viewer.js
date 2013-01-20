@@ -1,5 +1,14 @@
 QUnit.config.reorder = false;
 
+test( "draw-residues", function() {
+    ok( -1 != $('#S102').attr('title').indexOf('QSTFRKTsPAPGGPA') );
+    ok( -1 != $('#Y284').attr('title').indexOf('LPQNDDHyVMQEHRK') );
+    ok( -1 != $('#Y518').attr('title').indexOf('GGVKKPTyDPVSEDQ') );
+    ok( -1 != $('#Y827').attr('title').indexOf('SFASDPKyATPQVIQ') );
+    ok( -1 != $('#Y859').attr('title').indexOf('KKVSSTHyYLLPERP') );
+    ok( -1 != $('#Y860').attr('title').indexOf('KVSSTHYyLLPERPS') );
+});
+
 test( "draw-domains", function() {
     ok( 4 == $('svg rect.domain').length );
     ok( 4 == $('svg text.domain').length );

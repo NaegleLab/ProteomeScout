@@ -1,6 +1,7 @@
 from pyramid.view import view_config
 from ptmscout.config import strings, settings
 from ptmscout.database import protein, modifications
+from ptmscout.utils import webutils
 import json, base64
 
 def format_protein_domains(prot):
@@ -48,6 +49,10 @@ def format_protein_modifications(prot, mod_sites):
 def protein_structure_viewer(request):
     protein_id = int(request.matchdict['id'])
     prot = protein.getProteinById(protein_id)
+    try:
+        experiment_filter = int( webutils.get(request, 'experiment_id', None) )
+    except:
+        experiment_filter = None
 
     mod_sites = modifications.getMeasuredPeptidesByProtein(protein_id, request.user)
 
@@ -59,7 +64,8 @@ def protein_structure_viewer(request):
             'mods': formatted_mods,
             'mod_types': formatted_mod_types,
             'exps': formatted_exps,
-            'pfam_url': settings.pfam_family_url}
+            'pfam_url': settings.pfam_family_url,
+            'experiment':experiment_filter}
     encoded_data = base64.b64encode( json.dumps( data ) )
 
     return {'pageTitle': strings.protein_structure_page_title,
