@@ -1,9 +1,13 @@
 accession_type_strings = {'ipi':"International Protein Index", 
                      'gene_synonym':"Gene Synonym",
                      'refseq': "RefSeq",
-                     'swissprot': "SwissProt",
+                     'swissprot': "UniProt",
                      'genbank': "GenBank",
-                     'gi': "Gene Index"}
+                     'gi': "Gene Index",
+                     'uniprot': "UniProt",
+                     'ddbj': "DDBJ",
+                     'embl': "EMBL"
+                     }
 
 success_header = "Success"
 

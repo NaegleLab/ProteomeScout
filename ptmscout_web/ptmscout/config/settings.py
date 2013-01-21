@@ -7,6 +7,7 @@ MINIMUM_PASSWORD_LENGTH = 7
 
 
 accession_urls = {'swissprot':"http://www.uniprot.org/uniprot/%s",
+                  'uniprot':"http://www.uniprot.org/uniprot/%s",
                   'entrez_protein':"http://www.ncbi.nlm.nih.gov/protein/%s",
                   'gi':"http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?db=protein&amp;id=%s",
                   'refseq':"http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?db=protein&amp;id=%s",
