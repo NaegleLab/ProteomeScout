@@ -10,6 +10,44 @@ from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 
 class TestProteinDataViews(UnitTestCase):
 
+    @patch('ptmscout.views.protein.data_view.filter_mods')
+    @patch('ptmscout.views.protein.data_view.format_protein_data')
+    @patch('ptmscout.database.modifications.getMeasuredPeptidesByProtein')
+    @patch('ptmscout.database.protein.getProteinById')
+    def test_protein_data_view_should_filter_data_by_site(self, patch_getProtein, patch_getMods, patch_formatProteinData, patch_filterMods):
+        request = DummyRequest()
+
+        mock_prot = createMockProtein()
+        request.matchdict['id'] = str(mock_prot.id)
+        
+        site_pos = 815
+        request.GET['site_pos'] = str(site_pos)
+        patch_getProtein.return_value = mock_prot
+        
+        mock_user = createMockUser("username", "email", "password", 1)
+        request.user = mock_user
+        
+        measurements = ["some", "measurements"]
+        filtered_measurements = ["some"]
+        formatted_experiment_data = ["some","formatted","data"]
+
+        patch_getMods.return_value = measurements
+        patch_formatProteinData.return_value = formatted_experiment_data
+        patch_filterMods.return_value = filtered_measurements
+        
+        result = protein_experiment_data_view(request)
+
+        patch_filterMods.assert_called_once_with(measurements, site_pos)
+        patch_formatProteinData.assert_called_once_with(filtered_measurements)
+        patch_getProtein.assert_called_once_with(mock_prot.id)
+        patch_getMods.assert_called_once_with(mock_prot.id, request.user)
+        
+        self.assertEqual(strings.protein_data_page_title, result['pageTitle'])
+        self.assertEqual(mock_prot, result['protein'])
+        self.assertEqual(formatted_experiment_data, result['experiment_data'])
+        
+
+
     @patch('ptmscout.views.protein.data_view.format_protein_data')
     @patch('ptmscout.database.modifications.getMeasuredPeptidesByExperiment')
     @patch('ptmscout.database.protein.getProteinById')
@@ -148,7 +186,22 @@ class TestProteinDataViews(UnitTestCase):
 class ProteinDataViewIntegrationTest(IntegrationTestCase):
     def test_protein_view_integration(self):
         result = self.ptmscoutapp.get('/proteins/35546/data')
-        
+
+        result.mustcontain('Y518')
+        result.mustcontain('<div class="name">average</div>')
+        result.mustcontain('<div class="units">time(min)</div>')
+        result.mustcontain('<div class="peptides">Y857,Y858</div>')
+        result.mustcontain('<div class="datapoint">0,0.114,data</div>')
+        result.mustcontain('<div class="datapoint">5,1.0,data</div>')
+        result.mustcontain('<div class="datapoint">10,1.348,data</div>')
+        result.mustcontain('<div class="datapoint">30,0.32,data</div>')
+
+
+    def test_protein_view_integration_site_pos(self):
+        result = self.ptmscoutapp.get('/proteins/35546/data?site_pos=857')
+        strres = str(result)
+
+        self.assertEqual(-1, strres.find('Y518'))
         result.mustcontain('<div class="name">average</div>')
         result.mustcontain('<div class="units">time(min)</div>')
         result.mustcontain('<div class="peptides">Y857,Y858</div>')
