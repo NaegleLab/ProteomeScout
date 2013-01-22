@@ -260,6 +260,8 @@ div.protein_navigation {
 }
 
 table#peptide_table {
+  margin-left:auto;
+  margin-right:auto;
   width: 95%;
   border: 1px solid black;   
   max-width: 1024px;
