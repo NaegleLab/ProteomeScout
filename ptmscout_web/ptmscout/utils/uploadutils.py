@@ -257,14 +257,17 @@ def assign_columns_from_session_history(session, header):
 
 def assign_column_defaults(session):
     header, _ = load_header_and_data_rows(session.data_file)
-    
+    columns = assign_columns_by_name(header)
+
     if session.columns != []:
-        return assign_columns_from_session(session)
+        result = assign_columns_from_session(session)
+        columns['columns'].update( result['columns'] )
+
+    elif session.parent_experiment != None:
+        result = assign_columns_from_session_history(session, header)
+        columns['columns'].update( result['columns'] )
     
-    if session.parent_experiment != None:
-        return assign_columns_from_session_history(session, header)
-    
-    return assign_columns_by_name(header)
+    return columns
 
 
 def load_header_and_data_rows(data_file, N=-1):

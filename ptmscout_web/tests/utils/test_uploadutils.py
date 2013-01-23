@@ -271,11 +271,10 @@ class TestUploadUtils(unittest.TestCase):
                           }, defs)
         
         
-        
-
     @patch('ptmscout.utils.uploadutils.load_header_and_data_rows')        
     @patch('ptmscout.utils.uploadutils.assign_columns_from_session_history')
-    def test_assign_column_defaults_should_assign_from_history_if_session_empty(self, patch_assign_columns, patch_load_header):
+    @patch('ptmscout.utils.uploadutils.assign_columns_by_name')
+    def test_assign_column_defaults_should_assign_from_history_if_session_empty(self, patch_name_columns, patch_assign_columns, patch_load_header):
         user = createMockUser()
         session = createMockSession(user)
         session.parent_experiment = 10
@@ -284,17 +283,20 @@ class TestUploadUtils(unittest.TestCase):
         header = "some header"
         patch_load_header.return_value = header, []
         
-        patch_assign_columns.return_value = {"some assignments":"vals"}
+        patch_name_columns.return_value = {'columns': {"original assignments":"vals1"}, 'units': "time(min)"}
+        patch_assign_columns.return_value = {'columns': {"updated assignments":"vals2"}, 'units': ""}
         rval = assign_column_defaults(session)
         
-        self.assertEqual({"some assignments":"vals"}, rval)
+        self.assertEqual({"original assignments":"vals1", "updated assignments":"vals2"}, rval['columns'])
+        self.assertEqual('time(min)', rval['units'])
         patch_assign_columns.assert_called_with(session, header)
         patch_load_header.assert_called_once_with(session.data_file)
 
 
     @patch('ptmscout.utils.uploadutils.load_header_and_data_rows')        
     @patch('ptmscout.utils.uploadutils.assign_columns_from_session')
-    def test_assign_column_defaults_should_assign_from_session_if_not_empty(self, patch_assign_columns, patch_load_header):
+    @patch('ptmscout.utils.uploadutils.assign_columns_by_name')
+    def test_assign_column_defaults_should_assign_from_session_if_not_empty(self, patch_name_columns, patch_assign_columns, patch_load_header):
         user = createMockUser()
         session = createMockSession(user)
         session.parent_experiment = None
@@ -304,10 +306,12 @@ class TestUploadUtils(unittest.TestCase):
         header = "some header"
         patch_load_header.return_value = header, []
         
-        patch_assign_columns.return_value = {"some assignments":"vals"}
+        patch_name_columns.return_value = {'columns': {"original assignments":"vals1"}, 'units': "time(min)"}
+        patch_assign_columns.return_value = {'columns': {"updated assignments":"vals2"}, 'units': ""}
         rval = assign_column_defaults(session)
         
-        self.assertEqual({"some assignments":"vals"}, rval)
+        self.assertEqual({"original assignments":"vals1", "updated assignments":"vals2"}, rval['columns'])
+        self.assertEqual('time(min)', rval['units'])
         patch_assign_columns.assert_called_with(session)
         patch_load_header.assert_called_once_with(session.data_file)
 
