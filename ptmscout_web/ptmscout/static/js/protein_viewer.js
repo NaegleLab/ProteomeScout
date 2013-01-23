@@ -1,3 +1,85 @@
+function scrollBottom(element){
+    var extra = 10;
+
+    var top_pos = element.offset().top;
+    var ptm_height = element.height();
+    var scrollback = window.innerHeight - ptm_height - extra;
+
+    if( scrollback < 0 )
+        scrollback = 0;
+
+    $('html, body').animate({ scrollTop: top_pos - scrollback }, 500);
+
+}
+
+function build_ptm_table(k, mods, protein_data) {
+    ms_entries = [];
+    for(m in mods.mods) {
+        for(i in mods.mods[m]){
+            ms = mods.mods[m][i];
+            ms.site_pos = k;
+            ms.site = "{0}{1}".format(mods.residue, k);
+            ms.experiment_name = protein_data.exps[ms.experiment];
+            ms.mod_type = m;
+            ms.peptide = mods.peptide;
+            ms_entries.push(ms);
+        }
+    }
+
+    d3.select('div.ptm_metadata table').remove();
+
+    table =
+        d3.select('div.ptm_metadata').append('table')
+                .attr('id', 'peptide_table');
+
+    header_row = table.append('tr');
+    header_row.append('th')
+            .text('Site');
+    header_row.append('th')
+            .text('Peptide');
+    header_row.append('th')
+            .text('Modification');
+    header_row.append('th')
+            .text('Experiment');
+    header_row.append('th')
+            .text('Data');
+
+    table.selectAll('tr.moditem')
+        .data(ms_entries)
+            .enter().append('tr')
+                .attr('class', 'moditem')
+                .each(function(d){
+                    d3.select(this).append('td')
+                        .attr('class', 'modsite')
+                        .text(d.site);
+                    d3.select(this).append('td')
+                        .attr('class', 'peptide')
+                        .text(d.peptide);
+                    d3.select(this).append('td')
+                        .text(d.mod_type);
+                    exp_td = d3.select(this).append('td');
+
+                    if(d.exported == 1){
+                        exp_td.append('a')
+                            .attr('href', "{0}/{1}".format(protein_data.experiment_url, d.experiment))
+                            .attr('target', '_blank')
+                            .text(d.experiment_name);
+                    }else{
+                        exp_td.text(d.experiment_name);
+                    }
+
+                    data_td = d3.select(this).append('td');
+
+                    if(d.has_data) {
+                        data_td.append('button')
+                            .on('click', window.open("{0}?experiment_id={1}&site_pos={2}".format(protein_data.protein_data_url, d.experiment, d.site_pos), '_blank'))
+                            .text('View');
+                    }
+                });
+
+    scrollBottom($(".ptm_metadata"))
+}
+
 function ZoomWindow(structure_viewer, svg_container, width, height) {
     this.parent_viewer = structure_viewer;
     this.residue = 0;
@@ -225,8 +307,10 @@ function TrackViewer(structure_viewer, svg_container, offset, cls, zoomable) {
                 .attr('height', function(d) { return yaxis(0) - yaxis( d.value.num_mods ); })
                 .attr('title', get_residue_tooltip_text)
                 .style('fill', function(d) { return residue_colors(d.value.residue); })
+                .style('cursor', 'pointer')
                 .on('mouseover', function() { track_viewer.track_mouse_over(this, 'residue', true); })
-                .on('mouseout', function() {  track_viewer.track_mouse_over(this, 'residue', false); });
+                .on('mouseout', function() {  track_viewer.track_mouse_over(this, 'residue', false); })
+                .on('click', function(d) { build_ptm_table(d.key, d.value, protein_data); });
 
     this.tick_levels = [5000,1000,500,100,50,10];
     ticks = [];
@@ -422,6 +506,7 @@ function get_15mer(k, seq) {
 
 
 function StructureViewer(protein_data) {
+    console.log(protein_data)
     this.show_residues_size_limit = 100;
     this.protein_data = protein_data
     this.width = 900;

@@ -6,7 +6,8 @@ from ptmscout.views.protein.structure_view import protein_structure_viewer, \
             format_protein_modifications, format_protein_domains
 from tests.views.mocking import createMockProtein, createMockUser, \
     createMockMeasurement, createMockExperiment, createMockPeptide,\
-    createMockPTM, createMockPeptideModification, createMockDomain
+    createMockPTM, createMockPeptideModification, createMockDomain,\
+    createMockData
 import json, base64
 
 class TestProteinStructureViewIntegration(IntegrationTestCase):
@@ -39,11 +40,16 @@ class TestProteinStructureViews(UnitTestCase):
         exp1 = createMockExperiment(13)
         exp2 = createMockExperiment(16)
 
+        exp1.export = 1
+        exp2.export = 0
+
         ms1 = createMockMeasurement(prot.id, 13)
         ms1.experiment = exp1
         ms2 = createMockMeasurement(prot.id, 16)
         ms2.experiment = exp2
         measured_peps = [ms1, ms2]
+
+        ms1.data = createMockData(6, 'avg', ms1.id)
 
         ptm1 = createMockPTM()
         ptm2 = createMockPTM()
@@ -67,10 +73,10 @@ class TestProteinStructureViews(UnitTestCase):
                         210: {'mods':{}, 'residue':pep2.site_type, 'domain':'d1', 'peptide': pep2.pep_aligned },
                         300: {'mods':{}, 'residue':pep3.site_type, 'domain':None, 'peptide': pep3.pep_aligned }}
 
-        exp_result[200]['mods'][ptm1.name] = [ {'MS': ms1.id, 'experiment':13} ]
-        exp_result[210]['mods'][ptm1.name] = [ {'MS': ms1.id, 'experiment':13} ]
-        exp_result[210]['mods'][ptm2.name] = [ {'MS': ms2.id, 'experiment':16} ]
-        exp_result[300]['mods'][ptm1.name] = [ {'MS': ms2.id, 'experiment':16} ]
+        exp_result[200]['mods'][ptm1.name] = [ {'MS': ms1.id, 'experiment':13, 'has_data': True, 'exported':True} ]
+        exp_result[210]['mods'][ptm1.name] = [ {'MS': ms1.id, 'experiment':13, 'has_data': True, 'exported':True} ]
+        exp_result[210]['mods'][ptm2.name] = [ {'MS': ms2.id, 'experiment':16, 'has_data': False, 'exported':False} ]
+        exp_result[300]['mods'][ptm1.name] = [ {'MS': ms2.id, 'experiment':16, 'has_data': False, 'exported':False} ]
 
         self.assertEqual(exp_result, result)
         self.assertEqual(sorted([ptm1.name, ptm2.name]), mod_types)
@@ -132,6 +138,8 @@ class TestProteinStructureViews(UnitTestCase):
                     'exps': formatted_exps,
                     'mod_types': formatted_mod_types,
                     'pfam_url': settings.pfam_family_url,
+                    'protein_data_url': "%s/proteins/%s/data" % (request.application_url, prot.id),
+                    'experiment_url': "%s/experiments" % (request.application_url),
                     'experiment':1302
                 }
 

@@ -1,3 +1,11 @@
+.ptm_metadata {
+    margin-top:1em;
+    margin-bottom:1em;
+    margin-left:auto;
+    margin-right:auto;
+    width:900px;
+}
+
 .protein_viewer {
     margin-left:auto;
     margin-right:auto;

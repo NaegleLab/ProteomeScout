@@ -37,7 +37,7 @@ def format_protein_modifications(prot, mod_sites):
                                           'peptide': pep.pep_aligned} )
 
             mod_list = pos_description['mods'].get(ptm.name, [])
-            mod_list.append( {'MS': ms.id, 'experiment': ms.experiment_id } )
+            mod_list.append( {'MS': ms.id, 'experiment': ms.experiment_id, 'exported': ms.experiment.export == 1, 'has_data': len(ms.data) > 0 } )
             pos_description['mods'][ptm.name] = mod_list
 
             mods[pep.site_pos] = pos_description
@@ -65,6 +65,8 @@ def protein_structure_viewer(request):
             'mod_types': formatted_mod_types,
             'exps': formatted_exps,
             'pfam_url': settings.pfam_family_url,
+            'experiment_url': "%s/experiments" % (request.application_url),
+            'protein_data_url': "%s/proteins/%d/data" % (request.application_url, protein_id),
             'experiment':experiment_filter}
     encoded_data = base64.b64encode( json.dumps( data ) )
 

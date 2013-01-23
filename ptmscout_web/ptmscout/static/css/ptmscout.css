@@ -260,6 +260,7 @@ div.protein_navigation {
 }
 
 table#peptide_table {
+  border-collapse: collapse;
   margin-left:auto;
   margin-right:auto;
   width: 95%;
