@@ -99,7 +99,8 @@ class Protein(Base):
     species = relationship("Species")
     GO_terms = relationship("GeneOntologyEntry")
     expression_probes = relationship("ExpressionProbeset", secondary=expression_association_table)
-    
+    mutations = relationship("Mutation")
+
     def __init__(self):
         self.date = datetime.datetime.now()
     
@@ -137,7 +138,9 @@ class Protein(Base):
                 return True
         return False
 
-    
+    def hasMutation(self, mutation):
+        compare = [mutation.equals(m2) for m2 in self.mutations]
+        return compare != [] and reduce(bool.__or__, compare)
 
 class NoSuchProtein(Exception):
     def __init__(self, prot):
