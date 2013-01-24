@@ -72,7 +72,7 @@ function build_ptm_table(k, mods, protein_data) {
 
                     if(d.has_data) {
                         data_td.append('button')
-                            .on('click', window.open("{0}?experiment_id={1}&site_pos={2}".format(protein_data.protein_data_url, d.experiment, d.site_pos), '_blank'))
+                            .on('click', function() { window.open("{0}?experiment_id={1}&site_pos={2}".format(protein_data.protein_data_url, d.experiment, d.site_pos), '_blank'); })
                             .text('View');
                     }
                 });
