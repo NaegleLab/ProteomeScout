@@ -1,16 +1,22 @@
 from ptmscout.config import strings
 from ptmscout.database import protein, modifications
 from pyramid.view import view_config
-
+from ptmscout.views.protein import decorators
 
 @view_config(route_name='protein_mod_sites', renderer='ptmscout:templates/proteins/protein_modifications.pt')
+@decorators.experiment_filter
 def protein_modifications_view(request):
     pid = int(request.matchdict['id'])
     prot = protein.getProteinById(pid)
     
     mod_sites = {}
-    
-    for MS in modifications.getMeasuredPeptidesByProtein(pid, request.user):
+    experiment_filter = request.urlfilter.get_field('experiment_id')
+    mspeps = modifications.getMeasuredPeptidesByProtein(pid, request.user)
+
+    if experiment_filter:
+        mspeps = [ ms for ms in mspeps if ms.experiment_id == experiment_filter ]
+
+    for MS in mspeps:
         for pepmod in MS.peptides:
             pep = pepmod.peptide
             pep_tuple = (pep, pepmod.modification.name)

@@ -2,6 +2,7 @@ from ptmscout.config import strings
 from ptmscout.database import protein, modifications
 from pyramid.view import view_config
 from ptmscout.utils import webutils
+from ptmscout.views.protein import decorators
 
 def filter_mods(mods, site_pos):
     filtered = []
@@ -50,17 +51,18 @@ def format_protein_data(mods):
     return [ {'id': eid, 'title':name, 'data':experiment_data[(eid,name)]} for (eid, name) in experiment_data if len(experiment_data[(eid,name)]) > 0]
 
 @view_config(route_name='protein_data', renderer='ptmscout:templates/proteins/protein_data.pt')
+@decorators.experiment_filter
 def protein_experiment_data_view(request):
     pid = int(request.matchdict['id'])
     prot = protein.getProteinById(pid)
     
-    experiment_id = webutils.get(request, 'experiment_id', None)
+    experiment_id = request.urlfilter.get_field('experiment_id')
     site_pos = webutils.get(request, 'site_pos', None)
     
     if experiment_id == None:
         mods = modifications.getMeasuredPeptidesByProtein(pid, request.user)
     else:
-        mods = modifications.getMeasuredPeptidesByExperiment(int(experiment_id), request.user, [pid])
+        mods = modifications.getMeasuredPeptidesByExperiment(experiment_id, request.user, [pid])
 
     if site_pos != None:
         mods = filter_mods(mods, int(site_pos))

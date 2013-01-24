@@ -57,7 +57,7 @@ class TestProteinDataViews(UnitTestCase):
         mock_prot = createMockProtein()
         request.matchdict['id'] = str(mock_prot.id)
         
-        experiment_id = 2
+        experiment_id = '2'
         request.GET['experiment_id'] = experiment_id
         patch_getProtein.return_value = mock_prot
         
@@ -73,7 +73,7 @@ class TestProteinDataViews(UnitTestCase):
         
         patch_formatProteinData.assert_called_once_with(measurements)
         patch_getProtein.assert_called_once_with(mock_prot.id)
-        patch_getMods.assert_called_once_with(experiment_id, request.user, [mock_prot.id])
+        patch_getMods.assert_called_once_with(2, request.user, [mock_prot.id])
         
         self.assertEqual(strings.protein_data_page_title, result['pageTitle'])
         self.assertEqual(mock_prot, result['protein'])

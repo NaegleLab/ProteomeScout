@@ -14,7 +14,7 @@
 		<div metal:use-macro="protein_header"></div>
 
 		<div class="section">
-			<div class="errortext" tal:condition = "len(experiment_data) == 0">This protein does not have any attached experiment data</div>
+			<div class="notification" tal:condition = "len(experiment_data) == 0">No matching data was found</div>
 			<div class="experiment" tal:repeat="experiment experiment_data">
 				<div class="experiment_id" tal:content="experiment['id']" style="display:none"></div>
 				<div class="experiment_title">

@@ -106,7 +106,7 @@ class TestProteinStructureViews(UnitTestCase):
         request = DummyRequest()
         request.user = createMockUser()
         request.matchdict['id'] = '35546'
-        request.GET['experiment_id']=1302
+        request.GET['experiment_id']='1302'
 
         prot = createMockProtein()
         prot.id = 35546

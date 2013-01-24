@@ -1,9 +1,11 @@
 from ptmscout.config import strings
 from ptmscout.database import protein
 from pyramid.view import view_config
+from ptmscout.views.protein import decorators
 
 
 @view_config(route_name='protein_GO', renderer='ptmscout:templates/proteins/protein_ontology.pt')
+@decorators.experiment_filter
 def protein_gene_ontology_view(request):
     pid = int(request.matchdict['id'])
     prot = protein.getProteinById(pid)

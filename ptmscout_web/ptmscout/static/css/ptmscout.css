@@ -7,6 +7,18 @@ body {
   font-family:"Times New Roman", Times, serif;
 }
 
+.notification {
+    padding:10px;
+    border: solid 1px black;
+    background:#99FF00;
+    text-align:center;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:1em;
+    margin-bottom:1em;
+    width:600px;
+}
+
 .paginator {
     text-align:center;
     width:100%;
@@ -263,6 +275,7 @@ table#peptide_table {
   border-collapse: collapse;
   margin-left:auto;
   margin-right:auto;
+  margin-top:1em;
   width: 95%;
   border: 1px solid black;   
   max-width: 1024px;

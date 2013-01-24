@@ -12,8 +12,9 @@
         <script type="text/javascript" src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
         <script type="text/javascript" src="${request.static_url('ptmscout:static/js/protein_viewer.js')}" ></script>
 	</div>
-	<div metal:fill-slot="content">
+    <div metal:fill-slot="content">
         <div metal:use-macro="protein_header"></div>
+
 
         <div class="protein_viewer">
             <div class="data">${data}</div>
