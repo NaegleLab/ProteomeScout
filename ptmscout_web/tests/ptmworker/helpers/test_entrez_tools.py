@@ -22,16 +22,16 @@ class EntrezQueryTestCase(IntegrationTestCase):
         self.assertEqual('2002 Sep', record['DP'])
 
     def test_get_record_with_pipe_format_accessions(self):
-        pm = Proteome.ProteinManager(settings.adminEmail)
-        _n, _g, _t, _s, _h, prot_accessions, _d, _q, _i = entrez_tools.get_protein_information(pm, 'CAI16470.1')
+        pm = Proteome.ProteinManager(settings.adminEmail, uniprotShortcut=False)
+        _n, _g, _t, _s, _h, prot_accessions, _d, _q = entrez_tools.get_protein_information(pm, 'CAI16470.1')
         self.assertEqual(3, len(prot_accessions))
         self.assertEqual(set([('gi', 'gi|55958964'), ('embl', 'CAI16470'), ('embl', 'CAI16470.1')]), set(prot_accessions))
 
-        _n, _g, _t, _s, _h, prot_accessions, _d, _q, _i = entrez_tools.get_protein_information(pm, 'O75643')
+        _n, _g, _t, _s, _h, prot_accessions, _d, _q = entrez_tools.get_protein_information(pm, 'O75643')
         self.assertEqual(4, len(prot_accessions))
         self.assertEqual(set([('swissprot', 'O75643.2'), ('swissprot', 'U520_HUMAN'), ('gi', 'gi|56405304'), ('swissprot', 'O75643')]), set(prot_accessions))
 
-        _n, _g, _t, _s, _h, prot_accessions, _d, _q, _i = entrez_tools.get_protein_information(pm, 'CAA94089')
+        _n, _g, _t, _s, _h, prot_accessions, _d, _q = entrez_tools.get_protein_information(pm, 'CAA94089')
         self.assertEqual(3, len(prot_accessions))
         self.assertEqual(set([('embl', 'CAA94089'), ('gi', 'gi|3255965'), ('embl', 'CAA94089.1')]), set(prot_accessions))
 
@@ -91,7 +91,7 @@ class EntrezQueryTestCase(IntegrationTestCase):
         
 
     def test_get_protein_information_should_raise_entrez_error(self):
-        mock_pm = mock.Mock(spec=Proteome.ProteinManager)
+        mock_pm = mock.Mock(spec=Proteome.ProteinManager, uniprotShortcut=False)
         mock_pm.get_protein_sequence.return_value = ""
 
         try:
@@ -101,16 +101,10 @@ class EntrezQueryTestCase(IntegrationTestCase):
         else:
             self.fail("Expected EntrezError")
 
-    def test_get_isoform_map(self):
-        accs, isoform_map = entrez_tools.get_isoform_map(['A6NC57', 'Q91ZU6-2', 'Q91ZU6-3', 'Q969I3-2'])
-
-        self.assertEqual(set(['A6NC57', 'Q91ZU6', 'Q969I3']), set(accs))
-        self.assertEqual({'Q969I3-2': 'Q969I3', 'Q91ZU6-2':'Q91ZU6', 'Q91ZU6-3': 'Q91ZU6'}, isoform_map)
-        
     def test_get_protein_information(self):
-        pm = Proteome.ProteinManager(settings.adminEmail)
+        pm = Proteome.ProteinManager(settings.adminEmail, uniprotShortcut=False)
         
-        name, gene, taxonomy, species, _host_organism, _accessions, domains, seq, isoforms = entrez_tools.get_protein_information(pm, 'A6NC57')
+        name, gene, taxonomy, species, _host_organism, _accessions, domains, seq = entrez_tools.get_protein_information(pm, 'A6NC57')
         
         self.assertEqual('Ankyrin repeat domain-containing protein 62', name) 
         self.assertEqual(None, gene)

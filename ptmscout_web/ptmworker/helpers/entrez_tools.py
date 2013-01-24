@@ -97,7 +97,7 @@ def parse_organism_host(xml):
             return parse_species_name(qual['GBQualifier_value']).strip()
 
 def filter_update_other_accessions(other_accessions):
-    type_map = {'ref':'refseq', 'gb':'genbank', 'emb': 'embl'}
+    type_map = {'ref':'refseq', 'gb':'genbank', 'emb': 'embl', 'uniprotkb/swiss-prot':'swissprot', 'swissprot-locus':'swissprot', 'international protein index':'ipi'}
     filtered_accessions = set()
     for tp, value in other_accessions:
         m = re.match('^([a-zA-Z]+)\|(.*)\|$', value)
@@ -112,6 +112,8 @@ def filter_update_other_accessions(other_accessions):
             tp = tp.lower()
             val = "gi|%s" % (value)
             filtered_accessions.add(( tp, val ))
+        elif tp.lower() in type_map:
+            filtered_accessions.add(( type_map[tp.lower()], value ))
         else:
             filtered_accessions.add(( tp.lower(), value ))
     return list(filtered_accessions)
@@ -138,35 +140,8 @@ def get_protein_information(pm, acc):
     prot_domains = parse_pfam_domains(pm.get_domains(acc))
 
     host_organism = parse_organism_host(pm.get_raw_xml(acc))
-    prot_isoforms = []#pm.get_isoforms(acc)
     
-    for i in prot_isoforms:
-        prot_isoforms[i] = prot_isoforms[i].strip().upper()
-    
-    return name, gene, taxonomy, species, host_organism, prot_accessions, prot_domains, seq, prot_isoforms
-
-
-def parse_isoform_number(acc):
-    m = re.search(r"^(.*)\-([0-9]+)$", acc.strip())
-    if m:
-        return m.group(1), m.group(2)
-    
-    return acc, None
-
-def get_isoform_map(accs):
-    isoform_map = {}
-    new_accs = set()
-    
-    for acc in accs:
-        root, isoform = parse_isoform_number(acc)
-        
-        if isoform:
-            isoform_map[acc] = root
-            new_accs.add(root)
-        else:
-            new_accs.add(acc)
-        
-    return list(new_accs), isoform_map
+    return name, gene, taxonomy, species, host_organism, prot_accessions, prot_domains, seq
 
 def get_alignment_scores(seq1, seq2):
     matrix = MatrixInfo.blosum62
@@ -179,33 +154,10 @@ def get_alignment_scores(seq1, seq2):
     
     return aln_seq1.count("-"), aln_seq2.count("-") 
 
-
-def create_isoform(root_acc, isoform_accession, isoform_id, isoform_seq, name, gene, taxonomy, species, host_organism, prot_domains, seq):
-    isoform_domains = []
-    isoform_name = "%s isoform %s" % (name, isoform_id)
-    inserted, deleted = get_alignment_scores(seq, isoform_seq)
-    
-    if inserted < settings.isoform_sequence_diff_pfam_threshold and \
-        deleted < settings.isoform_sequence_diff_pfam_threshold:
-        
-        for domain in prot_domains:
-            ndomain = map_domain_to_sequence(seq, domain, isoform_seq)
-            
-            if ndomain == None:
-                isoform_domains = []
-                break
-            
-            isoform_domains.append(ndomain)
-        
-    acc_type = protein_utils.get_accession_type(root_acc)
-    return (isoform_name, gene, taxonomy, species, host_organism, [(acc_type, isoform_accession)], isoform_domains, isoform_seq)
-
-
 def get_proteins_from_ncbi(accessions):
-    pm = Proteome.ProteinManager(settings.adminEmail)
+    pm = Proteome.ProteinManager(settings.adminEmail, uniprotShortcut=False)
  
     query_accessions = accessions
-#    query_accessions, _ = get_isoform_map(accessions)
     
     log.info("Querying for proteins: %s", str(query_accessions))
     
@@ -215,14 +167,8 @@ def get_proteins_from_ncbi(accessions):
     errors = []
     for acc in query_accessions:
         try:
-            name, gene, taxonomy, species, host_organism, prot_accessions, prot_domains, seq, prot_isoforms = get_protein_information(pm, acc)
+            name, gene, taxonomy, species, host_organism, prot_accessions, prot_domains, seq  = get_protein_information(pm, acc)
             prot_map[acc] = (name, gene, taxonomy, species, host_organism, prot_accessions, prot_domains, seq)
-            
-            for isoform_id in prot_isoforms:
-                isoform_seq = prot_isoforms[isoform_id]
-                isoform_accession = "%s-%s" % (acc, isoform_id)
-                prot_map[isoform_accession] = create_isoform(acc, isoform_accession, isoform_id, isoform_seq, name, gene, taxonomy, species, host_organism, prot_domains, seq)
-
         except EntrezError, e:
             errors.append(e)
     

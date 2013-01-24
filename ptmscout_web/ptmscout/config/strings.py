@@ -6,7 +6,8 @@ accession_type_strings = {'ipi':"International Protein Index",
                      'gi': "Gene Index",
                      'uniprot': "UniProt",
                      'ddbj': "DDBJ",
-                     'embl': "EMBL"
+                     'embl': "EMBL",
+                     'pdb': "PDB"
                      }
 
 success_header = "Success"
