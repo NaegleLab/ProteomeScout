@@ -13,6 +13,7 @@ import ptmscout.database.taxonomies
 import xml.dom.minidom as xml
 from xml.parsers.expat import ExpatError
 import mmap
+from ptmworker.helpers import upload_helpers
 
 log = logging.getLogger('ptmscout')
 
@@ -78,7 +79,7 @@ def __query_for_isoforms(root_accessions, result_map):
         root_acc, isoform_number = parse_isoform_number(full_acc)
 
         if isoform_number > 0:
-            result_map[full_acc] = (root_acc, name, isoform_number, record.seq)
+            result_map[full_acc] = (root_acc, name, isoform_number, str(record.seq).strip().upper())
 
 
 def get_protein_isoforms(root_accessions):
@@ -102,10 +103,46 @@ def get_scientific_name(name):
         return m.group(1).strip()
     return name
 
+
+def read_variants(features):
+    variant_list = []
+    for f in features:
+        if f.type == 'sequence variant':
+            location = int(f.location.start+1)
+            length = int(f.location.end - f.location.start)
+            original = None
+            mutant = None
+
+            if 'original' in f.qualifiers:
+                original = str(f.qualifiers['original']).strip().upper()
+            if 'variation' in f.qualifiers:
+                mutant = str(f.qualifiers['variation']).strip().upper()
+
+            annotation = ""
+            if 'id' in f.qualifiers and 'description' in f.qualifiers:
+                annotation = "%s (%s)" % (f.qualifiers['id'], f.qualifiers['description'])
+            elif 'id' in f.qualifiers:
+                annotation = f.qualifiers['id']
+            elif 'description' in f.qualifiers:
+                annotation = f.qualifiers['description']
+            
+
+            if length == 1 and mutant and len(mutant) == 1:
+                mutation_type = 'Substitution (single)'
+            elif length > 1 or (mutant and len(mutant) > 1):
+                mutation_type = 'Substitution (multiple)'
+            else:
+                mutation_type = 'Other'
+
+            variant_list.append( {'type':mutation_type, 'location':location,
+                                    'original': original, 'mutant':mutant,
+                                    'notes':annotation} )
+    return variant_list
+
 def parse_xml(xml):
     name = xml.description
     gene = None
-
+    
     if 'gene_name_primary' in xml.annotations:
         gene = xml.annotations['gene_name_primary']
 
@@ -118,13 +155,15 @@ def parse_xml(xml):
             other_accessions.append(('gene_synonym', gene_name))
 
     domains = []
-    seq = xml.seq.strip()
+    seq = str(xml.seq).strip().upper()
+
+    mutations = upload_helpers.parse_variants( xml.id, seq, read_variants(xml.features) )
 
     host_organism = None
     if 'organism_host' in xml.annotations:
         host_organism = xml.annotations['organism_host'][0].strip()
 
-    return xml.id, (name, gene, taxons, species, host_organism, other_accessions, domains, seq)
+    return xml.id, (name, gene, taxons, species, host_organism, other_accessions, domains, mutations, seq)
 
 
 def handle_result(result):
@@ -145,7 +184,8 @@ def handle_result(result):
         try:
             acc, prot_info = parse_xml(xml)
             result_map[acc] = prot_info
-        except:
+        except Exception, e:
+            print traceback.format_exc()
             pass
         i+=1
 
@@ -161,11 +201,11 @@ def map_isoform_results(result_map, isoform_map):
         identified_isoforms = isoforms_by_root.get(root_acc, set())
         isoforms_by_root[root_acc] = identified_isoforms | set([iso_number])
 
-        name, gene, taxons, species, host_organism,  _o, _d, _s = result_map[root_acc]
+        name, gene, taxons, species, host_organism,  _o, _d, _m, _s = result_map[root_acc]
       
         isoform_fullname = "%s (%s)" % (name, isoform_name)
         isoform_accs = [('swissprot', iso_acc)]
-        result_map[iso_acc] = (isoform_fullname, gene, taxons, species, host_organism, isoform_accs, [], iso_seq.strip())
+        result_map[iso_acc] = (isoform_fullname, gene, taxons, species, host_organism, isoform_accs, [], [], iso_seq.strip())
 
     for root in isoforms_by_root:
         isos = isoforms_by_root[root]
@@ -177,11 +217,11 @@ def map_isoform_results(result_map, isoform_map):
 
             new_isoform = "%s-%d" % (root, canonical_isoform)
 
-            isoform_fullname, gene, taxons, species, host_organism, isoform_accs, domains, iso_seq = result_map[root]
+            isoform_fullname, gene, taxons, species, host_organism, isoform_accs, domains, mutations, iso_seq = result_map[root]
             isoform_accs.append(('swissprot', new_isoform))
             
-            result_map[root] = isoform_fullname, gene, taxons, species, host_organism, isoform_accs, domains, iso_seq
-            result_map[new_isoform] = isoform_fullname, gene, taxons, species, host_organism, isoform_accs, domains, iso_seq
+            result_map[root] = isoform_fullname, gene, taxons, species, host_organism, isoform_accs, domains, mutations, iso_seq
+            result_map[new_isoform] = isoform_fullname, gene, taxons, species, host_organism, isoform_accs, domains, mutations, iso_seq
 
 def map_combine(r1, r2):
     return dict(r1.items() + r2.items())
