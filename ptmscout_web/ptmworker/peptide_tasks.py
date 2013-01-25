@@ -35,7 +35,7 @@ def create_errors_for_runs(exp_id, protein_accession, pep_seq, msg, runs):
 
 
 def load_protein(accession, protein_information):
-    _a, _b, taxonomy, species, host_organism, _c, _d, seq = protein_information
+    _a, _b, taxonomy, species, host_organism, _c, _d, _m, seq = protein_information
     prot = protein.getProteinBySequence(seq, species)
 
     if host_organism:

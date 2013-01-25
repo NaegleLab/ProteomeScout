@@ -38,7 +38,7 @@ def log_errors(query_errors, exp_id, accessions, line_mappings):
 
 
 def load_new_protein(accession, protein_information):
-    name, gene, taxonomy, species, host_organism, prot_accessions, domains, seq = protein_information
+    name, gene, taxonomy, species, host_organism, prot_accessions, domains, mutations, seq = protein_information
 
     created = False
     prot = protein.getProteinBySequence(seq, species)
@@ -55,6 +55,10 @@ def load_new_protein(accession, protein_information):
 
     if created:
         pfam_tools.parse_or_query_domains(prot, domains, accession)
+
+    for m in mutations:
+        if not prot.hasMutation(m):
+            prot.mutations.append(m)
 
     prot.saveProtein()
 
@@ -105,7 +109,7 @@ def query_protein_metadata(external_db_result, accessions, exp_id, line_mapping)
     #list the missing proteins
     missing_proteins = set()
     for acc in external_db_result:
-        _n, _g, _t, species, _h, _a, _d, seq = external_db_result[acc]
+        _n, _g, _t, species, _h, _a, _d, _m, seq = external_db_result[acc]
         if protein.getProteinBySequence(seq, species) == None:
             missing_proteins.add(acc)
 
