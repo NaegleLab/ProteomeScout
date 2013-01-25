@@ -10,7 +10,7 @@ class EntrezQueryTestCase(IntegrationTestCase):
     def test_get_viral_protein(self):
         result = entrez_tools.get_proteins_from_ncbi(['118734'])
 
-        name, gene, taxonomy, species, host_organism, accessions, domains, seq = result[0]['118734']
+        name, gene, taxonomy, species, host_organism, accessions, domains, mutations, seq = result[0]['118734']
 
     def test_get_pubmed_record(self):
         record = entrez_tools.get_pubmed_record_by_id(12230038)
@@ -23,15 +23,15 @@ class EntrezQueryTestCase(IntegrationTestCase):
 
     def test_get_record_with_pipe_format_accessions(self):
         pm = Proteome.ProteinManager(settings.adminEmail, uniprotShortcut=False)
-        _n, _g, _t, _s, _h, prot_accessions, _d, _q = entrez_tools.get_protein_information(pm, 'CAI16470.1')
+        _n, _g, _t, _s, _h, prot_accessions, _d, _m, _q = entrez_tools.get_protein_information(pm, 'CAI16470.1')
         self.assertEqual(3, len(prot_accessions))
         self.assertEqual(set([('gi', 'gi|55958964'), ('embl', 'CAI16470'), ('embl', 'CAI16470.1')]), set(prot_accessions))
 
-        _n, _g, _t, _s, _h, prot_accessions, _d, _q = entrez_tools.get_protein_information(pm, 'O75643')
+        _n, _g, _t, _s, _h, prot_accessions, _d, _m, _q = entrez_tools.get_protein_information(pm, 'O75643')
         self.assertEqual(4, len(prot_accessions))
         self.assertEqual(set([('swissprot', 'O75643.2'), ('swissprot', 'U520_HUMAN'), ('gi', 'gi|56405304'), ('swissprot', 'O75643')]), set(prot_accessions))
 
-        _n, _g, _t, _s, _h, prot_accessions, _d, _q = entrez_tools.get_protein_information(pm, 'CAA94089')
+        _n, _g, _t, _s, _h, prot_accessions, _d, _m, _q = entrez_tools.get_protein_information(pm, 'CAA94089')
         self.assertEqual(3, len(prot_accessions))
         self.assertEqual(set([('embl', 'CAA94089'), ('gi', 'gi|3255965'), ('embl', 'CAA94089.1')]), set(prot_accessions))
 
@@ -104,7 +104,7 @@ class EntrezQueryTestCase(IntegrationTestCase):
     def test_get_protein_information(self):
         pm = Proteome.ProteinManager(settings.adminEmail, uniprotShortcut=False)
         
-        name, gene, taxonomy, species, _host_organism, _accessions, domains, seq = entrez_tools.get_protein_information(pm, 'A6NC57')
+        name, gene, taxonomy, species, _host_organism, _accessions, domains, mutations, seq = entrez_tools.get_protein_information(pm, 'A6NC57')
         
         self.assertEqual('Ankyrin repeat domain-containing protein 62', name) 
         self.assertEqual(None, gene)
@@ -121,7 +121,22 @@ class EntrezQueryTestCase(IntegrationTestCase):
         parsed_domains = set([])
         for d in domains:
             parsed_domains.add( (d.label, d.start, d.stop) )
-        
+       
+        self.assertEqual(4, len(mutations))
+
+        m_test_list = set()
+        for m in mutations:
+            self.assertEqual('Substitution (single)', m.mutationType)
+            self.assertEqual('A6NC57', m.acc_id)
+            m_test_list.add(( m.location, m.original, m.mutant ))
+
+        expected_muts = set([(188, 'A', 'S'),
+                             (265, 'C', 'R'),
+                             (406, 'E', 'K'),
+                             (613, 'A', 'T')])
+
+        self.assertEqual(expected_muts, m_test_list)
+
         self.assertIn(('Ank_2', 76, 167), parsed_domains)
         self.assertIn(('Ank_2', 142, 234), parsed_domains)
 #        self.assertIn(('Ank_2', 109, 201), parsed_domains)

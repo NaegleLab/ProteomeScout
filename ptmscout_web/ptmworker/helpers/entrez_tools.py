@@ -2,7 +2,7 @@ from celery.task import task
 from Bio import Entrez, pairwise2
 from ptmscout.config import settings
 from Bio import Medline
-from ptmworker.helpers import pfam_tools
+from ptmworker.helpers import pfam_tools, upload_helpers
 from geeneus import Proteome
 import logging
 import re
@@ -139,9 +139,15 @@ def get_protein_information(pm, acc):
 
     prot_domains = parse_pfam_domains(pm.get_domains(acc))
 
-    host_organism = parse_organism_host(pm.get_raw_xml(acc))
-    
-    return name, gene, taxonomy, species, host_organism, prot_accessions, prot_domains, seq
+    prot_mutations = upload_helpers.parse_variants(acc, seq, pm.get_variants(acc))
+
+    host_organism = None
+    try:
+        host_organism = parse_organism_host(pm.get_raw_xml(acc))
+    except:
+        pass
+
+    return name, gene, taxonomy, species, host_organism, prot_accessions, prot_domains, prot_mutations, seq
 
 def get_alignment_scores(seq1, seq2):
     matrix = MatrixInfo.blosum62
@@ -167,8 +173,7 @@ def get_proteins_from_ncbi(accessions):
     errors = []
     for acc in query_accessions:
         try:
-            name, gene, taxonomy, species, host_organism, prot_accessions, prot_domains, seq  = get_protein_information(pm, acc)
-            prot_map[acc] = (name, gene, taxonomy, species, host_organism, prot_accessions, prot_domains, seq)
+            prot_map[acc] = get_protein_information(pm, acc)
         except EntrezError, e:
             errors.append(e)
     
