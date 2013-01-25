@@ -1,5 +1,5 @@
 from celery.canvas import group
-from ptmscout.database import protein, taxonomies, modifications, experiment, gene_expression
+from ptmscout.database import protein, taxonomies, modifications, experiment, gene_expression, mutations
 from ptmscout.utils import uploadutils
 from ptmscout.config import strings, settings
 from ptmscout.database.modifications import NoSuchPeptide
@@ -43,6 +43,25 @@ def dynamic_transaction_task(fn):
             raise
     ttask.__name__ = fn.__name__
     return ttask
+
+
+def parse_variants(acc, prot_seq, variants):
+    new_mutations = []
+    j = 0
+    for mutantDict in variants:
+        # for now we're only working with single mutants, but could expand
+        # to double mutants in the future...
+        if(mutantDict['type'] == "Substitution (single)"):
+            new_mutation = mutations.Mutation(mutantDict['type'],
+                    mutantDict['location'], mutantDict['original'],
+                    mutantDict['mutant'], acc, mutantDict['notes'], None)
+
+            if not new_mutation.consistent(prot_seq):
+                log.info( "Loaded mutation does not match protein sequence (%d %s) %s -> %s" % (new_mutation.location, prot_seq[new_mutation.location-1], new_mutation.original, new_mutation.mutant) )
+            else:
+                new_mutations.append(new_mutation)
+
+    return new_mutations
 
 def get_go_annotation(goId, complete_go_terms, missing_terms):
     go_term = protein.getGoAnnotationById(goId)

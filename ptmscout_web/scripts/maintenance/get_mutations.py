@@ -5,7 +5,6 @@ from ptmworker.helpers import upload_helpers
 from ptmscout.config import settings
 from geeneus import Proteome
 import traceback
-import datetime
 import sys, os
 
 def get_primary_accessions(prot):
@@ -91,7 +90,7 @@ if __name__ == "__main__":
                         new_mutation = mutations.Mutation(mutantDict['type'],
                                 mutantDict['location'], mutantDict['original'],
                                 mutantDict['mutant'], acc,
-                                datetime.datetime.now(), mutantDict['notes'], prot.id)
+                                mutantDict['notes'], prot.id)
                         if not new_mutation.consistent(prot_seq):
                             print "Loaded mutation does not match protein sequence %s (%d %s) %s -> %s" % (acc, new_mutation.location, prot_seq[new_mutation.location-1], new_mutation.original, new_mutation.mutant)
                         elif not prot.hasMutation(new_mutation):

@@ -3,6 +3,7 @@ from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, VARCHAR, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.mysql import INTEGER as Integer 
+import datetime
 
 class Mutation(Base):
     __tablename__= 'protein_mutations'
@@ -18,14 +19,14 @@ class Mutation(Base):
 
     protein = relationship("Protein")
 
-    def __init__(self, mtype, location, original, mutant, acc_ID, date, annotation, PID):
+    def __init__(self, mtype, location, original, mutant, acc_ID, annotation, PID):
         self.protein_id = PID
         self.acc_id = acc_ID
         self.mutationType = mtype
         self.location = location
         self.original = original
         self.mutant = mutant
-        self.date = date
+        self.date = datetime.datetime.now()
         self.annotation = annotation
 
     def equals(self, other):
