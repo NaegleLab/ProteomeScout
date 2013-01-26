@@ -59,6 +59,9 @@ class PFamParser(object):
         return txt
 
     def parseEntry(self, entry, db_release):
+        sequence = entry.getElementsByTagName('sequence')[0]
+        self.sequence = self.__get_node_text(sequence).strip().upper()
+        
         matches = entry.getElementsByTagName('matches')
         if len(matches)>0:
             matches = matches[0]
@@ -198,7 +201,7 @@ def get_computed_pfam_domains(prot_seq, cutoff):
     raise PFamError("Unable to query PFam")
 
 @rate_limit(rate=10)
-def get_stored_pfam_domains(uniprot_acc):
+def get_stored_pfam_domains(uniprot_acc, prot_sequence):
     if settings.DISABLE_PFAM:
         return []
 
@@ -215,6 +218,10 @@ def get_stored_pfam_domains(uniprot_acc):
 
             parsed_pfam = PFamParser(xmlresult)
 
+            if parsed_pfam.sequence != prot_sequence:
+                log.info("Protein sequence from PFam did not match provided sequence for accession '%s'", uniprot_acc)
+                raise PFamError("Protein sequence from PFam did not match provided sequence for accession '%s'" % uniprot_acc)
+
             return filter_domains(parsed_pfam.domains)
         except ExpatError, e:
             i += 1
@@ -229,7 +236,7 @@ def parse_or_query_domains(prot, domains, query_accession):
 
     if len(domains) == 0 and protein_utils.get_accession_type(query_accession) == 'swissprot':
         try:
-            domains = get_stored_pfam_domains(query_accession)
+            domains = get_stored_pfam_domains(query_accession, prot.sequence)
         except PFamError:
             domains = []
 
