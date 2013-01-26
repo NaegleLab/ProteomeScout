@@ -21,8 +21,9 @@ def transaction_task(fn):
             result = fn(*args)
             transaction.commit()
             return result
-        except Exception:
+        except Exception, e:
             transaction.abort()
+            log.error(traceback.format_exc())
             raise
     ttask.__name__ = fn.__name__
     return ttask
@@ -40,6 +41,7 @@ def dynamic_transaction_task(fn):
                 new_task.apply_async((task_arg,), link_error=errback )
         except Exception:
             transaction.abort()
+            log.error(traceback.format_exc())
             raise
     ttask.__name__ = fn.__name__
     return ttask
@@ -53,6 +55,7 @@ def find_activation_loops(prot):
     start_motif = r"D[FPLY]G"
     stop_motif = r"[ASP][PILW][ED]"
 
+    i = 0
     for d in kinase_domains:
         domain_seq = prot.sequence[d.start-1: d.stop]
         m1 = re.search(start_motif, domain_seq)
@@ -75,8 +78,9 @@ def find_activation_loops(prot):
         source = 'predicted'
         region = protein.ProteinRegion(label, source, loop_start, loop_end)
 
+        i+=1
         prot.regions.append(region)
-
+    return i
 
 
 def check_ambiguity(measured_pep, species_name):
