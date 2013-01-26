@@ -35,7 +35,7 @@ class ExperimentCondition(Base):
     experiment_id = Column(Integer(10), ForeignKey("experiment.id"))
 
 class ExperimentData(Base):
-    __tablename__ = 'data'
+    __tablename__ = 'MS_data'
     id = Column(Integer(10), primary_key=True, autoincrement=True)
     
     type = Column(Enum(['data','stddev']), default='data')
