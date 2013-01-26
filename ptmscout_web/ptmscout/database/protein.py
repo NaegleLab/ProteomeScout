@@ -84,6 +84,22 @@ class ProteinDomain(Base):
     def save(self):
         DBSession.add(self)
 
+class ProteinRegion(Base):
+    __tablename__='protein_regions'
+    id = Column(Integer(10), primary_key=True, autoincrement=True)
+    label = Column(VARCHAR(100))
+    source = Column(Enum(['predicted', 'parsed']))
+    start = Column(Integer(10))
+    stop = Column(Integer(10))
+    protein_id = Column(Integer(10), ForeignKey('protein.id'))
+
+    def __init__(self, label, source, start, stop, protein_id=None):
+        self.label = label
+        self.source = source
+        self.start = start
+        self.stop = stop
+        self.protein_id = protein_id
+
 class Protein(Base):
     __tablename__='protein'
     id = Column(Integer(10), primary_key=True, autoincrement=True)
@@ -100,6 +116,7 @@ class Protein(Base):
     GO_terms = relationship("GeneOntologyEntry")
     expression_probes = relationship("ExpressionProbeset", secondary=expression_association_table)
     mutations = relationship("Mutation")
+    regions = relationship("ProteinRegion")
 
     def __init__(self):
         self.date = datetime.datetime.now()

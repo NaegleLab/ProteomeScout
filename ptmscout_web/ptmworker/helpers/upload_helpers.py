@@ -44,6 +44,41 @@ def dynamic_transaction_task(fn):
     ttask.__name__ = fn.__name__
     return ttask
 
+
+def find_activation_loops(prot):
+    kinase_domain_names = set([ 'pkinase', 'pkinase_tyr' ])
+    kinase_domains = [ d for d in prot.domains if d.label.lower() in kinase_domain_names ]
+    cutoff_loop_size = 35
+
+    start_motif = r"D[FPLY]G"
+    stop_motif = r"[ASP][PILW][ED]"
+
+    for d in kinase_domains:
+        domain_seq = prot.sequence[d.start-1: d.stop]
+        m1 = re.search(start_motif, domain_seq)
+
+        if m1 == None:
+            continue
+
+        domain_seq = domain_seq[m1.end():]
+        m2 = re.search(stop_motif, domain_seq)
+
+        if m2 == None:
+            continue
+
+        domain_seq = domain_seq[:m2.start()]
+
+        loop_start = d.start + m1.end()
+        loop_end = d.start + m1.end() + m2.start() - 1
+
+        label = strings.kinase_loop_name if len(domain_seq) <= 35 else strings.possible_kinase_name
+        source = 'predicted'
+        region = protein.ProteinRegion(label, source, loop_start, loop_end)
+
+        prot.regions.append(region)
+
+
+
 def check_ambiguity(measured_pep, species_name):
     for swissprot in uniprot.findPeptide(measured_pep.peptide, species_name):
         amb = modifications.PeptideAmbiguity(swissprot.accession, measured_pep.id)

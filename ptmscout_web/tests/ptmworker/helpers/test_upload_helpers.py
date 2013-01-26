@@ -3,7 +3,7 @@ from ptmworker.helpers import upload_helpers
 from ptmscout.database import modifications, experiment
 from tests.views.mocking import createMockExperiment, createMockProtein,\
     createMockProbe, createMockAccession, createMockSpecies,\
-    createMockTaxonomy, createMockMeasurement
+    createMockTaxonomy, createMockMeasurement, createMockDomain
 from mock import patch
 from ptmscout.utils import uploadutils
 from ptmscout.config import settings
@@ -11,6 +11,49 @@ import os
 import pickle
 
 class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
+
+
+    def test_find_activation_loop_should_find_loops(self):
+        prot = createMockProtein()
+        prot.sequence = """
+MADNEKLDNQ RLdfgKNKGR DLETMRRQRN EVVVELRKNK RDEHLLKRRN
+sldEDICEDS DIDGDYRVQN TSLEAIVQNA SSDNQGIQLS AVQAARKLLS
+SDRNPPIdyg IKSGILPILV HCLERDDNPS LQFEAAWALT NIASGTppeT
+
+QAVVQSNAVP LFLRLLHSPH QNVCEQAVWA LGNIIGDGPQ CRDYVISLGV
+VKPLLSFISP SIPITFLRNV TWVMVNLCRH KDPPPPMETI QEILPALCVL
+IHHTDVNILV DTVdlgSYLT DAGgidIQMV IDSGIVPHLV PLLSHQEVKV
+
+QAVVQSNAVP LFLRLLHSPH QNVCEQAVWA LGNIIGDGPQ CRDYVISLGV
+VKdfgSFISP SIPITFLRNV TWVMapeCRH KDPPPPMETI QEILPALCVL
+IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
+"""
+
+        prot.sequence = prot.sequence.replace(" ", "").replace("\n","").upper()
+
+        d1 = createMockDomain(prot.id, label='Pkinase')
+        d1.start, d1.stop = 10, 60
+
+        d2 = createMockDomain(prot.id, label='Pkinase_Tyr')
+        d2.start, d2.stop = 100, 170
+
+        d3 = createMockDomain(prot.id, label='Pkinase')
+        d3.start, d3.stop = 260, 330
+
+        d4 = createMockDomain(prot.id, label='Other')
+        d4.start, d4.stop = 350, 400
+
+        prot.domains = [ d1, d2, d3, d4 ]
+
+        upload_helpers.find_activation_loops( prot )
+
+        created_regions = [ ( r.label, r.source, r.start, r.stop ) for r in prot.regions ]
+
+        exp_regions = [( 'Kinase Activation Loop', 'predicted', 16, 50 ),
+                       ( 'Possible Kinase Activation Loop', 'predicted', 111, 146 )]
+
+        self.assertEqual( exp_regions, created_regions )
+
 
     def test_check_ambiguity_should_find_peptides(self):
         ms = createMockMeasurement(35546, 1)

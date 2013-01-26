@@ -172,6 +172,9 @@ def createMockProtein():
     mock.GO_terms = []
     mock.expression_probes = []
     mock.accessions = []
+    mock.mutations = []
+    mock.regions = []
+
     return mock
 
 

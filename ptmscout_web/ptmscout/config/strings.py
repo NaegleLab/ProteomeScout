@@ -10,6 +10,9 @@ accession_type_strings = {'ipi':"International Protein Index",
                      'pdb': "PDB"
                      }
 
+kinase_loop_name = 'Kinase Activation Loop'
+possible_kinase_name = 'Possible Kinase Activation Loop'
+
 success_header = "Success"
 
 change_password_page_title = "Change Password"

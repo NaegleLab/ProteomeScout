@@ -55,6 +55,7 @@ def load_new_protein(accession, protein_information):
 
     if created:
         pfam_tools.parse_or_query_domains(prot, domains, accession)
+        upload_helpers.find_activation_loops(prot)
 
     for m in mutations:
         if not prot.hasMutation(m):
