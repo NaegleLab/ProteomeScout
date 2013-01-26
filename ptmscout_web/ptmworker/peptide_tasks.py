@@ -123,7 +123,7 @@ def run_peptide_import(prot_map, exp_id, peptides, mod_map, data_runs, headers, 
                     line, series = data_runs[run_key][run_name]
                     run_tasks.append( (line, run_name, series) )
 
-                load_peptide_modification(exp_id, acc, prot_map[acc], pep, mod_str, units, headers, run_tasks )
+                load_peptide_modification(exp_id, load_ambiguities, acc, prot_map[acc], pep, mod_str, units, headers, run_tasks )
 
                 i+=1
                 if i % UPDATE_EVERY == 0:
