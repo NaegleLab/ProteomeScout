@@ -8,10 +8,7 @@ import datetime
 import traceback
 log = logging.getLogger('ptmscout')
 
-def load_new_peptide(prot_id, site_pos, pep_seq, taxonomy):
-    pep, _ = upload_helpers.get_peptide(prot_id, site_pos, pep_seq)
-    pep.protein_domain = protein.getProteinDomain(prot_id, site_pos)
-
+def load_scansite_peptide(pep, taxonomy):
     motif_class = None
     if 'mammalia' in taxonomy:
         motif_class="MAMMALIAN"
@@ -21,17 +18,19 @@ def load_new_peptide(prot_id, site_pos, pep_seq, taxonomy):
         motif_class="YEAST"
     
     if motif_class != None:
-        pep.predictions = upload_helpers.query_peptide_predictions(pep_seq, motif_class)
+        pep.predictions = upload_helpers.query_peptide_predictions(pep.pep_aligned, motif_class)
         pep.scansite_date = datetime.datetime.now()
 
+def load_new_peptide(prot_id, pep, taxonomy):
+    pep.protein_domain = protein.getProteinDomain(prot_id, pep.site_pos)
+    load_scansite_peptide(pep, taxonomy)
     pep.save()
 
 
-
 def create_errors_for_runs(exp_id, protein_accession, pep_seq, msg, runs):
+    log.warning("Error importing peptide (%s, %s): %s", protein_accession, pep_seq, msg)
     for line, _rn, _s in runs:
         experiment.createExperimentError(exp_id, line, protein_accession, pep_seq, msg)
-
 
 
 def load_protein(accession, protein_information):
@@ -79,7 +78,7 @@ def load_peptide_modification(exp_id, load_ambiguities, protein_accession, prote
                 pep_measurement.peptides.append(pepmod)
 
             if created:
-                load_new_peptide(protein_id, site_pos, pep_sequence, taxonomy)
+                load_new_peptide(protein_id, pep, taxonomy)
 
         for line, run_name, series in runs:
             upload_helpers.insert_run_data(pep_measurement, line, units, series_header, run_name, series)
