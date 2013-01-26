@@ -5,6 +5,36 @@ from ptmscout.utils import webutils
 from ptmscout.views.protein import decorators
 import json, base64
 
+def format_protein_mutations(prot):
+    formatted_mutations = {}
+    for m in prot.mutations:
+        mut_dict = {}
+        mut_dict['type'] = m.mutationType
+        mut_dict['location'] = m.location
+        mut_dict['original'] = m.original
+        mut_dict['mutant'] = m.mutant
+        mut_dict['annotation'] = m.annotation
+
+        mut_list = formatted_mutations.get(m.location, [])
+        mut_list.append(mut_dict)
+        formatted_mutations[m.location] = mut_list
+
+    return formatted_mutations
+
+
+def format_protein_regions(prot):
+    formatted_regions = []
+    for d in prot.regions:
+        region_dict = {}
+        region_dict['label'] = d.label
+        region_dict['source'] = d.source
+        region_dict['start'] = d.start
+        region_dict['stop'] = d.stop
+
+        formatted_regions.append(region_dict)
+
+    return sorted(formatted_regions, key=lambda d: d['start'])
+
 def format_protein_domains(prot):
     formatted_domains = []
     for d in prot.domains:
@@ -56,10 +86,14 @@ def protein_structure_viewer(request):
 
     formatted_exps, formatted_mod_types, formatted_mods = format_protein_modifications(prot, mod_sites)
     formatted_domains = format_protein_domains(prot)
+    formatted_regions = format_protein_regions(prot)
+    formatted_mutations = format_protein_mutations(prot)
 
     data = {'seq': prot.sequence, 
             'domains': formatted_domains, 
             'mods': formatted_mods,
+            'mutations': formatted_mutations,
+            'regions': formatted_regions,
             'mod_types': formatted_mod_types,
             'exps': formatted_exps,
             'pfam_url': settings.pfam_family_url,
@@ -72,5 +106,5 @@ def protein_structure_viewer(request):
             'protein': prot,
             'experiments': formatted_exps,
             'mod_types': formatted_mod_types,
-            'tracks': ["Domains", "PTMs"],
+            'tracks': ["Domains", "PTMs", "Regions", "Mutations"],
             'data':encoded_data}

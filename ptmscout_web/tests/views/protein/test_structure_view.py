@@ -97,12 +97,16 @@ class TestProteinStructureViews(UnitTestCase):
 
         self.assertEqual(sorted(exp_domains, key=lambda d: d['start']), formatted_domains)
 
+    @patch('ptmscout.views.protein.structure_view.format_protein_mutations')
+    @patch('ptmscout.views.protein.structure_view.format_protein_regions')
     @patch('ptmscout.views.protein.structure_view.format_protein_domains')
     @patch('ptmscout.views.protein.structure_view.format_protein_modifications')
     @patch('ptmscout.database.modifications.getMeasuredPeptidesByProtein')
     @patch('ptmscout.database.protein.getProteinById')
     def test_protein_structure_view(self, patch_getProtein, patch_getMods,
-            patch_formatMods, patch_formatDomains):
+            patch_formatMods, patch_formatDomains, patch_formatRegions,
+            patch_formatMutations):
+
         request = DummyRequest()
         request.user = createMockUser()
         request.matchdict['id'] = '35546'
@@ -116,10 +120,15 @@ class TestProteinStructureViews(UnitTestCase):
         formatted_exps = "some experiments"
         formatted_mod_types = "some mod types"
         formatted_mods = "some formatted modifications"
+        formatted_muts = "some formatted mutations"
+        formatted_regions = "some formatted regions"
+
         exp_mods = ["some", "mods"]
         patch_getMods.return_value = exp_mods
         patch_formatDomains.return_value = formatted_domains
         patch_formatMods.return_value = (formatted_exps, formatted_mod_types, formatted_mods)
+        patch_formatRegions.return_value = formatted_regions
+        patch_formatMutations.return_value = formatted_muts
 
         result = protein_structure_viewer(request)
 
@@ -127,6 +136,8 @@ class TestProteinStructureViews(UnitTestCase):
         patch_getProtein.assert_called_once_with(35546)
         patch_formatMods.assert_called_once_with(prot, exp_mods)
         patch_formatDomains.assert_called_once_with(prot)
+        patch_formatRegions.assert_called_once_with(prot)
+        patch_formatMutations.assert_called_once_with(prot)
 
         self.assertEqual(strings.protein_structure_page_title, result['pageTitle'])
         self.assertEqual(prot, result['protein'])
@@ -137,6 +148,8 @@ class TestProteinStructureViews(UnitTestCase):
                     'mods': formatted_mods,
                     'exps': formatted_exps,
                     'mod_types': formatted_mod_types,
+                    'mutations': formatted_muts,
+                    'regions': formatted_regions,
                     'pfam_url': settings.pfam_family_url,
                     'protein_data_url': "%s/proteins/%s/data" % (request.application_url, prot.id),
                     'experiment_url': "%s/experiments" % (request.application_url),
@@ -146,4 +159,4 @@ class TestProteinStructureViews(UnitTestCase):
         self.assertEqual(exp_data, decoded_data)
         self.assertEqual(formatted_exps, result['experiments'])
         self.assertEqual(formatted_mod_types, result['mod_types'])
-        self.assertEqual(['Domains', 'PTMs'], result['tracks'])
+        self.assertEqual(['Domains', 'PTMs', 'Regions', 'Mutations'], result['tracks'])
