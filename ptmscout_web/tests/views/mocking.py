@@ -214,6 +214,7 @@ def createMockMeasurement(pid, expid):
     mock.peptide = "ABCDEF"
     mock.peptides = []
     mock.data = []
+    mock.ambiguities = []
     
     return mock
 

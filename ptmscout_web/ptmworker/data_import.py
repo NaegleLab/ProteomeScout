@@ -33,10 +33,12 @@ def start_import(exp_id, session_id, user_email, application_url):
         experiment.setExperimentProgress(exp_id, 0, 0)
         exp.saveExperiment()
 
+        load_ambiguities = exp.ambiguity == 1
+
         query_task = protein_tasks.get_proteins_from_external_databases.s(accessions, exp_id, line_mapping)
         proteins_task = protein_tasks.query_protein_metadata.s(accessions, exp_id, line_mapping)
         GO_task = GO_tasks.import_go_terms.s(exp_id)
-        peptide_task = peptide_tasks.run_peptide_import.s(exp_id, peptides, mod_map, data_runs, headers, session.units)
+        peptide_task = peptide_tasks.run_peptide_import.s(exp_id, peptides, mod_map, data_runs, headers, session.units, load_ambiguities)
         finalize_task = notify_tasks.finalize_import.si(exp_id, user_email, application_url)
 
         last_stage_arg = upload_helpers.get_stage_input(exp.id, exp.loading_stage)

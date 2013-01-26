@@ -96,7 +96,17 @@ class PeptideModification(Base):
     
     peptide = relationship("Peptide", lazy='joined')
     modification = relationship("PTM", lazy='joined')
-    
+
+class PeptideAmbiguity(Base):
+    __tablename__ = 'MS_ambiguity'
+
+    id = Column(Integer(10), primary_key=True, autoincrement=True)
+    alt_accession = Column(VARCHAR(20))
+    ms_id = Column(Integer(10), ForeignKey('MS.id'))
+
+    def __init__(self, alt_accession, ms_id):
+        self.alt_accession = alt_accession
+        self.ms_id = ms_id
 
 class MeasuredPeptide(Base):
     __tablename__ = 'MS'
@@ -110,6 +120,7 @@ class MeasuredPeptide(Base):
     
     peptides = relationship("PeptideModification", lazy='joined')
     data = relationship("ExperimentData")
+    ambiguities = relationship("PeptideAmbiguity", cascade='all,delete-orphan')
 
     def save(self):
         DBSession.add(self)

@@ -1,5 +1,5 @@
 from celery.canvas import group
-from ptmscout.database import protein, taxonomies, modifications, experiment, gene_expression, mutations
+from ptmscout.database import protein, taxonomies, modifications, experiment, gene_expression, mutations, uniprot
 from ptmscout.utils import uploadutils
 from ptmscout.config import strings, settings
 from ptmscout.database.modifications import NoSuchPeptide
@@ -43,6 +43,11 @@ def dynamic_transaction_task(fn):
             raise
     ttask.__name__ = fn.__name__
     return ttask
+
+def check_ambiguity(measured_pep, species_name):
+    for swissprot in uniprot.findPeptide(measured_pep.peptide, species_name):
+        amb = modifications.PeptideAmbiguity(swissprot.accession, measured_pep.id)
+        measured_pep.ambiguities.append(amb)
 
 
 def parse_variants(acc, prot_seq, variants):

@@ -23,7 +23,7 @@ def load_new_peptide(prot_id, site_pos, pep_seq, taxonomy):
     if motif_class != None:
         pep.predictions = upload_helpers.query_peptide_predictions(pep_seq, motif_class)
         pep.scansite_date = datetime.datetime.now()
-    
+
     pep.save()
 
 
@@ -41,12 +41,12 @@ def load_protein(accession, protein_information):
     if host_organism:
         taxonomy += upload_helpers.get_taxonomic_lineage(host_organism)
     
-    return prot.id, prot.sequence, taxonomy
+    return prot.id, prot.sequence, species, taxonomy
 
 
-def load_peptide_modification(exp_id, protein_accession, protein_info, pep_seq, mods, units, series_header, runs):
+def load_peptide_modification(exp_id, load_ambiguities, protein_accession, protein_info, pep_seq, mods, units, series_header, runs):
     try:
-        protein_id, protein_sequence, taxonomy = load_protein(protein_accession, protein_info)
+        protein_id, protein_sequence, species, taxonomy = load_protein(protein_accession, protein_info)
         mod_types, aligned_sequences = upload_helpers.parse_modifications(protein_sequence, pep_seq, mods, taxonomy)
 
         filter_mods = []
@@ -62,6 +62,9 @@ def load_peptide_modification(exp_id, protein_accession, protein_info, pep_seq, 
             pep_measurement.experiment_id = exp_id
             pep_measurement.peptide = pep_seq
             pep_measurement.protein_id = protein_id
+
+            if load_ambiguities:
+                upload_helpers.check_ambiguity( pep_measurement, species )
 
         for i in xrange(0, len(aligned_sequences)):
             mod_type = mod_types[i] 
@@ -96,7 +99,7 @@ UPDATE_EVERY=30
 
 @celery.task
 @upload_helpers.transaction_task
-def run_peptide_import(prot_map, exp_id, peptides, mod_map, data_runs, headers, units):
+def run_peptide_import(prot_map, exp_id, peptides, mod_map, data_runs, headers, units, load_ambiguities):
     accessions = set( prot_map.keys() ) & set( peptides.keys() )
 
     total_peptides = 0

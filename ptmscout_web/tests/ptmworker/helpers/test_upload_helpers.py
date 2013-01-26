@@ -2,7 +2,8 @@ from tests.PTMScoutTestCase import IntegrationTestCase
 from ptmworker.helpers import upload_helpers
 from ptmscout.database import modifications, experiment
 from tests.views.mocking import createMockExperiment, createMockProtein,\
-    createMockProbe, createMockAccession, createMockSpecies, createMockTaxonomy
+    createMockProbe, createMockAccession, createMockSpecies,\
+    createMockTaxonomy, createMockMeasurement
 from mock import patch
 from ptmscout.utils import uploadutils
 from ptmscout.config import settings
@@ -10,6 +11,18 @@ import os
 import pickle
 
 class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
+
+    def test_check_ambiguity_should_find_peptides(self):
+        ms = createMockMeasurement(35546, 1)
+        ms.peptide = 'DQGsLCTs'
+        upload_helpers.check_ambiguity(ms, 'homo sapiens')
+
+        self.assertEqual(5, len(ms.ambiguities))
+        set_result = set([ (amb.alt_accession, amb.ms_id) for amb in ms.ambiguities ])
+
+        exp_result = set([('O15111', ms.id), ('O14920', ms.id), ('O14920-2', ms.id), ('O14920-3', ms.id), ('O14920-4', ms.id)])
+        self.assertEqual(exp_result, set_result)
+
 
     def test_get_taxonomic_lineage(self):
         human_lineage = [ \
