@@ -146,7 +146,7 @@ def parse_xml(xml):
     if 'gene_name_primary' in xml.annotations:
         gene = xml.annotations['gene_name_primary']
 
-    taxons = xml.annotations['taxonomy']
+    taxons = [ t.lower() for t in xml.annotations['taxonomy'] ]
     species = get_scientific_name(xml.annotations['organism']).strip()
 
     other_accessions = [('swissprot', xml.id), ('swissprot', xml.name)]

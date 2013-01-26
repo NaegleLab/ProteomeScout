@@ -177,7 +177,7 @@ def get_taxonomic_lineage(species):
     taxonomic_lineage = []
     while taxon.parent != None:
         taxon = taxon.parent
-        taxonomic_lineage.append(taxon.name)
+        taxonomic_lineage.append(taxon.name.lower())
 
     taxonomic_lineage.reverse()
 
@@ -312,7 +312,6 @@ def get_peptide(prot_id, pep_site, peptide_sequence):
         pep.site_pos = pep_site
         pep.site_type = pep_type
         pep.protein_id = prot_id
-        pep.save()
         created = True
     
     return pep, created

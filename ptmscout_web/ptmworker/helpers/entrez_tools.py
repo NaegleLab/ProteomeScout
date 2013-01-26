@@ -131,7 +131,7 @@ def get_protein_information(pm, acc):
     
     name = pm.get_protein_name(acc)
     gene = pm.get_gene_name(acc)
-    taxonomy = pm.get_taxonomy(acc)
+    taxonomy = [ t.lower() for t in pm.get_taxonomy(acc) ]
     species = pm.get_species(acc).strip()
     prot_accessions = pm.get_other_accessions(acc)
 
