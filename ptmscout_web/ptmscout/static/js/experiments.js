@@ -7,6 +7,10 @@ function toggleVisible(element) {
 		$(element).text("[+]")
 }
 
+function timedRefresh(timeoutPeriod) {
+    setTimeout("location.reload(true);",timeoutPeriod);
+}
+
 $(document).ready(
 	function(){
 		$("a.expand").click(
@@ -22,7 +26,14 @@ $(document).ready(
 				items = val.split(" / ");
 				n = parseInt(items[0]);
 				d = parseInt(items[1]);
-				
+
+                if(n == 0){
+                    n = false;
+                }
 				$(this).progressbar({ value: n, max: d});
 			});
+
+        if( $("div.progress").length > 0 ){
+            timedRefresh(10000);
+        }
 	});
