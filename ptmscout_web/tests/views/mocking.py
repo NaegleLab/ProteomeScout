@@ -5,7 +5,7 @@ from ptmscout.database.experiment import Experiment, ExperimentData,\
     ExperimentCondition, ExperimentError
 from ptmscout.database.permissions import Permission
 from ptmscout.database.protein import Protein, GeneOntology, ProteinDomain,\
-    GeneOntologyEntry, ProteinAccession
+    GeneOntologyEntry, ProteinAccession, ProteinRegion
 import random
 from ptmscout.database.modifications import MeasuredPeptide, Peptide,\
     ScansitePrediction, PTM, PTMkeyword, PeptideModification
@@ -327,6 +327,17 @@ def createMockScansite(pep_id):
     mock.score = random.random()
     mock.phophopep_id = pep_id
     
+    return mock
+
+def createMockRegion(pid=None, label=None, source='predicted', start=None, stop=None):
+    mock = Mock(spec=ProteinRegion)
+
+    mock.id = random.randint(0, 100000)
+    mock.protein_id = pid
+    mock.label = label
+    mock.source = source
+    mock.start = start
+    mock.stop = stop
     return mock
 
 def createMockDomain(pid, label=None):

@@ -7,15 +7,16 @@ from ptmscout.views.protein.structure_view import protein_structure_viewer, \
 from tests.views.mocking import createMockProtein, createMockUser, \
     createMockMeasurement, createMockExperiment, createMockPeptide,\
     createMockPTM, createMockPeptideModification, createMockDomain,\
-    createMockData
+    createMockData, createMockRegion
 import json, base64
 
 class TestProteinStructureViewIntegration(IntegrationTestCase):
     def test_integration(self):
         result = self.ptmscoutapp.get('/proteins/35546/structure')
         d = result.pyquery
-        protein_data = json.loads( base64.b64decode( d(".protein_viewer .data").text() ))
-        self.maxDiff=None
+        encoded_data = d(".protein_viewer .data").text()
+
+        protein_data = json.loads( base64.b64decode( encoded_data ))
 
         self.assertEqual(
             {'25': "Quantitative analysis of EGFRvIII cellular signaling networks reveals a combinatorial therapeutic strategy for glioblastoma.",
@@ -67,11 +68,16 @@ class TestProteinStructureViews(UnitTestCase):
         pepmod3 = createMockPeptideModification(ms2, pep2, ptm2)
         pepmod4 = createMockPeptideModification(ms2, pep3, ptm1)
 
+        region1 = createMockRegion(pid=prot.id, label='kinase', start=190, stop=220)
+        prot.regions.append(region1)
+
         experiments, mod_types, result = format_protein_modifications(prot, measured_peps)
 
-        exp_result = {  200: {'mods':{}, 'residue':pep1.site_type, 'domain':None, 'peptide': pep1.pep_aligned },
-                        210: {'mods':{}, 'residue':pep2.site_type, 'domain':'d1', 'peptide': pep2.pep_aligned },
-                        300: {'mods':{}, 'residue':pep3.site_type, 'domain':None, 'peptide': pep3.pep_aligned }}
+        self.maxDiff=None
+
+        exp_result = {  200: {'mods':{}, 'residue':pep1.site_type, 'domain':None, 'peptide': pep1.pep_aligned, 'regions':['kinase']},
+                        210: {'mods':{}, 'residue':pep2.site_type, 'domain':'d1', 'peptide': pep2.pep_aligned, 'regions':['kinase']},
+                        300: {'mods':{}, 'residue':pep3.site_type, 'domain':None, 'peptide': pep3.pep_aligned, 'regions':[] }}
 
         exp_result[200]['mods'][ptm1.name] = [ {'MS': ms1.id, 'experiment':13, 'has_data': True, 'exported':True} ]
         exp_result[210]['mods'][ptm1.name] = [ {'MS': ms1.id, 'experiment':13, 'has_data': True, 'exported':True} ]
@@ -97,6 +103,7 @@ class TestProteinStructureViews(UnitTestCase):
 
         self.assertEqual(sorted(exp_domains, key=lambda d: d['start']), formatted_domains)
 
+    @patch('ptmscout.views.protein.structure_view.format_scansite_predictions')
     @patch('ptmscout.views.protein.structure_view.format_protein_mutations')
     @patch('ptmscout.views.protein.structure_view.format_protein_regions')
     @patch('ptmscout.views.protein.structure_view.format_protein_domains')
@@ -105,7 +112,7 @@ class TestProteinStructureViews(UnitTestCase):
     @patch('ptmscout.database.protein.getProteinById')
     def test_protein_structure_view(self, patch_getProtein, patch_getMods,
             patch_formatMods, patch_formatDomains, patch_formatRegions,
-            patch_formatMutations):
+            patch_formatMutations, patch_formatScansite):
 
         request = DummyRequest()
         request.user = createMockUser()
@@ -122,6 +129,7 @@ class TestProteinStructureViews(UnitTestCase):
         formatted_mods = "some formatted modifications"
         formatted_muts = "some formatted mutations"
         formatted_regions = "some formatted regions"
+        formatted_scansite = "some formatted scansite data"
 
         exp_mods = ["some", "mods"]
         patch_getMods.return_value = exp_mods
@@ -129,6 +137,7 @@ class TestProteinStructureViews(UnitTestCase):
         patch_formatMods.return_value = (formatted_exps, formatted_mod_types, formatted_mods)
         patch_formatRegions.return_value = formatted_regions
         patch_formatMutations.return_value = formatted_muts
+        patch_formatScansite.return_value = formatted_scansite
 
         result = protein_structure_viewer(request)
 
@@ -138,6 +147,7 @@ class TestProteinStructureViews(UnitTestCase):
         patch_formatDomains.assert_called_once_with(prot)
         patch_formatRegions.assert_called_once_with(prot)
         patch_formatMutations.assert_called_once_with(prot)
+        patch_formatScansite.assert_called_once_with(prot, exp_mods)
 
         self.assertEqual(strings.protein_structure_page_title, result['pageTitle'])
         self.assertEqual(prot, result['protein'])
@@ -149,6 +159,7 @@ class TestProteinStructureViews(UnitTestCase):
                     'exps': formatted_exps,
                     'mod_types': formatted_mod_types,
                     'mutations': formatted_muts,
+                    'scansite': formatted_scansite,
                     'regions': formatted_regions,
                     'pfam_url': settings.pfam_family_url,
                     'protein_data_url': "%s/proteins/%s/data" % (request.application_url, prot.id),

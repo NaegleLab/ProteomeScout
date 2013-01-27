@@ -5,6 +5,27 @@ from ptmscout.utils import webutils
 from ptmscout.views.protein import decorators
 import json, base64
 
+
+def format_scansite_predictions(prot, mod_sites):
+    peptides = {}
+    for ms in mod_sites:
+       for modpep in ms.peptides:
+           pep = modpep.peptide
+           peptides[pep.site_pos] = pep
+
+    formatted_scansite = {}
+    for site in peptides:
+        pep = peptides[site]
+        scansite_predictions = []
+        for ss in pep.predictions:
+            scansite_predictions.append({ \
+                    'source': ss.source,
+                    'value': ss.value,
+                    'score': ss.score
+                })
+        formatted_scansite[site] = scansite_predictions
+
+
 def format_protein_mutations(prot):
     formatted_mutations = {}
     for m in prot.mutations:
@@ -48,6 +69,14 @@ def format_protein_domains(prot):
 
     return sorted(formatted_domains, key=lambda d: d['start'])
 
+def get_site_regions(regions, pos):
+    region_names = []
+    for r in regions:
+        if r.start <= pos and pos <= r.stop:
+            region_names.append(r.label)
+
+    return region_names
+
 def format_protein_modifications(prot, mod_sites):
     experiments = {}
     mod_types = set()
@@ -65,6 +94,7 @@ def format_protein_modifications(prot, mod_sites):
                                         { 'mods': {},
                                           'residue': pep.site_type,
                                           'domain': pep.protein_domain.label if pep.protein_domain else None,
+                                          'regions': get_site_regions(prot.regions, pep.site_pos),
                                           'peptide': pep.pep_aligned} )
 
             mod_list = pos_description['mods'].get(ptm.name, [])
@@ -88,6 +118,7 @@ def protein_structure_viewer(request):
     formatted_domains = format_protein_domains(prot)
     formatted_regions = format_protein_regions(prot)
     formatted_mutations = format_protein_mutations(prot)
+    formatted_scansite = format_scansite_predictions(prot, mod_sites)
 
     data = {'seq': prot.sequence, 
             'domains': formatted_domains, 
@@ -95,6 +126,7 @@ def protein_structure_viewer(request):
             'mutations': formatted_mutations,
             'regions': formatted_regions,
             'mod_types': formatted_mod_types,
+            'scansite': formatted_scansite,
             'exps': formatted_exps,
             'pfam_url': settings.pfam_family_url,
             'experiment_url': "%s/experiments" % (request.application_url),
