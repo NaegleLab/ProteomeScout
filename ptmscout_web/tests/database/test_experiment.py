@@ -6,7 +6,32 @@ from mock import patch
 from ptmscout.database import user, permissions
 
 class ExperimentTestCase(DBTestCase):
-    
+
+    def format_multiline(self, string):
+        return string.replace("    ","").replace("\n"," ")
+
+    def test_experiment_getLongCitationString_should_handle_multiple_page_range_types(self):
+        exp = dbexperiment.getExperimentById(26, None)
+        exp.page_start = "571"
+
+        exp.page_end = "571"
+        exp_cite = self.format_multiline("""Yi Zhang, Alejandro Wolf-Yadlin, Phillip L Ross, Darryl J Pappin, John Rush,
+        Douglas A Lauffenburger, Forest M White. <b>Mol Cell Proteomics</b>. 2005-september. Vol 4. 571.""")
+
+        self.assertEqual(exp_cite, exp.getLongCitationString())
+
+        exp.page_end = None
+        exp_cite = self.format_multiline("""Yi Zhang, Alejandro Wolf-Yadlin, Phillip L Ross, Darryl J Pappin, John Rush,
+        Douglas A Lauffenburger, Forest M White. <b>Mol Cell Proteomics</b>. 2005-september. Vol 4. 571.""")
+
+        self.assertEqual(exp_cite, exp.getLongCitationString())
+
+        exp.page_end = "5712"
+        exp_cite = self.format_multiline("""Yi Zhang, Alejandro Wolf-Yadlin, Phillip L Ross, Darryl J Pappin, John Rush,
+        Douglas A Lauffenburger, Forest M White. <b>Mol Cell Proteomics</b>. 2005-september. Vol 4. 571-5712.""")
+
+        self.assertEqual(exp_cite, exp.getLongCitationString())
+
     def test_experiment_copy_should_copy_all_data(self):
         exp = dbexperiment.getExperimentById(26, None)
         

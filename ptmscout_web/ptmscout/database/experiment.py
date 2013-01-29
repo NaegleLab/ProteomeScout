@@ -199,8 +199,13 @@ class Experiment(Base):
                 cite_string += "Vol " +str(self.volume)+". "
             if self.page_start != None:
                 cite_string += self.page_start
-                if self.page_end != None:
-                    cite_string += "-" + self.__getPageEndFormatted()
+
+                if self.page_end != None and self.page_end != self.page_start:
+                    if len(self.page_start) == len(self.page_end):
+                        cite_string += "-" + self.__getPageEndFormatted()
+                    else:
+                        cite_string += "-" + self.page_end
+
                 cite_string += "."
         return cite_string
     
