@@ -257,6 +257,7 @@ table#gene_ontology_breakdown {
 table#gene_ontology_breakdown th {
   background-color: black;
   color: white; 
+  width:33%;
 }
 
 table#gene_ontology_breakdown * {
