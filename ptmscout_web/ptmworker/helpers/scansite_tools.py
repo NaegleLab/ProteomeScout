@@ -37,16 +37,32 @@ class ScansiteParser():
             mn = MotifNode(siteNode)
             self.sites.append(mn)
 
-@rate_limit(rate=3)
+class ScansiteError(Exception):
+    pass
+
+RETRY_COUNT = 3
+
+@rate_limit(rate=settings.SCANSITE_RATE_LIMIT)
 def get_scansite_motif(pep_seq, motif_class):
     if settings.DISABLE_SCANSITE:
         return []
-    
-    query_url = scansite_url  % (pep_seq.strip(), motif_class)
-    
-    result = urllib2.urlopen(query_url)
-    
-    parsed_data = ScansiteParser(result.read())
-    predicted_sites = [ motif for motif in parsed_data.sites if pep_seq == motif.sequence ]
-    
-    return predicted_sites
+
+
+    i = 0
+    while i < RETRY_COUNT:
+        i+=1
+        try:
+            query_url = scansite_url  % (pep_seq.strip(), motif_class)
+            result = urllib2.urlopen(query_url)
+
+            parsed_data = ScansiteParser(result.read())
+            predicted_sites = [ motif for motif in parsed_data.sites if pep_seq == motif.sequence ]
+
+            return predicted_sites
+
+        except urllib2.HTTPError, e:
+            log.warning("HTTPError %s when querying Scansite3, retrying (%d / %d)", str(e), i, RETRY_COUNT)
+        except httplib.BadStatusLine:
+            log.warning("Got bad status line from Scansite3, retrying (%d / %d)", i, RETRY_COUNT)
+
+    raise ScansiteError()

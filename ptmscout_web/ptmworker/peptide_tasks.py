@@ -1,7 +1,7 @@
 import celery
 import logging
 from ptmworker import notify_tasks
-from ptmworker.helpers import upload_helpers
+from ptmworker.helpers import upload_helpers, scansite_tools
 from ptmscout.database import modifications, protein, experiment
 from ptmscout.utils import mail, uploadutils
 import datetime
@@ -87,6 +87,8 @@ def load_peptide_modification(exp_id, load_ambiguities, protein_accession, prote
 
     except uploadutils.ParseError, pe:
         create_errors_for_runs(exp_id, protein_accession, pep_seq, pe.msg, runs)
+    except scansite_tools.ScansiteError:
+        create_errors_for_runs(exp_id, protein_accession, pep_seq, "Scansite query failed for peptide: %s '%s'" % (protein_accession, pep_seq), runs)
     except TypeError:
         create_errors_for_runs(exp_id, protein_accession, pep_seq, "Failed to get data for protein: %s" % (protein_accession), runs)
     except Exception, e:
