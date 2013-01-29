@@ -22,8 +22,8 @@ def transaction_task(fn):
             transaction.commit()
             return result
         except Exception, e:
-            transaction.abort()
             log.error(traceback.format_exc())
+            transaction.abort()
             raise
     ttask.__name__ = fn.__name__
     return ttask
@@ -40,8 +40,8 @@ def dynamic_transaction_task(fn):
                 new_task, task_arg, errback = result
                 new_task.apply_async((task_arg,), link_error=errback )
         except Exception:
-            transaction.abort()
             log.error(traceback.format_exc())
+            transaction.abort()
             raise
     ttask.__name__ = fn.__name__
     return ttask
