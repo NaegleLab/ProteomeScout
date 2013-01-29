@@ -20,8 +20,13 @@ def get_pubmed_record_by_id(pmid):
     rec_arr = []
     for r in records:
         rec_arr.append(r)
-    
-    return rec_arr[0] if len(rec_arr) == 1 else None
+
+    rval = rec_arr[0] if len(rec_arr) == 1 else None
+
+    if rval != None and 'PG' in rval and rval['PG'].find('-') == -1:
+        rval['PG'] = "%s-%s" % (rval['PG'], rval['PG'])
+
+    return rval
 
 
 def map_domain_to_sequence(seq1, domain, seq2):

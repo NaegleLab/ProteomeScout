@@ -12,7 +12,12 @@ class EntrezQueryTestCase(IntegrationTestCase):
 
         name, gene, taxonomy, species, host_organism, accessions, domains, mutations, seq = result[0]['118734']
 
-    def test_get_pubmed_record(self):
+    def test_get_pubmed_record_22373819(self):
+        record = entrez_tools.get_pubmed_record_by_id(22373819)
+
+        self.assertEqual("571-571", record['PG'])
+
+    def test_get_pubmed_record_12230038(self):
         record = entrez_tools.get_pubmed_record_by_id(12230038)
         
         self.assertEqual(settings.adminEmail, Entrez.email)
