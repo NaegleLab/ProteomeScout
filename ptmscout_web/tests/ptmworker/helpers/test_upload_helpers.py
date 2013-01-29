@@ -69,30 +69,30 @@ IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
 
     def test_get_taxonomic_lineage(self):
         human_lineage = [ \
-            'Root node of taxonomy',
-            'Eukaryota',
-            'Metazoa',
-            'Bilateria',
-            'Chordata',
-            'Craniata',
-            'Vertebrata',
-            'Gnathostomata',
-            'Euteleostomi',
-            'Sarcopterygii',
-            'Tetrapoda',
-            'Amniota',
-            'Mammalia',
-            'Theria',
-            'Eutheria',
-            'Euarchontoglires',
-            'Primates',
-            'Haplorrhini',
-            'Simiiformes',
-            'Catarrhini',
-            'Hominoidea',
-            'Hominidae',
-            'Homininae',
-            'Homo' ]
+            'root node of taxonomy',
+            'eukaryota',
+            'metazoa',
+            'bilateria',
+            'chordata',
+            'craniata',
+            'vertebrata',
+            'gnathostomata',
+            'euteleostomi',
+            'sarcopterygii',
+            'tetrapoda',
+            'amniota',
+            'mammalia',
+            'theria',
+            'eutheria',
+            'euarchontoglires',
+            'primates',
+            'haplorrhini',
+            'simiiformes',
+            'catarrhini',
+            'hominoidea',
+            'hominidae',
+            'homininae',
+            'homo' ]
 
         lineage = upload_helpers.get_taxonomic_lineage('Homo sapiens')
 
@@ -180,7 +180,6 @@ IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
         self.assertEqual(pep_site, pepinst.site_pos)
         self.assertEqual(pep_type, pepinst.site_type)
         self.assertEqual(pid, pepinst.protein_id)
-        pepinst.save.assert_called_once_with()
         
     def test_insert_run_data_when_exists_should_modify_existing(self):
         from ptmscout.database import DBSession
