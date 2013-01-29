@@ -107,49 +107,6 @@ def parse_variants(acc, prot_seq, variants):
 
     return new_mutations
 
-def get_go_annotation(goId, complete_go_terms, missing_terms):
-    go_term = protein.getGoAnnotationById(goId)
-    entry = None
-
-    if go_term == None:
-        go_term = protein.GeneOntology()
-        version, entry = quickgo_tools.get_GO_term(goId)
-
-        for parent_goId in entry.is_a:
-            if parent_goId not in complete_go_terms and \
-                    protein.getGoAnnotationById(parent_goId) == None:
-                missing_terms.add(parent_goId)
-
-        go_term.GO = entry.goId
-        go_term.term = entry.goName
-        go_term.aspect = entry.goFunction
-        go_term.version = version
-        go_term.save()
-
-    return go_term, entry
-
-def query_missing_GO_terms(missing_terms, complete_go_terms):
-    processed_missing = set()
-    while len(missing_terms) > 0:
-        goId = missing_terms.pop(0)
-        if goId in processed_missing:
-            continue
-
-        go_term = protein.GeneOntology()
-        version, entry = quickgo_tools.get_GO_term(goId)
-
-        go_term.GO = entry.goId
-        go_term.term = entry.goName
-        go_term.aspect = entry.goFunction
-        go_term.version = version
-        go_term.save()
-        processed_missing.add(goId)
-
-        for parent_goId in entry.is_a:
-            if parent_goId not in complete_go_terms and \
-                    protein.getGoAnnotationById(parent_goId) == None:
-                missing_terms.append(parent_goId)
-
 
 def report_errors(exp_id, errors, line_mapping):
     for e in errors:

@@ -35,6 +35,13 @@ class GeneOntology(Base):
     def __init__(self):
         self.date = datetime.datetime.now()
     
+    def hasChild(self, goId):
+        goId = goId.lower()
+        for c in self.children:
+            if c.GO.lower() == goId:
+                return True
+        return False
+
 #    def getURL(self):
 #        return settings.accession_urls['GO'] % (self.GO)
 

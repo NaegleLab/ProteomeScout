@@ -4,6 +4,32 @@ from ptmscout.database.protein import NoSuchProtein, GeneOntology
 from sqlalchemy.exc import IntegrityError
 
 class ProteinTest(DBTestCase):
+
+    def test_gene_ontology_hasChild_should_find_child_terms(self):
+        go = GeneOntology()
+        go.aspect = 'F'
+        go.GO = 'GO:00000001'
+        go.term = "SomeTermOfGO"
+        go.version = "1.2"
+        
+        c1 = GeneOntology()
+        c1.aspect = 'F'
+        c1.GO = 'GO:00000002'
+        c1.term = "SomeTermOfGO"
+        c1.version = "1.2"
+
+        c2 = GeneOntology()
+        c2.aspect = 'F'
+        c2.GO = 'GO:00000003'
+        c2.term = "SomeTermOfGO"
+        c2.version = "1.2"
+
+        go.children = [c1,c2]
+
+        self.assertTrue(go.hasChild('GO:00000003'))
+        self.assertFalse(go.hasChild('GO:00000001'))
+        self.assertFalse(go.hasChild('GO:00000004'))
+
     def test_protein_should_be_gettable(self):
         prot = protein.getProteinById(14496)
         

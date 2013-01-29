@@ -33,10 +33,10 @@ class GOTasksTest(IntegrationTestCase):
 
         self.assertEqual(protein_map, value)
 
+
         p = protein.getProteinById(11)
-        self.assertEqual(set(['GO:0005887', 'GO:0016020', 'GO:0046982',
-                'GO:0007156', 'GO:0010976', 'GO:0042803']), set([ term.GO_term.GO
-                    for term in p.GO_terms]))
+        self.assertEqual(set(['GO:0005887', 'GO:0016020', 'GO:0046982', 'GO:0007156', 'GO:0010976', 'GO:0042803']),\
+                         set([ term.GO_term.GO for term in p.GO_terms]))
 
         p = protein.getProteinById(9)
         self.assertIn('GO:0016020', [ term.GO_term.GO for term in p.GO_terms ])

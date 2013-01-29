@@ -3,15 +3,17 @@ import logging
 from ptmworker import notify_tasks
 from ptmworker.helpers import upload_helpers, quickgo_tools
 from ptmscout.database import protein
+import traceback
 
 log = logging.getLogger('ptmscout')
 
 MAX_QUICKGO_BATCH_SIZE = 500
 
-def create_hierarchy_for_missing_GO_annotations(created_entries):
+def create_hierarchies(created_entries):
     links = 0
-    for entry in created_entries:
-        go_term = protein.getGoAnnotationById(entry.goId)
+    for goId in created_entries:
+        entry = created_entries[goId]
+        go_term = protein.getGoAnnotationById(goId)
         
         for parent_goId in entry.is_a:
             parent_term = protein.getGoAnnotationById(parent_goId)
@@ -22,66 +24,123 @@ def create_hierarchy_for_missing_GO_annotations(created_entries):
                 parent_term.children.append(go_term)
                 parent_term.save()
                 links += 1
-    
-    log.info("Created: %d GO entries with %d edges", len(created_entries), links)        
 
+    log.info("Created: %d new GO is_a relationships", links)
 
-def create_missing_GO_annotations(GO_annotation_map, accession_map, protein_map):
-    created_go_entries = []
-    created, assigned = 0, 0
-    
-    complete_go_terms = set()
-    for acc in GO_annotation_map:
-        for goId in GO_annotation_map[acc]:
-            complete_go_terms.add(goId)
+def get_go_annotation(goId, created_entries):
+    go_term = protein.getGoAnnotationById(goId)
+    entry = None
+
+    if go_term == None:
+        go_term = protein.GeneOntology()
+        version, entry = quickgo_tools.get_GO_term(goId)
+
+        created_entries[goId] = entry
+
+        go_term.GO = entry.goId
+        go_term.term = entry.goName
+        go_term.aspect = entry.goFunction
+        go_term.version = version
+        go_term.save()
+
+    return go_term
+
+def query_missing_GO_terms(created_entries):
+    for goId in created_entries:
+        entry = created_entries[goId]
+        for parent_goId in entry.is_a:
+            if protein.getGoAnnotationById(parent_goId) == None:
+                missing_terms.append(parent_goId)
 
     missing_terms = set()
-    unique_terms = set()
-    for acc in accession_map:
-        go_annotations = GO_annotation_map[acc]
+    while len(missing_terms) > 0:
+        goId = missing_terms.pop(0)
+        if goId in created_entries:
+            continue
 
-        for protein_id in accession_map[acc]:
-            prot = protein_map[protein_id]
+        go_term = protein.GeneOntology()
+        version, entry = quickgo_tools.get_GO_term(goId)
 
-            for goId in go_annotations:
-                unique_terms.add(goId)
+        go_term.GO = entry.goId
+        go_term.term = entry.goName
+        go_term.aspect = entry.goFunction
+        go_term.version = version
+        go_term.save()
+        created_entries[goId] = entry
 
-                if not prot.hasGoTerm(goId):
-                    dateAdded = go_annotations[goId]
-                    go_term, entry = upload_helpers.get_go_annotation(goId, complete_go_terms, missing_terms)
+        for parent_goId in entry.is_a:
+            if protein.getGoAnnotationById(parent_goId) == None:
+                missing_terms.append(parent_goId)
 
-                    prot.addGoTerm(go_term, dateAdded)
+def get_primary_accessions(prot):
+    uniprot_accessions = []
+    refseq_accessions = []
+    genbank_accessions = []
 
-                    if entry:
-                        created_go_entries.append(entry)
-                        created+=1
+    for acc in prot.accessions:
+        tp = acc.type.lower()
+        if tp == 'uniprot' or tp == 'swissprot':
+            uniprot_accessions.append(acc.value)
+        if tp == 'refseq':
+            refseq_accessions.append(acc.value)
+        if tp == 'genbank':
+            genbank_accessions.append(acc.value)
 
-                    assigned+=1
+    primary_accessions = sorted(uniprot_accessions, key=lambda item: len(item))
+    if len(primary_accessions) > 0:
+        return primary_accessions
+    if len(refseq_accessions) > 0:
+        return refseq_accessions
+    return genbank_accessions
+
+
+def annotate_proteins(acc, annotations, protein_ids, protein_map, created_entries):
+    assigned = 0
+    duplicates = 0
+    terms = set()
+    for goId in annotations:
+        terms.add(goId)
+
+        go_term = get_go_annotation(goId, created_entries)
+        dateAdded = annotations[goId]
+
+        unassigned_proteins = [ protein_map[pid] for pid in protein_ids if not protein_map[pid].hasGoTerm(goId) ]
+        assigned_proteins = [ protein_map[pid] for pid in protein_ids if protein_map[pid].hasGoTerm(goId) ]
+        for prot in unassigned_proteins:
+            prot.addGoTerm(go_term, dateAdded)
+            assigned += 1
+        duplicates += len(assigned_proteins)
+
+    log.info( "Assigned %d new annotations to accession '%s' (%d proteins) from %d terms. Did not add %d duplicate annotations.", assigned, acc, len(protein_ids), len(terms), duplicates )
+
+def assign_annotations(quickgo_result, protein_accessions, protein_map):
+    created_entries = {}
+    protein_ids = {}
+    for pid in protein_accessions:
+        for acc in protein_accessions[pid]:
+            pids = protein_ids.get(acc, set())
+            pids.add(pid)
+            protein_ids[acc] = pids
+
+    for acc in quickgo_result:
+        if len(quickgo_result[acc]) > 0:
+            annotate_proteins(acc, quickgo_result[acc], protein_ids[acc], protein_map, created_entries)
+        else:
+            log.info( "No annotations for accession '%s'", acc )
 
     for pid in protein_map:
-        protein_map[pid].saveNoFlush()
+        protein_map[pid].saveProtein()
 
-    missing_terms = list(missing_terms)
-    upload_helpers.query_missing_GO_terms(missing_terms, complete_go_terms)
-
-    log.info("Returned %d terms, assigned %d terms, created %d terms", len(unique_terms), assigned, created)
-    return created_go_entries
-
+    return created_entries
 
 def build_accession_map(protein_ids):
-    valid_types = set(['refseq','uniprot','swissprot','gene_synonym'])
-
     protein_accession_map = {}
     protein_map = {}
+
     for protein_id in protein_ids:
         prot = protein.getProteinById(protein_id)
         protein_map[protein_id] = prot
-
-        for accession in prot.accessions:
-            if accession.type in valid_types:
-                pids = protein_accession_map.get(accession.value, set())
-                pids.add(protein_id)
-                protein_accession_map[accession.value] = pids
+        protein_accession_map[protein_id] = get_primary_accessions(prot)
 
     return protein_accession_map, protein_map
 
@@ -91,23 +150,29 @@ def build_accession_map(protein_ids):
 def import_go_terms(protein_result, exp_id):
     protein_map, new_protein_ids = protein_result
 
-    protein_accession_multimap, protein_id_map = build_accession_map(new_protein_ids.values())
+    protein_accessions, protein_id_map = build_accession_map(new_protein_ids.values())
+    query_accessions = set([ acc for pid in protein_accessions for acc in protein_accessions[pid] ])
+
     GO_map = {}
-    GO_annotation_task_args = upload_helpers.create_chunked_tasks(protein_accession_multimap, MAX_QUICKGO_BATCH_SIZE)
-    max_progress = len(GO_annotation_task_args) + 1
+    queries = upload_helpers.create_chunked_tasks(query_accessions, MAX_QUICKGO_BATCH_SIZE)
+    max_progress = len(queries) + 1
 
     upload_helpers.store_stage_input(exp_id, 'GO terms', protein_result)
     notify_tasks.set_loading_stage.apply_async((exp_id, 'GO terms', max_progress))
 
     i=0
-    for protein_accessions in GO_annotation_task_args:
-        go_terms, _ = quickgo_tools.batch_get_GO_annotations(protein_accessions)
+    for query_accessions in queries:
+        go_terms, _ = quickgo_tools.batch_get_GO_annotations(query_accessions)
         GO_map.update( go_terms )
         i+=1
         notify_tasks.set_progress.apply_async((exp_id, i, max_progress))
 
-    created_entries = create_missing_GO_annotations(GO_map, protein_accession_multimap, protein_id_map)
-    create_hierarchy_for_missing_GO_annotations(created_entries)
+    created_entries = assign_annotations(GO_map, protein_accessions, protein_id_map)
+
+    log.info( "Created a total of %d new GO terms", len(created_entries) )
+
+    query_missing_GO_terms(created_entries)
+    create_hierarchies(created_entries)
 
     notify_tasks.set_progress.apply_async((exp_id, max_progress, max_progress))
 
