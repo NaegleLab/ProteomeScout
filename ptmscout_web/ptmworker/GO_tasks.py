@@ -46,15 +46,16 @@ def get_go_annotation(goId, created_entries):
     return go_term
 
 def query_missing_GO_terms(created_entries):
+    missing_terms = set()
+
     for goId in created_entries:
         entry = created_entries[goId]
         for parent_goId in entry.is_a:
             if protein.getGoAnnotationById(parent_goId) == None:
-                missing_terms.append(parent_goId)
+                missing_terms.add(parent_goId)
 
-    missing_terms = set()
     while len(missing_terms) > 0:
-        goId = missing_terms.pop(0)
+        goId = missing_terms.pop()
         if goId in created_entries:
             continue
 
@@ -70,7 +71,7 @@ def query_missing_GO_terms(created_entries):
 
         for parent_goId in entry.is_a:
             if protein.getGoAnnotationById(parent_goId) == None:
-                missing_terms.append(parent_goId)
+                missing_terms.add(parent_goId)
 
 def get_primary_accessions(prot):
     uniprot_accessions = []
