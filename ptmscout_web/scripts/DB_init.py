@@ -1,11 +1,20 @@
 from sqlalchemy import engine_from_config
 from ptmscout.database import DBSession, Base  # base declarative object
 from pyramid import testing
+import sys, logging
 
 class DatabaseInitialization():
     @classmethod
-    def setUpClass(cls, settings):
+    def setUpClass(cls, settings, sql_echo=False):
         cls.engine = engine_from_config(settings, prefix='sqlalchemy.')
+        settings['sqlalchemy.echo'] = sql_echo
+        settings['sqlalchemy.echo_pool'] = sql_echo
+
+    def log_capture(self, log_stream, level=logging.DEBUG):
+        logger = logging.getLogger(log_stream)
+        logger.level = level
+        stream_handler = logging.StreamHandler(sys.stdout)
+        logger.addHandler(stream_handler)
 
     def setUp(self):
         self.connection = self.engine.connect()
