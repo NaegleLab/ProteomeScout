@@ -1,17 +1,14 @@
 QUnit.config.reorder = false;
 
 test( "draw-residues", function() {
-    ok( -1 != $('#S102').attr('title').indexOf('QSTFRKTsPAPGGPA') );
-    ok( -1 != $('#Y284').attr('title').indexOf('LPQNDDHyVMQEHRK') );
-    ok( -1 != $('#Y518').attr('title').indexOf('GGVKKPTyDPVSEDQ') );
-    ok( -1 != $('#Y827').attr('title').indexOf('SFASDPKyATPQVIQ') );
-    ok( -1 != $('#Y859').attr('title').indexOf('KKVSSTHyYLLPERP') );
-    ok( -1 != $('#Y860').attr('title').indexOf('KVSSTHYyLLPERPS') );
+    ok( -1 != $('#T14').attr('title').indexOf('IEKIGEGtYGVVYKG') );
+    ok( -1 != $('#Y15').attr('title').indexOf('EKIGEGTyGVVYKGR') );
+    ok( -1 != $('#T161').attr('title').indexOf('GIPIRVYtHEVVTLW') );
 });
 
 test( "draw-domains", function() {
-    ok( 4 == $('svg rect.domain').length );
-    ok( 4 == $('svg text.domain').length );
+    ok( 2 == $('svg rect.domain').length );
+    ok( 2 == $('svg text.domain').length );
     
     visible = [];
     $('svg text.domain').each( function() {
@@ -20,23 +17,23 @@ test( "draw-domains", function() {
     });
     
     equal( visible.length, 2 );
-    equal( visible[0], "Pkinase_Tyr" );
-    equal( visible[1], "Pkinase_Tyr" );
+    equal( visible[0], "Pkinase" );
+    equal( visible[1], "Pkinase" );
 });
 
 test( "draw-ptms", function() {
-    equal( $('svg rect.residue').length, 54 );
-    equal( $('svg rect#Y518').length, 2 );
-    equal( $('svg rect#S856').length, 2 );
-    equal( $('svg rect#T857').length, 2 );
+    equal( $('svg rect.residue').length, 72 );
+    equal( $('svg rect#T14').length, 2 );
+    equal( $('svg rect#Y15').length, 2 );
+    equal( $('svg rect#T161').length, 2 );
 });
 
 test( "draw-ticks", function() {
-    equal( $('svg line.t10').length, 83 )
-    equal( $('svg line.t50').length, 10 )
-    equal( $('svg line.t100').length, 16 )
-    equal( $('svg line.t500').length, 2 )
-    equal( $('svg line.t1000').length, 2 )
+    equal( $('svg line.t10').length, 24 )
+    equal( $('svg line.t50').length, 6 )
+    equal( $('svg line.t100').length, 4 )
+    equal( $('svg line.t500').length, 0 )
+    equal( $('svg line.t1000').length, 0 )
 });
 
 test( "toggle-ptms", function() {
@@ -87,7 +84,7 @@ test( "toggle-exp", function() {
         $('svg rect.residue').each(function(){
             cnt += $(this).attr('height') == 0 ? 0 : 1;
         });
-        equal( cnt, 10, "Wrong number of visible residues" );
+        equal( cnt, 8, "Wrong number of visible residues" );
         start();
     }, 500);
 });
