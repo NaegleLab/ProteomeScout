@@ -10,6 +10,25 @@ class ExperimentTestCase(DBTestCase):
     def format_multiline(self, string):
         return string.replace("    ","").replace("\n"," ")
 
+    def test_experiment_getCitationString_should_handle_multiple_page_range_types(self):
+        exp = dbexperiment.getExperimentById(26, None)
+        exp.page_start = "571"
+
+        exp.page_end = "571"
+        exp_cite = self.format_multiline("""Mol Cell Proteomics. 2005-september. Vol 4. 571.""")
+
+        self.assertEqual(exp_cite, exp.getCitationString())
+
+        exp.page_end = None
+        exp_cite = self.format_multiline("""Mol Cell Proteomics. 2005-september. Vol 4. 571.""")
+
+        self.assertEqual(exp_cite, exp.getCitationString())
+
+        exp.page_end = "5712"
+        exp_cite = self.format_multiline("""Mol Cell Proteomics. 2005-september. Vol 4. 571-5712.""")
+
+        self.assertEqual(exp_cite, exp.getCitationString())
+
     def test_experiment_getLongCitationString_should_handle_multiple_page_range_types(self):
         exp = dbexperiment.getExperimentById(26, None)
         exp.page_start = "571"

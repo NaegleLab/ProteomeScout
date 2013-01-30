@@ -172,8 +172,13 @@ class Experiment(Base):
                 string += "Vol " + str(self.volume) + ". "
             if self.page_start != None:
                 string += self.page_start
-                if self.page_end != None:
-                    string += "-" + self.__getPageEndFormatted()
+
+                if self.page_end != None and self.page_end != self.page_start:
+                    if len(self.page_start) == len(self.page_end):
+                        string += "-" + self.__getPageEndFormatted()
+                    else:
+                        string += "-" + self.page_end
+
                 string += "."
         return string
     
