@@ -25,6 +25,7 @@ def format_scansite_predictions(prot, mod_sites):
                 })
         formatted_scansite[site] = scansite_predictions
 
+    return formatted_scansite
 
 def format_protein_mutations(prot):
     formatted_mutations = {}
