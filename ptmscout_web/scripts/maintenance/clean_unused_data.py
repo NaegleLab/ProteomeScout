@@ -4,7 +4,9 @@ from ptmscout.database import DBSession, experiment, upload
 from paste.deploy.loadwsgi import appconfig
 import datetime
 import sys, os
+import re
 import traceback
+import shutil
 
 SESSION_EXPIRATION_TIME = 86400
 
@@ -68,6 +70,16 @@ if __name__ == "__main__":
             if fn not in active_files:
                 print fn
                 os.remove(os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, fn))
+
+        print "Deleted inactive experiment directories:"
+        for dn in os.listdir(os.path.join(settings.ptmscout_path, settings.experiment_data_file_path)):
+            dp = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, dn)
+            m = re.match(r'^e([0-9]+)$', dn)
+            if os.path.isdir(dp) and m:
+                exp_id = int(m.group(1))
+                if exp_id not in known_experiments:
+                    print dn
+                    shutil.rmtree(dp)
 
         DBSession.flush()
     except Exception, e:
