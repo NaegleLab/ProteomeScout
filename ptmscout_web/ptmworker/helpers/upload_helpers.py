@@ -71,8 +71,8 @@ def find_activation_loops(prot):
 
         domain_seq = domain_seq[:m2.start()]
 
-        loop_start = d.start + m1.end()
-        loop_end = d.start + m1.end() + m2.start() - 1
+        loop_start = d.start + m1.end() - 3
+        loop_end = d.start + m1.end() + m2.start() - 1 + 3
 
         label = strings.kinase_loop_name if len(domain_seq) <= 35 else strings.possible_kinase_name
         source = 'predicted'

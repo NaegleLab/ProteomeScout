@@ -49,8 +49,8 @@ IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
 
         created_regions = [ ( r.label, r.source, r.start, r.stop ) for r in prot.regions ]
 
-        exp_regions = [( 'Kinase Activation Loop', 'predicted', 16, 50 ),
-                       ( 'Possible Kinase Activation Loop', 'predicted', 111, 146 )]
+        exp_regions = [( 'Kinase Activation Loop', 'predicted', 13, 53 ),
+                       ( 'Possible Kinase Activation Loop', 'predicted', 108, 149 )]
 
         self.assertEqual( exp_regions, created_regions )
 
