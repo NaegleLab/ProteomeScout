@@ -40,8 +40,8 @@ class SummaryViewsTests(UnitTestCase):
         createMockPeptideModification(m2, pep3, mod)
         
         pep1.pep_aligned='LKKVVALyDYMPMNA'
-        pep2.pep_aligned='VSHWQQQsYLDSGIH'
-        pep3.pep_aligned='VATWTAQsLLGSGIP'
+        pep2.pep_aligned=' SHWQQQsYLDSGIH'
+        pep3.pep_aligned=' ATWTAQsLLGSGIP'
         
         mods = [m1,m2]
         result = create_sequence_profile(mods)
@@ -51,7 +51,7 @@ class SummaryViewsTests(UnitTestCase):
         R111 = math.log(20, 2) + ( (1/3.0) * math.log((1/3.0), 2) + (1/3.0) * math.log((1/3.0), 2) + (1/3.0) * math.log((1/3.0), 2) ) - en
         
         expected_peps = []
-        expected_peps.append({'R':R21, 'f':[('V', 2, 0),('L', 1, 2)]})
+        expected_peps.append({'R':R21, 'f':[('-', 2, 0),('L', 1, 2)]})
         expected_peps.append({'R':R111, 'f':[('A', 1, 0),('K', 1, 1),('S', 1, 2)]})
         expected_peps.append({'R':R111, 'f':[('H', 1, 0),('K', 1, 1),('T', 1, 2)]})
         expected_peps.append({'R':R21, 'f':[('W', 2, 0),('V', 1, 2)]})

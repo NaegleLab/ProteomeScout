@@ -19,6 +19,8 @@ def create_sequence_profile(measurements):
         sequence = pep.pep_aligned.upper()
         
         for i, s in enumerate(sequence):
+            if s == ' ':
+                s = '-'
             val = frequencies[i].get(s, 0)
             frequencies[i][s] = val+1
         
