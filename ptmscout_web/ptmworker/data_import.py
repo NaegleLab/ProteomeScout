@@ -18,7 +18,7 @@ def start_import(exp_id, session_id, user_email, application_url):
     accessions, peptides, mod_map, data_runs, errors, line_mapping = upload_helpers.parse_datafile(session)
 
     if exp.loading_stage == 'in queue' or exp.status != 'error':
-        #exp.clearErrors()
+        exp.clearErrors()
         log.info("Reporting data file errors...")
         upload_helpers.report_errors(exp_id, errors, line_mapping)
         exp.saveExperiment()
