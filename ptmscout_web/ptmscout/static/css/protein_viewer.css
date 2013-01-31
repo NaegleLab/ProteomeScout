@@ -3,7 +3,7 @@
     margin-bottom:1em;
     margin-left:auto;
     margin-right:auto;
-    width:900px;
+    width:1000px;
 }
 
 .protein_viewer {
@@ -59,6 +59,17 @@
     fill:black;
     font-size: 12pt;
     cursor:default;
+}
+
+.viewer .region {
+    stroke:black;
+    stroke-width:1px;
+}
+
+.viewer text.region {
+    stroke:none;
+    fill:black;
+    font-size: 12pt;
 }
 
 .viewer line.tick {

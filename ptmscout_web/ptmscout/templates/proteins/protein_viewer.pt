@@ -1,5 +1,5 @@
 <div metal:use-macro="layout">
-	<div metal:fill-slot="header">
+	<metal:slot metal:fill-slot="header">
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/proteins.css')}" />
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/protein_viewer.css')}" />
         <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/jquery-ui-1.9.1.custom.css')}" />
@@ -11,9 +11,10 @@
 		<script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>
         <script type="text/javascript" src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
 
+        <script type="text/javascript" src="${request.static_url('ptmscout:static/js/protein_viewer/zoom.js')}" ></script>
         <script type="text/javascript" src="${request.static_url('ptmscout:static/js/protein_viewer/tracks.js')}" ></script>
         <script type="text/javascript" src="${request.static_url('ptmscout:static/js/protein_viewer/viewer.js')}" ></script>
-	</div>
+	</metal:slot>
     <div metal:fill-slot="content">
         <div metal:use-macro="protein_header"></div>
 

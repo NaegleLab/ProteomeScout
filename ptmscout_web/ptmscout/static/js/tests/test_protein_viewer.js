@@ -1,11 +1,5 @@
 QUnit.config.reorder = false;
 
-test( "draw-residues", function() {
-    ok( -1 != $('#T14').attr('title').indexOf('IEKIGEGtYGVVYKG') );
-    ok( -1 != $('#Y15').attr('title').indexOf('EKIGEGTyGVVYKGR') );
-    ok( -1 != $('#T161').attr('title').indexOf('GIPIRVYtHEVVTLW') );
-});
-
 test( "draw-domains", function() {
     ok( 2 == $('svg rect.domain').length );
     ok( 2 == $('svg text.domain').length );
@@ -22,10 +16,13 @@ test( "draw-domains", function() {
 });
 
 test( "draw-ptms", function() {
-    equal( $('svg rect.residue').length, 72 );
+    equal( $('svg rect.ptm').length, 72 );
     equal( $('svg rect#T14').length, 2 );
     equal( $('svg rect#Y15').length, 2 );
     equal( $('svg rect#T161').length, 2 );
+    ok( -1 != $('#T14').attr('title').indexOf('IEKIGEGtYGVVYKG') );
+    ok( -1 != $('#Y15').attr('title').indexOf('EKIGEGTyGVVYKGR') );
+    ok( -1 != $('#T161').attr('title').indexOf('GIPIRVYtHEVVTLW') );
 });
 
 test( "draw-ticks", function() {
@@ -41,12 +38,12 @@ test( "toggle-ptms", function() {
     stop();
 
     setTimeout(function() {
-        $('svg rect.residue').each(function(){
+        $('svg g.PTMs').each(function(){
             equal( $(this).css('opacity'), '0' );
         });
         start();
         $('.tracks #PTMs').click();
-    }, 500);
+    }, 1000);
 });
 
 test( "toggle-domains", function() {
@@ -54,12 +51,12 @@ test( "toggle-domains", function() {
     stop();
 
     setTimeout(function() {
-        $('svg rect.domain').each(function(){
+        $('svg g.Domains').each(function(){
             equal( $(this).css('opacity'), '0' );
         });
         start();
         $('.tracks #Domains').click();
-    }, 500);
+    }, 1000);
 });
 
 test( "toggle-ptm-type", function() {
@@ -67,12 +64,12 @@ test( "toggle-ptm-type", function() {
     stop();
 
     setTimeout(function() {
-        $('svg rect.residue').each(function(){
+        $('svg rect.ptm').each(function(){
             if($(this).attr('id')[0] == 'S')
                 equal( $(this).attr('height'), 0);
         });
         start();
-    }, 500);
+    }, 1000);
 });
 
 test( "toggle-exp", function() {
@@ -81,12 +78,12 @@ test( "toggle-exp", function() {
 
     setTimeout(function() {
         cnt = 0;
-        $('svg rect.residue').each(function(){
+        $('svg rect.ptm').each(function(){
             cnt += $(this).attr('height') == 0 ? 0 : 1;
         });
         equal( cnt, 8, "Wrong number of visible residues" );
         start();
-    }, 500);
+    }, 700);
 });
 
 test( "toggle-zoom", function() {
