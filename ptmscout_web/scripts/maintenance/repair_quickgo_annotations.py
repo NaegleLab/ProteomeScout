@@ -13,6 +13,7 @@ FLUSH_EVERY = 100
 def update_hierarchy_links(term_entries):
     changed_terms = {}
     links = 0
+    i=0
     for goId in term_entries:
         go_term = protein.getGoAnnotationById(goId)
         entry = term_entries[goId]
@@ -24,6 +25,10 @@ def update_hierarchy_links(term_entries):
                 parent_term.children.append(go_term)
                 changed_terms[parentId] = parent_term
                 links += 1
+
+        i+=1
+        if i % FLUSH_EVERY==0:
+            print "%d / %d" % (i, len(term_entries))
 
     print "Created %d new edges" % (links)
 
@@ -97,9 +102,18 @@ if __name__ == "__main__":
             print "Loading terms from cache..."
             with open(tmp_cache_filename, 'r') as cache_file:
                 term_entries, missing_terms = pickle.loads(cache_file.read())
+
+            print "Re-checking missingness..."
+            still_missing = set()
+            for goId in missing_terms:
+                if protein.getGoAnnotationById(goId) == None:
+                    still_missing.add(goId)
+            missing_terms = still_missing
+
         else:
             print "Loading terms from quickgo..."
             term_entries, missing_terms = get_all_terms()
+
 
             print "Saving terms to cache..."
             with open(tmp_cache_filename, 'w') as cache_file:
