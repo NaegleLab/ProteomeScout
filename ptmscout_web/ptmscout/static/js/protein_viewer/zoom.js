@@ -22,16 +22,15 @@ function ZoomWindow(structure_viewer, svg_container, residue, width, height) {
         d3.behavior.drag()
             .on("drag", resize_right);
 
-
-    this.zoom_window =
+    this.right_expander =
         svg_container
-                .insert('rect', ":first-child")
-                    .attr('class', "zoom window")
-                    .attr('x', axis(zoomer.residue))
-                    .attr('width', axis(width))
-                    .attr('y', 0)
-                    .attr('height', height+50)
-                    .call(drag_behavior);
+            .insert('rect', ":first-child")
+                .attr('class', "zoom handle")
+                .attr('x', axis(zoomer.residue+width)-grab_width/2)
+                .attr('width', grab_width)
+                .attr('y', 0)
+                .attr('height', height+50)
+                .call(resize_right_behavior);
 
     this.left_expander =
         svg_container
@@ -43,15 +42,16 @@ function ZoomWindow(structure_viewer, svg_container, residue, width, height) {
                 .attr('height', height+50)
                 .call(resize_left_behavior);
 
-    this.right_expander =
+
+    this.zoom_window =
         svg_container
-            .insert('rect', ":first-child")
-                .attr('class', "zoom handle")
-                .attr('x', axis(zoomer.residue+width)-grab_width/2)
-                .attr('width', grab_width)
-                .attr('y', 0)
-                .attr('height', height+50)
-                .call(resize_right_behavior);
+                .insert('rect', ":first-child")
+                    .attr('class', "zoom window")
+                    .attr('x', axis(zoomer.residue))
+                    .attr('width', axis(width))
+                    .attr('y', 0)
+                    .attr('height', height+50)
+                    .call(drag_behavior);
 
     this.polygon_vertices = 
             [{"x":axis(zoomer.residue),"y":height+50},
