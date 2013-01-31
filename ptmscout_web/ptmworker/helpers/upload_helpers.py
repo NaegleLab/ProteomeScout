@@ -363,9 +363,18 @@ def parse_datafile(session):
         
         series = []
         for d in data_cols:
-            series.append(row[d.column_number].strip())
+            v = row[d.column_number]
+            if v != None:
+                series.append(v.strip())
+            else:
+                series.append(v)
+
         for s in stddev_cols:
-            series.append(row[s.column_number].strip())
+            v = row[s.column_number]
+            if v != None:
+                series.append(v.strip())
+            else:
+                series.append(v)
             
         if run_col != None:
             run_data[ row[run_col.column_number].strip() ] = (line, series)

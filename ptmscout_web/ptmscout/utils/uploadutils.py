@@ -142,12 +142,17 @@ def check_data_row(r, row, acc_col, pep_col, mod_col, run_col, data_cols, stddev
         if k in keys:
             errors.append(ParseError(r, None, strings.experiment_upload_warning_no_run_column))
         keys.add(k)
-        
+    
+    has_data = False
     for c in data_cols + stddev_cols:
         try:
             float(row[c.column_number].strip())
+            has_data = True
         except:
-            errors.append(ParseError(r, c.column_number+1, strings.experiment_upload_warning_data_column_not_numeric))
+            row[c.column_number] = None
+   
+    if len(data_cols) > 0 and not has_data:
+        errors.append(ParseError(r, None, strings.experiment_upload_warning_data_missing))
     
     return errors
     

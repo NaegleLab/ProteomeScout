@@ -186,7 +186,6 @@ class TestUploadUtils(unittest.TestCase):
         
         expected_errors = ["Line 1: Peptide modification error",
                            "Line 1: Peptide modification error",
-                           "Line 2, Column 8: " + strings.experiment_upload_warning_data_column_not_numeric,
                            "Line 1: Peptide modification error",
                            "Line 4, Column 1: " + strings.experiment_upload_warning_acc_column_contains_bad_accessions,
                            "Line 1: Peptide modification error",
@@ -194,6 +193,7 @@ class TestUploadUtils(unittest.TestCase):
                            "Line 1: Peptide modification error",
                            "Line 1: Peptide modification error",
                            "Line 1: Peptide modification error",
+                           "Line 8: " + strings.experiment_upload_warning_data_missing,
                            "Line 9, Column 4: " + strings.experiment_upload_warning_peptide_column_contains_bad_peptide_strings,
                            "Line 1: Peptide modification error",
                            "Line 1: Peptide modification error",

@@ -72,7 +72,7 @@ experiment_upload_error_data_column_label_duplicated = "Error: Label for data or
 experiment_upload_error_multi_column_assignment = "Error: Found multiple column assignments for '%s'"
 experiment_upload_error_no_column_assignment = "Error: Column assignment for '%s' not found"
 
-experiment_upload_warning_data_column_not_numeric = "Warning: Data column contains non-numeric values"
+experiment_upload_warning_data_missing = "Warning: Data fields were not set for this run"
 experiment_upload_warning_accession_not_found = "Warning: Protein accession '%s' was not found in any external databases queried by PTMScout"
 experiment_upload_warning_acc_column_contains_bad_accessions = "Warning: Accession column contains accession with unrecognized types"
 experiment_upload_warning_peptide_column_contains_bad_peptide_strings = "Warning: Peptide column contains peptide with incorrect formatting"
