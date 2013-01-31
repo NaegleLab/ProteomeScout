@@ -29,7 +29,7 @@ DISABLE_PICR = False
 DISABLE_UNIPROT_QUERY = False
 
 # rate limits in queries per second
-SCANSITE_RATE_LIMIT = 10
+SCANSITE_RATE_LIMIT = 3
 
 valid_domain_suffixes = set(['edu','gov'])
 
