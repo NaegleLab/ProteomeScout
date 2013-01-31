@@ -1,5 +1,6 @@
 import urllib2
-import xml.dom.minidom as xml 
+import httplib
+import xml.dom.minidom as xml
 from ptmscout.config import settings
 from ptmscout.utils.decorators import rate_limit
 
