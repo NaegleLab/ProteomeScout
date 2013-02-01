@@ -333,7 +333,6 @@ def getValuesForField(field_name):
     return sorted([ r.value for r in results ])
 
 def createExperimentError(exp_id, line, accession, peptide, message):
-    log.debug("Error: (%s, %s) %s", accession, peptide, message)
     err = ExperimentError()
     err.experiment_id = exp_id
     err.line = line
