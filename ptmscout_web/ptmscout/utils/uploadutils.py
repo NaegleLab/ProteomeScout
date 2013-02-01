@@ -66,6 +66,22 @@ def check_unique_column(session, ctype, required=False):
         return None
     return cols[0]
 
+def find_root(parents):
+    for p1 in parents:
+        is_root = True
+        for p2 in parents:
+            is_root = is_root and p1 <= p2
+
+        if is_root: return p1
+
+    raise ParseError(row, None, "Unexpected error: parser encountered multiple possible parent modification type assignments without any root node")
+
+def find_most_specific_parent(p, target):
+    valid = [c for c in p.children if c.hasTarget(target) ]
+    if len(valid) != 1:
+        return p
+
+    return find_most_specific_parent(valid[0], target)
 
 def check_modification_type_matches_peptide(row, peptide, modification, taxon_nodes=None):
     modified_alphabet = set("abcdefghijklmnopqrstuvwxyz")
@@ -94,7 +110,7 @@ def check_modification_type_matches_peptide(row, peptide, modification, taxon_no
         
         matches = [ mod for mod in mods if mod.target == residue ]
         parents = [ mod for mod in mods if mod.target == None ]
-        
+
         if len(matches) == 0:
             raise ParseError(row, None, strings.experiment_upload_warning_modifications_do_not_match_species % (mod_type, residue))
             # "Unexpected Error: PTM type '%s' had no residue specific matches for residue '%s'." % (mod_type, residue)
@@ -103,11 +119,9 @@ def check_modification_type_matches_peptide(row, peptide, modification, taxon_no
         if len(matches) > 1:
             if len(parents) == 0:
                 raise ParseError(row, None, strings.experiment_upload_warning_ambiguous_modification_type_for_amino_acid % (mod_type, residue))
-            elif len(parents) > 1:
-                raise ParseError(row, None, "Unexpected error, parser encountered multiple possible parent modification type assignments")
             else:
-                selected_mod = parents[0]
-            
+                selected_mod = find_most_specific_parent(find_root(parents), residue)
+
         mod_indices.append(r)
         mod_object.append(selected_mod)
         

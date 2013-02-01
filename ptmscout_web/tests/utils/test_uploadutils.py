@@ -10,6 +10,7 @@ from mock import patch
 from ptmscout.config import strings, settings
 import os
 from tests.PTMScoutTestCase import IntegrationTestCase
+from ptmscout.database import modifications
 
 class TestUploadUtilsWithTestDB(IntegrationTestCase):
     def test_find_mod_type(self):
@@ -26,6 +27,48 @@ class TestUploadUtilsWithTestDB(IntegrationTestCase):
         else:
             self.fail("Expected parser error")
         
+    def test_check_modification_type_matches_should_select_most_specific_parent_in_ambiguous_cases(self):
+        mod_type = 'Glycosylation'
+        peptide = 'DFEGDDtLKLKLKsDFG'
+        row = 1
+        taxon_nodes=['mammalia']
+
+        mod_indices, mod_objects = check_modification_type_matches_peptide(1, peptide, mod_type, taxon_nodes)
+
+        self.assertEqual([6, 13], mod_indices)
+        self.assertEqual(['O-Glycosylation', 'O-Glycosylation'], [mo.name for mo in mod_objects])
+
+    def test_check_modification_type_matches_should_select_most_specific_parent_in_highly_ambiguous_cases(self):
+        from ptmscout.database import DBSession
+        mod_type = 'Glycosylation'
+        peptide = 'DFEGDDtLKLKLKSDFG'
+        row = 1
+        taxon_nodes=['mammalia']
+
+        mod_ptm = modifications.getModificationByName('N-Glycosylation')
+        mod_ptm.target = None
+
+        child_ptm = modifications.PTM()
+        child_ptm.name = 'N-Aminoglucosamine'
+        child_ptm.target = 'T'
+        k1 = modifications.PTMkeyword()
+        k1.keyword='GLCN'
+        k2 = modifications.PTMkeyword()
+        k2.keyword='Glycosylation'
+        k3 = modifications.PTMkeyword()
+        k3.keyword='N-Glycosylation'
+        child_ptm.keywords.append(k1)
+        child_ptm.keywords.append(k2)
+        child_ptm.keywords.append(k3)
+        mod_ptm.children.append(child_ptm)
+
+        DBSession.add(mod_ptm)
+        DBSession.flush()
+
+        mod_indices, mod_objects = check_modification_type_matches_peptide(1, peptide, mod_type, taxon_nodes)
+
+        self.assertEqual([6], mod_indices)
+        self.assertEqual(['Glycosylation'], [mo.name for mo in mod_objects])
 
 class TestUploadUtils(unittest.TestCase):
     
@@ -47,7 +90,7 @@ class TestUploadUtils(unittest.TestCase):
             self.assertEqual(strings.experiment_upload_warning_wrong_number_of_mods % (2, 3), pe.msg)
         else:
             self.fail("Expected exception ParseError")
-        
+    
     @patch('ptmscout.database.modifications.findMatchingPTM')
     def test_check_modification_type_matches_peptide_should_throw_error_when_no_mod_of_type(self, patch_findPTM):
         mods = []
@@ -61,7 +104,7 @@ class TestUploadUtils(unittest.TestCase):
         else:
             self.fail("Expected exception ParseError")
             
-        patch_findPTM.assert_any_call("Sulfation", "Q", None) 
+        patch_findPTM.assert_any_call("Sulfation", "Q", None)
 
     @patch('ptmscout.database.modifications.findMatchingPTM')
     def test_check_modification_type_matches_peptide_should_throw_error_when_no_matching_mod(self, patch_findPTM):

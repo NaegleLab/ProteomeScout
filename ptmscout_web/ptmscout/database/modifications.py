@@ -37,8 +37,17 @@ class PTM(Base):
         search_taxons = set([t.lower() for t in search_taxons])
         return len(set([t.name.lower() for t in self.taxons]) & search_taxons) > 0
 
+    def isParent(self, node):
+        A = reduce(bool.__or__, [ c.id == node.id for c in self.children ], False)
+        if A: return True
+        return reduce(bool.__or__, [ c.isParent(node) for c in self.children ], False)
+
+    def getTargets(self):
+        return reduce(set.__or__, [c.getTargets() for c in self.children], set([self.target]) )
+
     def hasTarget(self, residue):
-        return residue in set([c.target for c in self.children]) or residue == self.target
+        targets = self.getTargets()
+        return residue in targets
     
     def hasKeyword(self, key):
         k = key.lower()
@@ -49,6 +58,13 @@ class PTM(Base):
             ptmkw = PTMkeyword()
             ptmkw.keyword = key
             self.keywords.append(ptmkw)
+
+    def __eq__(self, other): return self.id == other.id
+    def __ne__(self, other): return self.id != other.id
+    def __lt__(self, other): return self.isParent(other)
+    def __le__(self, other): return self.isParent(other) or self.id == other.id
+    def __gt__(self, other): return other.isParent(self)
+    def __ge__(self, other): return other.isParent(self) or self.id == other.id
 
 class ScansitePrediction(Base):
     __tablename__ = 'peptide_predictions'
@@ -204,6 +220,9 @@ def getPeptideBySite(pep_site, pep_type, prot_id):
 
 def getModificationById(ptm_id):
     return DBSession.query(PTM).filter_by(id=ptm_id).first()
+
+def getModificationByName(ptm_name):
+    return DBSession.query(PTM).filter_by(name=ptm_name).first()
 
 def findMatchingPTM(mod_type, residue=None, taxons=None):
     mods = DBSession.query(PTM).outerjoin(PTMkeyword).filter(or_(PTM.accession==mod_type, PTM.name==mod_type, PTMkeyword.keyword==mod_type)).all()
