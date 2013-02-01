@@ -25,7 +25,7 @@ def start_import(exp_id, session_id, user_email, application_url):
 
     if len(accessions) == 0:
         log.info("Nothing to do: all proteins were rejected!")
-        notify_tasks.finalize_import.apply_async((exp_id, user_email, application_url))
+        return notify_tasks.finalize_import, (exp_id, user_email, application_url), None
     else:
         headers = upload_helpers.get_series_headers(session)
 
@@ -56,4 +56,4 @@ def start_import(exp_id, session_id, user_email, application_url):
 
         log.info("Tasks created... now we wait")
 
-        return load_task, last_stage_arg, callback_task
+        return load_task, (last_stage_arg,), callback_task

@@ -37,8 +37,8 @@ def dynamic_transaction_task(fn):
             transaction.commit()
 
             if result != None and len(result) == 3:
-                new_task, task_arg, errback = result
-                new_task.apply_async((task_arg,), link_error=errback )
+                new_task, task_args, errback = result
+                new_task.apply_async(task_args, link_error=errback )
         except Exception:
             log.error(traceback.format_exc())
             transaction.abort()
