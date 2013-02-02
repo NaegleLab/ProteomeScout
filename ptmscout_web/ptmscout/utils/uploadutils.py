@@ -281,11 +281,15 @@ def assign_column_defaults(session):
     if session.columns != []:
         result = assign_columns_from_session(session)
         columns['columns'].update( result['columns'] )
+        if result['units'] != '':
+            columns['units'] = result['units']
 
     elif session.parent_experiment != None:
         result = assign_columns_from_session_history(session, header)
         columns['columns'].update( result['columns'] )
-    
+        if result['units'] != '':
+            columns['units'] = result['units']
+
     return columns
 
 
