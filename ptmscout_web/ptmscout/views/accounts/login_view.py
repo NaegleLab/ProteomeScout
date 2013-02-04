@@ -28,7 +28,7 @@ def user_login_success(request):
                 'pageTitle': strings.login_page_title,
                 'header': strings.login_page_success_header,
                 'message': strings.login_page_success_message,
-                'redirect': request.application_url + "/experiments"}
+                'redirect': request.application_url}
     else:
         raise HTTPFound(request.application_url+"/login?"+urllib.urlencode(result))
 
@@ -41,7 +41,7 @@ def user_logout(request):
             'pageTitle': strings.logout_page_title,
             'header': strings.logout_page_header,
             'message': strings.logout_page_message,
-            'redirect': request.application_url + "/experiments"}
+            'redirect': request.application_url}
     
     
 def __process_login(request):

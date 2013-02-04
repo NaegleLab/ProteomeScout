@@ -8,3 +8,7 @@ def about_view(request):
 @view_config(route_name='terms', renderer='ptmscout:templates/info/terms.pt')
 def terms_view(request):
     return {'pageTitle':strings.view_page_title}
+
+@view_config(route_name='portal', renderer='ptmscout:templates/front_page.pt')
+def portal_view(request):
+    return {}

@@ -31,7 +31,7 @@ class UserLoginViewTests(UnitTestCase):
         self.assertEqual(strings.logout_page_title, value['pageTitle'])
         self.assertEqual(strings.logout_page_header, value['header'])
         self.assertEqual(strings.logout_page_message, value['message'])
-        self.assertEqual(request.application_url + "/experiments", value['redirect'])
+        self.assertEqual(request.application_url, value['redirect'])
         
     def test_login_should_display_error_with_reason_and_populate_username(self):
         request = DummyRequest()
@@ -130,5 +130,5 @@ class UserLoginViewTests(UnitTestCase):
         self.assertEqual(strings.login_page_title, value['pageTitle'])
         self.assertEqual(strings.login_page_success_header, value['header'])
         self.assertEqual(strings.login_page_success_message, value['message'])
-        self.assertEqual(request.application_url + "/experiments", value['redirect'])
+        self.assertEqual(request.application_url, value['redirect'])
         

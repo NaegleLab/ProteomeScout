@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" metal:define-macro="layout">
+    <head>
+        <?python import ptmscout.config as config; ?>
+        <title>PTMScout Portal</title>
+        <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/ptmscout.css')}" />
+    </head>
+    <body>
+        <div id="menu">
+            <div style="float:right;text-align:right">
+                <span tal:condition="request.user == None">
+                    <a href='${request.application_url}/login'>Login</a>
+                </span>
+                <span tal:condition="request.user != None">
+                    <a href='${request.application_url}/account'>Account: ${request.username}</a> |
+                    <a href='${request.application_url}/account/experiments'>My Experiments</a> |
+                    <a href='${request.application_url}/logout'>Logout</a>
+                </span>
+            </div>
+        </div>
+        <div class="split"></div>
+        <div id="splash">
+            <img src="${request.static_url('ptmscout:static/images/ptmscout_logo.png')}" />
+
+            <div id="portal">
+                <div class="menusplash">
+                    <img src="${request.static_url('ptmscout:static/images/ptmscout_splash.png')}" />
+                </div>
+                <a href="${request.application_url}/proteins">
+                    <div class="menuitem" style="top:70px; left:255px;">
+                        <span>Browse<br>Proteins</span>
+                    </div>
+                </a>
+                <a href="${request.application_url}/upload">
+                    <div class="menuitem" style="top:70px; right:255px;">
+                        <span>Upload<br>Dataset</span>
+                    </div>
+                </a>
+
+                <a href="${request.application_url}/experiments">
+                    <div class="menuitem" style="top:200px; left:160px;">
+                        <span>Browse<br>Experiments</span>
+                    </div>
+                </a>
+                <a href="${request.application_url}/annotate">
+                    <div class="menuitem" style="top:200px; right:160px;">
+                        <span>Annotate<br>Peptides</span>
+                    </div>
+                </a>
+
+                <a href="${documentationUrl}title=Main_Page">
+                    <div class="menuitem" style="top:345px; left:195px;">
+                        <span>Documentation</span>
+                    </div>
+                </a>
+                <a href="${naegleUrl}">
+                    <div class="menuitem" style="top:345px; right:195px;">
+                        <span>The Naegle Lab</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+	  <div id="footer">Questions or comments? <br/>Email ${adminEmail}
+        <div id="footerLicense">
+		  <p class="box">
+		    <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">
+		      <img alt="Creative Commons License" style="border: medium none ;" src="http://i.creativecommons.org/l/by/3.0/us/88x31.png" />
+		      <br />
+		    </a>
+		    Except where otherwise noted, content on this site is
+		    <br />
+		    licensed under a 
+		    <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 License</a>
+		    <br />
+		    <a rel="terms" href="${request.application_url}/terms">Terms of Use</a>
+		  </p>
+	    </div>
+      </div>
+    </body>
+</html>

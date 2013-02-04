@@ -2,11 +2,12 @@ from pyramid.renderers import get_renderer
 from pyramid.events import subscriber
 from pyramid.events import BeforeRender
 
-from ptmscout.config.settings import documentationUrl, adminEmail
+from ptmscout.config.settings import documentationUrl, adminEmail, naegle_lab_url
 
 @subscriber(BeforeRender)
 def add_path_definitions(event):
     event['documentationUrl'] = documentationUrl
+    event['naegleUrl'] = naegle_lab_url
     event['adminEmail'] = adminEmail 
     event['parent_link'] = None
     event['layout'] = site_layout()

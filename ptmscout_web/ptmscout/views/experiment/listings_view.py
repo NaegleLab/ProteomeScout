@@ -5,10 +5,6 @@ from ptmscout.config import strings
 from ptmscout.utils import webutils
 from ptmscout.database import modifications, protein
 
-@view_config(route_name='redirect_to_experiments')
-def redirect_to_experiments(request):
-    return HTTPFound(request.application_url + "/experiments")
-
 @view_config(route_name='experiments', renderer='ptmscout:templates/experiments/experiments.pt')
 def experiment_listing(request):
     experiments = experiment.getExperimentTree(request.user)
