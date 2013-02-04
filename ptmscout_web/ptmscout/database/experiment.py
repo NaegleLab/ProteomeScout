@@ -332,6 +332,9 @@ def getValuesForField(field_name):
     
     return sorted([ r.value for r in results ])
 
+def countErrorsForExperiment(exp_id):
+    return DBSession.query(ExperimentError).filter_by(experiment_id=exp_id).count()
+
 def createExperimentError(exp_id, line, accession, peptide, message):
     err = ExperimentError()
     err.experiment_id = exp_id

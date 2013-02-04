@@ -52,10 +52,12 @@ def finalize_import(exp_id, user_email, application_url):
 
     peptides = modifications.countMeasuredPeptidesForExperiment(exp_id)
     proteins = modifications.countProteinsForExperiment(exp_id)
+    exp_errors = experiment.countErrorsForExperiment(exp_id)
+
     error_log_url = "%s/experiments/%d/errors" % (application_url, exp_id)
     
     subject = strings.experiment_upload_finished_subject
-    message = strings.experiment_upload_finished_message % (exp.name, peptides, proteins, len(exp.errors), error_log_url)
+    message = strings.experiment_upload_finished_message % (exp.name, peptides, proteins, exp_errors, error_log_url)
     
     mail.celery_send_mail([user_email], subject, message)
 
