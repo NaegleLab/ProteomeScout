@@ -11,10 +11,6 @@ function processDataPoint(dp, points, stddev) {
 	y = columns[1];
 	type = columns[2];
 	
-	if(y=="None"){
-		return;
-	}
-	
 	if(type == "stddev"){
 		ypos = -1;
 		
@@ -22,10 +18,11 @@ function processDataPoint(dp, points, stddev) {
 			if(points[j].label == x)
 				ypos = points[j].y
 		}
-		if(ypos == 0 && console != undefined)
+		if(ypos == -1 && console != undefined)
 			console.log("Warning: data point for sigma at {0} not found".format(x));
-		
-		stddev.push({'label':x, 'y':ypos, 'dev':y})
+	    if(ypos != -1)	
+    		stddev.push({'label':x, 'y':ypos, 'dev':y})
+
 	} else {
 		points.push({'label':x,'y':y})
 	}

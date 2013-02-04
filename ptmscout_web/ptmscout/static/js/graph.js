@@ -65,8 +65,28 @@ function addTimeSeries(graph, name, pts, xaxis, yaxis, color) {
 			.x(function(d) { return xaxis( d.x ) } )
 			.y(function(d) { return yaxis( d.y ) } )
 
+    non_null = [];
+    consecutive_runs = [];
+    crun = [];
+    for(var i in pts){
+        if(!isNaN(pts[i].y)){
+            crun.push(pts[i]);
+            non_null.push(pts[i]);
+        }else if(crun.length > 0){
+            consecutive_runs.push(crun);
+            crun = [];
+        }
+    }
+
+    if(crun.length > 0)
+        consecutive_runs.push(crun);
+
+    console.log(pts);
+    console.log(consecutive_runs);
+    console.log(non_null);
+
 	graph.selectAll('circle.'+name)
-		.data(pts)
+		.data(non_null)
 	.enter().append('circle')
 		.attr("class", "point")
 		.attr("r", 2)
@@ -75,7 +95,7 @@ function addTimeSeries(graph, name, pts, xaxis, yaxis, color) {
 		.style("stroke", color);
 	
 	graph.selectAll('path.'+name)
-		.data([pts])
+		.data(consecutive_runs)
 	.enter().append("path")
 		.attr("class", "series")
     	.attr("d", line)
@@ -87,8 +107,13 @@ function addBarSeries(graph, name, pts, xaxis, yaxis, color, i, num) {
 		i = 1;
 	if(typeof(num) === 'undefined')
 		num = 1;
-	
-	 
+
+    non_null = [];
+    for(var i in pts){
+        if(!isNaN(pts[i].y)){
+            non_null.push(pts[i]);
+        }
+    }
 	
 	xsize = Array.max(xaxis.range()) - Array.min(xaxis.range());
 	barw = xsize / (2 * xaxis.domain().length) - 5;
@@ -96,7 +121,7 @@ function addBarSeries(graph, name, pts, xaxis, yaxis, color, i, num) {
 	offset = i * 2 * barw / num;
 	
 	graph.selectAll('rect.'+name)
-			.data(pts)
+			.data(non_null)
 		.enter().append('rect')
 			.attr("class", "bar")
 			.attr("x", function(d) { return xaxis(d.x) - barw + offset })
