@@ -44,7 +44,7 @@ class ExperimentData(Base):
     label = Column(VARCHAR(45), default='')
     
     priority = Column(Integer(10), default=0)
-    value = Column(Float, default=null)
+    value = Column(Float)
     
     MS_id = Column(Integer(10), ForeignKey('MS.id'))
     MS = relationship("MeasuredPeptide")

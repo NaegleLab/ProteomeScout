@@ -202,6 +202,8 @@ IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
         data2.priority = 3
         data2.value = 10
 
+
+
         MS_peptide.data.extend([data1, data2])
 
         DBSession.add(MS_peptide)
@@ -263,7 +265,7 @@ IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
         DBSession.flush()
         
         series_header = [('data', '0'),('data', '5'),('data', '20'), ('stddev', '5'), ('stddev', '20')]
-        series = [0,4,1,3,2]
+        series = [0,None,1,3,2]
         
         upload_helpers.insert_run_data(MS_peptide, 1, 'time(min)', series_header, "run1", series)
         
@@ -284,7 +286,7 @@ IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
         self.assertEqual("data", result[1].type)
         self.assertEqual("time(min)", result[1].units)
         self.assertEqual('5', result[1].label)
-        self.assertEqual(4, result[1].value)
+        self.assertTrue(result[1].value == None)
 
         self.assertEqual("run1", result[2].run)
         self.assertEqual("data", result[2].type)

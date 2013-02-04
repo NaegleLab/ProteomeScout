@@ -276,25 +276,23 @@ def get_peptide(prot_id, pep_site, peptide_sequence):
 
 def insert_run_data(MSpeptide, line, units, series_header, run_name, series):
     for i in xrange(0, len(series_header)):
-        try:
-            tp, x = series_header[i]
+        tp, x = series_header[i]
+        y = None
+        if series[i] != None:
             y = float(series[i])
 
-            data = MSpeptide.getDataElement(run_name, tp, x)
+        data = MSpeptide.getDataElement(run_name, tp, x)
 
-            if data == None:
-                data = experiment.ExperimentData()
-                MSpeptide.data.append(data)
+        if data == None:
+            data = experiment.ExperimentData()
+            MSpeptide.data.append(data)
 
-            data.run = run_name
-            data.priority = i + 1
-            data.type = tp
-            data.units = units
-            data.label = x
-            data.value = y
-        except Exception, e:
-            log.warning("Error inserting data element on line %d: '%s' exc: %s", line, series[i], str(e))
-
+        data.run = run_name
+        data.priority = i + 1
+        data.type = tp
+        data.units = units
+        data.label = x
+        data.value = y
 
 def get_series_headers(session):
     headers = []
