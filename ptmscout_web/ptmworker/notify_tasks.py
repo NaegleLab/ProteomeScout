@@ -28,12 +28,10 @@ def set_progress(exp_id, value, max_value):
 
 @celery.task
 @upload_helpers.transaction_task
-def finalize_experiment_error_state(uuid, exp_id, user_email, application_url):
-    result = celery.result.AsyncResult(uuid)
-    exc = result.get(propagate=False)
-
+def finalize_experiment_error_state(exc, stack_trace, exp_id, user_email, application_url):
     exp = experiment.getExperimentById(exp_id, check_ready=False, secure=False)
-    exp.failure_reason = str(result.traceback)
+
+    exp.failure_reason = stack_trace
     exp.status = 'error'
     exp.saveExperiment()
 
@@ -42,6 +40,13 @@ def finalize_experiment_error_state(uuid, exp_id, user_email, application_url):
     message = strings.experiment_upload_failed_message % (exp.name, exp.loading_stage, message, application_url)
     
     mail.celery_send_mail([user_email, settings.adminEmail], subject, message)
+
+@celery.task
+def finalize_experiment_error_state_callback(uuid, exp_id, user_email, application_url):
+    result = celery.result.AsyncResult(uuid)
+    exc = result.get(propagate=False)
+
+    finalize_experiment_error_state(exc, str(result.traceback), exp_id, user_email, application_url)
 
 @celery.task
 @upload_helpers.transaction_task
