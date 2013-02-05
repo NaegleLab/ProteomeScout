@@ -249,7 +249,9 @@ class TestUploadUtils(unittest.TestCase):
                            "Line 1: Peptide modification error",
                            "Line 1: Peptide modification error",
                            "Line 1: Peptide modification error",
-                           "Line 1: Peptide modification error"]
+                           "Line 1: Peptide modification error",
+                           "Line 1: Peptide modification error",
+                           "Line 20: " + strings.experiment_upload_warning_missing_column ]
         self.maxDiff = None        
         
         self.assertEqual(expected_errors, [ e.message for e in errors ] )

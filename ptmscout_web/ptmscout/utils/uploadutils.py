@@ -131,43 +131,46 @@ def check_modification_type_matches_peptide(row, peptide, modification, taxon_no
 def check_data_row(r, row, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols, keys):
     errors = []
     
-    accession = row[acc_col.column_number].strip()
-    peptide = row[pep_col.column_number].strip()
-    modification = row[mod_col.column_number].strip()
+    try:
+        accession = row[acc_col.column_number].strip()
+        peptide = row[pep_col.column_number].strip()
+        modification = row[mod_col.column_number].strip()
 
-    acc_type = protein_utils.get_accession_type(accession)
-    if acc_type not in protein_utils.get_valid_accession_types():
-        errors.append(ParseError(r, acc_col.column_number+1, strings.experiment_upload_warning_acc_column_contains_bad_accessions))
+        acc_type = protein_utils.get_accession_type(accession)
+        if acc_type not in protein_utils.get_valid_accession_types():
+            errors.append(ParseError(r, acc_col.column_number+1, strings.experiment_upload_warning_acc_column_contains_bad_accessions))
+                
+        if not protein_utils.check_peptide_alphabet(peptide):
+            errors.append(ParseError(r, pep_col.column_number+1, strings.experiment_upload_warning_peptide_column_contains_bad_peptide_strings))
             
-    if not protein_utils.check_peptide_alphabet(peptide):
-        errors.append(ParseError(r, pep_col.column_number+1, strings.experiment_upload_warning_peptide_column_contains_bad_peptide_strings))
+        call_catch(ParseError, errors, check_modification_type_matches_peptide, r, peptide, modification)
         
-    call_catch(ParseError, errors, check_modification_type_matches_peptide, r, peptide, modification)
-    
-    run = None
-    if run_col != None:
-        run = row[run_col.column_number].strip()
-        k = (accession, peptide, modification, run)
-        if k in keys:
-            errors.append(ParseError(r, None, strings.experiment_upload_warning_full_dupe))
-        keys.add(k)
-    else:
-        k = (accession, peptide, modification)
-        if k in keys:
-            errors.append(ParseError(r, None, strings.experiment_upload_warning_no_run_column))
-        keys.add(k)
-    
-    has_data = False
-    for c in data_cols + stddev_cols:
-        try:
-            float(row[c.column_number].strip())
-            has_data = True
-        except:
-            row[c.column_number] = None
-   
-    if len(data_cols) > 0 and not has_data:
-        errors.append(ParseError(r, None, strings.experiment_upload_warning_data_missing))
-    
+        run = None
+        if run_col != None:
+            run = row[run_col.column_number].strip()
+            k = (accession, peptide, modification, run)
+            if k in keys:
+                errors.append(ParseError(r, None, strings.experiment_upload_warning_full_dupe))
+            keys.add(k)
+        else:
+            k = (accession, peptide, modification)
+            if k in keys:
+                errors.append(ParseError(r, None, strings.experiment_upload_warning_no_run_column))
+            keys.add(k)
+        
+        has_data = False
+        for c in data_cols + stddev_cols:
+            try:
+                float(row[c.column_number].strip())
+                has_data = True
+            except ValueError:
+                row[c.column_number] = None
+       
+        if len(data_cols) > 0 and not has_data:
+            errors.append(ParseError(r, None, strings.experiment_upload_warning_data_missing))
+    except IndexError:
+        errors.append(ParseError(r, None, strings.experiment_upload_warning_missing_column))
+
     return errors
     
 def check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols, N=MAX_ROW_CHECK):
@@ -179,10 +182,6 @@ def check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stdd
     r = 0
     for row in data:
         r+=1
-        
-        if len(row) < len(header):
-            continue
-        
         errors.extend(check_data_row(r, row, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols, keys))
     
     return errors
