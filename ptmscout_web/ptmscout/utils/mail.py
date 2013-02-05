@@ -3,6 +3,7 @@ from pyramid_mailer.message import Message
 import celery.utils.mail
 from ptmscout.config import settings
 import re
+from email.mime.text import MIMEText
 
 class CeleryHTMLMessage(celery.utils.mail.Message):
     def __init__(self, to=None, sender=None, subject=None, body=None,
