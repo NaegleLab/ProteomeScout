@@ -4,6 +4,22 @@ import celery.utils
 from ptmscout.config import settings
 import re
 
+
+class CeleryHTMLMessage(celery.utils.mail.Message):
+    def __init__(self, to=None, sender=None, subject=None, body=None,
+            charset='us-ascii'):
+        celery.utils.mail.Message.__init__(self, to, sender, subject, body, charset)
+
+    def __str__(self):
+        msg = MIMEText(self.body, 'html', self.charset)
+        msg['Subject'] = self.subject
+        msg['From'] = self.sender
+        msg['To'] = ', '.join(self.to)
+        return msg.as_string()
+
+
+
+
 def send_automail_message(request, recipients, subject, message):
     mailer = get_mailer(request)
 
@@ -11,10 +27,11 @@ def send_automail_message(request, recipients, subject, message):
             recipients=recipients, html=message)
 
     mailer.send_immediately(message)
-    
+   
+
 def celery_send_mail(recipients, subject, message):
     mailer = celery.utils.mail.Mailer()
-    message = celery.utils.mail.Message(to=recipients, sender=settings.automailerEmail, subject=subject, body=message)
+    message = CeleryHTMLMessage(to=recipients, sender=settings.automailerEmail, subject=subject, body=message)
     mailer.send(message)
     
     
