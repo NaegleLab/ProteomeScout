@@ -12,6 +12,7 @@ body {
   background-color: white;
   border: 1px solid gray;
 }
+
 #menu {
   background-color: white;
   color: blue;
@@ -22,6 +23,7 @@ body {
 
 #menu a {
   color: blue;
+  text-decoration:none;
 }
 
 .split {
@@ -70,6 +72,10 @@ body {
 
 #portal .menuitem:hover {
     border: 5px solid #A3A510;
+}
+
+#portal .menuitem:active {
+    background-color: #A3A510;
 }
 
 #portal .menuitem span {
