@@ -58,7 +58,6 @@ def do_start_import(exp_id, session_id, user_email, application_url):
 
         return load_task, (last_stage_arg,), callback_task
 
-
 @celery.task
 @upload_helpers.dynamic_transaction_task
 def start_import(exp_id, session_id, user_email, application_url):
