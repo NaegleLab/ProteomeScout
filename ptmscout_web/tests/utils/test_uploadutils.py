@@ -26,7 +26,27 @@ class TestUploadUtilsWithTestDB(IntegrationTestCase):
             self.assertEqual(strings.experiment_upload_warning_modifications_do_not_match_species % ('PHOSPHORYLATION', 'Y'), p.msg)
         else:
             self.fail("Expected parser error")
-        
+
+    def test_check_modification_type_nitrated_tyrosine(self):
+        mod_type = 'Nitrated tyrosine'
+        peptide = 'QKTERNEKKQQMGKEyREKIEAELQDICNDV'
+        row = 1
+        taxon_nodes = ['mammalia', 'homo sapiens', 'eukaryota']
+
+        mod_indices, mod_objects = check_modification_type_matches_peptide(1, peptide, mod_type, taxon_nodes)
+
+        self.assertEqual([15], mod_indices)
+        self.assertEqual(['Nitrated tyrosine'], [m.name for m in mod_objects])
+
+        taxon_nodes = ['mammalia', 'mus', 'mus musculus', 'eukaryota']
+
+        try:
+            mod_indices, mod_objects = check_modification_type_matches_peptide(1, peptide, mod_type, taxon_nodes)
+        except ParseError, e:
+            self.assertEqual(strings.experiment_upload_warning_modifications_do_not_match_species % (mod_type, 'Y'), e.msg)
+        else:
+            self.fail("Expected parse exception")
+
     def test_check_modification_type_matches_should_select_most_specific_parent_in_ambiguous_cases(self):
         mod_type = 'Glycosylation'
         peptide = 'DFEGDDtLKLKLKsDFG'
@@ -81,7 +101,7 @@ class TestUploadUtils(unittest.TestCase):
     @patch('ptmscout.database.modifications.findMatchingPTM')
     def test_check_modification_type_matches_peptide_should_throw_error_when_mismatch_of_number_of_mods(self, patch_findPTM):
         mods = []
-        patch_findPTM.return_value = mods, True
+        patch_findPTM.return_value = mods, True, True
         
         try:
             check_modification_type_matches_peptide(1, "DFERtGdYDFqERAS", "Sulfation, METH")
@@ -94,7 +114,7 @@ class TestUploadUtils(unittest.TestCase):
     @patch('ptmscout.database.modifications.findMatchingPTM')
     def test_check_modification_type_matches_peptide_should_throw_error_when_no_mod_of_type(self, patch_findPTM):
         mods = []
-        patch_findPTM.return_value = mods, False
+        patch_findPTM.return_value = mods, False, False
         
         try:
             check_modification_type_matches_peptide(1, "DFERTGDYDFqERAS", "Sulfation")
@@ -109,7 +129,7 @@ class TestUploadUtils(unittest.TestCase):
     @patch('ptmscout.database.modifications.findMatchingPTM')
     def test_check_modification_type_matches_peptide_should_throw_error_when_no_matching_mod(self, patch_findPTM):
         mods = []
-        patch_findPTM.return_value = mods, True
+        patch_findPTM.return_value = mods, True, False
         
         try:
             check_modification_type_matches_peptide(1, "DFERTGDYDFqERAS", "Sulfation")
@@ -128,7 +148,7 @@ class TestUploadUtils(unittest.TestCase):
         ptm3 = createMockPTM(name="N5-methylglutamine", target="Q", parent=ptm1, keywords=["methylation", "METH"])
         
         mods = [ptm1,ptm2,ptm3]
-        patch_findPTM.return_value = mods, True
+        patch_findPTM.return_value = mods, True, True
         
         indices, mod_object = check_modification_type_matches_peptide(1, "DFERTGDYDFqERAS", "METH")
         
@@ -143,7 +163,7 @@ class TestUploadUtils(unittest.TestCase):
         ptm2 = createMockPTM(name="N5-methylglutamine", target="Q", keywords=["methylation", "METH"])
         
         mods = [ptm1,ptm2]
-        patch_findPTM.return_value = mods, True
+        patch_findPTM.return_value = mods, True, True
         
         try:
             check_modification_type_matches_peptide(1, "DFERTGDYDFqERAS", "METH")
@@ -160,7 +180,7 @@ class TestUploadUtils(unittest.TestCase):
         ptm1 = createMockPTM(name="Methylation", keywords=["METH"])
         
         mods = [ptm1]
-        patch_findPTM.return_value = mods, True
+        patch_findPTM.return_value = mods, True, True
         
         try:
             check_modification_type_matches_peptide(1, "DFERTGDYDFqERAS", "METH")
@@ -179,7 +199,7 @@ class TestUploadUtils(unittest.TestCase):
         ptm1 = createMockPTM(name="Phosphorylation", keywords=["PHOS"])
         ptm2 = createMockPTM(name="phosphoserine", target="S", parent=ptm1, keywords=["Phosphorylation", "PHOS"])
         
-        patch_findPTM.return_value = [ptm1,ptm2], True
+        patch_findPTM.return_value = [ptm1,ptm2], True, True
                
         indices, mod_object = check_modification_type_matches_peptide(1, "AKsPVPKsPVEEK", "PHOS")
         

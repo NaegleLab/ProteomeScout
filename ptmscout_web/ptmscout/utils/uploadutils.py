@@ -100,12 +100,14 @@ def check_modification_type_matches_peptide(row, peptide, modification, taxon_no
     for i, (r, residue) in enumerate(modified_residues):
         residue = residue.upper()
         mod_type = mod_list[i]
-        mods, found_type = modifications.findMatchingPTM(mod_type, residue, taxon_nodes)
+        mods, found_type, match_residue = modifications.findMatchingPTM(mod_type, residue, taxon_nodes)
         
         if len(mods) == 0:
             msg = ""
-            if found_type: msg = strings.experiment_upload_warning_modifications_do_not_match_amino_acids % (mod_type, residue)
-            else: msg = strings.experiment_upload_warning_modifications_not_valid % (mod_type)
+            if not found_type: msg = strings.experiment_upload_warning_modifications_not_valid % (mod_type)
+            elif not match_residue: msg = strings.experiment_upload_warning_modifications_do_not_match_amino_acids % (mod_type, residue)
+            else: msg = strings.experiment_upload_warning_modifications_do_not_match_species % (mod_type, residue)
+
             raise ParseError(row, None, msg)
         
         matches = [ mod for mod in mods if mod.target == residue ]

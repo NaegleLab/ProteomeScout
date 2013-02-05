@@ -231,10 +231,13 @@ def findMatchingPTM(mod_type, residue=None, taxons=None):
     
     if residue:
         mods = [mod for mod in mods if mod.hasTarget(residue)]
+
+    mods_match_residue = len(mods) > 0
+
     if taxons:
         mods = [mod for mod in mods if mod.hasTaxon(taxons) or len(mod.taxons) == 0]
     
-    return mods, mods_exist
+    return mods, mods_exist, mods_match_residue
 
 def getPeptideById(pep_id):
     return DBSession.query(Peptide).filter(Peptide.id==pep_id).first()
