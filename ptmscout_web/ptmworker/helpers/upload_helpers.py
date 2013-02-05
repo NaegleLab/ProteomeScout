@@ -349,16 +349,22 @@ def parse_datafile(session):
     for row in rows:
         line+=1
         line_errors = uploadutils.check_data_row(line, row, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols, keys)
-        
-        acc = row[acc_col.column_number].strip()
-        pep = row[pep_col.column_number].strip()
-        mods = row[mod_col.column_number].strip()
-        
+
+        acc = None
+        pep = None
+        try:
+            acc = row[acc_col.column_number].strip()
+            pep = row[pep_col.column_number].strip()
+        except IndexError:
+            pass
+
         line_mapping[line] = (acc, pep)
-        
+
         if len(line_errors) > 0:
             errors.extend(line_errors)
             continue
+     
+        mods = row[mod_col.column_number].strip()
         
         line_set = accessions.get(acc, [])
         line_set.append(line)
