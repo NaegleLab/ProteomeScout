@@ -129,7 +129,7 @@ class Protein(Base):
     species = relationship("Species")
     GO_terms = relationship("GeneOntologyEntry")
     expression_probes = relationship("ExpressionProbeset", secondary=expression_association_table)
-    mutations = relationship("Mutation")
+    mutations = relationship("Mutation", cascade="all,delete-orphan")
     regions = relationship("ProteinRegion")
 
     def __init__(self):
