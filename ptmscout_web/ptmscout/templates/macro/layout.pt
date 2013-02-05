@@ -10,6 +10,7 @@
   <body>
 	<div id="menu">
         <div style="float:left; text-align:left">
+	    <a href="${request.application_url}">Portal</a> |
 	    <a href="${request.application_url}/experiments">Browse Experiments</a> |
         <a href='${request.application_url}/proteins'>Browse Proteins</a> |
 	    <span tal:condition="request.user != None">
