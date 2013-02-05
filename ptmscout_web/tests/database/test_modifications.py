@@ -112,7 +112,7 @@ class TestModifications(DBTestCase):
         exp = getExperimentById(exp.id, u)
         u = getUserById(u.id)
         
-        phos_mods, exist = findMatchingPTM('Phosphorylation')
+        phos_mods, exist, exist_residue = findMatchingPTM('Phosphorylation')
         
         tyr_mod = None
         the_mod = None

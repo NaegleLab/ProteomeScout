@@ -148,6 +148,7 @@ def parse_xml(xml):
 
     taxons = [ t.lower() for t in xml.annotations['taxonomy'] ]
     species = get_scientific_name(xml.annotations['organism']).strip()
+    taxons.append(species.lower())
 
     other_accessions = [('swissprot', xml.id), ('swissprot', xml.name)]
     if 'gene_name_synonym' in xml.annotations:

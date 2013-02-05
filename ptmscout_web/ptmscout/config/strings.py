@@ -80,7 +80,7 @@ experiment_upload_warning_peptide_column_contains_bad_peptide_strings = "Warning
 
 experiment_upload_warning_modifications_not_valid = "Warning: Specified modification '%s' is not valid"
 experiment_upload_warning_modifications_do_not_match_amino_acids = "Warning: Specified modification '%s' does not match residue '%s' for any known species"
-experiment_upload_warning_modifications_do_not_match_species = "Warning: Specified modification '%s' does not match residue '%s' for specified taxons"
+experiment_upload_warning_modifications_do_not_match_species = "Warning: Specified modification '%s' does not match residue '%s' for specified species"
 experiment_upload_warning_wrong_number_of_mods = "Warning: Not enough modifications types specified for modified amino acids in peptide (%d for %d)"
 experiment_upload_warning_ambiguous_modification_type_for_amino_acid = "Warning: Specified modification '%s' has multiple possible types for amino-acid '%s'"
 
