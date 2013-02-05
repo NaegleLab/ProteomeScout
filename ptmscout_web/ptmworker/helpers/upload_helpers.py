@@ -13,6 +13,21 @@ import traceback
 
 log = logging.getLogger('ptmscout')
 
+def handle_errors(exp_id_arg):
+    def decorate(fn):
+        def ttask(*args):
+            try:
+                return fn(*args)
+            except Exception, exc:
+                exp_id = args[exp_id_arg]
+                notify_tasks.finalize_experiment_error_state.apply_async((exc, traceback.format_exc(), exp_id))
+                raise
+
+        ttask.__name__ = fn.__name__
+        return ttask
+    return decorate
+
+
 def transaction_task(fn):
     def ttask(*args):
         from ptmscout.database import DBSession

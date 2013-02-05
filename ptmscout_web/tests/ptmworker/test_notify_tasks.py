@@ -65,7 +65,7 @@ class NotifyTasksTest(IntegrationTestCase):
         mockResult.get.return_value = exc
 
         patch_getExp.return_value = exp
-        notify_tasks.finalize_experiment_error_state(uuid, exp_id, user_email, application_url)
+        notify_tasks.finalize_experiment_error_state_callback(uuid, exp_id, user_email, application_url)
 
         patch_result.assert_called_once_with(uuid)
 
@@ -78,24 +78,25 @@ class NotifyTasksTest(IntegrationTestCase):
         email_message = strings.experiment_upload_failed_message % (exp.name, exp.loading_stage, "Exception: Disturbance in the force", application_url)
         patch_sendmail.assert_called_once_with([user_email, settings.adminEmail], email_subject, email_message)
 
-        patch_commit.assert_called_once_with()
+        patch_commit.called
 
 
     @patch('ptmscout.utils.mail.celery_send_mail')
     @patch('transaction.commit')
+    @patch('ptmscout.database.experiment.countErrorsForExperiment')
     @patch('ptmscout.database.modifications.countMeasuredPeptidesForExperiment')
     @patch('ptmscout.database.modifications.countProteinsForExperiment')
     @patch('ptmscout.database.experiment.getExperimentById')
-    def test_finalize_import(self, patch_getExp, patch_countProteins, patch_countPeptides, patch_commit, patch_sendmail):
+    def test_finalize_import(self, patch_getExp, patch_countProteins, patch_countPeptides, patch_countErrors, patch_commit, patch_sendmail):
         exp = createMockExperiment()
-        exp.errors = [createMockError(2, 'failed for peptide')]
-        err_cnt = len(exp.errors)
         exp.status = 'loading'
 
         pep_cnt = 10
         prot_cnt = 7
+        err_cnt = 1
         patch_countProteins.return_value=prot_cnt
         patch_countPeptides.return_value=pep_cnt
+        patch_countErrors.return_value=err_cnt
 
         exp_id = exp.id
         user_email = "user@institute.edu"
@@ -103,6 +104,10 @@ class NotifyTasksTest(IntegrationTestCase):
 
         patch_getExp.return_value = exp
         notify_tasks.finalize_import(exp_id, user_email, application_url)
+
+        patch_countErrors.assert_called_once_with(exp_id)
+        patch_countPeptides.assert_called_once_with(exp_id)
+        patch_countProteins.assert_called_once_with(exp_id)
 
         patch_getExp.assert_called_once_with(exp.id, check_ready=False, secure=False)
         self.assertEqual('loaded', exp.status)
