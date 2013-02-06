@@ -14,7 +14,7 @@
 	    <a href="${request.application_url}/experiments">Browse Experiments</a> |
         <a href='${request.application_url}/proteins'>Browse Proteins</a> |
 	    <span tal:condition="request.user != None">
-            <a href="${request.application_url}/annotate">Annotate Datasets</a> |
+<!--            <a href="${request.application_url}/annotate">Annotate Datasets</a> | -->
             <a href='${request.application_url}/upload'>Upload Data</a> |
         </span>
 	    <a target='_blank' href="${documentationUrl}title=Main_Page">Documentation</a> |

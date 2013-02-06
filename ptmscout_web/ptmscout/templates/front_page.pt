@@ -42,11 +42,11 @@
                         <span>Browse<br>Experiments</span>
                     </div>
                 </a>
-                <a href="${request.application_url}/annotate">
-                    <div class="menuitem" style="top:200px; right:160px;">
+<!--                <a href="${request.application_url}/annotate">
+</a>-->
+                    <div class="menuitem" style="top:200px; right:160px; color:white; opacity:0.5; background-color:gray; border: solid 5px gray; pointer: default;">
                         <span>Annotate<br>Peptides</span>
                     </div>
-                </a>
 
                 <a href="${documentationUrl}title=Main_Page">
                     <div class="menuitem" style="top:345px; left:195px;">
