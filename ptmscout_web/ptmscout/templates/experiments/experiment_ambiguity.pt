@@ -1,40 +1,62 @@
 <div metal:use-macro="layout">
 	<div metal:fill-slot="header">
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/forms.css')}" />
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/experiments.css')}" />
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/proteins.css')}" />
 	</div>
 	<div metal:fill-slot="content">
         <div metal:use-macro="experiment_header"></div>
 
-        <table>
-			<thead>
-                <tr align="left" class="header">
-                    <th>MS id</th>
-                    <th>Protein</th>
-                    <th>Species</th>
-                    <th>Peptide</th>
-                    <th>Modification Sites</th>
-                    <th>Alternate Assignments</th>
-				</tr>
-			</thead>
+        <form method="POST" action="">
+            <input type="hidden" name="submitted" value="true"/>
+            <div class="error_display" tal:condition="len(errors)>0">
+                <ul>
+                    <li tal:repeat="error errors" tal:content="error"></li>
+                </ul>
+            </div>
 
-			<tbody>
-				<tr valign="top" tal:repeat="(r, ms_id, prot_name, spec_name, pep, sites) peptides" tal:attributes="class 'row ' + 'even' if r % 2 == 0 else 'odd';" >
-					<td tal:content="ms_id"></td>
-                    <td tal:content="prot_name"></td>
-					<td tal:content="spec_name"></td>
-					<td tal:content="pep"></td>
-                    <td>
-                        <div class="modentry" tal:repeat="(name,mod) sites">
-                            <span class="site" tal:content="name"></span>
-                            <span class="mod" tal:content="mod"></span>
-                        </div>
-                    </td>
-                    <td tal:content="structure formrenderer.render('ms%d' % (ms_id))"></td>
-                </tr>
-			</tbody>
 
-        </table>
+            <div style="border: solid 1px black; width:83%; margin-left:auto; margin-right:auto; padding:10px;">
+                <div style="float:left;">Choose new peptide to protein assignments below, then submit your changes to create a new experiment:</div>
+                <div class="formsubmission">
+                    <input type="submit" value="Create Experiment With Chosen Accessions" />
+                    <a tal:attributes="href '%s/experiments/%d/ambiguity?defaults=true' % (request.application_url, experiment.id)">Assign to Defaults</a>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+            <div class="protein_list">
+                <table>
+                    <thead>
+                        <tr align="left" class="header">
+                            <th>Protein</th>
+                            <th>Species</th>
+                            <th>Peptide</th>
+                            <th>Sites</th>
+                            <th>Modifications</th>
+                            <th>Alternate Assignments</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr valign="top" tal:repeat="(r, ms_id, prot_name, spec_name, pep, sites) peptides" tal:attributes="class 'row ' + 'even' if r % 2 == 0 else 'odd';" >
+                            <td tal:content="prot_name"></td>
+                            <td tal:content="spec_name"></td>
+                            <td tal:content="pep"></td>
+                            <td>
+                                <div class="modsite" tal:repeat="(name,mod) sites" tal:content="name"></div>
+                            </td>
+                            <td>
+                                <div class="modsite" tal:repeat="(name,mod) sites" tal:content="mod"></div>
+                            </td>
+                            <td tal:content="structure formrenderer.render('ms%d' % (ms_id))"></td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+        </form>
     </div>
 </div>
 	

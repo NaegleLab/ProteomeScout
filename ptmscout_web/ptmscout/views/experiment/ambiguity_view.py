@@ -13,7 +13,9 @@ def create_ambiguity_schema(measurements, request):
     i=0
     for ms in measurements:
         fvalues = [ (amb.alt_accession, amb.alt_accession) for amb in ms.ambiguities ]
-        form_schema.add_select_field('ms%d' % (ms.id), 'MS %d' % (ms.id), fvalues)
+        field_id = 'ms%d' % (ms.id)
+        form_schema.add_select_field(field_id, 'MS %d' % (ms.id), fvalues)
+        form_schema.set_required_field(field_id)
 
         sites = [ (modpep.peptide.getName(), modpep.modification.name) for modpep in ms.peptides ]
 
@@ -39,7 +41,7 @@ def experiment_ambiguity_view(request):
         errors = forms.FormValidator(form_schema).validate()
 
         if errors == []:
-            prepopulate_upload_session(exp, request.user, schema)
+            prepopulate_upload_session(exp, request.user, form_schema)
 
     return {'errors': errors,
             'experiment':exp,

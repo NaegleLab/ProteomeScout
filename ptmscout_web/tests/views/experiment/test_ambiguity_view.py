@@ -11,6 +11,8 @@ from ptmscout.utils import forms
 class ExperimentAmbiguityViewIntegrationTests(IntegrationTestCase):
     def test_experiment_ambiguity_view(self):
         result = self.ptmscoutapp.get('/experiments/26/ambiguity')
+        result = result.form.submit()
+        result.mustcontain("Required form field")
 
 class ExperimentAmbiguityViewTests(UnitTestCase):
 
@@ -60,7 +62,7 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
     @patch('ptmscout.views.experiment.ambiguity_view.create_ambiguity_schema')
     @patch('ptmscout.database.modifications.getMeasuredPeptidesByExperiment')
     @patch('ptmscout.database.experiment.getExperimentById')
-    def test_experiment_ambiguity_should_eval_on_submission_fail_if_invalid(self, patch_getExperiment, patch_getPeptides, patch_createSchema, patch_validator, patch_createSession):
+    def test_experiment_ambiguity_should_eval_on_submission_pass_if_valid(self, patch_getExperiment, patch_getPeptides, patch_createSchema, patch_validator, patch_createSession):
         request = DummyRequest()
         request.POST['submitted'] = 'true'
         request.matchdict['id'] = '1323'
