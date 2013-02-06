@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
         ambiguous_experiments = []
         for exp in DBSession.query(experiment.Experiment):
-            if exp.ambiguity == 1:
+            if exp.ambiguity == 1 and exp.status == 'loaded':
                 ambiguous_experiments.append(exp.id)
                 print "Found experiment: %d -- %s" % (exp.id, exp.name)
 
