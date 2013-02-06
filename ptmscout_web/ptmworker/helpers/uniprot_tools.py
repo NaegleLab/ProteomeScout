@@ -98,9 +98,17 @@ def get_protein_isoforms(root_accessions):
     return result_map
 
 def get_scientific_name(name):
-    m = re.match(r"^(.*) \(.*\)$", name)
+    m = re.match(r"^(.*) \((.*)\)$", name)
     if m != None:
-        return m.group(1).strip()
+        species = m.group(1).strip()
+        parenthetical = m.group(2).strip()
+
+        if parenthetical.find('strain') == 0 or \
+                parenthetical.find('isolate') == 0:
+            return "%s (%s)" % (species, parenthetical)
+        else:
+            return species
+
     return name
 
 

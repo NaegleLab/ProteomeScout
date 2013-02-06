@@ -8,6 +8,15 @@ class TestUniprotQuery(IntegrationTestCase):
         result_xml = open('uniprot_result.xml', 'r')
         uniprot_tools.handle_result(result_xml)
 
+    def test_uniprot_query_should_retain_strain_or_isolate(self):
+        result = uniprot_tools.get_uniprot_records(['P75471'])
+        name, gene, taxons, species, host_organism, other_accessions, domains, mutations, seq = result['P75471']
+
+        self.assertEqual( 'Cytadherence high molecular weight protein 2', name )
+        self.assertEqual( 'hmw2', gene )
+        self.assertEqual( 'MNDTDKKFPLQPVYDTGFDD', seq[:20] )
+        self.assertEqual( 'Mycoplasma pneumoniae (strain ATCC 29342 / M129)', species )
+
     def test_uniprot_get_mutants(self):
         result = uniprot_tools.get_uniprot_records(['A6NC57'])
 
