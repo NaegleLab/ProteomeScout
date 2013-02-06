@@ -90,6 +90,7 @@ experiment_upload_warning_no_run_column = "Warning: Experiment contains multiple
 experiment_upload_warning_full_dupe = "Warning: Experiment contains multiple datapoints for the same protein/peptide/modification/run tuplet"
 
 experiment_upload_warning_peptide_not_found_in_protein_sequence = "Warning: Peptide sequence not found in protein sequence"
+experiment_upload_warning_peptide_ambiguous_location_in_protein_sequence = "Warning: Peptide sequence ambguity, peptide matches multiple positions in protein sequence"
 
 experiment_upload_option_no_run_column_assign_in_order  = "Assign run numbers in order of occurrence"
 

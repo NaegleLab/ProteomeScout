@@ -239,12 +239,15 @@ def get_aligned_peptide_sequences(mod_sites, index, pep_seq, prot_seq):
     return aligned_peptides
     
 
-def check_peptide_matches_protein_sequence(prot_seq, pep_seq):   
-    index = prot_seq.find(pep_seq.upper())
-    
+def check_peptide_matches_protein_sequence(prot_seq, pep_seq):
+    upper_pep = pep_seq.upper()
+    index = prot_seq.find(upper_pep)
+
     if index == -1:
         raise uploadutils.ParseError(None, None, strings.experiment_upload_warning_peptide_not_found_in_protein_sequence)
-    
+    if prot_seq[index+1:].find(upper_pep) > -1:
+        raise uploadutils.ParseError(None, None, strings.experiment_upload_warning_peptide_ambiguous_location_in_protein_sequence)
+
     return index
 
 def parse_modifications(prot_seq, pep_seq, mods, taxonomy):

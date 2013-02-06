@@ -6,7 +6,7 @@ from tests.views.mocking import createMockExperiment, createMockProtein,\
     createMockTaxonomy, createMockMeasurement, createMockDomain
 from mock import patch
 from ptmscout.utils import uploadutils
-from ptmscout.config import settings
+from ptmscout.config import settings, strings
 import os
 import pickle
 
@@ -331,6 +331,27 @@ ENTQIEDTEPMSPVLNSKFVPAENDSILMNPAQDGEVQLSQNDDKTKGDDTDTRDDISIL
        
         self.assertEqual((2, "      MkPTRSQLD", 'K'), aligned_peps[0])
         self.assertEqual((5, "   MKPTrSQLDSDF", 'R'), aligned_peps[1])
+
+    def test_protein_sequence_match_ambiguous_protein(self):
+        prot_seq = \
+"""
+TSDKLASRSKLPDGPTGSSEEEEEFLEIPPFNKQYTESQLRAGAGYILEDFNEAQCNTAY
+QCLLIADQHCRTRKYFLCLASGIPCVSHVWVHDSCHANQLQNYRNYLLPAGYSLEEQRIL
+QCLLIADQHCRTRKYFLCLASGIPCVSHVWVHDSCHANQLQNYRNYLLPAGYSLEEQRIL
+DWQPRENPFQNLKVLLVSDQQQNFLELWSEILMTGGAASVKQHHSSAHNKDIALGVFDVV
+VTDPSCPASVLKCAEALQLPVVSQEWVIQCLIVGERIGFKQHPKYKHD"""        
+        prot_seq = prot_seq.replace("\n", "")
+        pep_seq = "CHANQLQNYRN"
+        
+        taxonomy = set(['eukaryota', 'chordata', 'mammalia', 'homo'])
+        
+        try:
+            upload_helpers.parse_modifications(prot_seq, pep_seq, "METHYLATION", taxonomy)
+        except uploadutils.ParseError, e:
+            self.assertEqual(strings.experiment_upload_warning_peptide_ambiguous_location_in_protein_sequence, e.msg)
+        else:
+            self.fail("Expected parse error")
+        
 
     def test_protein_sequence_match_end_of_protein(self):
         prot_seq = \
