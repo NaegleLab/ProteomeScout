@@ -61,6 +61,7 @@ def load_peptide_modification(exp_id, load_ambiguities, protein_accession, prote
             pep_measurement.experiment_id = exp_id
             pep_measurement.peptide = pep_seq
             pep_measurement.protein_id = protein_id
+            pep_measurement.query_accession = protein_accession
 
             if load_ambiguities:
                 upload_helpers.check_ambiguity( pep_measurement, species )

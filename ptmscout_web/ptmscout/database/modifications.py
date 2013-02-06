@@ -127,6 +127,7 @@ class PeptideAmbiguity(Base):
 class MeasuredPeptide(Base):
     __tablename__ = 'MS'
     id = Column(Integer(10), primary_key=True, autoincrement=True)
+    query_accession = Column(VARCHAR(45))
     experiment_id = Column(Integer(10), ForeignKey('experiment.id'))
     protein_id = Column(Integer(10), ForeignKey('protein.id'))
     peptide = Column(VARCHAR(150))
