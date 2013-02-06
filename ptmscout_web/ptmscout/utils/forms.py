@@ -70,7 +70,11 @@ class FormSchema(object):
                 v = str(v)
                 v = v.strip()
             self.form_values[ref] = v
-    
+   
+    def is_defaulted(self):
+        all_defaults = [ self.form_values[ref] == self.field_defaults[ref] for ref in self.form_values ]
+        return reduce(bool.__and__, all_defaults, True)
+
     def set_field_required_condition(self, ref, parent, condition):
         self.conditional_fields[ref] = (parent, condition)
     
