@@ -14,6 +14,8 @@ accession_urls = {'swissprot':"http://www.uniprot.org/uniprot/%s",
                   'GO':"http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=%s",
                   'genbank':"http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?db=protein&amp;id=%s"}
 
+mod_separator_character = ';'
+
 naegle_lab_url = 'http://naegle.wustl.edu/'
 pfam_family_url = 'http://pfam.sanger.ac.uk/family/'
 ptmscout_scratch_space = "/tmp"

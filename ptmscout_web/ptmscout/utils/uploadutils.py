@@ -86,7 +86,7 @@ def find_most_specific_parent(p, target):
 def check_modification_type_matches_peptide(row, peptide, modification, taxon_nodes=None):
     modified_alphabet = set("abcdefghijklmnopqrstuvwxyz")
     modified_residues = [ (i, r) for i, r in enumerate(peptide) if r in modified_alphabet ]
-    mod_list = [ m.strip() for m in modification.split(',') ]
+    mod_list = [ m.strip() for m in modification.split(settings.mod_separator_character) ]
     
     if len(mod_list) > 1 and len(modified_residues) != len(mod_list):
         raise ParseError(row, None, strings.experiment_upload_warning_wrong_number_of_mods % (len(mod_list), len(modified_residues)))

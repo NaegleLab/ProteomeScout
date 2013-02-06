@@ -18,6 +18,16 @@ class TestUploadUtilsWithTestDB(IntegrationTestCase):
 
         self.assertEqual(7, mod_indices[0])
 
+    def test_find_mod_type_methylation_multiple_mods(self):
+        peptide = 'QkTERkGGPP'
+        mods = "%s%s %s" % ('Methylation', settings.mod_separator_character, 'Dimethylation')
+        row = 1
+        taxon_nodes = ['Eukaryota']
+
+        mod_indices, mod_object = check_modification_type_matches_peptide(row, peptide, mods, taxon_nodes)
+
+        self.assertEqual([1,5], mod_indices)
+
     def test_find_mod_type_phospho(self):
         viral_taxon = ['Viruses','dsDNA viruses, no RNA stage', 'Adenoviridae', ' Mastadenovirus']
         try:
@@ -100,11 +110,8 @@ class TestUploadUtils(unittest.TestCase):
 
     @patch('ptmscout.database.modifications.findMatchingPTM')
     def test_check_modification_type_matches_peptide_should_throw_error_when_mismatch_of_number_of_mods(self, patch_findPTM):
-        mods = []
-        patch_findPTM.return_value = mods, True, True
-        
         try:
-            check_modification_type_matches_peptide(1, "DFERtGdYDFqERAS", "Sulfation, METH")
+            check_modification_type_matches_peptide(1, "DFERtGdYDFqERAS", "%s%s %s" % ("Sulfation", settings.mod_separator_character, "METH"))
         except ParseError, pe:
             self.assertEqual(1, pe.row)
             self.assertEqual(strings.experiment_upload_warning_wrong_number_of_mods % (2, 3), pe.msg)

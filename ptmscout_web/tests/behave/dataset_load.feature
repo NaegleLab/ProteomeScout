@@ -14,7 +14,6 @@ Feature: Dataset Load
             | peptides | proteins | errors |
             | 7        | 7        | 1      |
     
-    @runme
     Scenario: Load a dataset with bad amino acid assignments
           Given a user has loaded a dataset and the modification type does not match the amino acid for that species
           Then the user should be sent an email with a link to the experiment which contains:
@@ -35,7 +34,7 @@ Feature: Dataset Load
             | peptides | proteins | errors |
             | 17       | 15       | 1      |
 
-    
+    @runme
     Scenario: Multiple modification types in one peptide with assignment
           Given a user submits a dataset and a single peptide has more than one flavor of modification and mod_type assignments match the sequential order of modifcations
           Then the user should be sent an email with a link to the experiment which contains:
