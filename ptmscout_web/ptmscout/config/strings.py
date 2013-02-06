@@ -28,6 +28,8 @@ account_activation_failed_message = "The specified account is not valid, please 
 
 account_management_page_title = "Account Management"
 
+experiment_ambiguity_page_title = "Ambiguous Peptide Assignment Tool"
+
 experiment_errors_page_title = "Experiment Data Upload Errors"
 
 experiments_page_title = "Home - Experiments"

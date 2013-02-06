@@ -15,6 +15,7 @@ def add_views(config):
     config.add_route('experiment_browse','/experiments/{id}/browse')
     config.add_route('experiment_errors','/experiments/{id}/errors')
     config.add_route('experiment_download','/experiments/{id}/download')
+    config.add_route('experiment_ambiguity','/experiments/{id}/ambiguity')
     
     config.add_route('upload', '/upload')
     config.add_route('upload_resume', '/upload/{id}')

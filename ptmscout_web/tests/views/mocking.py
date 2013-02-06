@@ -8,7 +8,7 @@ from ptmscout.database.protein import Protein, GeneOntology, ProteinDomain,\
     GeneOntologyEntry, ProteinAccession, ProteinRegion
 import random
 from ptmscout.database.modifications import MeasuredPeptide, Peptide,\
-    ScansitePrediction, PTM, PTMkeyword, PeptideModification
+    ScansitePrediction, PTM, PTMkeyword, PeptideModification, PeptideAmbiguity
 from ptmscout.database.gene_expression import ExpressionProbeset,\
     ExpressionSample, ExpressionCollection, ExpressionTissue
 from ptmscout.database.taxonomies import Species, Taxonomy
@@ -221,6 +221,15 @@ def createMockMeasurement(pid, expid):
     
     return mock
 
+def createMockAmbiguity(acc, ms):
+    mock = Mock(spec=PeptideAmbiguity)
+    mock.id = random.randint(0,100000)
+
+    mock.alt_accession = acc
+    mock.ms_id = ms.id
+
+    ms.ambiguities.append(mock)
+
 def createMockPeptideModification(measurement, peptide, modification):
     mock = Mock(spec=PeptideModification)
     
@@ -235,7 +244,7 @@ def createMockPeptideModification(measurement, peptide, modification):
     
     return mock
 
-def createMockPeptide(pid, site_pos=None):
+def createMockPeptide(pid, site_pos=None, site_type=None):
     mock = Mock(spec=Peptide)
     
     site_types = ['Y','T','S','P']
@@ -248,7 +257,10 @@ def createMockPeptide(pid, site_pos=None):
     if site_pos==None:
         site_pos = random.randint(0, 3000)
     mock.site_pos = site_pos
-    mock.site_type = site_types[random.randint(0,3)]
+    if site_types==None:
+        site_type = site_types[random.randint(0,3)]
+
+    mock.site_type = site_type
     
     mock.getName.return_value = mock.site_type + str(mock.site_pos)
     mock.getPeptide.return_value = mock.pep_aligned
