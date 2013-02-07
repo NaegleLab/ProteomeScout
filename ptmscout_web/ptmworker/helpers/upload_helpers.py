@@ -126,6 +126,7 @@ def parse_variants(acc, prot_seq, variants):
 def report_errors(exp_id, errors, line_mapping):
     for e in errors:
         accession, peptide = line_mapping[e.row]
+        log.warning('Exp %d -- Data file error: %s (%s) -- %s' % (exp_id, peptide, accession, e.msg))
         experiment.createExperimentError(exp_id, e.row, accession, peptide, e.msg)
 
 

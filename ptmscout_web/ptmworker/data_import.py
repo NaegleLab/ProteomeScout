@@ -19,7 +19,7 @@ def do_start_import(exp_id, session_id, user_email, application_url):
 
     if exp.loading_stage == 'in queue' or exp.status != 'error':
         exp.clearErrors()
-        log.info("Reporting data file errors...")
+        log.info("Reporting %d data file errors..." % (len(errors)))
         upload_helpers.report_errors(exp_id, errors, line_mapping)
         exp.saveExperiment()
 
