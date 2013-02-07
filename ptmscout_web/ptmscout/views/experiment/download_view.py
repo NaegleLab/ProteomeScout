@@ -3,17 +3,7 @@ from ptmscout.utils import uploadutils, webutils
 import sys
 from ptmscout.database import experiment
 from pyramid.httpexceptions import HTTPForbidden
-from ptmscout.config import strings
-
-def insert_errors(errors, rows):
-    for row in rows:
-        row.insert(0, [])
-    
-    for error in errors:
-        rows[error.line-1][0].append(error.message)
-        
-    for row in rows:
-        row[0] = ", ".join(row[0])
+from ptmscout.utils import downloadutils
 
 @view_config(route_name='experiment_download', renderer='tsv', permission='private')
 def download_experiment(request):
@@ -23,15 +13,9 @@ def download_experiment(request):
     
     if exp not in request.user.myExperiments():
         raise HTTPForbidden()
-    
-    header, rows = uploadutils.load_header_and_data_rows(exp.dataset, sys.maxint)
-    
-    if get_errors:
-        header.insert(0, strings.experiment_upload_error_reasons_column_title)
-        insert_errors(exp.errors, rows)
-        
-        rows = [r for r in rows if r[0] != ""]
-    
+
+    header, rows = downloadutils.annotate_experiment_file(exp, get_errors)
+   
     request.response.content_type = 'text/tab-separated-values'
     request.response.content_disposition = 'attachment; filename="experiment.%d.annotated.tsv"' % (exp_id)
     return { 'header': header, 'data': rows }
