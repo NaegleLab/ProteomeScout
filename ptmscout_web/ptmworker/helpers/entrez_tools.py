@@ -127,13 +127,15 @@ def filter_update_other_accessions(other_accessions):
 
 
 def get_protein_information(pm, acc):
-    seq = pm.get_protein_sequence(acc).strip().upper()
+    seq = pm.get_protein_sequence(acc)
     
-    if seq == "":
+    if seq is None:
         e = EntrezError()
         e.acc = acc
         raise e
-    
+   
+    seq = seq.strip().upper()
+
     name = pm.get_protein_name(acc)
     gene = pm.get_gene_name(acc)
     taxonomy = [ t.lower() for t in pm.get_taxonomy(acc) ]

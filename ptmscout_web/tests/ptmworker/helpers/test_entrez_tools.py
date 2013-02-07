@@ -97,7 +97,7 @@ class EntrezQueryTestCase(IntegrationTestCase):
 
     def test_get_protein_information_should_raise_entrez_error(self):
         mock_pm = mock.Mock(spec=Proteome.ProteinManager, uniprotShortcut=False)
-        mock_pm.get_protein_sequence.return_value = ""
+        mock_pm.get_protein_sequence.return_value = None
 
         try:
             entrez_tools.get_protein_information(mock_pm, 'P50914')
