@@ -2,7 +2,7 @@ from pyramid.view import view_config
 from ptmscout.config import strings
 from ptmscout.database import experiment, modifications, protein, upload
 from ptmscout.utils import forms, webutils, downloadutils, uploadutils
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 
 
 def create_session(exp, user, exp_file, name_prefix, columns, units):
@@ -111,6 +111,10 @@ def experiment_ambiguity_view(request):
 
     eid = int(request.matchdict['id'])
     exp = experiment.getExperimentById(eid, user=request.user)
+
+    if exp.ambiguity == 0:
+        raise HTTPForbidden()
+
     peptides = modifications.getMeasuredPeptidesByExperiment(eid, user=request.user)
 
     form_schema, pep_list = create_ambiguity_schema(peptides, request)

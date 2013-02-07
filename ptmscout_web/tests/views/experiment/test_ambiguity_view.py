@@ -7,7 +7,7 @@ from tests.views.mocking import createMockExperiment, createMockMeasurement,\
 from ptmscout.views.experiment import ambiguity_view
 from ptmscout.config import strings
 from ptmscout.utils import forms
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 
 class ExperimentAmbiguityViewIntegrationTests(IntegrationTestCase):
     def test_experiment_ambiguity_view(self):
@@ -183,6 +183,26 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
         self.assertEqual(pep_list, result['peptides'])
         self.assertEqual(schema, result['formrenderer'].schema)
         self.assertEqual("%s: %s" % (strings.experiment_ambiguity_page_title, exp.name), result['pageTitle'])
+
+    @patch('ptmscout.database.experiment.getExperimentById')
+    def test_experiment_ambiguity_should_throw_forbidden_if_no_ambiguous_assignments(self, patch_getExperiment):
+        request = DummyRequest()
+        request.matchdict['id'] = '1323'
+        request.user = None
+   
+        schema = forms.FormSchema()
+        pep_list = "Some peptide list"
+        exp = createMockExperiment(1323)
+        exp.ambiguity = 0
+
+        patch_getExperiment.return_value = exp
+
+        try:
+            ambiguity_view.experiment_ambiguity_view(request)
+        except HTTPForbidden:
+            pass
+        else:
+            self.fail("Expected HTTPForbidden")
 
     @patch('ptmscout.views.experiment.ambiguity_view.create_ambiguity_schema')
     @patch('ptmscout.database.modifications.getMeasuredPeptidesByExperiment')
