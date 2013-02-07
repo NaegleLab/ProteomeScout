@@ -12,7 +12,7 @@ import json, base64
 
 class TestProteinStructureViewIntegration(IntegrationTestCase):
     def test_integration(self):
-        result = self.ptmscoutapp.get('/proteins/35546/structure')
+        result = self.ptmscoutapp.get('/proteins/35546/sequence')
         d = result.pyquery
         encoded_data = d(".protein_viewer .data").text()
 

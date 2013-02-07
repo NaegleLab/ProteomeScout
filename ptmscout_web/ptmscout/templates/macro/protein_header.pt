@@ -1,6 +1,6 @@
 <div metal:define-macro="protein_header">
 	<div id="proteinMenu">
-		<a href="${request.urlfilter.encode_url('/proteins/%d/structure' % (protein.id))}">Structure</a> |
+		<a href="${request.urlfilter.encode_url('/proteins/%d/sequence' % (protein.id))}">Sequence</a> |
 		<a href="${request.urlfilter.encode_url('/proteins/%d/GO' % (protein.id))}">Gene Ontology</a> |
 		<a href="${request.urlfilter.encode_url('/proteins/%d/expression' % (protein.id))}">Gene Expression</a> |
 		<a href="${request.urlfilter.encode_url('/proteins/%d/modifications' % (protein.id))}">Modification Sites</a> |
