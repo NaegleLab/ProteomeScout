@@ -167,6 +167,7 @@ def find_or_create_species(species):
         
         sp = taxonomies.Species(species)
         sp.taxon_id = tx.node_id
+        sp.save()
         
     return sp
 

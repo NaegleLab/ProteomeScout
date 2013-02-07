@@ -22,6 +22,10 @@ class Species(Base):
     
     def __init__(self, name):
         self.name = name
+
+    def save(self):
+        DBSession.add(self)
+        DBSession.flush()
         
 def getSpeciesByName(name):
     return DBSession.query(Species).filter_by(name=name).first()
