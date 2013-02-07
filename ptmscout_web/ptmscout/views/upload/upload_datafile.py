@@ -48,6 +48,8 @@ def save_data_file(request):
     os.system("dos2unix -q %s" % (exp_filename_tmp))
     to_utf8.convert_encoding_to_utf8(exp_filename_tmp, exp_filename)
 
+    os.remove(exp_filename_tmp)
+
     return exp_file
 
 def create_schema(request, users_experiments):
