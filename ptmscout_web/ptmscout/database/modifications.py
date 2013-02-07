@@ -117,10 +117,12 @@ class PeptideAmbiguity(Base):
     __tablename__ = 'MS_ambiguity'
 
     id = Column(Integer(10), primary_key=True, autoincrement=True)
+    locus = Column(VARCHAR(30))
     alt_accession = Column(VARCHAR(20))
     ms_id = Column(Integer(10), ForeignKey('MS.id'))
 
-    def __init__(self, alt_accession, ms_id):
+    def __init__(self, locus, alt_accession, ms_id):
+        self.locus = locus
         self.alt_accession = alt_accession
         self.ms_id = ms_id
 

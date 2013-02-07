@@ -61,9 +61,13 @@ IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
         upload_helpers.check_ambiguity(ms, 'homo sapiens')
 
         self.assertEqual(5, len(ms.ambiguities))
-        set_result = set([ (amb.alt_accession, amb.ms_id) for amb in ms.ambiguities ])
+        set_result = set([ (amb.locus, amb.alt_accession, amb.ms_id) for amb in ms.ambiguities ])
 
-        exp_result = set([('O15111', ms.id), ('O14920', ms.id), ('O14920-2', ms.id), ('O14920-3', ms.id), ('O14920-4', ms.id)])
+        exp_result = set([('IKKA_HUMAN', 'O15111', ms.id), 
+                            ('IKKB_HUMAN', 'O14920', ms.id), 
+                            ('IKKB_HUMAN', 'O14920-2', ms.id), 
+                            ('IKKB_HUMAN', 'O14920-3', ms.id), 
+                            ('IKKB_HUMAN', 'O14920-4', ms.id)])
         self.assertEqual(exp_result, set_result)
 
 
@@ -184,6 +188,7 @@ IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
     def test_insert_run_data_when_exists_should_modify_existing(self):
         from ptmscout.database import DBSession
         MS_peptide = modifications.MeasuredPeptide()
+        MS_peptide.query_accession = 'Q01234'
         MS_peptide.experiment_id = 1
         MS_peptide.protein_id = 35546
         MS_peptide.peptide = 'ABCDEFG'
@@ -258,6 +263,7 @@ IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
         MS_peptide = modifications.MeasuredPeptide()
         MS_peptide.experiment_id = 1
         MS_peptide.protein_id = 35546
+        MS_peptide.query_accession = 'Q01234'
         MS_peptide.peptide = 'ABCDEFG'
         
 

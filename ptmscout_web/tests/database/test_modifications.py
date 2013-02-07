@@ -159,24 +159,28 @@ class TestModifications(DBTestCase):
         self.session.add(p3)
         
         mod1 = MeasuredPeptide()
+        mod1.query_accession='blah1'
         mod1.experiment_id = exp.id
         mod1.protein_id = p.id
         mod1.peptide = "blag"
         self.session.add(mod1)
         
         mod2 = MeasuredPeptide()
+        mod2.query_accession='blah2'
         mod2.experiment_id = exp.id
         mod2.protein_id = p.id
         mod2.peptide = "blag2"        
         self.session.add(mod2)
         
         mod3 = MeasuredPeptide()
+        mod3.query_accession='blah3'
         mod3.experiment_id = exp2.id
         mod3.protein_id = p.id
         mod3.peptide = "blag3"        
         self.session.add(mod3)
         
         mod4 = MeasuredPeptide()
+        mod4.query_accession='blah4'
         mod4.experiment_id = exp3.id
         mod4.protein_id = p.id
         mod4.peptide = "blag4"        

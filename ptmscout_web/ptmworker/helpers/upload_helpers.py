@@ -100,7 +100,7 @@ def find_activation_loops(prot):
 
 def check_ambiguity(measured_pep, species_name):
     for swissprot in uniprot.findPeptide(measured_pep.peptide, species_name):
-        amb = modifications.PeptideAmbiguity(swissprot.accession, measured_pep.id)
+        amb = modifications.PeptideAmbiguity(swissprot.locus, swissprot.accession, measured_pep.id)
         measured_pep.ambiguities.append(amb)
 
 
