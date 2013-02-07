@@ -4,8 +4,27 @@
         <?python import ptmscout.config as config; ?>
         <title>PTMScout Portal</title>
         <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/ptmscout.css')}" />
+        <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/jquery-ui-1.9.1.custom.css')}" />
+
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.1.js" ></script>
+        <script type="text/javascript" src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
+
+        <script type='text/javascript'>
+            $(function() {
+                        if(!document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1")){
+                            $( "#iewarn" ).dialog({
+                                                      height: 300,
+                                                      modal: true
+                                        });
+                        }
+                });
+        </script>
     </head>
     <body>
+        <div id="iewarn" title="Warning!" style="display: none;">
+            Warning! We have detected that your browser does not support Scalable Vector Graphics. We recommend viewing this site using the most recent versions of Chrome, Opera, or Firefox. We recommend Chrome for the best performance. Using Internet Explorer or a legacy browser will not allow you to use many graphical features of PTMScout.
+        </div>
+
         <div id="menu">
             <div style="float:right;text-align:right">
                 <span tal:condition="request.user == None">
