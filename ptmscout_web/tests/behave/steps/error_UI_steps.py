@@ -3,7 +3,7 @@ import re
 from tests.behave.steps import bot
 import os
 from mock import patch
-
+from ptmscout.database import DBSession
 
 def log_abort():
     import logging 
@@ -36,6 +36,10 @@ def user_upload_with_errors(context, patch_mail, patch_commit, patch_abort):
         print 'http://localhost/experiments/([0-9]+) not found'
     context.exp_link = m.group(0)
     context.exp_id = int(m.group(1))
+
+    DBSession.flush()
+    exp = experiment.getExperimentById(context.exp_id, secure=False)
+    DBSession.refresh(exp)
     
     context.active_user.publish_experiment(context.exp_id)
     
@@ -58,7 +62,7 @@ def show_proteins_and_rejected_peptides(context):
     context.result.mustcontain('8')
     context.result.mustcontain('9')
     
-    context.result.mustcontain("Warning: Specified modification 'lysine methyl ester' does not match residue 'K' for any known species")
+    context.result.mustcontain("Warning: Specified modification 'lysine methyl ester' does not match residue 'K' for specified species")
     context.result.mustcontain("Warning: Specified modification 'methylhistidine' does not match residue 'K' for any known species")
     context.result.mustcontain("Warning: Specified modification 'methylation' does not match residue 'G' for any known species")
 

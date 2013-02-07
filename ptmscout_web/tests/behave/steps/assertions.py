@@ -21,3 +21,11 @@ def assertRegexMatch(regex, haystack):
 def assertIn(needle, haystack):
     if needle not in haystack:
         assert False, "'%s' not found in '%s'" % (str(needle), str(haystack))
+
+def synchronous_assert_called(mock, limit=1):
+    slept_time = 0.0
+    while not mock.called and slept_time < limit:
+        time.sleep(0.1)
+        slept_time += 0.1    
+    
+    assert mock.called, "Synchronous call to %s timed out" % (str(mock))

@@ -1,9 +1,10 @@
-from ptmscout.database import user, experiment
+from ptmscout.database import user, experiment, DBSession
 from mock import patch
 import re
 from ptmscout.database.permissions import Permission
 from ptmscout.config import strings
 import os
+from assertions import assertContains, assertRegexMatch, synchronous_assert_called
 
 class Bot(object):
     def __init__(self, app):
@@ -137,3 +138,63 @@ def upload_file(context, filename, force=False):
     
     context.form = context.result.form
     context.form.set('terms_of_use', "yes")
+
+def log_abort():
+    import logging 
+    logging.getLogger('ptmscout').debug("Transaction aborted")
+    raise Exception()
+
+def session_flush():
+    import logging
+    from ptmscout.database import DBSession
+    DBSession.flush()
+    logging.getLogger('ptmscout').debug("Transaction committed")
+
+def check_experiment_loaded(context, exp_title, patch_mail):
+    DBSession.flush()
+
+    my_experiments_page = "http://localhost/account/experiments"
+    result = context.result
+
+    result.mustcontain(strings.experiment_upload_started_page_title)
+    result.mustcontain(strings.experiment_upload_started_message % (my_experiments_page))
+    
+    result = context.ptmscoutapp.get(my_experiments_page)
+    
+    result.mustcontain(exp_title)
+    result.mustcontain("loaded")
+
+    m = re.search('http://localhost/experiments/([0-9]+)', str(result))
+    if m == None:
+        print 'http://localhost/experiments/[0-9]+ not found'
+    exp_link = m.group(0)
+    context.exp_id = int(m.group(1))
+
+    exp = experiment.getExperimentById(context.exp_id)
+    DBSession.refresh(exp)
+    
+    peps = context.table[0]['peptides']
+    prots = context.table[0]['proteins']
+    errors = context.table[0]['errors']
+    rejected = context.table[0]['rejected']
+    
+    result = context.ptmscoutapp.get(exp_link + "/summary")
+    
+    strres = str(result).replace("\n", " ")
+    assertRegexMatch('Proteins.*%s' % (prots), strres)
+    assertRegexMatch('Peptides.*%s' % (peps), strres)
+    assertRegexMatch('Rejected Peptides.*%s' % (rejected), strres)
+    
+    synchronous_assert_called(patch_mail, 5)
+    argstr = str(patch_mail.call_args)
+
+    assertContains("Peptides: %s" % (peps), argstr)
+    assertContains("Proteins: %s" % (prots), argstr)
+    assertContains("Errors: %s" % (errors), argstr)
+    assertRegexMatch('http://localhost/experiments/[0-9]+/errors', argstr)
+    
+    context.exp_link = exp_link
+    
+    browse_page = context.exp_link + "/browse"
+    result = context.ptmscoutapp.get(browse_page)
+    context.result = result
