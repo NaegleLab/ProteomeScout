@@ -117,7 +117,7 @@ class EntrezQueryTestCase(IntegrationTestCase):
         taxons = [u'Eukaryota', u'Metazoa', u'Chordata', u'Craniata',
                 u'Vertebrata', u'Euteleostomi', u'Mammalia', u'Eutheria',
                 u'Euarchontoglires', u'Primates', u'Haplorrhini',
-                u'Catarrhini', u'Hominidae', u'Homo']
+                u'Catarrhini', u'Hominidae', u'Homo', u'Homo sapiens']
 
         self.assertEqual('Homo sapiens', species)
         self.assertEqual([t.lower() for t in taxons], taxonomy)
