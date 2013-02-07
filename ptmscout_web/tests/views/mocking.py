@@ -221,10 +221,11 @@ def createMockMeasurement(pid, expid):
     
     return mock
 
-def createMockAmbiguity(acc, ms):
+def createMockAmbiguity(locus, acc, ms):
     mock = Mock(spec=PeptideAmbiguity)
     mock.id = random.randint(0,100000)
 
+    mock.locus = locus
     mock.alt_accession = acc
     mock.ms_id = ms.id
 
@@ -257,12 +258,12 @@ def createMockPeptide(pid, site_pos=None, site_type=None):
     if site_pos==None:
         site_pos = random.randint(0, 3000)
     mock.site_pos = site_pos
-    if site_types==None:
+    if site_type==None:
         site_type = site_types[random.randint(0,3)]
 
     mock.site_type = site_type
     
-    mock.getName.return_value = mock.site_type + str(mock.site_pos)
+    mock.getName.return_value = str(mock.site_type) + str(mock.site_pos)
     mock.getPeptide.return_value = mock.pep_aligned
     
     mock.predictions = []

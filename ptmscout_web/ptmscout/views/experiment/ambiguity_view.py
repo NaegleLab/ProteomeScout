@@ -2,6 +2,7 @@ from pyramid.view import view_config
 from ptmscout.config import strings
 from ptmscout.database import experiment, modifications
 from ptmscout.utils import forms, webutils
+from pyramid.httpexceptions import HTTPFound
 
 def prepopulate_upload_session(exp, user, schema):
     pass
@@ -12,9 +13,13 @@ def create_ambiguity_schema(measurements, request):
 
     i=0
     for ms in measurements:
-        fvalues = [ (amb.alt_accession, amb.alt_accession) for amb in ms.ambiguities ]
+        alt_accessions = set([amb.alt_accession for amb in ms.ambiguities])
+        fvalues = [ (amb.alt_accession, "%s : %s" % (amb.locus, amb.alt_accession)) for amb in ms.ambiguities ]
+        if ms.query_accession not in alt_accessions:
+            fvalues = [ (ms.query_accession, "%s : %s" % (ms.protein.acc_gene, ms.query_accession)) ] + fvalues
+
         field_id = 'ms%d' % (ms.id)
-        form_schema.add_select_field(field_id, 'MS %d' % (ms.id), fvalues)
+        form_schema.add_select_field(field_id, 'MS %d' % (ms.id), fvalues, default=ms.query_accession)
         form_schema.set_required_field(field_id)
 
         sites = [ (modpep.peptide.getName(), modpep.modification.name) for modpep in ms.peptides ]
@@ -39,6 +44,9 @@ def experiment_ambiguity_view(request):
 
     if submitted:
         errors = forms.FormValidator(form_schema).validate()
+
+        if form_schema.is_defaulted():
+            errors.append(strings.experiment_ambiguity_error_no_change)
 
         if errors == []:
             prepopulate_upload_session(exp, request.user, form_schema)
