@@ -6,6 +6,8 @@ from ptmscout.database import modifications, protein, experiment
 from ptmscout.utils import mail, uploadutils
 import datetime
 import traceback
+from sqlalchemy.exc import DBAPIError, SQLAlchemyError
+
 log = logging.getLogger('ptmscout')
 
 def load_scansite_peptide(pep, taxonomy):
@@ -92,6 +94,10 @@ def load_peptide_modification(exp_id, load_ambiguities, protein_accession, prote
         create_errors_for_runs(exp_id, protein_accession, pep_seq, "Scansite query failed for peptide: %s '%s'" % (protein_accession, pep_seq), runs)
     except TypeError:
         create_errors_for_runs(exp_id, protein_accession, pep_seq, "Failed to get data for protein: %s" % (protein_accession), runs)
+    except DBAPIError:
+        raise
+    except SQLAlchemyError:
+        raise
     except Exception, e:
         log.warning("Unexpected Error: %s\n%s\nDuring import of peptide %d %s %s", str(e), traceback.format_exc(), exp_id, protein_accession, pep_seq)
         create_errors_for_runs(exp_id, protein_accession, pep_seq, "Unexpected error: " + str(e), runs)

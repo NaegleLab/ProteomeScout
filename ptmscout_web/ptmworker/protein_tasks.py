@@ -9,6 +9,7 @@ from ptmscout.utils import mail, uploadutils
 import datetime
 import traceback
 from ptmscout.utils.decorators import rate_limit
+from sqlalchemy.exc import DBAPIError, SQLAlchemyError
 
 log = logging.getLogger('ptmscout')
 
@@ -92,6 +93,10 @@ def create_missing_proteins(protein_map, missing_proteins, accessions, exp_id, l
             report_protein_error(acc, protein_map, accessions, line_mappings, exp_id, "PFam query failed for protein: %s" % (acc))
         except picr_tools.PICRError:
             report_protein_error(acc, protein_map, accessions, line_mappings, exp_id, "PICR query failed for protein: %s" % (acc))
+        except DBAPIError:
+            raise
+        except SQLAlchemyError:
+            raise
         except Exception, e:
             log.warning("Unexpected Error: %s\n%s\nDuring import of protein %s", str(e), traceback.format_exc(), acc)
             report_protein_error(acc, protein_map, accessions, line_mappings, exp_id, "Unexpected Error: %s" % (str(e)))
