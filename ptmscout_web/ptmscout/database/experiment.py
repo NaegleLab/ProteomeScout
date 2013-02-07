@@ -101,6 +101,7 @@ class Experiment(Base):
     errors = relationship("ExperimentError", cascade="all,delete-orphan")
     conditions = relationship("ExperimentCondition", cascade="all")
     permissions = relationship("Permission", backref="experiment", cascade="all,delete-orphan")
+    measurements = relationship("MeasuredPeptide")
     
     def __init__(self):
         self.date = datetime.datetime.now()

@@ -257,3 +257,5 @@ def getProteinDomain(prot_id, pep_site):
 def getProteinBySequence(seq, species):
     return DBSession.query(Protein).join(Protein.species).filter(Protein.sequence==seq, taxonomies.Species.name==species).first()
 
+def getProteinsByAccession(accession):
+    return DBSession.query(Protein).join(ProteinAccession).filter(ProteinAccession.value == accession).all()

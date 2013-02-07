@@ -14,11 +14,14 @@ class ExperimentAmbiguityViewIntegrationTests(IntegrationTestCase):
         result = self.ptmscoutapp.get('/experiments/26/ambiguity')
         result = result.form.submit()
         result.mustcontain(strings.experiment_ambiguity_error_no_change)
+        result = self.ptmscoutapp.get('/experiments/26/ambiguity?defaults=true')
+        result = result.form.submit()
+        result = result.follow()
+        result = result.follow()
+        result.mustcontain("Experiment Information")
+        result.mustcontain("[Default Assignments] Time-resolved mass spectrometry of tyrosine phosphorylation sites in the epidermal growth factor receptor signaling network reveals dynamic modules.")
 
 class ExperimentAmbiguityViewTests(UnitTestCase):
-
-    def test_prepopulate_upload_session(self):
-        self.fail("not implemented")
 
     def test_create_ambiguity_schema(self):
         request = DummyRequest()
@@ -73,9 +76,9 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
         self.assertEqual('P05500-2', schema.field_defaults['ms%d' % (m3.id)])
         self.assertEqual(exp_values, schema.enum_values['ms%d' % (m3.id)])
 
-        self.assertEqual([(0, m1.id, p.name, p.species.name, m1.peptide, [('Y111', 'phosphorylation')]),
-                            (1, m2.id, p.name, p.species.name, m2.peptide, []),
-                            (2, m3.id, p.name, p.species.name, m3.peptide, [])], pep_list)
+        self.assertEqual([(0, m1.id, m1.query_accession, p.acc_gene, p.name, p.species.name, m1.peptide, [('Y111', 'phosphorylation')]),
+                            (1, m2.id, m2.query_accession, p.acc_gene, p.name, p.species.name, m2.peptide, []),
+                            (2, m3.id, m3.query_accession, p.acc_gene, p.name, p.species.name, m3.peptide, [])], pep_list)
 
     @patch('ptmscout.views.experiment.ambiguity_view.prepopulate_upload_session')
     @patch('ptmscout.utils.forms.FormValidator')
@@ -105,21 +108,15 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
         try:
             result = ambiguity_view.experiment_ambiguity_view(request)
         except HTTPFound, f:
-            self.assertEqual("%s/upload/%d/metadata" % (request.application_url, session_id), f.location)
+            self.assertEqual("%s/upload/%d" % (request.application_url, session_id), f.location)
         else:
             self.fail("Expected HTTPFound")
 
-        patch_createSession.assert_called_once_with(exp, request.user, form_schema)
+        patch_createSession.assert_called_once_with(exp, request.user, schema, False)
         patch_getExperiment.assert_called_once_with(1323, user=request.user)
         patch_getPeptides.assert_called_once_with(1323, user=request.user)
         patch_createSchema.assert_called_once_with("Some peptides", request)
         validator.validate.assert_called_once_with()
-
-        self.assertEqual([], result['errors'])
-        self.assertEqual(exp, result['experiment'])
-        self.assertEqual(pep_list, result['peptides'])
-        self.assertEqual(schema, result['formrenderer'].schema)
-        self.assertEqual(strings.experiment_ambiguity_page_title, result['pageTitle'])
 
 
 
@@ -154,7 +151,38 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
         self.assertEqual(exp, result['experiment'])
         self.assertEqual(pep_list, result['peptides'])
         self.assertEqual(schema, result['formrenderer'].schema)
-        self.assertEqual(strings.experiment_ambiguity_page_title, result['pageTitle'])
+        self.assertEqual("%s: %s" % (strings.experiment_ambiguity_page_title, exp.name), result['pageTitle'])
+
+
+    @patch('ptmscout.views.experiment.ambiguity_view.assign_defaults')
+    @patch('ptmscout.views.experiment.ambiguity_view.create_ambiguity_schema')
+    @patch('ptmscout.database.modifications.getMeasuredPeptidesByExperiment')
+    @patch('ptmscout.database.experiment.getExperimentById')
+    def test_experiment_ambiguity_should_assign_defaults_if_get_defaults_is_true(self, patch_getExperiment, patch_getPeptides, patch_createSchema, patch_assign):
+        request = DummyRequest()
+        request.matchdict['id'] = '1323'
+        request.GET['defaults'] = 'true'
+        request.user = None
+   
+        schema = forms.FormSchema()
+        pep_list = "Some peptide list"
+        exp = createMockExperiment(1323)
+        patch_getExperiment.return_value = exp
+        patch_getPeptides.return_value = "Some peptides"
+        patch_createSchema.return_value = schema, pep_list
+
+        result = ambiguity_view.experiment_ambiguity_view(request)
+
+        patch_getExperiment.assert_called_once_with(1323, user=request.user)
+        patch_getPeptides.assert_called_once_with(1323, user=request.user)
+        patch_createSchema.assert_called_once_with("Some peptides", request)
+        patch_assign.assert_called_once_with("Some peptides", schema, request.user)
+
+        self.assertEqual([], result['errors'])
+        self.assertEqual(exp, result['experiment'])
+        self.assertEqual(pep_list, result['peptides'])
+        self.assertEqual(schema, result['formrenderer'].schema)
+        self.assertEqual("%s: %s" % (strings.experiment_ambiguity_page_title, exp.name), result['pageTitle'])
 
     @patch('ptmscout.views.experiment.ambiguity_view.create_ambiguity_schema')
     @patch('ptmscout.database.modifications.getMeasuredPeptidesByExperiment')
@@ -181,4 +209,4 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
         self.assertEqual(exp, result['experiment'])
         self.assertEqual(pep_list, result['peptides'])
         self.assertEqual(schema, result['formrenderer'].schema)
-        self.assertEqual(strings.experiment_ambiguity_page_title, result['pageTitle'])
+        self.assertEqual("%s: %s" % (strings.experiment_ambiguity_page_title, exp.name), result['pageTitle'])

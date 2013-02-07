@@ -29,8 +29,10 @@
                 <table>
                     <thead>
                         <tr align="left" class="header">
+                            <th>MS id</th>
+                            <th>Accession</th>
+                            <th>Gene</th>
                             <th>Protein</th>
-                            <th>Species</th>
                             <th>Peptide</th>
                             <th>Sites</th>
                             <th>Modifications</th>
@@ -39,9 +41,11 @@
                     </thead>
 
                     <tbody>
-                        <tr valign="top" tal:repeat="(r, ms_id, prot_name, spec_name, pep, sites) peptides" tal:attributes="class 'row ' + 'even' if r % 2 == 0 else 'odd';" >
+                        <tr valign="top" tal:repeat="(r, ms_id, acc, gene, prot_name, spec_name, pep, sites) peptides" tal:attributes="class 'row ' + 'even' if r % 2 == 0 else 'odd';" >
+                            <td tal:content="ms_id"></td>
+                            <td tal:content="acc"></td>
+                            <td tal:content="gene"></td>
                             <td tal:content="prot_name"></td>
-                            <td tal:content="spec_name"></td>
                             <td tal:content="pep"></td>
                             <td>
                                 <div class="modsite" tal:repeat="(name,mod) sites" tal:content="name"></div>
