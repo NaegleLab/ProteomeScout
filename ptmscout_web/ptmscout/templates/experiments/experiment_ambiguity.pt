@@ -19,8 +19,12 @@
             <div style="border: solid 1px black; width:83%; margin-left:auto; margin-right:auto; padding:10px;">
                 <div style="float:left;">Choose new peptide to protein assignments below, then submit your changes to create a new experiment:</div>
                 <div class="formsubmission">
-                    <input type="submit" value="Create Experiment With Chosen Accessions" />
-                    <a tal:attributes="href '%s/experiments/%d/ambiguity?defaults=true' % (request.application_url, experiment.id)">Assign to Defaults</a>
+                    <input class="longtask" type="submit" value="Create Experiment With Chosen Accessions" />
+                    <a class="longtask" tal:attributes="href '%s/experiments/%d/ambiguity?defaults=true' % (request.application_url, experiment.id)">Assign to Defaults</a>
+                </div>
+                <div class="clear"></div>
+                <div style="float:right;" tal:condition="assigned_defaults">
+                    <span style="color:red">*</span> = Default protein assignment different than original.
                 </div>
                 <div class="clear"></div>
             </div>
@@ -53,7 +57,10 @@
                             <td>
                                 <div class="modsite" tal:repeat="(name,mod) sites" tal:content="mod"></div>
                             </td>
-                            <td tal:content="structure formrenderer.render('ms%d' % (ms_id))"></td>
+                            <td>
+                                <span tal:condition="ms_id in changed_default" style="color:red">*</span>
+                                <span tal:content="structure formrenderer.render('ms%d' % (ms_id))"></span>
+                            </td>
                         </tr>
                     </tbody>
 

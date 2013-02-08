@@ -11,9 +11,13 @@
     <script type="text/javascript" src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
     <script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>
 
+    <script type="text/javascript" src="${request.static_url('ptmscout:static/js/ptmscout.js')}" ></script>
 	<metal:block metal:define-slot="header"></metal:block>
   </head>
   <body>
+      <div id="waiting-dialog" title="Please wait..." style="display: none;">
+          <div class="progress">0 / 0</div>
+      </div>
 	<div id="menu">
         <div style="float:left; text-align:left">
 	    <a href="${request.application_url}">Portal</a> |

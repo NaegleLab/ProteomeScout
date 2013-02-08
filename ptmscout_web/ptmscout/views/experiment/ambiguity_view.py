@@ -50,6 +50,7 @@ def prepopulate_upload_session(exp, user, schema, was_defaults):
     return session_id
 
 def assign_defaults(measurements, schema, user):
+    changed_msids = set()
     for ms in measurements:
         found_current = False
         protein_choices = []
@@ -78,7 +79,12 @@ def assign_defaults(measurements, schema, user):
 
         chosen = protein_choices[-1][1]
 
+        if chosen != ms.query_accession:
+            changed_msids.add(ms.id)
+
         schema.set_field('ms%d'%(ms.id), chosen)
+
+    return changed_msids
 
 def create_ambiguity_schema(measurements, request):
     pep_list = []
@@ -119,8 +125,9 @@ def experiment_ambiguity_view(request):
 
     form_schema, pep_list = create_ambiguity_schema(peptides, request)
 
+    changed_msids = set()
     if defaults and not submitted:
-        assign_defaults(peptides, form_schema, request.user)
+        changed_msids = assign_defaults(peptides, form_schema, request.user)
 
     errors = []
 
@@ -138,4 +145,6 @@ def experiment_ambiguity_view(request):
             'experiment':exp,
             'formrenderer': forms.FormRenderer(form_schema),
             'peptides': pep_list,
+            'assigned_defaults': defaults,
+            'changed_default': changed_msids,
             'pageTitle': "%s: %s" % (strings.experiment_ambiguity_page_title, exp.name)}

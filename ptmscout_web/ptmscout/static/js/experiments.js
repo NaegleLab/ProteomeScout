@@ -20,19 +20,6 @@ $(document).ready(
 				});
 		$("tr.subexperiment").hide();
 		
-		$("div.progress").each(function(){
-				val = $(this).text();
-				$(this).text("");
-				items = val.split(" / ");
-				n = parseInt(items[0]);
-				d = parseInt(items[1]);
-
-                if(n == 0){
-                    n = false;
-                }
-				$(this).progressbar({ value: n, max: d});
-			});
-
         if( $("div.progress").length > 0 ){
             timedRefresh(10000);
         }

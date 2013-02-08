@@ -170,6 +170,7 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
         patch_getExperiment.return_value = exp
         patch_getPeptides.return_value = "Some peptides"
         patch_createSchema.return_value = schema, pep_list
+        patch_assign.return_value = ["Some list of ms ids that changed"]
 
         result = ambiguity_view.experiment_ambiguity_view(request)
 
@@ -178,6 +179,8 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
         patch_createSchema.assert_called_once_with("Some peptides", request)
         patch_assign.assert_called_once_with("Some peptides", schema, request.user)
 
+        self.assertEqual(True, result['assigned_defaults'])
+        self.assertEqual(["Some list of ms ids that changed"], result['changed_default'])
         self.assertEqual([], result['errors'])
         self.assertEqual(exp, result['experiment'])
         self.assertEqual(pep_list, result['peptides'])
@@ -226,6 +229,8 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
         patch_createSchema.assert_called_once_with("Some peptides", request)
 
         self.assertEqual([], result['errors'])
+        self.assertEqual(set(), result['changed_default'])
+        self.assertEqual(False, result['assigned_defaults'])
         self.assertEqual(exp, result['experiment'])
         self.assertEqual(pep_list, result['peptides'])
         self.assertEqual(schema, result['formrenderer'].schema)

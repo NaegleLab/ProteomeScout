@@ -170,8 +170,11 @@ class FormRenderer(object):
         cur_value = self.schema.get_form_value(ref)
         if cur_value == None:
             cur_value = ''
-        
-        valid_values = [('','')] + self.schema.enum_values[ref]
+
+        valid_values = self.schema.enum_values[ref][:]
+        if self.schema.field_defaults[ref] == None:
+            valid_values = [('','')] + valid_values
+
         for (value, proper_name) in valid_values:
             selected = 'selected' if cur_value == value else ''
             items.append('<option value="%s" %s>%s</option>' % (value, selected, proper_name))
