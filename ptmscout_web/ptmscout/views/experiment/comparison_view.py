@@ -9,4 +9,5 @@ def experiment_comparison_view(request):
     eid = int(request.matchdict['id'])
     exp = experiment.getExperimentById(eid, user=request.user)
 
-
+    return {'pageTitle': strings.experiment_compare_page_title,
+            'experiment': exp}

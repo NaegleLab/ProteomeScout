@@ -19,7 +19,7 @@
 					<dt><a href="${request.application_url}/experiments/${experiment.id}/subsets">Evaluate Subsets</a></dt>
 					<dd>Select a foreground from data or metadata, view composition and evaluate enrichment</dd>
 		
-					<dt><a href="${request.application_url}/experiments/${experiment.id}/batch">Compare Datasets</a></dt>
+					<dt><a href="${request.application_url}/experiments/${experiment.id}/compare">Compare Datasets</a></dt>
 					<dd>View novel sites compared to other datasets</dd>
 				
 					<tal:empty tal:condition="experiment.ambiguity == 1">

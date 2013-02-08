@@ -4,7 +4,7 @@
 		<tal:empty tal:condition="experiment.export != 0">
 			| <a href="${request.application_url}/experiments/${experiment.id}/browse">Browse Dataset</a>
 			| <a href="${request.application_url}/experiments/${experiment.id}/subsets">Evaluate Subsets</a>
-			| <a href="${request.application_url}/experiments/${experiment.id}/batch">Compare Datasets</a>
+			| <a href="${request.application_url}/experiments/${experiment.id}/compare">Compare Datasets</a>
 			<tal:empty tal:condition="experiment.ambiguity == 1">
 				| <a href="${request.application_url}/experiments/${experiment.id}/ambiguity">Report Ambiguity</a>
 			</tal:empty>
