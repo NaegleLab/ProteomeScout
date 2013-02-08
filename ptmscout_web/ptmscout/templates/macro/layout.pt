@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/ptmscout.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/jquery-ui-1.9.1.custom.css')}" />
 
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.1.js" ></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.0.js" ></script>
     <script type="text/javascript" src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
     <script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>
 
@@ -15,9 +15,9 @@
 	<metal:block metal:define-slot="header"></metal:block>
   </head>
   <body>
-      <div id="waiting-dialog" title="Please wait..." style="display: none;">
-          <div class="progress">0 / 0</div>
-      </div>
+    <div id="waiting-dialog" style="text-align:center; display: none;">
+        <img src="${request.static_url('ptmscout:static/images/ajax-loader.gif')}" />
+    </div>
 	<div id="menu">
         <div style="float:left; text-align:left">
 	    <a href="${request.application_url}">Portal</a> |

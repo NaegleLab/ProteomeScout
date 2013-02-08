@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" metal:define-macro="layout">
+  <head>
+    <title>Modal wait test</title>
+    <link rel="stylesheet" type="text/css" href="../../css/ptmscout.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/jquery-ui-1.9.1.custom.css" />
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.0.js" ></script>
+    <script type="text/javascript" src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>
+
+    <script type="text/javascript" src="../../js/ptmscout.js" ></script>
+  </head>
+  <body>
+      <div id="waiting-dialog" style="text-align:center; display: none;">
+          <img src="../../images/ajax-loader.gif" />
+      </div>
+
+      <button class="longtask">Click to run task</button>
+  </body>
+</html>
