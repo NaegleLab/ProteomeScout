@@ -237,10 +237,14 @@ class IntegrationTestUploadConditionsView(IntegrationTestCase):
         
         result = self.ptmscoutapp.get("/upload/%d/conditions" % session.id, status=200)
         result.mustcontain(strings.experiment_upload_conditions_page_title)
-        
+       
         result.form.set('0_type', 'cell')
         result.form.set('0_value', 'HELLA')
+        result.form.set('1_type', 'drug')
+        result.form.set('1_value', 'doxycycline')
+        result.form.set('2_type', 'drug')
+        result.form.set('2_value', 'natalizumab')
         
-        result.form.submit(status=302).follow(status=200)
+        result.form.submit().follow(status=200)
         
         

@@ -31,7 +31,7 @@ def get_form_schema(exp, request):
     for i in xrange(0, MAX_VALUES):
         type_field = '%d_type' % (i)
         value_field = '%d_value' % (i)
-        schema.add_select_field(type_field, "Parameter Type %d" % (i+1), CONDITION_TYPES, default='')
+        schema.add_select_field(type_field, "Parameter Type %d" % (i+1), CONDITION_TYPES)
         schema.add_text_field(value_field, "Parameter Value %d" % (i+1), 50, 51)
         schema.set_field_required_condition(value_field, type_field, lambda type_value: type_value != '' and type_value != None)
     
