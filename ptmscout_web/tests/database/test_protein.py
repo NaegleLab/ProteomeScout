@@ -132,17 +132,17 @@ class ProteinTest(DBTestCase):
         self.assertEqual(2, cnt)
         self.assertEqual(exp_ids, sorted( [ p.id for p in prots ] ))
  
-    def test_getProteinsByAccession(self):
+    def test_getProteinsByGene(self):
         expected_ids = [10367, 17551, 19946, 35546]
         
-        prots = protein.getProteinsByAccession(["ACK1"])
+        prots = protein.getProteinsByGene("ACK1")
         
         self.assertEqual(sorted(expected_ids), sorted([ prot.id for prot in prots ]))
     
-    def test_getProteinsByAccession_filter_species(self):
+    def test_getProteinsByGene_filter_species(self):
         expected_ids = [35546, 10367]
         
-        prots = protein.getProteinsByAccession(["ACK1"], "homo sapiens")
+        prots = protein.getProteinsByGene("ACK1", "homo sapiens")
         
         self.assertEqual(sorted(expected_ids), sorted([ prot.id for prot in prots ]))
                 

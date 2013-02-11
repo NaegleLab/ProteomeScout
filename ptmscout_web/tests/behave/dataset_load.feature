@@ -45,7 +45,7 @@ Feature: Dataset Load
           Given a user submits a dataset in which a single peptide has more than one flavor of modification and the mod_type entry does not match the amino acids
           Then the user should be sent an email with a link to the experiment which contains:
             | peptides | proteins | rejected | errors |
-            | 16       | 14       | 1      |
+            | 16       | 14       | 1        | 1      |
 
     Scenario: Handle a dataset where the same peptide is reported
           Given a user submits a dataset in which the same peptide

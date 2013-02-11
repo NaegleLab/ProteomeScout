@@ -3,9 +3,9 @@ import httplib
 import xml.dom.minidom as xml
 from ptmscout.config import settings
 from ptmscout.utils.decorators import rate_limit
+import logging
 
-
-
+log = logging.getLogger('ptmscout')
 scansite_url = "http://scansite3.mit.edu/Scansite3Webservice/proteinScan/proteinName=PTMSCOUT_QUERY/sequence=%s/motifClass=%s/motifNicknames=/stringencyValue=LOW"
 
 class MotifNode(object):

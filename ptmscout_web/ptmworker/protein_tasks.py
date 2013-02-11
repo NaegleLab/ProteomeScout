@@ -1,5 +1,5 @@
 import celery
-import logging 
+import logging
 from ptmworker import notify_tasks
 from ptmworker.helpers import upload_helpers, entrez_tools, pfam_tools, quickgo_tools, picr_tools, uniprot_tools
 from ptmscout.database import upload, modifications, protein, experiment

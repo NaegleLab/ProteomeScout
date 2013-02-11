@@ -28,7 +28,7 @@ email_regex = "[a-z0-9\.\-\_]+@[a-z0-9\.\-\_]+\.([a-z]+)$"
 DISABLE_PFAM = False
 DISABLE_SCANSITE = False
 DISABLE_QUICKGO = False
-DISABLE_PICR = False 
+DISABLE_PICR = True
 DISABLE_UNIPROT_QUERY = False
 
 # rate limits in queries per second

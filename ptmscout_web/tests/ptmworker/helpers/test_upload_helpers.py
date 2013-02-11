@@ -121,7 +121,7 @@ IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
     @patch('ptmscout.database.taxonomies.getSpeciesByName')
     def test_find_or_create_species_should_get_strain_or_isolate(self, patch_getSpecies, patch_getTaxon):
         patch_getSpecies.return_value = None
-        taxon = createMockTaxonomy()
+        taxon = createMockTaxonomy(2759)
         patch_getTaxon.return_value = taxon
 
         species_name = 'sacchromyces cerevisiae (strain ATC2044)'
@@ -149,7 +149,7 @@ IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
     @patch('ptmscout.database.taxonomies.getSpeciesByName')
     def test_find_or_create_species_should_create_species_if_taxon_node_available(self, patch_getSpecies, patch_getTaxon):
         patch_getSpecies.return_value = None
-        taxon = createMockTaxonomy()
+        taxon = createMockTaxonomy(2759)
         patch_getTaxon.return_value = taxon
         
         sp = upload_helpers.find_or_create_species('some species')

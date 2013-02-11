@@ -23,7 +23,6 @@ class TestUploadUtils(IntegrationTestCase):
                 i+=1
 
                 items = line.split('\t')
-                print line.strip()
                 run_names.add(items[3])
 
         self.assertEqual(68*4+1, i)

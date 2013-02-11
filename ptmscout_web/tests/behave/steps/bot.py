@@ -170,7 +170,7 @@ def check_experiment_loaded(context, exp_title, patch_mail):
     exp_link = m.group(0)
     context.exp_id = int(m.group(1))
 
-    exp = experiment.getExperimentById(context.exp_id)
+    exp = experiment.getExperimentById(context.exp_id, context.active_user.user)
     DBSession.refresh(exp)
     
     peps = context.table[0]['peptides']

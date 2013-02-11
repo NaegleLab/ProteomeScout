@@ -197,11 +197,11 @@ def getProteinById(pid):
     
     return value
 
-def getProteinsByAccession(accessions, species=None):
+def getProteinsByGene(gene_name, species=None):
     if species == None:
-        q = DBSession.query(Protein).join(Protein.accessions).filter(or_(Protein.acc_gene.in_(accessions), ProteinAccession.value.in_(accessions)))
+        q = DBSession.query(Protein).join(Protein.accessions).filter( or_( Protein.acc_gene==gene_name, ProteinAccession.value==gene_name ) )
     else:
-        q = DBSession.query(Protein).join(Protein.accessions).join(Protein.species).filter(or_(Protein.acc_gene.in_(accessions), ProteinAccession.value.in_(accessions)), taxonomies.Species.name == species)
+        q = DBSession.query(Protein).join(Protein.accessions).join(Protein.species).filter( or_( Protein.acc_gene==gene_name, ProteinAccession.value==gene_name ), taxonomies.Species.name == species)
     
     return q.all()
 

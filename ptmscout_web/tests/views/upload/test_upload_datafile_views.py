@@ -51,11 +51,14 @@ class TestUploaddata_fileView(UnitTestCase):
         request.POST['data_file'].filename = filename
         request.POST['data_file'].file = open(os.sep.join(["tests","behave","data",filename]), 'rb')
         
+        def copy_exp(src, dest):
+            shutil.copy(src, dest)
+        patch_convert.side_effect = copy_exp
+
         exp_file = save_data_file(request)
 
         exp_path = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, exp_file)
         patch_convert.assert_called_once_with(exp_path + '.tmp', exp_path)
-        shutil.copy(exp_path+'.tmp', exp_path)
         
         os.chdir(os.sep.join(["tests", "behave", "data"]))
         os.system("mac2unix -q -n %s tmp_test.conv" % (filename))

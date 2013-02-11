@@ -55,9 +55,11 @@ def createMockSpecies(taxon_id=None):
     mock.taxon_id = taxon_id
     return mock
 
-def createMockTaxonomy():
+def createMockTaxonomy(tid=None):
     mock = Mock(spec=Taxonomy)
-    mock.node_id = random.randint(0,100000)
+    if tid == None:
+        tid = random.randint(0,100000)
+    mock.node_id = tid
     mock.kingdom = 'eukaryota'
     mock.name = 'species %d' % (mock.node_id)
     mock.strain = ''

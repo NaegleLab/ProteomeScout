@@ -11,6 +11,7 @@ from sqlalchemy.exc import DBAPIError, SQLAlchemyError
 log = logging.getLogger('ptmscout')
 
 def load_scansite_peptide(pep, taxonomy):
+    scansite_residues = set(['Y', 'S', 'T'])
     motif_class = None
     if 'mammalia' in taxonomy:
         motif_class="MAMMALIAN"
@@ -19,7 +20,7 @@ def load_scansite_peptide(pep, taxonomy):
     elif 'saccharomyces' in taxonomy:
         motif_class="YEAST"
     
-    if motif_class != None:
+    if motif_class != None and pep.site_type in scansite_residues:
         pep.predictions = upload_helpers.query_peptide_predictions(pep.pep_aligned, motif_class)
         pep.scansite_date = datetime.datetime.now()
 

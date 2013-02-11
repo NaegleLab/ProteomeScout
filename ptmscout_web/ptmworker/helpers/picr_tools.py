@@ -5,6 +5,9 @@ from ptmscout.config import settings
 from ptmscout.utils import uploadutils
 from ptmscout.utils.decorators import rate_limit
 import traceback
+import logging
+
+log = logging.getLogger('ptmscout')
 
 class PICRParser(object):
 
