@@ -49,12 +49,17 @@ class IntegrationTestScansiteQuery(IntegrationTestCase):
         self.assertEqual(0.6306, parser.sites[2].score)
         self.assertEqual("KVVALYDyMPMNA**", parser.sites[2].sequence)
        
+    def test_get_scansite_motif_with_whole_protein_should_get_everythin(self):
+        prot = 'MAAVILESIFLKRSQQKKKTSPLNFKKRLFLLTVHKLSYYEYDFERGRRGSKKGSIDVEKITCVETVVPEKNPPPERQIPRRGEESSEMEQISIIERFPYPFQVVYDEGPLYVFSPTEELRKRWIHQLKNVIRYNSDLVQKYHPCFWIDGQYLCCSQTAKNAMGCQILENRNGSLKPGSSHRKTKKPLPPTPEEDQILKKPLPPEPAAAPVSTSELKKVVALYDYMPMNANDLQLRKGDEYFILEESNLPWWRARDKNGQEGYIPSNYVTEAEDSIEMYEWYSKHMTRSQAEQLLKQEGKEGGFIVRDSSKAGKYTVSVFAKSTGDPQGVIRHYVVCSTPQSQYYLAEKHLFSTIPELINYHQHNSAGLISRLKYPVSQQNKNAPSTAGLGYGSWEIDPKDLTFLKELGTGQFGVVKYGKWRGQYDVAIKMIKEGSMSEDEFIEEAKVMMNLSHEKLVQLYGVCTKQRPIFIITEYMANGCLLNYLREMRHRFQTQQLLEMCKDVCEAMEYLESKQFLHRDLAARNCLVNDQGVVKVSDFGLSRYVLDDEYTSSVGSKFPVRWSPPEVLMYSKFSSKSDIWAFGVLMWEIYSLGKMPYERFTNSETAEHIAQGLRLYRPHLASEKVYTIMYSCWHEKADERPTFKILLSNILDVMDEES'
+        sites = scansite_tools.get_scansite_motif(prot, "MAMMALIAN", filter_exact=False)
+
+        self.assertEqual(134, len(sites))
+
     def test_get_scansite_motif_should_return_relevant_motif_data_for_partial_peps(self):
-        pep = 'CCRAFLEkAH    '
+        pep = 'KVVALYDyMPMNA  '
         sites = scansite_tools.get_scansite_motif(pep, "MAMMALIAN")
 
-        for site in sites:
-            print site.name, site.nickname
+        self.assertEqual(0, len(sites))
 
     def test_get_scansite_motif_should_return_relevant_motif_data(self):
         sites = scansite_tools.get_scansite_motif("LKKVVALyDYMPMNA", "MAMMALIAN")

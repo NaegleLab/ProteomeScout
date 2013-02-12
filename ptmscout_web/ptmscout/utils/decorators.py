@@ -2,14 +2,14 @@ import time
 
 def rate_limit(rate=None):
     def wrap(fn):
-        def rate_limited_task(*args):
+        def rate_limited_task(*args, **kwargs):
             now = time.clock()
             diff = now - rate_limited_task.last_call_time
 
             if diff < rate_limited_task.seconds_per_task:
                 time.sleep(rate_limited_task.seconds_per_task - diff)
 
-            rval = fn(*args)
+            rval = fn(*args, **kwargs)
 
             rate_limited_task.last_call_time = now
             return rval

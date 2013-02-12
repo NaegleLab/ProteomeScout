@@ -14,6 +14,7 @@ class MotifNode(object):
         self.nickname   = self.__get_node_text(siteNode.getElementsByTagName('motifNickName')[0])
         self.score      = float(self.__get_node_text(siteNode.getElementsByTagName('score')[0]))
         self.sequence   = self.__get_node_text(siteNode.getElementsByTagName('siteSequence')[0])
+        self.site       = self.__get_node_text(siteNode.getElementsByTagName('site')[0])
 
     def __get_node_text(self, node):
         txt = ""
@@ -44,7 +45,7 @@ class ScansiteError(Exception):
 RETRY_COUNT = 3
 
 @rate_limit(rate=settings.SCANSITE_RATE_LIMIT)
-def get_scansite_motif(pep_seq, motif_class):
+def get_scansite_motif(pep_seq, motif_class, filter_exact=True):
     if settings.DISABLE_SCANSITE:
         return []
 
@@ -57,7 +58,10 @@ def get_scansite_motif(pep_seq, motif_class):
             result = urllib2.urlopen(query_url)
 
             parsed_data = ScansiteParser(result.read())
-            predicted_sites = [ motif for motif in parsed_data.sites if pep_seq == motif.sequence ]
+            if filter_exact:
+                predicted_sites = [ motif for motif in parsed_data.sites if pep_seq == motif.sequence ]
+            else:
+                predicted_sites = parsed_data.sites
 
             return predicted_sites
 
