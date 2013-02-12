@@ -21,6 +21,12 @@ class TestProteinSearchViewIntegration(IntegrationTestCase):
         result = self.ptmscoutapp.get('/proteins', {'pep_search':"RGR", 'submitted':"true", 'species':"all", 'page':'4'}, status=200)
         result.mustcontain("Showing 151 - 200 of 3585 results")
 
+    def test_integration_none_search(self):
+        result = self.ptmscoutapp.get('/proteins', {'pep_search':"", 'acc_search':"", 'submitted':"true", 'species':"all"}, status=200)
+
+        result.mustcontain("At least one of Protein, Peptide are required")
+        result.mustcontain("Showing 0 - 0 of 0 results")
+
 class TestProteinSearchViews(UnitTestCase):
        
     @patch('ptmscout.database.taxonomies.getAllSpecies')

@@ -19,6 +19,13 @@ class ExperimentBrowseViewIntegrationTests(IntegrationTestCase):
         result = self.ptmscoutapp.get('/experiments/26/browse', {'submitted':"true", 'acc_search':"ACK1"})
         result.mustcontain('Showing 1 - 1 of 1 results')
 
+    def test_experiment_browse_search_none(self):
+        result = self.ptmscoutapp.get('/experiments/26/browse', {'submitted':"true", 'acc_search':"", 'pep_search':""})
+        result.mustcontain('Showing 0 - 0 of 0 results')
+        result.mustcontain('At least one of Protein, Peptide are required')
+
+
+
 class ExperimentBrowseViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()

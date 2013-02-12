@@ -24,7 +24,7 @@ def validate_at_least_one_of(items, schema):
     for item in items:
         if schema.field_was_attempted(item):
             return None
-    return "At least one of %s are required" % (', '.join(items))
+    return "At least one of %s are required" % (', '.join([schema.field_names[i] for i in items]))
 
 
 def build_validator(form_schema):

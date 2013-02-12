@@ -6,6 +6,7 @@ class Paginator():
         self.current_page = 1
         self.items_per_page = items_per_page
         self.last_page = 1
+        self.size = 0
 
     def parse_parameters(self, request):
         self.path_url = request.path_url
@@ -50,6 +51,8 @@ class Paginator():
         first = (self.current_page - 1) * self.items_per_page + 1
         last = self.current_page * self.items_per_page
 
+        if first > self.size:
+            first = self.size
         if last > self.size:
             last = self.size
 
