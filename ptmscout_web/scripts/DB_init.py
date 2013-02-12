@@ -7,7 +7,7 @@ import sys, logging
 class DatabaseInitialization():
     @classmethod
     def setUpClass(cls, settings_path, sql_echo=False):
-        config_options = appconfig('config:%s' % (settings_path))
+        settings = appconfig('config:%s' % (settings_path))
         cls.engine = engine_from_config(settings, prefix='sqlalchemy.')
         settings['sqlalchemy.echo'] = sql_echo
         settings['sqlalchemy.echo_pool'] = sql_echo
