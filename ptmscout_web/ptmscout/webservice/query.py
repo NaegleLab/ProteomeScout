@@ -12,5 +12,6 @@ def call_get_pubmed_record_by_id(request):
 def get_autocomplete_for_field(request):
     field_name = request.matchdict['field']
     field_values = experiment.getValuesForField(field_name)
+    field_values = sorted(field_values, key=lambda item: item.lower())
     
     return {field_name:field_values}

@@ -99,7 +99,7 @@ class Experiment(Base):
     failure_reason = Column(Text, default="")
     
     errors = relationship("ExperimentError", cascade="all,delete-orphan")
-    conditions = relationship("ExperimentCondition", cascade="all")
+    conditions = relationship("ExperimentCondition", cascade="all,delete-orphan")
     permissions = relationship("Permission", backref="experiment", cascade="all,delete-orphan")
     measurements = relationship("MeasuredPeptide")
     
@@ -329,8 +329,7 @@ def getExperimentTree(current_user):
     return experiment_tree
     
 def getValuesForField(field_name):
-    results = DBSession.query(ExperimentCondition).filter(ExperimentCondition.type==field_name).all()
-    
+    results = DBSession.query(ExperimentCondition.value).filter(ExperimentCondition.type==field_name).distinct()
     return sorted([ r.value for r in results ])
 
 def countErrorsForExperiment(exp_id):

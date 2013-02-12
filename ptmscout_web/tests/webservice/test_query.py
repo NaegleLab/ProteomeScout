@@ -33,5 +33,5 @@ class IntegrationTestQueryView(IntegrationTestCase):
         result.mustcontain("Forbidden")
         
     def test_get_autocomplete_for_field(self):
-        result = self.ptmscoutapp.get("/webservice/autocomplete/environment", status=200)
-        result.json
+        result = self.ptmscoutapp.get("/webservice/autocomplete/drug", status=200)
+        self.assertEqual(['Dasatinib', 'Doxirubicin'], result.json['drug'])
