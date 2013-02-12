@@ -24,7 +24,7 @@ def parse_fields_from_experiment(exp, schema):
         schema.set_field('%d_type' % (i), cond.type)
         schema.set_field('%d_value' % (i), cond.value)
 
-def get_form_schema(exp, request):
+def get_form_schema(exp, parent_exp, request):
     submitted = webutils.post(request, 'submitted', False) == "true"
     schema = forms.FormSchema()
     
@@ -37,7 +37,10 @@ def get_form_schema(exp, request):
     
     schema.parse_fields(request)
     if not submitted:
-        parse_fields_from_experiment(exp, schema)
+        if len(exp.conditions) == 0 and parent_exp != None:
+            parse_fields_from_experiment(parent_exp, schema)
+        else:
+            parse_fields_from_experiment(exp, schema)
     
     added_fields = set()
     
@@ -61,8 +64,12 @@ def upload_conditions_view(request):
     session_id = int(request.matchdict['id'])
     session = upload.getSessionById(session_id, request.user)
     exp = experiment.getExperimentById(session.experiment_id, request.user, False)
+    parent_exp = None
+
+    if session.parent_experiment != None:
+        parent_exp = experiment.getExperimentById(session.parent_experiment, request.user, False)
     
-    schema, added_fields = get_form_schema(exp, request)
+    schema, added_fields = get_form_schema(exp, parent_exp, request)
     renderer = forms.FormRenderer(schema)
     
     errors = []

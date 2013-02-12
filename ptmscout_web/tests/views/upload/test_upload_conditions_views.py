@@ -30,7 +30,7 @@ class TestUploadConditionsView(UnitTestCase):
         
         exp = createMockExperiment()
         exp.conditions = []
-        schema, added_fields = get_form_schema(exp, request)
+        schema, added_fields = get_form_schema(exp, None, request)
         
         save_form_data(exp, schema, added_fields)
         
@@ -41,16 +41,51 @@ class TestUploadConditionsView(UnitTestCase):
         
         exp.saveExperiment.assert_called_once_with()
     
+    def test_get_form_schema_should_get_values_from_parent_experiment_if_not_submitted_and_experiment_conditions_empty(self):
+        request = DummyRequest()
+        
+        exp = createMockExperiment()
+        parent_exp = createMockExperiment()
+        c1 = createMockCondition('f0', 'v0')
+        c2 = createMockCondition('f1', 'v1')
+        c3 = createMockCondition('f2', 'v2')
+        exp.conditions = []
+        parent_exp.conditions = [c1,c2,c3]
+        
+        schema, added_fields = get_form_schema(exp, parent_exp, request)
+        
+        
+        for i in xrange(0, MAX_VALUES):
+            self.assertIn('%d_type' % (i), schema.enum_fields)
+            self.assertEqual(CONDITION_TYPES, schema.enum_values['%d_type' % (i)])
+            self.assertEqual(forms.FormSchema.SELECT, schema.field_types['%d_type' % (i)])
+            self.assertEqual(forms.FormSchema.TEXT, schema.field_types['%d_value' % (i)])
+            
+            parent, _ = schema.conditional_fields['%d_value' % (i)]
+            self.assertEqual('%d_type' % (i),parent)
+            
+        self.assertEqual("f0", schema.form_values['0_type'])
+        self.assertEqual("v0", schema.form_values['0_value'])
+        self.assertEqual("f1", schema.form_values['1_type'])
+        self.assertEqual("v1", schema.form_values['1_value'])
+        self.assertEqual("f2", schema.form_values['2_type'])
+        self.assertEqual("v2", schema.form_values['2_value'])
+        
+        self.assertEqual(MAX_VALUES * 2, len(schema.field_names))
+        self.assertEqual(set([0,1,2]), added_fields)
+
     def test_get_form_schema_should_get_values_from_experiment_if_not_submitted(self):
         request = DummyRequest()
         
         exp = createMockExperiment()
+        parent_exp = createMockExperiment()
         c1 = createMockCondition('f0', 'v0')
         c2 = createMockCondition('f1', 'v1')
         c3 = createMockCondition('f2', 'v2')
+        parent_exp.conditions = []
         exp.conditions = [c1,c2,c3]
-        
-        schema, added_fields = get_form_schema(exp, request)
+
+        schema, added_fields = get_form_schema(exp, parent_exp, request)
         
         
         for i in xrange(0, MAX_VALUES):
@@ -84,7 +119,7 @@ class TestUploadConditionsView(UnitTestCase):
         request.POST['10_value'] = "v10"
         
         exp = createMockExperiment()
-        schema, added_fields = get_form_schema(exp, request)
+        schema, added_fields = get_form_schema(exp, None, request)
         
         
         for i in xrange(0, MAX_VALUES):
@@ -126,6 +161,7 @@ class TestUploadConditionsView(UnitTestCase):
         
         session = createMockSession(user, experiment_id=exp.id)
         session.stage='condition'
+        session.parent_experiment = None
         
         patch_getSession.return_value = session
         request = DummyRequest()
@@ -145,7 +181,7 @@ class TestUploadConditionsView(UnitTestCase):
         mockValidator.validate.assert_called_once_with()
         
         patch_save_form_data.assert_called_once_with(exp, mockSchema, set([1,2,3]))
-        patch_getSchema.assert_called_once_with(exp, request)
+        patch_getSchema.assert_called_once_with(exp, None, request)
         patch_getSession.assert_called_once_with(session.id, user)
         
     @patch('ptmscout.database.experiment.getExperimentById')
@@ -163,6 +199,7 @@ class TestUploadConditionsView(UnitTestCase):
         exp = createMockExperiment()
         patch_getExperiment.return_value = exp
         session = createMockSession(user, experiment_id=exp.id)
+        session.parent_experiment = None
         
         patch_getSession.return_value = session
         request = DummyRequest()
@@ -173,7 +210,7 @@ class TestUploadConditionsView(UnitTestCase):
         result = upload_conditions_view(request)
         
         mockValidator.validate.assert_called_once_with()
-        patch_getSchema.assert_called_once_with(exp, request)
+        patch_getSchema.assert_called_once_with(exp, None, request)
         patch_getSession.assert_called_once_with(session.id, user)
         
         self.assertEqual(set([1,2,3]), result['added_fields'])
@@ -194,6 +231,7 @@ class TestUploadConditionsView(UnitTestCase):
         exp = createMockExperiment()
         patch_getExperiment.return_value = exp
         session = createMockSession(user, experiment_id=exp.id)
+        session.parent_experiment = None
         
         patch_getSession.return_value = session
         request = DummyRequest()
@@ -202,7 +240,7 @@ class TestUploadConditionsView(UnitTestCase):
         
         result = upload_conditions_view(request)
         
-        patch_getSchema.assert_called_once_with(exp, request)
+        patch_getSchema.assert_called_once_with(exp, None, request)
         patch_getSession.assert_called_once_with(session.id, user)
         
         self.assertEqual(session.id, result['session_id'])
@@ -232,7 +270,7 @@ class IntegrationTestUploadConditionsView(IntegrationTestCase):
         session.data_file='exp_file'
         session.parent_experiment=None
         session.change_description=''
-        session.stage='confirm'
+        session.stage='conditions'
         session.save()
         
         result = self.ptmscoutapp.get("/upload/%d/conditions" % session.id, status=200)
@@ -247,4 +285,28 @@ class IntegrationTestUploadConditionsView(IntegrationTestCase):
         
         result.form.submit().follow(status=200)
         
-        
+    def test_view_integration_should_load_conditions_from_experiment_parent(self):
+        from ptmscout.database import experiment
+        self.bot.login()
+
+        exp = experiment.getExperimentById(26, 0, False)
+        exp.status = 'preload'
+        exp.saveExperiment()
+
+        session = upload.Session()
+        session.experiment_id = 26
+        session.user_id = self.bot.user.id
+        session.load_type='new'
+        session.data_file='exp_file'
+        session.parent_experiment=28
+        session.change_description=''
+        session.stage='conditions'
+        session.save()
+
+        result = self.ptmscoutapp.get("/upload/%d/conditions" % session.id, status=200)
+        result.mustcontain(strings.experiment_upload_conditions_page_title)
+
+        self.assertEqual('drug', result.form.get('0_type').value)
+        self.assertEqual('dasatinib', result.form.get('0_value').value)
+
+
