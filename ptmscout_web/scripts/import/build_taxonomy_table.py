@@ -1,7 +1,6 @@
 from ptmscout.database import DBSession, taxonomies
 from DB_init import DatabaseInitialization
 import traceback
-from paste.deploy.loadwsgi import appconfig
 import os
 import re
 
@@ -45,7 +44,7 @@ def get_similar_taxons(sp, taxon_map):
 
 if __name__=='__main__':
     try:
-        settings = appconfig(os.path.join('config:', 'data', 'ptmscout', 'ptmscout_web', 'test.ini'))
+        settings = os.path.join('data', 'ptmscout', 'ptmscout_web', 'test.ini')
             
         DatabaseInitialization.setUpClass(settings)
         dbinit = DatabaseInitialization()

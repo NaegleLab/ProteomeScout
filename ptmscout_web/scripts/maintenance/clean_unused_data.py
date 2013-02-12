@@ -1,7 +1,6 @@
 from scripts.DB_init import DatabaseInitialization
 from ptmscout.config import settings
 from ptmscout.database import DBSession, experiment, upload
-from paste.deploy.loadwsgi import appconfig
 import datetime
 import sys, os
 import re
@@ -12,8 +11,7 @@ SESSION_EXPIRATION_TIME = 86400
 
 if __name__ == "__main__":
     try:
-        config_options = appconfig(os.path.join('config:', 'data', 'ptmscout', 'ptmscout_web', 'production.ini'))
-        
+        config_options = os.path.join('data', 'ptmscout', 'ptmscout_web', 'production.ini')
         DatabaseInitialization.setUpClass(config_options)
         dbinit = DatabaseInitialization()
         dbinit.setUp()

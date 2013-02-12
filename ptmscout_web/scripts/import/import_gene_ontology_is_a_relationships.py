@@ -1,5 +1,4 @@
 from pyramid import testing
-from paste.deploy.loadwsgi import appconfig
 from sqlalchemy import engine_from_config
 from ptmscout.database import DBSession, Base  # base declarative object
 import os, sys
@@ -9,7 +8,7 @@ from DB_init import DatabaseInitialization
 from obo_parser import GeneOntologyFile
 
 if __name__ == '__main__':
-    settings = appconfig(os.path.join('config:', 'data', 'ptmscout', 'ptmscout_web', 'development.ini'))
+    settings = os.path.join('data', 'ptmscout', 'ptmscout_web', 'development.ini')
     DatabaseInitialization.setUpClass(settings)
     dbinit = DatabaseInitialization()
 

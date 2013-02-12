@@ -1,11 +1,13 @@
 from sqlalchemy import engine_from_config
+from paste.deploy.loadwsgi import appconfig
 from ptmscout.database import DBSession, Base  # base declarative object
 from pyramid import testing
 import sys, logging
 
 class DatabaseInitialization():
     @classmethod
-    def setUpClass(cls, settings, sql_echo=False):
+    def setUpClass(cls, settings_path, sql_echo=False):
+        config_options = appconfig('config:%s' % (settings_path))
         cls.engine = engine_from_config(settings, prefix='sqlalchemy.')
         settings['sqlalchemy.echo'] = sql_echo
         settings['sqlalchemy.echo_pool'] = sql_echo

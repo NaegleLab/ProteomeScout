@@ -2,7 +2,6 @@ from HTMLParser import HTMLParser
 import json
 from DB_init import DatabaseInitialization
 from ptmscout.database import DBSession, modifications, taxonomies
-from paste.deploy.loadwsgi import appconfig
 import os
 import traceback
 import re
@@ -150,7 +149,7 @@ if __name__ == "__main__":
         amino_codes = json.loads(aminofile.read())
         
     try:
-        settings = appconfig(os.path.join('config:', 'data', 'ptmscout', 'ptmscout_web', 'development.ini'))
+        settings = os.path.join('data', 'ptmscout', 'ptmscout_web', 'development.ini')
         
         DatabaseInitialization.setUpClass(settings)
         dbinit = DatabaseInitialization()

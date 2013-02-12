@@ -1,6 +1,5 @@
 from scripts.DB_init import DatabaseInitialization
 from ptmscout.database import DBSession, protein, mutations
-from paste.deploy.loadwsgi import appconfig
 from ptmworker.helpers import upload_helpers
 from ptmscout.config import settings
 from geeneus import Proteome
@@ -34,7 +33,7 @@ BATCH_SIZE = 500
 FLUSH_FREQ = 1000
 if __name__ == "__main__":
     try:
-        dbconfig = appconfig(os.path.join('config:', 'data', 'ptmscout', 'ptmscout_web', 'production.ini'))
+        dbconfig = os.path.join('data', 'ptmscout', 'ptmscout_web', 'production.ini')
         
         DatabaseInitialization.setUpClass(dbconfig)
         dbinit = DatabaseInitialization()

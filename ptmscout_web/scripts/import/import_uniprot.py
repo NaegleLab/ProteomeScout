@@ -2,7 +2,6 @@ from Bio import SeqIO
 import sys, os
 from scripts.DB_init import DatabaseInitialization
 from ptmscout.database import DBSession, uniprot
-from paste.deploy.loadwsgi import appconfig
 import re
 import traceback
 
@@ -80,9 +79,9 @@ if __name__ == "__main__":
     database = sys.argv[3]
 
     if database == 'test':
-        dbconfig = appconfig(os.path.join('config:', 'data', 'ptmscout', 'ptmscout_web', 'test.ini'))
+        dbconfig = os.path.join('data', 'ptmscout', 'ptmscout_web', 'test.ini')
     elif database == 'production':
-        dbconfig = appconfig(os.path.join('config:', 'data', 'ptmscout', 'ptmscout_web', 'production.ini'))
+        dbconfig = os.path.join('data', 'ptmscout', 'ptmscout_web', 'production.ini')
 
 
     try:

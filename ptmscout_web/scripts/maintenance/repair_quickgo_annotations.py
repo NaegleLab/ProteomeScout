@@ -1,6 +1,5 @@
 from scripts.DB_init import DatabaseInitialization
 from ptmscout.database import DBSession, protein
-from paste.deploy.loadwsgi import appconfig
 from ptmworker.helpers import quickgo_tools
 from ptmworker import GO_tasks
 import sys, os
@@ -86,7 +85,7 @@ def get_all_terms():
 
 if __name__ == "__main__":
     try:
-        settings = appconfig(os.path.join('config:', 'data', 'ptmscout', 'ptmscout_web', 'production.ini'))
+        settings = os.path.join('data', 'ptmscout', 'ptmscout_web', 'production.ini')
 
         if len(sys.argv) > 1 and sys.argv[1] == '--force':
             os.remove('repair_go.entries')

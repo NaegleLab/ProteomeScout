@@ -2,7 +2,6 @@ import sys, os
 from scripts.DB_init import DatabaseInitialization
 from ptmscout.database import DBSession, uniprot, modifications, experiment
 from ptmworker.helpers import upload_helpers
-from paste.deploy.loadwsgi import appconfig
 import traceback
 
 FLUSH_EVERY=10
@@ -16,9 +15,9 @@ if __name__ == "__main__":
     database = sys.argv[1]
 
     if database == 'test':
-        dbconfig = appconfig(os.path.join('config:', 'data', 'ptmscout', 'ptmscout_web', 'test.ini'))
+        dbconfig = os.path.join('data', 'ptmscout', 'ptmscout_web', 'test.ini')
     elif database == 'production':
-        dbconfig = appconfig(os.path.join('config:', 'data', 'ptmscout', 'ptmscout_web', 'production.ini'))
+        dbconfig = os.path.join('data', 'ptmscout', 'ptmscout_web', 'production.ini')
 
 
     try:

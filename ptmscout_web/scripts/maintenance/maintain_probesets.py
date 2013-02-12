@@ -1,6 +1,5 @@
 from scripts.DB_init import DatabaseInitialization
 from ptmscout.database import DBSession, protein, gene_expression
-from paste.deploy.loadwsgi import appconfig
 import time, datetime
 import sys, os
 import traceback
@@ -8,7 +7,7 @@ FLUSH_EVERY = 100
 
 if __name__ == "__main__":
     try:
-        settings = appconfig(os.path.join('config:', 'data', 'ptmscout', 'ptmscout_web', 'production.ini'))
+        settings = os.path.join('data', 'ptmscout', 'ptmscout_web', 'production.ini')
         
         DatabaseInitialization.setUpClass(settings)
         dbinit = DatabaseInitialization()
