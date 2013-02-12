@@ -8,7 +8,7 @@ from DB_init import DatabaseInitialization
 from obo_parser import GeneOntologyFile
 
 if __name__ == '__main__':
-    settings = os.path.join('data', 'ptmscout', 'ptmscout_web', 'development.ini')
+    settings = os.path.join(os.sep, 'data', 'ptmscout', 'ptmscout_web', 'development.ini')
     DatabaseInitialization.setUpClass(settings)
     dbinit = DatabaseInitialization()
 

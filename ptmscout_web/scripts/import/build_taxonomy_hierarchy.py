@@ -15,7 +15,7 @@ def parse_taxon_def(line):
 
 if __name__=='__main__':
     try:
-        settings = os.path.join('data', 'ptmscout', 'ptmscout_web', 'production.ini')
+        settings = os.path.join(os.sep, 'data', 'ptmscout', 'ptmscout_web', 'production.ini')
         
         DatabaseInitialization.setUpClass(settings)
         dbinit = DatabaseInitialization()

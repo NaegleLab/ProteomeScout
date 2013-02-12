@@ -15,9 +15,9 @@ if __name__ == "__main__":
     database = sys.argv[1]
 
     if database == 'test':
-        dbconfig = os.path.join('data', 'ptmscout', 'ptmscout_web', 'test.ini')
+        dbconfig = os.path.join(os.sep, 'data', 'ptmscout', 'ptmscout_web', 'test.ini')
     elif database == 'production':
-        dbconfig = os.path.join('data', 'ptmscout', 'ptmscout_web', 'production.ini')
+        dbconfig = os.path.join(os.sep, 'data', 'ptmscout', 'ptmscout_web', 'production.ini')
 
 
     try:

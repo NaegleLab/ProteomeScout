@@ -33,7 +33,7 @@ BATCH_SIZE = 500
 FLUSH_FREQ = 1000
 if __name__ == "__main__":
     try:
-        dbconfig = os.path.join('data', 'ptmscout', 'ptmscout_web', 'production.ini')
+        dbconfig = os.path.join(os.sep, 'data', 'ptmscout', 'ptmscout_web', 'production.ini')
         
         DatabaseInitialization.setUpClass(dbconfig)
         dbinit = DatabaseInitialization()

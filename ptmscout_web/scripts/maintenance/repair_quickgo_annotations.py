@@ -85,7 +85,7 @@ def get_all_terms():
 
 if __name__ == "__main__":
     try:
-        settings = os.path.join('data', 'ptmscout', 'ptmscout_web', 'production.ini')
+        settings = os.path.join(os.sep, 'data', 'ptmscout', 'ptmscout_web', 'production.ini')
 
         if len(sys.argv) > 1 and sys.argv[1] == '--force':
             os.remove('repair_go.entries')

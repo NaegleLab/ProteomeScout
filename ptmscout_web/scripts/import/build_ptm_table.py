@@ -149,7 +149,7 @@ if __name__ == "__main__":
         amino_codes = json.loads(aminofile.read())
         
     try:
-        settings = os.path.join('data', 'ptmscout', 'ptmscout_web', 'development.ini')
+        settings = os.path.join(os.sep, 'data', 'ptmscout', 'ptmscout_web', 'development.ini')
         
         DatabaseInitialization.setUpClass(settings)
         dbinit = DatabaseInitialization()

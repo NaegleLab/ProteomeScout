@@ -11,7 +11,7 @@ SESSION_EXPIRATION_TIME = 86400
 
 if __name__ == "__main__":
     try:
-        config_options = os.path.join('data', 'ptmscout', 'ptmscout_web', 'production.ini')
+        config_options = os.path.join(os.sep, 'data', 'ptmscout', 'ptmscout_web', 'production.ini')
         DatabaseInitialization.setUpClass(config_options)
         dbinit = DatabaseInitialization()
         dbinit.setUp()
