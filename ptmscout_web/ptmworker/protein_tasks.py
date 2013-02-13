@@ -38,27 +38,25 @@ def log_errors(query_errors, exp_id, accessions, line_mappings):
             experiment.createExperimentError(exp_id, line, accession, peptide, strings.experiment_upload_warning_accession_not_found % (accession))
 
 
-def load_new_protein(accession, protein_information):
-    name, gene, taxonomy, species, host_organism, prot_accessions, domains, mutations, seq = protein_information
-
+def load_new_protein(accession, protein_record):
     created = False
-    prot = protein.getProteinBySequence(seq, species)
+    prot = protein.getProteinBySequence(protein_record.sequence, protein_record.species)
     if prot == None:
-        prot = upload_helpers.create_new_protein(name, gene, seq, species)
+        prot = upload_helpers.create_new_protein(protein_record.name, protein_record.gene, protein_record.sequence, protein_record.species)
         created = True
 
     # load additional protein accessions if available
 
     other_accessions = picr_tools.get_picr(accession, prot.species.taxon_id)
-    added_accessions = upload_helpers.create_accession_for_protein(prot, prot_accessions + other_accessions)
+    added_accessions = upload_helpers.create_accession_for_protein(prot, protein_record.other_accessions + other_accessions)
 
     upload_helpers.map_expression_probesets(prot)
 
     if created:
-        pfam_tools.parse_or_query_domains(prot, domains, accession)
+        pfam_tools.parse_or_query_domains(prot, protein_record.domains, accession)
         upload_helpers.find_activation_loops(prot)
 
-    for m in mutations:
+    for m in protein_record.mutations:
         if not prot.hasMutation(m):
             prot.mutations.append(m)
 
@@ -115,8 +113,8 @@ def query_protein_metadata(external_db_result, accessions, exp_id, line_mapping)
     #list the missing proteins
     missing_proteins = set()
     for acc in external_db_result:
-        _n, _g, _t, species, _h, _a, _d, _m, seq = external_db_result[acc]
-        if protein.getProteinBySequence(seq, species) == None:
+        pr = external_db_result[acc]
+        if protein.getProteinBySequence(pr.sequence, pr.species) == None:
             missing_proteins.add(acc)
 
     upload_helpers.store_stage_input(exp_id, 'proteins', external_db_result)

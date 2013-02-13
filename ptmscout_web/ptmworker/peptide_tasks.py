@@ -36,19 +36,18 @@ def create_errors_for_runs(exp_id, protein_accession, pep_seq, msg, runs):
         experiment.createExperimentError(exp_id, line, protein_accession, pep_seq, msg)
 
 
-def load_protein(accession, protein_information):
-    _a, _b, taxonomy, species, host_organism, _c, _d, _m, seq = protein_information
-    prot = protein.getProteinBySequence(seq, species)
+def load_protein(accession, protein_record):
+    prot = protein.getProteinBySequence(protein_record.sequence, protein_record.species)
 
-    if host_organism:
-        taxonomy += upload_helpers.get_taxonomic_lineage(host_organism)
+    if protein_record.host_organism:
+        taxonomy += upload_helpers.get_taxonomic_lineage(protein_record.host_organism)
     
-    return prot.id, prot.sequence, species, taxonomy
+    return prot.id, prot.sequence, protein_record.species, protein_record.taxonomy
 
 
-def load_peptide_modification(exp_id, load_ambiguities, protein_accession, protein_info, pep_seq, mods, units, series_header, runs):
+def load_peptide_modification(exp_id, load_ambiguities, protein_accession, protein_record, pep_seq, mods, units, series_header, runs):
     try:
-        protein_id, protein_sequence, species, taxonomy = load_protein(protein_accession, protein_info)
+        protein_id, protein_sequence, species, taxonomy = load_protein(protein_accession, protein_record)
         mod_types, aligned_sequences = upload_helpers.parse_modifications(protein_sequence, pep_seq, mods, taxonomy)
 
         filter_mods = []
