@@ -44,7 +44,7 @@ class PTM(Base):
         return reduce(bool.__or__, [ c.isParent(node) for c in self.children ], False)
 
     def getTargets(self):
-        return reduce(set.__or__, [c.getTargets() for c in self.children], set([self.target.upper()]) )
+        return reduce(set.__or__, [c.getTargets() for c in self.children], set([self.target]) )
 
     def hasTarget(self, residue):
         targets = self.getTargets()

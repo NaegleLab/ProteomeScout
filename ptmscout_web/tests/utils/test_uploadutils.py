@@ -33,7 +33,7 @@ class TestUploadUtilsWithTestDB(IntegrationTestCase):
         try:
             check_modification_type_matches_peptide(1, 'ARALMDKyHVDNDLK', 'PHOSPHORYLATION', viral_taxon)
         except ParseError, p:
-            self.assertEqual(strings.experiment_upload_warning_modifications_do_not_match_species % ('PHOSPHORYLATION', 'Y'), p.msg)
+            self.assertEqual(strings.experiment_upload_warning_modifications_do_not_match_species % ('PHOSPHORYLATION', 'Y', viral_taxon[-1]), p.msg)
         else:
             self.fail("Expected parser error")
 
@@ -48,12 +48,12 @@ class TestUploadUtilsWithTestDB(IntegrationTestCase):
         self.assertEqual([15], mod_indices)
         self.assertEqual(['Nitrated tyrosine'], [m.name for m in mod_objects])
 
-        taxon_nodes = ['prokaryota']
+        taxon_nodes = ['prokaryota', 'plasmodium falciparum']
 
         try:
             mod_indices, mod_objects = check_modification_type_matches_peptide(1, peptide, mod_type, taxon_nodes)
         except ParseError, e:
-            self.assertEqual(strings.experiment_upload_warning_modifications_do_not_match_species % (mod_type, 'Y'), e.msg)
+            self.assertEqual(strings.experiment_upload_warning_modifications_do_not_match_species % (mod_type, 'Y', taxon_nodes[-1]), e.msg)
         else:
             self.fail("Expected parse exception")
 
@@ -187,18 +187,19 @@ class TestUploadUtils(unittest.TestCase):
         ptm1 = createMockPTM(name="Methylation", keywords=["METH"])
         
         mods = [ptm1]
+        taxons = ['eukaryota', 'hominidae', 'homo sapiens']
         patch_findPTM.return_value = mods, True, True
         
         try:
-            check_modification_type_matches_peptide(1, "DFERTGDYDFqERAS", "METH")
+            check_modification_type_matches_peptide(1, "DFERTGDYDFqERAS", "METH", taxons)
         except ParseError, pe:
             self.assertEqual(1, pe.row)
-            self.assertEqual(strings.experiment_upload_warning_modifications_do_not_match_species % ('METH', 'Q'), pe.msg)
+            self.assertEqual(strings.experiment_upload_warning_modifications_do_not_match_species % ('METH', 'Q', 'homo sapiens'), pe.msg)
             #self.assertEqual("Unexpected Error: PTM type '%s' had no residue specific matches for residue 'Q'."% ('METH'), pe.msg)
         else:
             self.fail("Expected exception ParseError")
         
-        patch_findPTM.assert_any_call("METH", "Q", None) 
+        patch_findPTM.assert_any_call("METH", "Q", taxons)
 
     
     @patch('ptmscout.database.modifications.findMatchingPTM')

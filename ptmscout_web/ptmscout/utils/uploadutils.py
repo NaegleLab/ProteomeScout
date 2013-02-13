@@ -106,7 +106,7 @@ def check_modification_type_matches_peptide(row, peptide, modification, taxon_no
             msg = ""
             if not found_type: msg = strings.experiment_upload_warning_modifications_not_valid % (mod_type)
             elif not match_residue: msg = strings.experiment_upload_warning_modifications_do_not_match_amino_acids % (mod_type, residue)
-            else: msg = strings.experiment_upload_warning_modifications_do_not_match_species % (mod_type, residue)
+            else: msg = strings.experiment_upload_warning_modifications_do_not_match_species % (mod_type, residue, taxon_nodes[-1])
 
             raise ParseError(row, None, msg)
         
@@ -114,7 +114,7 @@ def check_modification_type_matches_peptide(row, peptide, modification, taxon_no
         parents = [ mod for mod in mods if mod.target == None ]
 
         if len(matches) == 0:
-            raise ParseError(row, None, strings.experiment_upload_warning_modifications_do_not_match_species % (mod_type, residue))
+            raise ParseError(row, None, strings.experiment_upload_warning_modifications_do_not_match_species % (mod_type, residue, taxon_nodes[-1]))
             # "Unexpected Error: PTM type '%s' had no residue specific matches for residue '%s'." % (mod_type, residue)
 
         selected_mod = matches[0]
