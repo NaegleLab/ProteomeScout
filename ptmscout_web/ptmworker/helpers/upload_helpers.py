@@ -13,6 +13,61 @@ import traceback
 
 log = logging.getLogger('ptmscout')
 
+class ProteinRecord(object):
+    def __init__(self, name, gene, locus, taxonomy, species, taxon_id, query_accession, other_accessions, domains, mutations, sequence):
+        self.name = name
+        self.gene = gene
+        self.locus = locus
+
+        self.species = species
+        self.taxonomy = taxonomy
+        self.taxon_id = taxon_id
+
+        self.query_accession = query_accession
+        self.other_accessions = other_accessions
+        self.domains = domains
+        self.mutations = mutations
+        self.sequence = sequence
+
+        self.host_organism = None
+        self.host_taxon_id = None
+        self.host_taxonomy = []
+
+    def has_domains(self):
+        return len(self.domains) > 0
+
+    def set_host_organism(self, host_species, taxon_id=None):
+        self.host_organism = host_species
+        self.host_taxon_id = taxon_id
+
+    def set_host_organism_taxonomy(self, taxons):
+        self.host_taxonomy = taxons
+
+    def full_taxonomy(self):
+        return self.taxonomy + self.host_taxonomy
+
+    def parse_species(self):
+        m = re.match(r"^(.*) \(((?:strain|isolate) .*)\)$", self.species)
+
+        if m:
+            species_root = m.group(1)
+            strain = m.group(2)
+            return species_root, strain
+
+        return species, None
+
+    def copy(self):
+        pr = ProteinRecord(self.name, self.gene, self.locus, self.species,
+                self.taxon_id, self.query_accession, self.other_accessions[:],
+                self.domains[:], self.mutations[:], self.sequence)
+
+        pr.host_organism = self.host_organism
+        pr.host_taxon_id = self.host_taxon_id
+        pr.host_taxonomy = self.host_taxonomy
+
+        return pr
+
+
 def handle_errors(exp_id_arg):
     def decorate(fn):
         def ttask(*args):

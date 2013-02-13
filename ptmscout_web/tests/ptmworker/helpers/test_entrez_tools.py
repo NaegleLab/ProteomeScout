@@ -7,11 +7,6 @@ from geeneus import Proteome
 
 class EntrezQueryTestCase(IntegrationTestCase):
 
-    def test_get_viral_protein(self):
-        result = entrez_tools.get_proteins_from_ncbi(['118734'])
-
-        name, gene, taxonomy, species, host_organism, accessions, domains, mutations, seq = result[0]['118734']
-
     def test_get_pubmed_record_22373819(self):
         record = entrez_tools.get_pubmed_record_by_id(22373819)
 
@@ -26,19 +21,27 @@ class EntrezQueryTestCase(IntegrationTestCase):
         self.assertEqual('296-302', record['PG'])
         self.assertEqual('2002 Sep', record['DP'])
 
+    def test_get_viral_protein(self):
+        result = entrez_tools.get_proteins_from_ncbi(['118734'])
+
+        pr = result[0]['118734']
+
+        self.assertEqual('Early E2A DNA-binding protein', pr.name)
+
+
     def test_get_record_with_pipe_format_accessions(self):
         pm = Proteome.ProteinManager(settings.adminEmail, uniprotShortcut=False)
-        _n, _g, _t, _s, _h, prot_accessions, _d, _m, _q = entrez_tools.get_protein_information(pm, 'CAI16470.1')
-        self.assertEqual(3, len(prot_accessions))
-        self.assertEqual(set([('gi', 'gi|55958964'), ('embl', 'CAI16470'), ('embl', 'CAI16470.1')]), set(prot_accessions))
+        pr = entrez_tools.get_protein_information(pm, 'CAI16470.1')
+        self.assertEqual(3, len(pr.other_accessions))
+        self.assertEqual(set([('gi', 'gi|55958964'), ('embl', 'CAI16470'), ('embl', 'CAI16470.1')]), set(pr.other_accessions))
 
-        _n, _g, _t, _s, _h, prot_accessions, _d, _m, _q = entrez_tools.get_protein_information(pm, 'O75643')
-        self.assertEqual(4, len(prot_accessions))
-        self.assertEqual(set([('swissprot', 'O75643.2'), ('swissprot', 'U520_HUMAN'), ('gi', 'gi|56405304'), ('swissprot', 'O75643')]), set(prot_accessions))
+        pr = entrez_tools.get_protein_information(pm, 'O75643')
+        self.assertEqual(4, len(pr.other_accessions))
+        self.assertEqual(set([('swissprot', 'O75643.2'), ('swissprot', 'U520_HUMAN'), ('gi', 'gi|56405304'), ('swissprot', 'O75643')]), set(pr.other_accessions))
 
-        _n, _g, _t, _s, _h, prot_accessions, _d, _m, _q = entrez_tools.get_protein_information(pm, 'CAA94089')
-        self.assertEqual(3, len(prot_accessions))
-        self.assertEqual(set([('embl', 'CAA94089'), ('gi', 'gi|3255965'), ('embl', 'CAA94089.1')]), set(prot_accessions))
+        pr = entrez_tools.get_protein_information(pm, 'CAA94089')
+        self.assertEqual(3, len(pr.other_accessions))
+        self.assertEqual(set([('embl', 'CAA94089'), ('gi', 'gi|3255965'), ('embl', 'CAA94089.1')]), set(pr.other_accessions))
 
     def test_get_alignment_scores(self):
         seq1 = "MASWESRKLLLLLWKNFTLKRRKFGTLVSEIVLVLLLSIVLLTTRHLLSIKKIEALYFPDQPISTVPSFFR"
@@ -109,28 +112,29 @@ class EntrezQueryTestCase(IntegrationTestCase):
     def test_get_protein_information(self):
         pm = Proteome.ProteinManager(settings.adminEmail, uniprotShortcut=False)
         
-        name, gene, taxonomy, species, _host_organism, _accessions, domains, mutations, seq = entrez_tools.get_protein_information(pm, 'A6NC57')
+        pr = entrez_tools.get_protein_information(pm, 'A6NC57')
         
-        self.assertEqual('Ankyrin repeat domain-containing protein 62', name) 
-        self.assertEqual(None, gene)
+        self.assertEqual('Ankyrin repeat domain-containing protein 62', pr.name)
+        self.assertEqual('ANKRD62', pr.gene)
+        self.assertEqual('ANR62_HUMAN', pr.locus)
        
         taxons = [u'Eukaryota', u'Metazoa', u'Chordata', u'Craniata',
                 u'Vertebrata', u'Euteleostomi', u'Mammalia', u'Eutheria',
                 u'Euarchontoglires', u'Primates', u'Haplorrhini',
                 u'Catarrhini', u'Hominidae', u'Homo', u'Homo sapiens']
 
-        self.assertEqual('Homo sapiens', species)
-        self.assertEqual([t.lower() for t in taxons], taxonomy)
-        self.assertEqual('MEVRGSFLAACRRRMATWRKNRDKDGFSNPGYRVRQKDLGMIHKAAIAGDVNKVMESILLRLNDLNDRDKKNRTALLLACAHGRPGVVADLVARKCQLNLTDSENRTALIKAVQCQEEVCASILLEHGANPNVRDMYGNTALHYAIDNENISMARKLLAYGADIEARSQDGHTSLLLAVNRKKEQMVAFLLKKKPDLTAIDNFGRTALILAARNGSTSVVYQLLQHNIDVFCQDISGWTAEDYAVASKFQAIRGMISEYKANKRCKSLQNSNSEQDLEMTSEGEQERLEGCESSQPQVEEKMKKCRNKKMEVSRNVHADDSDNYNDDVDELIHKIKNRKPDNHQSPGKENGEFDRLARKTSNEKSKVKSQIYFTDDLNDISGSSEKTSEDDELPYSDDENFMLLIEQSGMECKDFVSLSKSKNATAACGRSIEDQKCYCERLKVKFQKMKNNISVLQKVLSETDKTKSQSEHQNLQGKKKLCNLRFILQQQEEERIKAEELYEKDIEELKIMEEQYRTQTEVKKQSKLTLKSLEVELKTVRSNSNQNFHTHERERDLWQENHLMRDEIARLRLEIDTIKHQNQETENKYFKDIEIIKENNEDLEKTLKRNEEALTKTITRYSKELNVLMDENTMLNSELQKEKQSMSRLETEMESYRCRLAAALCDHDQRQSSKRDLQLAFQSTVNEWCHLQEDTNSHIQILSQQLSKAESTSSGLETELHYEREALKEKTLHIEHMQGVLSRTQRRLEDIEHMYQNDQPILEKYVRKQQSVEDGLFQLQSQNLLYQQQCNDARKKADNQEKTIINIQVKCEDTVEKLQAECRKLEENNKGLMKECTLLKERQCQYEKEKEEREVVRRQLQREVDDALNKQLLLEAMLEISSERRINLEDEAQSLKKKLGQMRSQVCMKLSMSTVTL', seq) 
+        self.assertEqual('Homo sapiens', pr.species)
+        self.assertEqual([t.lower() for t in taxons], pr.taxonomy)
+        self.assertEqual('MEVRGSFLAACRRRMATWRKNRDKDGFSNPGYRVRQKDLGMIHKAAIAGDVNKVMESILLRLNDLNDRDKKNRTALLLACAHGRPGVVADLVARKCQLNLTDSENRTALIKAVQCQEEVCASILLEHGANPNVRDMYGNTALHYAIDNENISMARKLLAYGADIEARSQDGHTSLLLAVNRKKEQMVAFLLKKKPDLTAIDNFGRTALILAARNGSTSVVYQLLQHNIDVFCQDISGWTAEDYAVASKFQAIRGMISEYKANKRCKSLQNSNSEQDLEMTSEGEQERLEGCESSQPQVEEKMKKCRNKKMEVSRNVHADDSDNYNDDVDELIHKIKNRKPDNHQSPGKENGEFDRLARKTSNEKSKVKSQIYFTDDLNDISGSSEKTSEDDELPYSDDENFMLLIEQSGMECKDFVSLSKSKNATAACGRSIEDQKCYCERLKVKFQKMKNNISVLQKVLSETDKTKSQSEHQNLQGKKKLCNLRFILQQQEEERIKAEELYEKDIEELKIMEEQYRTQTEVKKQSKLTLKSLEVELKTVRSNSNQNFHTHERERDLWQENHLMRDEIARLRLEIDTIKHQNQETENKYFKDIEIIKENNEDLEKTLKRNEEALTKTITRYSKELNVLMDENTMLNSELQKEKQSMSRLETEMESYRCRLAAALCDHDQRQSSKRDLQLAFQSTVNEWCHLQEDTNSHIQILSQQLSKAESTSSGLETELHYEREALKEKTLHIEHMQGVLSRTQRRLEDIEHMYQNDQPILEKYVRKQQSVEDGLFQLQSQNLLYQQQCNDARKKADNQEKTIINIQVKCEDTVEKLQAECRKLEENNKGLMKECTLLKERQCQYEKEKEEREVVRRQLQREVDDALNKQLLLEAMLEISSERRINLEDEAQSLKKKLGQMRSQVCMKLSMSTVTL', pr.sequence) 
         
         parsed_domains = set([])
-        for d in domains:
+        for d in pr.domains:
             parsed_domains.add( (d.label, d.start, d.stop) )
        
-        self.assertEqual(4, len(mutations))
+        self.assertEqual(4, len(pr.mutations))
 
         m_test_list = set()
-        for m in mutations:
+        for m in pr.mutations:
             self.assertEqual('Substitution (single)', m.mutationType)
             self.assertEqual('A6NC57', m.acc_id)
             m_test_list.add(( m.location, m.original, m.mutant ))

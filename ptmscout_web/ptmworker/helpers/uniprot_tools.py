@@ -154,8 +154,11 @@ def parse_xml(xml):
     if 'gene_name_primary' in xml.annotations:
         gene = xml.annotations['gene_name_primary']
 
+    locus = xml.name
     taxons = [ t.lower() for t in xml.annotations['taxonomy'] ]
     species = get_scientific_name(xml.annotations['organism'])
+    taxon_id = None
+
     taxons.append(species.lower())
 
     other_accessions = [('swissprot', xml.id), ('swissprot', xml.name)]
@@ -163,16 +166,28 @@ def parse_xml(xml):
         for gene_name in xml.annotations['gene_name_synonym']:
             other_accessions.append(('gene_synonym', gene_name))
 
+    if 'accessions' in xml.annotations:
+        for acc in xml.annotations['accessions']:
+            rec = ('swissprot', acc)
+            if rec not in other_accessions:
+                other_accessions.append(rec)
+
     domains = []
     seq = str(xml.seq).strip().upper()
 
     mutations = upload_helpers.parse_variants( xml.id, seq, read_variants(xml.features) )
 
     host_organism = None
+    host_organism_taxon_id = None
     if 'organism_host' in xml.annotations:
         host_organism = xml.annotations['organism_host'][0].strip()
 
-    return xml.id, (name, gene, taxons, species, host_organism, other_accessions, domains, mutations, seq)
+    pr = upload_helpers.ProteinRecord(name, gene, locus, taxons, species,
+            None, xml.id, other_accessions, domains, mutations, seq)
+
+    pr.set_host_organism(host_organism, host_organism_taxon_id)
+
+    return xml.id, pr
 
 
 def handle_result(result):
@@ -210,11 +225,18 @@ def map_isoform_results(result_map, isoform_map):
         identified_isoforms = isoforms_by_root.get(root_acc, set())
         isoforms_by_root[root_acc] = identified_isoforms | set([iso_number])
 
-        name, gene, taxons, species, host_organism,  _o, _d, _m, _s = result_map[root_acc]
+        pr = result_map[root_acc]
       
-        isoform_fullname = "%s (%s)" % (name, isoform_name)
+        isoform_fullname = "%s (%s)" % (pr.name, isoform_name)
         isoform_accs = [('swissprot', iso_acc)]
-        result_map[iso_acc] = (isoform_fullname, gene, taxons, species, host_organism, isoform_accs, [], [], iso_seq.strip())
+
+        isoform_pr = upload_helpers.ProteinRecord(isoform_fullname, pr.gene,
+                pr.locus, pr.taxonomy, pr.species, pr.taxon_id, iso_acc, isoform_accs, [], [], iso_seq.strip())
+        isoform_pr.host_organism = pr.host_organism
+        isoform_pr.host_taxon_id = pr.host_taxon_id
+        isoform_pr.host_taxonomy = pr.host_taxonomy
+
+        result_map[iso_acc] = isoform_pr
 
     for root in isoforms_by_root:
         isos = isoforms_by_root[root]
@@ -226,11 +248,11 @@ def map_isoform_results(result_map, isoform_map):
 
             new_isoform = "%s-%d" % (root, canonical_isoform)
 
-            isoform_fullname, gene, taxons, species, host_organism, isoform_accs, domains, mutations, iso_seq = result_map[root]
+            isoform_pr = result_map[root]
             isoform_accs.append(('swissprot', new_isoform))
-            
-            result_map[root] = isoform_fullname, gene, taxons, species, host_organism, isoform_accs, domains, mutations, iso_seq
-            result_map[new_isoform] = isoform_fullname, gene, taxons, species, host_organism, isoform_accs, domains, mutations, iso_seq
+
+            result_map[root] = isoform_pr
+            result_map[new_isoform] = isoform_pr
 
 def map_combine(r1, r2):
     return dict(r1.items() + r2.items())
@@ -268,7 +290,7 @@ def get_uniprot_records(accs):
                     r2 = get_uniprot_records(accs[bisect:])
 
                     return map_combine(r1, r2)
-        except:
+        except Exception, e:
             i+=1
             log.info("Uniprot query failed (retry %d / %d)", i, MAX_RETRIES)
 

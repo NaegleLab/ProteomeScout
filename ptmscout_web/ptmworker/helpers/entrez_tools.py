@@ -142,12 +142,15 @@ def get_protein_information(pm, acc):
     species = pm.get_species(acc).strip()
     taxonomy.append(species.lower())
 
-    prot_accessions = pm.get_other_accessions(acc)
+    locus = None
+    rxml = pm.get_raw_xml(acc)
+    if 'GBSeq_locus' in rxml:
+        locus = rxml['GBSeq_locus']
 
+    prot_accessions = pm.get_other_accessions(acc)
     prot_accessions = filter_update_other_accessions(prot_accessions)
 
     prot_domains = parse_pfam_domains(pm.get_domains(acc))
-
     prot_mutations = upload_helpers.parse_variants(acc, seq, pm.get_variants(acc))
 
     host_organism = None
@@ -156,7 +159,11 @@ def get_protein_information(pm, acc):
     except:
         pass
 
-    return name, gene, taxonomy, species, host_organism, prot_accessions, prot_domains, prot_mutations, seq
+    pr = upload_helpers.ProteinRecord(name, gene, locus, taxonomy, species,
+            None, acc, prot_accessions, prot_domains, prot_mutations, seq)
+    pr.set_host_organism(host_organism)
+
+    return pr
 
 def get_alignment_scores(seq1, seq2):
     matrix = MatrixInfo.blosum62
