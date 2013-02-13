@@ -42,7 +42,7 @@ def load_new_protein(accession, protein_record):
     created = False
     prot = protein.getProteinBySequence(protein_record.sequence, protein_record.species)
     if prot == None:
-        prot = upload_helpers.create_new_protein(protein_record.name, protein_record.gene, protein_record.sequence, protein_record.species)
+        prot = upload_helpers.create_new_protein(protein_record.name, protein_record.gene, protein_record.locus, protein_record.sequence, protein_record.species)
         created = True
 
     # load the host organism taxonomy

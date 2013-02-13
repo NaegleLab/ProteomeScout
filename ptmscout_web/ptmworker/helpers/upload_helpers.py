@@ -258,9 +258,10 @@ def map_expression_probesets(prot):
     log.info("Loaded %d probesets for protein %s | %s", len(probesets), prot.accessions[0].value, str(prot.acc_gene))
 
 
-def create_new_protein(name, gene, seq, species):
+def create_new_protein(name, gene, locus, seq, species):
     prot = protein.Protein()
     prot.acc_gene = gene
+    prot.locus = locus
     prot.name = name
     prot.sequence = seq
     prot.species = find_or_create_species(species)

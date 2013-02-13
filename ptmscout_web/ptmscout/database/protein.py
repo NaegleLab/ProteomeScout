@@ -119,6 +119,7 @@ class Protein(Base):
     id = Column(Integer(10), primary_key=True, autoincrement=True)
     sequence = Column(TEXT)
     acc_gene = Column(VARCHAR(30))
+    locus = Column(VARCHAR(30))
     name = Column(VARCHAR(100))
     date = Column(DateTime)
     species_id = Column(Integer(10), ForeignKey('species.id'))
