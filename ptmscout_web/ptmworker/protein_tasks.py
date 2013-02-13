@@ -45,6 +45,11 @@ def load_new_protein(accession, protein_record):
         prot = upload_helpers.create_new_protein(protein_record.name, protein_record.gene, protein_record.sequence, protein_record.species)
         created = True
 
+    # load the host organism taxonomy
+
+    if protein_record.host_organism:
+        protein_record.set_host_organism_taxonomy( upload_helpers.get_taxonomic_lineage(protein_record.host_organism) )
+
     # load additional protein accessions if available
 
     other_accessions = picr_tools.get_picr(accession, prot.species.taxon_id)

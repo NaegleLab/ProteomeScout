@@ -43,8 +43,10 @@ class ProteinRecord(object):
     def set_host_organism_taxonomy(self, taxons):
         self.host_taxonomy = taxons
 
-    def full_taxonomy(self):
+    def __full_taxonomy(self):
         return self.taxonomy + self.host_taxonomy
+
+    full_taxonomy = property(__full_taxonomy)
 
     def parse_species(self):
         m = re.match(r"^(.*) \(((?:strain|isolate) .*)\)$", self.species)

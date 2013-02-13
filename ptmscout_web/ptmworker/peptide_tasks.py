@@ -35,15 +35,9 @@ def create_errors_for_runs(exp_id, protein_accession, pep_seq, msg, runs):
     for line, _rn, _s in runs:
         experiment.createExperimentError(exp_id, line, protein_accession, pep_seq, msg)
 
-
 def load_protein(accession, protein_record):
     prot = protein.getProteinBySequence(protein_record.sequence, protein_record.species)
-
-    if protein_record.host_organism:
-        taxonomy += upload_helpers.get_taxonomic_lineage(protein_record.host_organism)
-    
-    return prot.id, prot.sequence, protein_record.species, protein_record.taxonomy
-
+    return prot.id, prot.sequence, protein_record.species, protein_record.full_taxonomy
 
 def load_peptide_modification(exp_id, load_ambiguities, protein_accession, protein_record, pep_seq, mods, units, series_header, runs):
     try:
