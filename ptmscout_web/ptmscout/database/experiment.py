@@ -4,7 +4,7 @@ from ptmscout.config import settings as config
 from ptmscout.database.permissions import Permission
 from sqlalchemy.schema import ForeignKey
 from sqlalchemy.types import Float, Enum, DateTime
-from sqlalchemy.sql.expression import null
+from sqlalchemy.sql.expression import null, or_, and_
 import datetime
 from sqlalchemy.orm import relationship, deferred
 import logging
@@ -361,4 +361,31 @@ def getExperimentProgress(exp_id):
     if entry == None:
         return 0, 0
     return entry.value, entry.max_value
+
+
+def searchExperiments(text_search=None, conditions={}, user=None, page=None):
+    q = DBSession.query(Experiment.id).outerjoin(Experiment.conditions).outerjoin(Experiment.permissions)
+
+    filter_clauses = Experiment.public == 1
+    if user:
+        filter_clauses = or_( filter_clauses, Permission.user_id==user.id )
+
+    if text_search:
+        text_search = '%' + str(text_search) + '%'
+        filter_clauses = and_(filter_clauses, or_( Experiment.name.like(text_search), Experiment.description.like(text_search) ) )
+
+    for cond_type in conditions:
+        for cond_value in conditions[cond_type]:
+            filter_clauses = and_( filter_clauses, and_( ExperimentCondition.type==cond_type, ExperimentCondition.value==cond_value ) )
+
+    q = q.filter( filter_clauses ).distinct().order_by( Experiment.name )
+
+    if page==None:
+        sq = q.subquery()
+    else:
+        limit, offset = page
+        sq = q.limit(limit).offset(offset).subquery()
+
+    fq = DBSession.query(Experiment).join(sq, Experiment.id == sq.c.id)
+    return q.count(), fq.all()
 

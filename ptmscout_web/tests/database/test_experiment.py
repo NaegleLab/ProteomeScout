@@ -1,11 +1,26 @@
 from tests.DBTestCase import DBTestCase
 import ptmscout.database.experiment as dbexperiment
 from ptmscout.database.experiment import NoSuchExperiment, Experiment,\
-    getExperimentTree, ExperimentAccessForbidden, ExperimentNotAvailable
+    getExperimentTree, ExperimentAccessForbidden, ExperimentNotAvailable,\
+    searchExperiments
 from mock import patch
 from ptmscout.database import user, permissions
 
 class ExperimentTestCase(DBTestCase):
+
+    def test_experiment_searchExperiments_by_condition(self):
+        cnt, experiments = searchExperiments(conditions={'drug':['dasatinib']})
+        
+        self.assertEqual(1, cnt)
+        self.assertEqual(1, len(experiments))
+        self.assertEqual('Effects of HER2 overexpression on cell signaling networks governing proliferation and migration.', experiments[0].name)
+
+    def test_experiment_searchExperiments_by_name(self):
+        cnt, experiments = searchExperiments(text_search='EGFR')
+
+        self.assertEqual(1, cnt)
+        self.assertEqual(1, len(experiments))
+        self.assertEqual('Quantitative analysis of EGFRvIII cellular signaling networks reveals a combinatorial therapeutic strategy for glioblastoma.', experiments[0].name)
 
     def format_multiline(self, string):
         return string.replace("    ","").replace("\n"," ")
