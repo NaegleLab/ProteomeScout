@@ -11,6 +11,20 @@ from ptmscout.database.user import User, getUserById
 
 
 class TestModifications(DBTestCase):
+
+    def test_findPTM_should_get_ptms_with_strain_specific(self):
+        taxonomy = ['Plasmodium falciparum (isolate 3D7)']
+        modname = 'Sulfothreonine'
+        target = 't'
+
+        ptms, found_match, found_match_residue = findMatchingPTM(modname, residue=target, taxons=taxonomy)
+
+        self.assertTrue(found_match)
+        self.assertTrue(found_match_residue)
+        self.assertEqual(1, len(ptms))
+        self.assertEqual(modname, ptms[0].name)
+        self.assertEqual('T', ptms[0].target)
+
     def test_countProteinsForExperiment(self):
         exp_id = 28
         cnt = countProteinsForExperiment(exp_id)

@@ -105,11 +105,11 @@ def get_scientific_name(name):
 
         if parenthetical.find('strain') == 0 or \
                 parenthetical.find('isolate') == 0:
-            return "%s (%s)" % (species, parenthetical)
+            return "%s (%s)" % (species.strip(), parenthetical.strip())
         else:
-            return species
+            return species.strip()
 
-    return name
+    return name.strip()
 
 
 def read_variants(features):
@@ -155,7 +155,7 @@ def parse_xml(xml):
         gene = xml.annotations['gene_name_primary']
 
     taxons = [ t.lower() for t in xml.annotations['taxonomy'] ]
-    species = get_scientific_name(xml.annotations['organism']).strip()
+    species = get_scientific_name(xml.annotations['organism'])
     taxons.append(species.lower())
 
     other_accessions = [('swissprot', xml.id), ('swissprot', xml.name)]

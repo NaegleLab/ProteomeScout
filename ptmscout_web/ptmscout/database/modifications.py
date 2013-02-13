@@ -23,7 +23,7 @@ class PTM(Base):
     position = Column(Enum(['anywhere','c-terminal','n-terminal','core']))
     
     accession = Column(VARCHAR(10))
-    target = Column(VARCHAR(1))
+    target = Column(VARCHAR(0))
     mono_mass_diff = Column(Float)
     avg_mass_diff = Column(Float)
 
@@ -35,7 +35,8 @@ class PTM(Base):
 
     def hasTaxon(self, search_taxons):
         search_taxons = set([t.lower() for t in search_taxons])
-        return len(set([t.name.lower() for t in self.taxons]) & search_taxons) > 0
+        my_taxons = set([t.formatted_name.lower() for t in self.taxons])
+        return len(my_taxons & search_taxons) > 0
 
     def isParent(self, node):
         A = reduce(bool.__or__, [ c.id == node.id for c in self.children ], False)
@@ -43,11 +44,11 @@ class PTM(Base):
         return reduce(bool.__or__, [ c.isParent(node) for c in self.children ], False)
 
     def getTargets(self):
-        return reduce(set.__or__, [c.getTargets() for c in self.children], set([self.target]) )
+        return reduce(set.__or__, [c.getTargets() for c in self.children], set([self.target.upper()]) )
 
     def hasTarget(self, residue):
         targets = self.getTargets()
-        return residue in targets
+        return residue.upper() in targets
     
     def hasKeyword(self, key):
         k = key.lower()

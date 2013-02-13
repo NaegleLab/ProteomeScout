@@ -13,6 +13,13 @@ class Taxonomy(Base):
     parent_id = Column(Integer(10), ForeignKey('taxonomy.node_id'))
 
     parent = relationship('Taxonomy', remote_side=[node_id])
+
+    def __format_name(self):
+        if self.strain:
+            return "%s (%s)" % (self.name.strip(), self.strain.strip())
+        return self.name.strip()
+
+    formatted_name = property(__format_name)
     
 class Species(Base):
     __tablename__='species'
