@@ -10,4 +10,5 @@ def experiment_comparison_view(request):
     exp = experiment.getExperimentById(eid, user=request.user)
 
     return {'pageTitle': strings.experiment_compare_page_title,
-            'experiment': exp}
+            'experiment': exp,
+            'results': []}

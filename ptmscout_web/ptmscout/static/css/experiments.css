@@ -219,3 +219,27 @@ table.error_listing th.min {
 table.error_listing th.max {
 	width:100%;
 }
+
+table.experiment_list {
+    border: solid 1px black;
+    border-collapse: collapse;
+    text-align:left;
+}
+
+table.experiment_list .entry {
+    background-color:white;
+    border:none;
+    cursor:pointer;
+}
+
+table.experiment_list .entry:hover {
+    background-color:#33CFDC;
+    border:none;
+}
+
+table.experiment_list .entry text {
+    pointer-events:none;
+}
+table.experiment_list .entry.marked {
+    background-color:#A3A510;
+}
