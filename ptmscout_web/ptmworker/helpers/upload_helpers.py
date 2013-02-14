@@ -13,6 +13,14 @@ import traceback
 
 log = logging.getLogger('ptmscout')
 
+class TaxonError(Exception):
+    def __init__(self, taxon):
+        self.taxon=taxon
+
+    def __repr__(self):
+        return "Unable to locate taxon node: %s" % (self.taxon)
+
+
 class ProteinRecord(object):
     def __init__(self, name, gene, locus, taxonomy, species, taxon_id, query_accession, other_accessions, domains, mutations, sequence):
         self.name = name
@@ -197,14 +205,64 @@ def get_strain_or_isolate(species):
 
     return species, None
 
+
+def insert_taxonomic_lineage(species, strain):
+    from ptmworker.helpers import entrez_tools
+
+    formatted_species = species
+    if strain:
+        formatted_species = "%s (%s)" % (species.strip(), strain.strip())
+
+    taxons = entrez_tools.get_taxonomic_lineage( formatted_species )
+
+    parent_taxon = None
+    insert_taxons = []
+    while parent_taxon == None:
+        tx, txid = taxons.pop()
+        tx_node = taxonomies.getTaxonomyById(txid)
+
+        if tx_node:
+            parent_taxon = tx_node
+        else:
+            insert_taxons.insert(0, (tx, txid))
+
+    for tx, txid in insert_taxons:
+        tx_node = taxonomies.Taxonomy()
+        tx_node.parent_id = parent_taxon.node_id
+        tx_node.parent = parent_taxon
+
+        tx_node.kingdom = parent_taxon.kingdom
+        tx_node.node_id = txid
+
+        if tx == formatted_species:
+            tx_node.name = species
+            tx_node.strain = strain
+        else:
+            tx_node.name = tx
+            tx_node.strain = None
+
+        tx_node.save()
+        parent_taxon = tx_node
+
+    return tx_node
+
+def find_taxon(species, strain):
+    tx = taxonomies.getTaxonByName(species, strain=strain)
+
+    if tx == None:
+        tx = insert_taxonomic_lineage(species, strain)
+
+    return tx
+
 def get_taxonomic_lineage(species):
     species, strain = get_strain_or_isolate(species)
-    taxon = taxonomies.getTaxonByName(species, strain)
 
-    if taxon == None:
-        return []
-    
-    taxonomic_lineage = []
+    try:
+        taxon = find_taxon(species, strain)
+    except TaxonError, te:
+        raise uploadutils.ParseError(None, None, "Species: " + species + " does not match any taxon node")
+
+    taxonomic_lineage = [taxon.formatted_name.lower()]
     while taxon.parent != None:
         taxon = taxon.parent
         taxonomic_lineage.append(taxon.name.lower())
@@ -218,9 +276,10 @@ def find_or_create_species(species):
     
     if(sp == None):
         species_root, strain = get_strain_or_isolate(species)
-        tx = taxonomies.getTaxonByName(species_root, strain=strain)
         
-        if tx == None:
+        try:
+            tx = find_taxon(species_root, strain)
+        except TaxonError, te:
             raise uploadutils.ParseError(None, None, "Species: " + species + " does not match any taxon node")
         
         sp = taxonomies.Species(species)

@@ -10,8 +10,7 @@ from ptmscout.config import settings, strings
 import os
 import pickle
 
-class PTMWorkerUploadHelpersTestCase(IntegrationTestCase):
-
+class UploadHelpersTest(IntegrationTestCase):
 
     def test_find_activation_loop_should_find_loops(self):
         prot = createMockProtein()
@@ -70,6 +69,14 @@ IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
                             ('IKKB_HUMAN', 'O14920-4', ms.id)])
         self.assertEqual(exp_result, set_result)
 
+    def test_get_taxonomic_lineage_with_taxon_not_found(self):
+        exp_lineage = [ 'root node of taxonomy', 'bacteria', 'proteobacteria', 'gammaproteobacteria', 'xanthomonadales', 'xanthomonadaceae',
+             'xanthomonas', 'xanthomonas campestris', 'xanthomonas campestris pv. oryzae' ]
+        taxon_sp = 'Xanthomonas campestris pv. oryzae'
+
+        taxons = upload_helpers.get_taxonomic_lineage(taxon_sp)
+
+        self.assertEqual(exp_lineage, taxons)
 
     def test_get_taxonomic_lineage(self):
         human_lineage = [ \
@@ -96,7 +103,8 @@ IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
             'hominoidea',
             'hominidae',
             'homininae',
-            'homo' ]
+            'homo',
+            'Homo sapiens' ]
 
         lineage = upload_helpers.get_taxonomic_lineage('Homo sapiens')
 
@@ -135,7 +143,6 @@ IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
     @patch('ptmscout.database.taxonomies.getSpeciesByName')
     def test_find_or_create_species_should_raise_error_if_no_taxon(self, patch_getSpecies, patch_getTaxon):
         patch_getSpecies.return_value = None
-        taxon = createMockTaxonomy()
         patch_getTaxon.return_value = None
         
         try:
@@ -144,7 +151,13 @@ IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
             self.assertEqual("Species: some species does not match any taxon node", e.message)
         else:
             self.fail("Expected parseerror")
- 
+
+    def test_find_or_create_species_should_query_NCBI_if_no_taxon_found_in_database(self):
+        sp = upload_helpers.find_or_create_species('Xanthomonas campestris pv. oryzae')
+
+        self.assertEqual(sp.taxon_id, 314227)
+        self.assertEqual(sp.name, 'Xanthomonas campestris pv. oryzae')
+
     @patch('ptmscout.database.taxonomies.getTaxonByName')
     @patch('ptmscout.database.taxonomies.getSpeciesByName')
     def test_find_or_create_species_should_create_species_if_taxon_node_available(self, patch_getSpecies, patch_getTaxon):

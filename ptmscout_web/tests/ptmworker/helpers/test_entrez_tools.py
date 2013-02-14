@@ -7,6 +7,18 @@ from geeneus import Proteome
 
 class EntrezQueryTestCase(IntegrationTestCase):
 
+    def test_get_taxonomy_node(self):
+        taxon = "Xanthomonas campestris pv. oryzae"
+
+        taxonomy = entrez_tools.get_taxonomic_lineage(taxon)
+
+        exp_lin = \
+            [('cellular organisms', 131567), ('Bacteria', 2), ('Proteobacteria', 1224),
+             ('Gammaproteobacteria', 1236), ('Xanthomonadales', 135614), ('Xanthomonadaceae', 32033),
+             ('Xanthomonas', 338), ('Xanthomonas campestris', 339), ('Xanthomonas campestris pv. oryzae', 314227)]
+
+        self.assertEqual(exp_lin, taxonomy)
+
     def test_get_pubmed_record_22373819(self):
         record = entrez_tools.get_pubmed_record_by_id(22373819)
 

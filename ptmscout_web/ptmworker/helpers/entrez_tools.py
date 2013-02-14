@@ -1,4 +1,3 @@
-from celery.task import task
 from Bio import Entrez, pairwise2
 from ptmscout.config import settings
 from Bio import Medline
@@ -11,7 +10,15 @@ from ptmscout.utils import protein_utils
 
 log = logging.getLogger('ptmscout')
 
-@task(rate_limit='3/s', max_retries=5, default_retry_delay=1)
+class EntrezError(Exception):
+    def __init__(self):
+        pass
+        
+    def __repr__(self):
+        return "Unable to fetch protein accession: %s" % (self.acc)
+
+
+
 def get_pubmed_record_by_id(pmid):
     Entrez.email = settings.adminEmail
     handle = Entrez.efetch(db="pubmed",id=pmid,rettype="medline",retmode="text")
@@ -28,6 +35,26 @@ def get_pubmed_record_by_id(pmid):
 
     return rval
 
+
+def get_taxonomic_lineage(species):
+    Entrez.email = settings.adminEmail
+    query_species = species.replace(" ", "+").strip()
+    search = Entrez.esearch(term = query_species, db="taxonomy", retmode = "xml")
+    record = Entrez.read(search)
+
+    if len(record['IdList']) == 0:
+        raise upload_helpers.TaxonError(species)
+
+    taxid = record['IdList'][0]
+    search = Entrez.efetch(id = taxid, db="taxonomy", retmode = "xml")
+    records = Entrez.read(search)
+
+    if len(records) == 0:
+        raise upload_helpers.TaxonError(species)
+
+    lineage = [ ( item['ScientificName'], int(item['TaxId']) ) for item in records[0]['LineageEx'] ]
+
+    return lineage + [ (records[0]['ScientificName'], int(taxid)) ]
 
 def map_domain_to_sequence(seq1, domain, seq2):
     domain_seq = seq1[domain.start:domain.stop+1]
@@ -68,14 +95,6 @@ def parse_pfam_domains(pfam_domains):
         parsed_features.append(domain)
         
     return parsed_features
-
-
-class EntrezError(Exception):
-    def __init__(self):
-        pass
-        
-    def __repr__(self):
-        return "Unable to fetch protein accession: %s" % (self.acc)
 
 def get_feature(name, table):
     for entry in table:

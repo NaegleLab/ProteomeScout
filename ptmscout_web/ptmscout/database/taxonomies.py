@@ -20,6 +20,10 @@ class Taxonomy(Base):
         return self.name.strip()
 
     formatted_name = property(__format_name)
+
+    def save(self):
+        DBSession.add(self)
+        DBSession.flush()
     
 class Species(Base):
     __tablename__='species'
