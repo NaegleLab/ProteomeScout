@@ -34,7 +34,6 @@ Feature: Dataset Load
             | peptides | proteins | rejected | errors |
             | 17       | 15       | 1        | 1      |
 
-    @runme
     Scenario: Multiple modification types in one peptide with assignment
           Given a user submits a dataset and a single peptide has more than one flavor of modification and mod_type assignments match the sequential order of modifcations
           Then the user should be sent an email with a link to the experiment which contains:
@@ -65,9 +64,10 @@ Feature: Dataset Load
             | peptides | proteins | rejected | errors |
             | 18       | 16       | 0        | 0      |
           
+    @runme
     Scenario: Handle a viral proteins by checking PTM types of host organism
           Given a user submits a dataset in which viral proteins are included
           Then the user should be sent an email with a link to the experiment which contains:
             | peptides | proteins | rejected | errors |
-            | 6        | 3        | 0        | 0      |
+            | 7        | 4        | 0        | 0      |
 
