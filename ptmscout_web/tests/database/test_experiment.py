@@ -9,7 +9,7 @@ from ptmscout.database import user, permissions
 class ExperimentTestCase(DBTestCase):
 
     def test_experiment_searchExperiments_by_condition(self):
-        cnt, experiments = searchExperiments(conditions={'drug':['dasatinib']})
+        cnt, experiments = searchExperiments(text_search='HER2', conditions={'drug':['dasatinib']})
         
         self.assertEqual(1, cnt)
         self.assertEqual(1, len(experiments))

@@ -2,7 +2,7 @@ from . import Base, DBSession
 from sqlalchemy import Column, Integer, VARCHAR, Text
 from ptmscout.config import settings as config
 from ptmscout.database.permissions import Permission
-from sqlalchemy.schema import ForeignKey
+from sqlalchemy.schema import ForeignKey, Table
 from sqlalchemy.types import Float, Enum, DateTime
 from sqlalchemy.sql.expression import null, or_, and_
 import datetime
@@ -10,6 +10,11 @@ from sqlalchemy.orm import relationship, deferred
 import logging
 
 log = logging.getLogger('ptmscout')
+
+experiment_PTM = Table('experiment_PTM', Base.metadata,
+                    Column('id', Integer(10), primary_key=True, autoincrement=True),
+                    Column('experiment_id', Integer(10), ForeignKey('experiment.id')),
+                    Column('PTM_id', Integer(10), ForeignKey('PTM.id')))
 
 class ExperimentError(Base):
     __tablename__ = 'experiment_error'
@@ -97,11 +102,14 @@ class Experiment(Base):
     loading_stage = Column(Enum('query', 'proteins', 'GO terms', 'peptides', 'scansite'), default='query')
 
     failure_reason = Column(Text, default="")
+
+    modified_residues = Column(VARCHAR(40))
     
     errors = relationship("ExperimentError", cascade="all,delete-orphan")
     conditions = relationship("ExperimentCondition", cascade="all,delete-orphan")
     permissions = relationship("Permission", backref="experiment", cascade="all,delete-orphan")
     measurements = relationship("MeasuredPeptide")
+    modifications = relationship("PTM", secondary=experiment_PTM)
     
     def __init__(self):
         self.date = datetime.datetime.now()
@@ -366,19 +374,26 @@ def getExperimentProgress(exp_id):
 def searchExperiments(text_search=None, conditions={}, user=None, page=None):
     q = DBSession.query(Experiment.id).outerjoin(Experiment.conditions).outerjoin(Experiment.permissions)
 
-    filter_clauses = Experiment.public == 1
+    filter_clauses = []
     if user:
-        filter_clauses = or_( filter_clauses, Permission.user_id==user.id )
+        filter_clauses.append( or_( Experiment.public==1, Permission.user_id==user.id ) )
+    else:
+        filter_clauses.append( Experiment.public == 1 )
 
     if text_search:
         text_search = '%' + str(text_search) + '%'
-        filter_clauses = and_(filter_clauses, or_( Experiment.name.like(text_search), Experiment.description.like(text_search) ) )
+        filter_clauses.append( or_( Experiment.name.like(text_search), Experiment.description.like(text_search) ) )
 
     for cond_type in conditions:
         for cond_value in conditions[cond_type]:
-            filter_clauses = and_( filter_clauses, and_( ExperimentCondition.type==cond_type, ExperimentCondition.value==cond_value ) )
+            filter_clauses.append( and_( ExperimentCondition.type==cond_type, ExperimentCondition.value==cond_value ) )
 
-    q = q.filter( filter_clauses ).distinct().order_by( Experiment.name )
+    if len(filter_clauses) > 0:
+        filter_clause = and_(*filter_clauses)
+    else:
+        filter_clause = filter_clauses[0]
+
+    q = q.filter( filter_clause ).distinct().order_by( Experiment.name )
 
     if page==None:
         sq = q.subquery()
