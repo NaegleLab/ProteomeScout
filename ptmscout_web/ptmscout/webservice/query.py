@@ -40,7 +40,9 @@ def get_matching_experiments_for_user(request):
 
     page = limit, offset
 
+    exp_url = request.application_url + "/experiments/%d"
+
     count, experiments = experiment.searchExperiments(text_search=search_term, conditions = cond_map, user=request.user, page=page)
-    formatted_experiments = [ { 'id':e.id, 'name':e.name, 'residues':e.modified_residues } for e in experiments ]
+    formatted_experiments = [ { 'id':e.id, 'link':exp_url % (e.id), 'name':e.name, 'residues':e.modified_residues } for e in experiments ]
 
     return {'count': count, 'offset': offset, 'limit': limit, 'experiments': formatted_experiments}

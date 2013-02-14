@@ -50,5 +50,6 @@ class IntegrationTestQueryView(IntegrationTestCase):
         self.assertEqual(1, jresult['count'])
         self.assertEqual([{'id':28,
                             'name':"Effects of HER2 overexpression on cell signaling networks governing proliferation and migration.",
+                            'link':"http://localhost/experiments/28",
                             'residues':""}],
                           jresult['experiments'])
