@@ -103,7 +103,7 @@ class Experiment(Base):
 
     failure_reason = Column(Text, default="")
 
-    modified_residues = Column(VARCHAR(40))
+    modified_residues = Column(VARCHAR(40), default="")
     
     errors = relationship("ExperimentError", cascade="all,delete-orphan")
     conditions = relationship("ExperimentCondition", cascade="all,delete-orphan")
