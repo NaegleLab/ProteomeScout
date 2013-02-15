@@ -33,6 +33,11 @@ class PTM(Base):
     taxons = relationship("Taxonomy", secondary=PTM_taxon)
     keywords = relationship("PTMkeyword")
 
+    def getAllParents(self):
+        if self.parent:
+            return set([self.parent]) | self.parent.getAllParents()
+        return set()
+
     def hasTaxon(self, search_taxons):
         search_taxons = set([t.lower() for t in search_taxons])
         my_taxons = set([t.formatted_name.lower() for t in self.taxons])

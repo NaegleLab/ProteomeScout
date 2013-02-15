@@ -1,7 +1,7 @@
 import celery
 import logging
 from ptmworker.helpers import upload_helpers
-from ptmworker import notify_tasks, protein_tasks, GO_tasks, peptide_tasks
+from ptmworker import notify_tasks, protein_tasks, GO_tasks, peptide_tasks, annotate_tasks
 from ptmscout.database import upload, modifications, protein, experiment
 import transaction
 import traceback
@@ -39,18 +39,19 @@ def do_start_import(exp_id, session_id, user_email, application_url):
         proteins_task = protein_tasks.query_protein_metadata.s(accessions, exp_id, line_mapping)
         GO_task = GO_tasks.import_go_terms.s(exp_id)
         peptide_task = peptide_tasks.run_peptide_import.s(exp_id, peptides, mod_map, data_runs, headers, session.units, load_ambiguities)
+        annotate_task = annotate_tasks.annotate_experiment.si(exp_id)
         finalize_task = notify_tasks.finalize_import.si(exp_id, user_email, application_url)
 
         last_stage_arg = upload_helpers.get_stage_input(exp.id, exp.loading_stage)
 
         if exp.loading_stage == 'query':
-            load_task = ( query_task | proteins_task | GO_task | peptide_task | finalize_task )
+            load_task = ( query_task | proteins_task | GO_task | peptide_task | annotate_task | finalize_task )
         elif exp.loading_stage == 'proteins':
-            load_task = ( proteins_task | GO_task | peptide_task | finalize_task )
+            load_task = ( proteins_task | GO_task | peptide_task | annotate_task | finalize_task )
         elif exp.loading_stage == 'GO terms':
-            load_task = ( GO_task | peptide_task | finalize_task )
+            load_task = ( GO_task | peptide_task | annotate_task | finalize_task )
         elif exp.loading_stage == 'peptides':
-            load_task = ( peptide_task | finalize_task )
+            load_task = ( peptide_task | annotate_task | finalize_task )
 
         callback_task = notify_tasks.finalize_experiment_error_state_callback.s(exp_id, user_email, application_url)
 

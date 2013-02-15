@@ -126,6 +126,21 @@ def dynamic_transaction_task(fn):
     ttask.__name__ = fn.__name__
     return ttask
 
+def summarize_experiment_load(measurements):
+    residues_modified = set()
+    ptms = set()
+
+    for ms in measurements:
+        for mspep in ms.peptides:
+            residues_modified.add( mspep.peptide.site_type )
+            ptms.add( mspep.modification )
+
+    final_ptms = set()
+    for ptm in ptms:
+        final_ptms.add(ptm)
+        final_ptms |= ptm.getAllParents()
+
+    return sorted( list( residues_modified ) ), final_ptms
 
 def find_activation_loops(prot):
     kinase_domain_names = set([ 'pkinase', 'pkinase_tyr' ])
