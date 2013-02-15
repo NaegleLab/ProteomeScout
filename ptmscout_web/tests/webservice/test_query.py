@@ -39,7 +39,7 @@ class IntegrationTestQueryView(IntegrationTestCase):
 
 
     def test_get_matching_experiments_for_user(self):
-        request_dict = {'search_term':'HER2', 'conditions':'drug:dasatinib'}
+        request_dict = {'search_term':'HER2', 'conditions':'drug:Dasatinib'}
         result = self.ptmscoutapp.get("/webservice/experiments?" +
                 urllib.urlencode(request_dict), status=200)
 
@@ -51,5 +51,5 @@ class IntegrationTestQueryView(IntegrationTestCase):
         self.assertEqual([{'id':28,
                             'name':"Effects of HER2 overexpression on cell signaling networks governing proliferation and migration.",
                             'link':"http://localhost/experiments/28",
-                            'residues':""}],
+                            'residues':"STY"}],
                           jresult['experiments'])

@@ -4,6 +4,7 @@
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/experiments.css')}" />
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/proteins.css')}" />
 
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/upload.condition.js')}" ></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/experiment_search.js')}" ></script>
 	</metal:slot>
 	<div metal:fill-slot="content">
@@ -54,9 +55,10 @@
                 </table>
                 <button class="longtask" id="submit_query">Find Experiments</button>
                 <button id="add_selected">Add Selected</button>
+                <button id="clear_selection">Clear Selection</button>
 
+                <div id="result_pager"></div>
                 <div id="result_list">
-                    <div id="result_pager"></div>
                     <table class="experiment_list">
                         <thead>
                             <tr><th colspan="4">Search Results</th></tr>

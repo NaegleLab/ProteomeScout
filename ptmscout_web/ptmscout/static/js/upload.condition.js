@@ -13,7 +13,7 @@ function get_auto_completions(field_type, target_field, value) {
 
 $(document).ready(function(){
 	window.autocompletions = {}
-	window.autocomplete_url = $("#webservice_url").text()
+	window.autocomplete_url = $("#webservice_url").text() + "/autocomplete/"
 	
 	$("#add_condition").click(function(){
 		$(".condition.hidden").first().removeClass("hidden")

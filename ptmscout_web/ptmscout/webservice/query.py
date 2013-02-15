@@ -30,13 +30,15 @@ def get_matching_experiments_for_user(request):
     limit = 10
 
     cond_map = {}
-    if conditions != None:
+    try:
         for kv in conditions.split(','):
             k, v = kv.split(':')
             k, v = k.strip(), v.strip()
             vmap = cond_map.get(k, [])
             vmap.append(v)
             cond_map[k] = vmap
+    except:
+        cond_map = {}
 
     page = limit, offset
 

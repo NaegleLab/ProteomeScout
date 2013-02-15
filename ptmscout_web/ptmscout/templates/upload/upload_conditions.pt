@@ -12,7 +12,7 @@
             <div class="formtitle">
                 Configure Experimental Conditions
             </div>
-            <div class="hidden" id="webservice_url">${request.application_url}/webservice/autocomplete/</div>
+            <div class="hidden" id="webservice_url">${request.application_url}/webservice</div>
             <div class="error_display" tal:condition="len(errors)>0">
                 <ul>
                     <li tal:repeat="error errors" tal:content="error"></li>
