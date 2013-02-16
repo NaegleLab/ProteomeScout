@@ -23,12 +23,13 @@
                 <div id="chosen_list">
                     <table class="experiment_list">
                         <thead>
-                            <tr><th colspan="4">Comparison Sources</th></tr>
+                            <tr><th class="title" colspan="5">Comparison Sources</th></tr>
                             <tr>
                                 <th></th>
                                 <th>ID</th>
                                 <th>Experiment Name</th>
                                 <th>Modified Residues</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -39,7 +40,7 @@
                 </div>
             </form>
 
-            <div id="experiment_search" style="display:none;">
+            <div id="experiment_search" title="Experiment Search Tool" style="display:none;">
                 <table>
                     <tr>
                         <td>Text Search:</td>
@@ -54,24 +55,29 @@
                     </tr>
                 </table>
                 <button class="longtask" id="submit_query">Find Experiments</button>
-                <button id="add_selected">Add Selected</button>
-                <button id="clear_selection">Clear Selection</button>
 
                 <div id="result_pager"></div>
                 <div id="result_list">
                     <table class="experiment_list">
                         <thead>
-                            <tr><th colspan="4">Search Results</th></tr>
+                            <tr><th class="title" colspan="5">Search Results</th></tr>
                             <tr>
                                 <th></th>
                                 <th>ID</th>
                                 <th>Experiment Name</th>
                                 <th>Modified Residues</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
                         </tbody>
                     </table>
+                </div>
+                <div class="clear"></div>
+                <div class="formsubmission">
+                    <button id="add_selected">Add Selected</button>
+                    <button id="clear_selection">Clear Selection</button>
+                    <button id="close">Close</button>
                 </div>
 
             </div>

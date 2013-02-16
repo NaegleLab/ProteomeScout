@@ -220,10 +220,25 @@ table.error_listing th.max {
 	width:100%;
 }
 
+#result_pager {
+    width:100%;
+    text-align:center;
+    margin-top:0.2em;
+    margin-bottom:0.2em;
+}
+
 table.experiment_list {
     border: solid 1px black;
     border-collapse: collapse;
     text-align:left;
+}
+
+table.experiment_list .title {
+    text-align:center;
+}
+
+table.experiment_list th {
+    background-color: #ddd;
 }
 
 table.experiment_list .entry {

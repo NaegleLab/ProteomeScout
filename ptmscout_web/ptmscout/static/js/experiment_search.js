@@ -11,14 +11,15 @@ function ExperimentEntry(table_element, edata) {
                                 e.data.mark_selected();
                             });
 
-    $("<td><input type=\"hidden\" value=\"e{0}\" name=\"experiment\" /></td>".format(edata.id)).appendTo(this.element);
+    $("<td><input type=\"hidden\" value=\"{0}\" name=\"experiment\" /></td>".format(edata.id)).appendTo(this.element);
     $("<td>{0}</td>".format(edata.id)).appendTo(this.element);
     $("<td>{0}</td>".format(edata.name)).appendTo(this.element);
     $("<td>{0}</td>".format(edata.residues)).appendTo(this.element);
+    $( "<td><a href=\"{0}\" target=\"_blank\"><button>View</button></a></td>".format(edata.link) ).appendTo(this.element);
+
 };
 
-ExperimentEntry.prototype.id =
-function() {
+ExperimentEntry.prototype.id = function() {
     return this.data.id;
 };
 
@@ -185,6 +186,10 @@ function ExperimentSearch(finder_element, list_element, service_url){
     this.clear_button.on( 'click', function() {
         search_form.clear_selection();
     });
+    this.close_button = this.finder.find("#close");
+    this.close_button.on( 'click', function() {
+        search_form.close();
+    });
 
 
     this.pager = new ResultPager(this, this.finder.find("#result_pager"));
@@ -193,6 +198,10 @@ function ExperimentSearch(finder_element, list_element, service_url){
     this.search_results = [];
     this.added_results = [];
     this.condition_fields = [];
+};
+
+ExperimentSearch.prototype.close = function() {
+    this.finder.dialog("close");
 };
 
 ExperimentSearch.prototype.add_condition_field = function() {
@@ -302,7 +311,6 @@ ExperimentSearch.prototype.show = function() {
     var esearch = this;
     this.finder.dialog({
                 width: 800,
-                height: 500
                 });
 };
 
