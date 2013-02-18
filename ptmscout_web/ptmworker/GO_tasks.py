@@ -124,7 +124,9 @@ def assign_annotations(quickgo_result, protein_accessions, protein_map):
             protein_ids[acc] = pids
 
     for acc in quickgo_result:
-        if len(quickgo_result[acc]) > 0:
+        if acc not in protein_ids:
+            log.warning("Accession %s not found in stored protein accessions", acc)
+        elif len(quickgo_result[acc]) > 0:
             annotate_proteins(acc, quickgo_result[acc], protein_ids[acc], protein_map, created_entries)
         else:
             log.info( "No annotations for accession '%s'", acc )
@@ -167,6 +169,8 @@ def import_go_terms(protein_result, exp_id):
         GO_map.update( go_terms )
         i+=1
         notify_tasks.set_progress.apply_async((exp_id, i, max_progress))
+
+    log.info("Unexpected accessions returned from QuickGO: %s", str(set(go_terms.keys()) - set(query_accessions)))
 
     created_entries = assign_annotations(GO_map, protein_accessions, protein_id_map)
 
