@@ -164,13 +164,13 @@ def import_go_terms(protein_result, exp_id):
     notify_tasks.set_loading_stage.apply_async((exp_id, 'GO terms', max_progress))
 
     i=0
-    for query_accessions in queries:
-        go_terms, _ = quickgo_tools.batch_get_GO_annotations(query_accessions)
+    for qaccessions in queries:
+        go_terms, _ = quickgo_tools.batch_get_GO_annotations(qaccessions)
         GO_map.update( go_terms )
         i+=1
         notify_tasks.set_progress.apply_async((exp_id, i, max_progress))
 
-    log.info("Unexpected accessions returned from QuickGO: %s", str(set(go_terms.keys()) - set(query_accessions)))
+    log.info("Unexpected accessions returned from QuickGO: %s", str(set(GO_map.keys()) - query_accessions))
 
     created_entries = assign_annotations(GO_map, protein_accessions, protein_id_map)
 
