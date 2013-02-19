@@ -253,7 +253,7 @@ ExperimentSearch.prototype.submit_search = function() {
               else
                   search_form.results.hide();
 
-              $("#waiting-dialog").dialog("close");
+            done_waiting();
           }
     });
 };

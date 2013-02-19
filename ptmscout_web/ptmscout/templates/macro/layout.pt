@@ -17,9 +17,6 @@
 	<metal:block metal:define-slot="header"></metal:block>
   </head>
   <body>
-    <div id="waiting-dialog" style="text-align:center; display: none;">
-        <img src="${request.static_url('ptmscout:static/images/ajax-loader.gif')}" />
-    </div>
 	<div id="menu">
         <div style="float:left; text-align:left">
 	    <a href="${request.application_url}">Portal</a> |
@@ -74,6 +71,9 @@
 	    </div>
       </div>
 	</div>
-	<div style="display:none" id="graph_css_export_url">${request.static_url('ptmscout:static/css/graphs.css')}</div>
+    <div style="display:none" id="graph_css_export_url">${request.static_url('ptmscout:static/css/graphs.css')}</div>
+    <div class="waiting-modal"><!-- Place at bottom of page -->
+        <img style="position:fixed; top:50%; left:50%;" src="${request.static_url('ptmscout:static/images/ajax-loader.gif')}" />
+    </div>
   </body>
 </html>

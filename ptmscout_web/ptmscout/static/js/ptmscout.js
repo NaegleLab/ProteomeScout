@@ -1,14 +1,11 @@
+function done_waiting(){
+    $(".waiting-modal").hide();
+}
+
 $(function(){
     $(".longtask")
         .on('click', function(e) {
-            $("#waiting-dialog")
-                .dialog({
-                    height: 175,
-                    width: 150,
-                    modal: true,
-                    draggable: false,
-                    resizable: false
-                });
+            $(".waiting-modal").show();
         });
 
     $("div.progress").each(function(){
