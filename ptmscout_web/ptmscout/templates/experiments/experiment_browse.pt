@@ -26,7 +26,7 @@
                     <label for="species">Species:</label> <br />
                     ${form.render('species')}
                 </p>
-                <input type="submit" value="Search">
+                <input type="submit" value="Search" class="longtask" />
             </fieldset>
         </form>
     

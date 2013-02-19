@@ -40,7 +40,7 @@
                         <td class="fieldname">PubMed ID:*</td>
                         <td>
                             ${formrenderer.render('pmid')}
-                            <input type="button" id="load_pubmed" value="Load Pubmed Citation" />
+                            <input type="button" id="load_pubmed" value="Load Pubmed Citation" class="longtask" />
                             <span id="pmiderror" class="errortext" style="display:none"></span>
                         </td>
                     </tr>

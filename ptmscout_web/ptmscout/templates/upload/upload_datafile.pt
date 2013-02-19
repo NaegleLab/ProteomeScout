@@ -48,7 +48,7 @@
                     </tr>
                 </table>
 
-                <div class="formsubmission"><input type="submit" value="Continue" /></div>
+                <div class="formsubmission"><input type="submit" value="Continue" class="longtask" /></div>
                 <div class="clear"></div>               
             </div>
         </form>
