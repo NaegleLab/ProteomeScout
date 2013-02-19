@@ -49,3 +49,4 @@ class ExperimentListingViewTests(unittest.TestCase):
         patch_getExperiment.assert_called_once_with(1, request.user)
         self.assertEqual(mock_experiment, parameters['experiment'])
         self.assertEqual(strings.experiment_page_title % ("experiment name"), parameters['pageTitle'])
+
