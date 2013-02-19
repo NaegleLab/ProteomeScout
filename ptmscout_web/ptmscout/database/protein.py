@@ -143,6 +143,11 @@ class Protein(Base):
     def saveNoFlush(self):
         DBSession.add(self)
 
+    def getGeneName(self):
+        if self.acc_gene != None and self.acc_gene != '':
+            return self.acc_gene
+        return self.locus
+
     def hasAccession(self, acc):
         lower_acc = acc.lower()
         for dbacc in self.accessions:

@@ -73,7 +73,7 @@ table {
 
 #portal a:active, #portal a:visited, #portal a:hover, #portal a:link {
     color:white;
-    font-size:14pt;
+    font-size:medium;
 }
 
 #portal .menuitem:hover {

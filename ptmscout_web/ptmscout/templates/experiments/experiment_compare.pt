@@ -6,6 +6,7 @@
 
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/upload.condition.js')}" ></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/experiment_search.js')}" ></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/compare.experiments.js')}" ></script>
 	</metal:slot>
 	<div metal:fill-slot="content">
         <div metal:use-macro="experiment_header"></div>
@@ -83,30 +84,104 @@
             </div>
         </div>
 
-        <div id="comparison_results" tal:condition="len(results) > 0">
-            <table class="protein_list">
-                <thead>
-                    <tr>
-                        <th>MS id</th>
-                        <th>Protein</th>
-                        <th>Trypsinized Peptide</th>
-                        <th>Aligned Peptide</th>
-                        <th>Site</th>
-                        <th>Modification</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr tal:repeat="(i, result) enumerate(results)" tal:attributes="class 'even' if i % 2 == 0 else 'odd'">
-                        <td tal:content="result['id']"></td>
-                        <td tal:content="result['gene']"></td>
-                        <td tal:content="result['protein']"></td>
-                        <td tal:content="result['tryps']" class="peptide"></td>
-                        <td tal:content="result['align']" class="peptide"></td>
-                        <td tal:content="result['site']" class="modsite"></td>
-                        <td tal:content="result['mod']"></td>
-                    </tr>
-                </tbody>
-            </table>
+        <div id="comparison_results" tal:condition="results != None">
+
+            <div class="compare_result experiment_result" tal:repeat="exp_id results['by_experiment']" tal:attributes="id 'e%d' % (exp_id)">
+                <div>Common sites with
+                    <a tal:condition="results['experiment_info'][exp_id]['export'] == 1" tal:attributes="href '%s/experiments/%d' % (request.application_url, exp_id)" tal:content="results['experiment_info'][exp_id]['name']"></a>
+                    <span tal:condition="results['experiment_info'][exp_id]['export'] == 0" tal:content="results['experiment_info'][exp_id]['name']"></span>
+                    :
+                    <span tal:content="len( results['by_experiment'][exp_id] )"></span>
+                    <button tal:condition="len(results['by_experiment'][exp_id]) > 0" class="show_results">Show</button>
+                </div>
+                <table class="protein_list hidden" style="display:none">
+                    <thead>
+                        <tr>
+                            <td colspan="7">Shared Sites:</td>
+                        </tr>
+                        <tr>
+                            <th>MS id</th>
+                            <th>Gene</th>
+                            <th>Protein</th>
+                            <th>Trypsinized Peptide</th>
+                            <th>Aligned Peptide</th>
+                            <th>Site</th>
+                            <th>Modification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr tal:repeat="(i, result) enumerate(results['by_experiment'][exp_id])" tal:attributes="class 'even' if i % 2 == 0 else 'odd'">
+                            <td tal:content="result['id']"></td>
+                            <td tal:content="result['gene']"></td>
+                            <td tal:content="result['protein']"></td>
+                            <td tal:content="result['tryps']" class="peptide"></td>
+                            <td tal:content="result['align']" class="peptide"></td>
+                            <td tal:content="result['site']" class="modsite"></td>
+                            <td tal:content="result['mod']"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="compare_result">
+                <table class="protein_list">
+                    <thead>
+                        <tr>
+                            <td colspan="7">Novel Sites:</td>
+                        </tr>
+                        <tr>
+                            <th>MS id</th>
+                            <th>Gene</th>
+                            <th>Protein</th>
+                            <th>Trypsinized Peptide</th>
+                            <th>Aligned Peptide</th>
+                            <th>Site</th>
+                            <th>Modification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr tal:repeat="(i, result) enumerate(results['novel'])" tal:attributes="class 'even' if i % 2 == 0 else 'odd'">
+                            <td tal:content="result['id']"></td>
+                            <td tal:content="result['gene']"></td>
+                            <td tal:content="result['protein']"></td>
+                            <td tal:content="result['tryps']" class="peptide"></td>
+                            <td tal:content="result['align']" class="peptide"></td>
+                            <td tal:content="result['site']" class="modsite"></td>
+                            <td tal:content="result['mod']"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="compare_result">
+                <table class="protein_list">
+                    <thead>
+                            <tr>
+                                <td colspan="7">Ambiguous Peptides:</td>
+                            </tr>
+                            <tr>
+                            <th>MS id</th>
+                            <th>Gene</th>
+                            <th>Protein</th>
+                            <th>Trypsinized Peptide</th>
+                            <th>Aligned Peptide</th>
+                            <th>Site</th>
+                            <th>Modification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr tal:repeat="(i, result) enumerate(results['ambiguous'])" tal:attributes="class 'even' if i % 2 == 0 else 'odd'">
+                            <td tal:content="result['id']"></td>
+                            <td tal:content="result['gene']"></td>
+                            <td tal:content="result['protein']"></td>
+                            <td tal:content="result['tryps']" class="peptide"></td>
+                            <td tal:content="result['align']" class="peptide"></td>
+                            <td tal:content="result['site']" class="modsite"></td>
+                            <td tal:content="result['mod']"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div id="webservice_url" style="display:none;">${request.application_url}/webservice</div>

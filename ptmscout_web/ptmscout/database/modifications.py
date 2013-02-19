@@ -143,13 +143,21 @@ class MeasuredPeptide(Base):
     experiment = relationship("Experiment")
     protein = relationship("Protein")
     
-    peptides = relationship("PeptideModification", lazy='joined')
+    peptides = relationship("PeptideModification", backref="measured_peptide", lazy='joined')
     data = relationship("ExperimentData")
     ambiguities = relationship("PeptideAmbiguity", cascade='all,delete-orphan')
 
     def save(self):
         DBSession.add(self)
         
+    def isAmbiguous(self):
+        if len(self.ambiguities) > 1:
+            return True
+        if len(self.ambiguities) == 0:
+            return False
+
+        return self.ambiguities[0].alt_accession != self.query_accession
+
     def addPeptideModification(self, peptide, ptm):
         pmod = PeptideModification()
         
@@ -254,3 +262,17 @@ def getPeptideById(pep_id):
 def deleteExperimentData(exp_id):
     DBSession.query(MeasuredPeptide).filter_by(experiment_id=exp_id).delete()
     DBSession.flush()
+
+def getExperimentsReportingModifiedPeptide(modified_peptide, other_exps):
+    from ptmscout.database import experiment
+
+    q = DBSession.query(PeptideModification).join(MeasuredPeptide).filter( and_( PeptideModification.modification_id==modified_peptide.modification_id, PeptideModification.peptide_id==modified_peptide.peptide_id ) )
+
+    found_exp_ids = set([ pm.measured_peptide.experiment_id for pm in q.all() ])
+    found_exps = []
+
+    for exp in other_exps:
+        if exp.id in found_exp_ids:
+            found_exps.append(exp)
+
+    return found_exps
