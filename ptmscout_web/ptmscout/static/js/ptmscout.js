@@ -3,7 +3,7 @@ $(function(){
         .on('click', function(e) {
             $("#waiting-dialog")
                 .dialog({
-                    height: 150,
+                    height: 175,
                     width: 150,
                     modal: true,
                     draggable: false,

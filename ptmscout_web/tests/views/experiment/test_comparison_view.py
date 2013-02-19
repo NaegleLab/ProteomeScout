@@ -15,7 +15,8 @@ from ptmscout.views.experiment import comparison_view
 class ComparisonViewIntegrationTests(IntegrationTestCase):
     def test_comparison_view_integration(self):
         result = self.ptmscoutapp.post('/experiments/26/compare', {'submitted':'all'})
-        result.showbrowser()
+        result.mustcontain("Novel Sites (4)")
+        result.mustcontain("Ambiguous Sites (45)")
 
 
 class ComparisonViewTests(UnitTestCase):

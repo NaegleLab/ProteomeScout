@@ -19,9 +19,11 @@ def format_peptide_list(peptide_list):
     return formatted_peptides
 
 def compare_to_all(exp, user, experiment_list = set()):
-    exps = experiment.getAllExperiments(user)
+    exps = experiment.getAllExperiments(user, export=False)
     if experiment_list == set():
         experiment_list = set([e.id for e in exps])
+
+    experiment_list -= set([exp.id])
 
     experiment_info = {}
     for exp in exps:
@@ -46,7 +48,8 @@ def compare_to_all(exp, user, experiment_list = set()):
                 novel_sites.append( (ms, modpep) )
 
             for exp in other_exps:
-                by_experiment[exp.id].append( (ms, modpep) )
+                if exp.id in by_experiment:
+                    by_experiment[exp.id].append( (ms, modpep) )
 
     for exp_id in experiment_list:
         by_experiment[exp_id] = format_peptide_list( by_experiment[exp_id] )

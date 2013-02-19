@@ -317,8 +317,11 @@ def getExperimentById(experiment_id, user=None, check_ready=True, secure=True):
     
     return value
 
-def getAllExperiments(current_user):
-    return [ exp for exp in  DBSession.query(Experiment).all() if exp.checkPermissions(current_user) and exp.ready() and exp.export == 1 ]
+def getAllExperiments(current_user, export=True):
+    exps = [ exp for exp in DBSession.query(Experiment).all() if exp.checkPermissions(current_user) and exp.ready() ]
+    if export:
+        return [exp for exp in exps if exp.export==1]
+    return exps
 
 def getExperimentTree(current_user):
     experiments = getAllExperiments(current_user)

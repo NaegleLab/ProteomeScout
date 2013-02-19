@@ -151,12 +151,7 @@ class MeasuredPeptide(Base):
         DBSession.add(self)
         
     def isAmbiguous(self):
-        if len(self.ambiguities) > 1:
-            return True
-        if len(self.ambiguities) == 0:
-            return False
-
-        return self.ambiguities[0].alt_accession != self.query_accession
+        return len(self.ambiguities) > 1
 
     def addPeptideModification(self, peptide, ptm):
         pmod = PeptideModification()

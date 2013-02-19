@@ -91,13 +91,13 @@
                     <a tal:condition="results['experiment_info'][exp_id]['export'] == 1" tal:attributes="href '%s/experiments/%d' % (request.application_url, exp_id)" tal:content="results['experiment_info'][exp_id]['name']"></a>
                     <span tal:condition="results['experiment_info'][exp_id]['export'] == 0" tal:content="results['experiment_info'][exp_id]['name']"></span>
                     :
-                    <span tal:content="len( results['by_experiment'][exp_id] )"></span>
+                    (<span tal:content="len( results['by_experiment'][exp_id] )"></span>)
                     <button tal:condition="len(results['by_experiment'][exp_id]) > 0" class="show_results">Show</button>
                 </div>
                 <table class="protein_list hidden" style="display:none">
                     <thead>
                         <tr>
-                            <td colspan="7">Shared Sites:</td>
+                            <th colspan="7">Shared Sites:</th>
                         </tr>
                         <tr>
                             <th>MS id</th>
@@ -127,7 +127,7 @@
                 <table class="protein_list">
                     <thead>
                         <tr>
-                            <td colspan="7">Novel Sites:</td>
+                            <th colspan="7">Novel Sites (<tal:empty tal:content="len(results['novel'])"></tal:empty>)</th>
                         </tr>
                         <tr>
                             <th>MS id</th>
@@ -157,7 +157,7 @@
                 <table class="protein_list">
                     <thead>
                             <tr>
-                                <td colspan="7">Ambiguous Peptides:</td>
+                                <th colspan="7">Ambiguous Sites (<tal:empty tal:content="len(results['ambiguous'])"></tal:empty>)</th>
                             </tr>
                             <tr>
                             <th>MS id</th>

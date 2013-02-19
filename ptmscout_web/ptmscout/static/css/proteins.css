@@ -95,7 +95,7 @@
 	text-align:center;
 }
 
-.protein_list table {
+table.protein_list, .protein_list table {
 	border-collapse: collapse;
 	width:95%;
 	margin-left:auto;
