@@ -3,6 +3,7 @@ import csv
 import os
 from ptmscout.utils.webutils import call_catch
 import re
+import codecs
 from ptmscout.utils import protein_utils
 from ptmscout.database import modifications
 
@@ -295,7 +296,7 @@ def assign_column_defaults(session):
 
 
 def load_header_and_data_rows(data_file, N=-1):
-    ifile = csv.reader(open(os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, data_file), 'rb'), delimiter='\t')
+    ifile = csv.reader(codecs.open(os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, data_file), 'rb', encoding='utf-8'), delimiter='\t')
     i = 0
     
     header = ifile.next()

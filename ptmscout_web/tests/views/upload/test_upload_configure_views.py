@@ -368,8 +368,7 @@ class TestUploadConfigureView(UnitTestCase):
         self.assertEqual(strings.experiment_upload_configure_message, result['instruction'])
         
         self.assertEqual(upload.SessionColumn.column_values, result['column_values'])
-        
-        
+
 class IntegrationTestUploadConfigureView(IntegrationTestCase):
     def test_view_integration(self):
         self.bot.login()
@@ -383,3 +382,21 @@ class IntegrationTestUploadConfigureView(IntegrationTestCase):
         session.save()
         
         self.ptmscoutapp.get("/upload/%d/config" % session.id, status=200)
+
+    def test_view_with_datafile_with_high_order_utf8_bytes(self):
+        self.bot.login()
+        
+        result = self.ptmscoutapp.get("/upload", status=200)
+        
+        form = result.form
+        filename = os.path.join(settings.ptmscout_path, "data/experiments/test/Rikova4.txt")
+        f = open(filename, 'rb')
+        filecontents = f.read()
+        
+        form.set('data_file', (filename, filecontents))
+        form.set('load_type', "new")
+        
+        result = form.submit(status=302)
+        result = result.follow()
+
+        result.showbrowser()

@@ -496,3 +496,8 @@ class TestUploadUtils(unittest.TestCase):
 
         self.assertEqual(10, len(rows))
 
+    def test_load_header_and_data_rows_should_load_high_byte_encodings(self):
+        datafile = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'test', 'Rikova4.txt')
+
+        header, rows = load_header_and_data_rows(datafile, 10)
+        self.assertEqual(10, len(rows))
