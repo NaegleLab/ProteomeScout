@@ -2,9 +2,7 @@ import xml.dom.minidom as xml
 from xml.parsers.expat import ExpatError
 import urllib2, httplib
 from ptmscout.config import settings
-from ptmscout.utils import uploadutils
 from ptmscout.utils.decorators import rate_limit
-import traceback
 import logging
 
 log = logging.getLogger('ptmscout')

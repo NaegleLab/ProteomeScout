@@ -1,7 +1,6 @@
 from pyramid.view import view_config
 from ptmscout.config import strings, settings
 from ptmscout.database import protein, modifications
-from ptmscout.utils import webutils
 from ptmscout.views.protein import decorators
 import json, base64
 
@@ -9,9 +8,9 @@ import json, base64
 def format_scansite_predictions(prot, mod_sites):
     peptides = {}
     for ms in mod_sites:
-       for modpep in ms.peptides:
-           pep = modpep.peptide
-           peptides[pep.site_pos] = pep
+        for modpep in ms.peptides:
+            pep = modpep.peptide
+            peptides[pep.site_pos] = pep
 
     formatted_scansite = {}
     for site in peptides:

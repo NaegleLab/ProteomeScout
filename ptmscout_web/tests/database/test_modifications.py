@@ -63,6 +63,7 @@ class TestModifications(DBTestCase):
         p.species = getSpeciesByName("homo sapiens")
         p.acc_gene = "ZOMG"
         p.name = "zomg this is a protein"
+        p.locus = "ZOMG_HUMAN"
         p.date = "12-1986"
         
         p.saveProtein()
@@ -126,7 +127,7 @@ class TestModifications(DBTestCase):
         exp = getExperimentById(exp.id, u)
         u = getUserById(u.id)
         
-        phos_mods, exist, exist_residue = findMatchingPTM('Phosphorylation')
+        phos_mods, _exist, _exist_residue = findMatchingPTM('Phosphorylation')
         
         tyr_mod = None
         the_mod = None

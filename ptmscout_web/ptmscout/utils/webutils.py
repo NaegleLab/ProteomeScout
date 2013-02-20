@@ -1,5 +1,3 @@
-from types import NoneType
-
 def get(request, var, default):
     return __check_array(request.GET, var, default)
     

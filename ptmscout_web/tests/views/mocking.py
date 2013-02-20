@@ -145,14 +145,14 @@ def createMockPermission(user, experiment, access_level='view'):
     mock.access_level = access_level
     return mock
 
-def createMockAccession(pid, value=None, type=None):
+def createMockAccession(pid, value=None, atype=None):
     aid = random.randint(0,100000)
     if value == None:
         value = "acc|%d|%d" % (pid, aid)
     
     mock = Mock(spec=ProteinAccession)
     mock.id = aid
-    mock.type = type
+    mock.type = atype
     mock.value = value
     mock.protein_id = pid
 

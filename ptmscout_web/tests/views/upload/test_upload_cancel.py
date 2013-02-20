@@ -1,4 +1,4 @@
-from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
+from tests.PTMScoutTestCase import UnitTestCase
 from ptmscout.views.upload.upload_cancel import cancel_upload_view
 from tests.views.mocking import createMockSession, createMockUser,\
     createMockExperiment

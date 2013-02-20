@@ -1,8 +1,7 @@
 from ptmscout.database import DBSession, taxonomies
-from DB_init import DatabaseInitialization
+from scripts.DB_init import DatabaseInitialization
 import traceback
 import os, sys
-import re
 
 
 def parse_node_types(line):

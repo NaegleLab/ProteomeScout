@@ -2,8 +2,7 @@ import celery
 import logging
 from ptmworker.helpers import upload_helpers
 from ptmworker import notify_tasks, protein_tasks, GO_tasks, peptide_tasks, annotate_tasks
-from ptmscout.database import upload, modifications, protein, experiment
-import transaction
+from ptmscout.database import upload, experiment
 import traceback
 log = logging.getLogger('ptmscout')
 

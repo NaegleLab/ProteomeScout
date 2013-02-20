@@ -97,7 +97,7 @@ class ExperimentBrowseViewTests(unittest.TestCase):
     def test_experiment_browse_view_when_searching(self, patch_getExperiment, patch_getProteins, patch_getMods, patch_getSpecies):
         species_list = [Species('mus musculus'), Species('homo sapiens')]
         patch_getSpecies.return_value = species_list
-        request, p1, p2, mock_experiment, pep1, pep2, pep3, pep4, _, s2, s3, protein_list = self.setup_experiment_browse_test(patch_getExperiment, patch_getProteins, patch_getMods)
+        request, p1, p2, mock_experiment, _pep1, _pep2, _pep3, _pep4, _, _s2, _s3, protein_list = self.setup_experiment_browse_test(patch_getExperiment, patch_getProteins, patch_getMods)
         
         request.GET['submitted'] = "true"
         request.GET['acc_search'] = "ACK1"
@@ -123,7 +123,7 @@ class ExperimentBrowseViewTests(unittest.TestCase):
     def test_experiment_browse_view_when_no_search_parameters(self, patch_getExperiment, patch_getProteins, patch_getMods, patch_getSpecies):
         species_list = [Species('mus musculus'), Species('homo sapiens')]
         patch_getSpecies.return_value = species_list
-        request, p1, p2, mock_experiment, pep1, pep2, pep3, pep4, _, s2, s3, protein_list = self.setup_experiment_browse_test(patch_getExperiment, patch_getProteins, patch_getMods)
+        request, p1, p2, mock_experiment, _pep1, _pep2, _pep3, _pep4, _, _s2, _s3, protein_list = self.setup_experiment_browse_test(patch_getExperiment, patch_getProteins, patch_getMods)
         request.matchdict['id'] = 1
         
         result = browse_experiment(request)

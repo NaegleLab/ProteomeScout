@@ -14,7 +14,7 @@ from ptmscout.database import modifications
 
 class TestUploadUtilsWithTestDB(IntegrationTestCase):
     def test_find_mod_type(self):
-        mod_indices, mod_object = check_modification_type_matches_peptide(1, 'GTGPQRPrSWAAADS', 'dimethylation', ['Eukaryota'])
+        mod_indices, _mod_object = check_modification_type_matches_peptide(1, 'GTGPQRPrSWAAADS', 'dimethylation', ['Eukaryota'])
 
         self.assertEqual(7, mod_indices[0])
 
@@ -24,7 +24,7 @@ class TestUploadUtilsWithTestDB(IntegrationTestCase):
         row = 1
         taxon_nodes = ['Eukaryota']
 
-        mod_indices, mod_object = check_modification_type_matches_peptide(row, peptide, mods, taxon_nodes)
+        mod_indices, _mod_object = check_modification_type_matches_peptide(row, peptide, mods, taxon_nodes)
 
         self.assertEqual([1,5], mod_indices)
 
@@ -40,7 +40,6 @@ class TestUploadUtilsWithTestDB(IntegrationTestCase):
     def test_check_modification_type_nitrated_tyrosine(self):
         mod_type = 'Nitrated tyrosine'
         peptide = 'QKTERNEKKQQMGKEyREKIEAELQDICNDV'
-        row = 1
         taxon_nodes = ['mammalia', 'homo sapiens', 'eukaryota']
 
         mod_indices, mod_objects = check_modification_type_matches_peptide(1, peptide, mod_type, taxon_nodes)
@@ -60,7 +59,6 @@ class TestUploadUtilsWithTestDB(IntegrationTestCase):
     def test_check_modification_type_matches_should_select_most_specific_parent_in_ambiguous_cases(self):
         mod_type = 'Glycosylation'
         peptide = 'DFEGDDtLKLKLKsDFG'
-        row = 1
         taxon_nodes=['mammalia']
 
         mod_indices, mod_objects = check_modification_type_matches_peptide(1, peptide, mod_type, taxon_nodes)
@@ -72,7 +70,6 @@ class TestUploadUtilsWithTestDB(IntegrationTestCase):
         from ptmscout.database import DBSession
         mod_type = 'Glycosylation'
         peptide = 'DFEGDDtLKLKLKSDFG'
-        row = 1
         taxon_nodes=['mammalia']
 
         mod_ptm = modifications.getModificationByName('N-Glycosylation')
@@ -492,12 +489,13 @@ class TestUploadUtils(unittest.TestCase):
     def test_load_header_and_data_rows_should_load_only_N_rows(self):
         datafile = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'test', 'test_dataset_formatted.txt')
 
-        header, rows = load_header_and_data_rows(datafile, 10)
+        _, rows = load_header_and_data_rows(datafile, 10)
 
         self.assertEqual(10, len(rows))
 
     def test_load_header_and_data_rows_should_load_high_byte_encodings(self):
         datafile = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'test', 'Rikova4.txt')
 
-        header, rows = load_header_and_data_rows(datafile, 10)
+        _, rows = load_header_and_data_rows(datafile, 10)
+        
         self.assertEqual(10, len(rows))

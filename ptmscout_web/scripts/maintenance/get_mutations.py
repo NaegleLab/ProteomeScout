@@ -1,10 +1,9 @@
 from scripts.DB_init import DatabaseInitialization
 from ptmscout.database import DBSession, protein, mutations
-from ptmworker.helpers import upload_helpers
 from ptmscout.config import settings
 from geeneus import Proteome
 import traceback
-import sys, os
+import os
 
 def get_primary_accessions(prot):
     uniprot_accessions = []

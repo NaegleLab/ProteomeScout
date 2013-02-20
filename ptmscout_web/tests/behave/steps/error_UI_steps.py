@@ -3,7 +3,7 @@ import re
 from tests.behave.steps import bot
 import os
 from mock import patch
-from ptmscout.database import DBSession
+from ptmscout.database import DBSession, experiment
 
 def log_abort():
     import logging 
@@ -11,7 +11,6 @@ def log_abort():
 
 def session_flush():
     import logging 
-    from ptmscout.database import DBSession
     DBSession.flush()
     logging.getLogger('ptmscout').debug("Transaction committed")
 

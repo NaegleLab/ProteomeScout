@@ -1,6 +1,5 @@
 from scripts.DB_init import DatabaseInitialization
 from ptmscout.database import DBSession, protein
-import time, datetime
 from ptmworker.helpers import quickgo_tools
 from ptmworker import GO_tasks
 import sys, os

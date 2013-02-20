@@ -2,7 +2,7 @@ import os
 from tests.PTMScoutTestCase import IntegrationTestCase
 from ptmscout.utils import downloadutils
 from ptmscout.database import experiment
-from ptmscout.config import strings, settings
+from ptmscout.config import settings
 
 class TestUploadUtils(IntegrationTestCase):
     def test_export_experiment_26(self):

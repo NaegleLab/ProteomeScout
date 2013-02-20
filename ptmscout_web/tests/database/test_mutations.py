@@ -1,6 +1,5 @@
 from tests.DBTestCase import DBTestCase
 from ptmscout.database import protein, mutations
-import datetime
 
 class TestMutations(DBTestCase):
     def test_protein_has_mutation(self):

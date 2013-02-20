@@ -3,7 +3,7 @@ import logging
 from ptmworker import notify_tasks
 from ptmworker.helpers import upload_helpers, scansite_tools
 from ptmscout.database import modifications, protein, experiment
-from ptmscout.utils import mail, uploadutils
+from ptmscout.utils import uploadutils
 import datetime
 import traceback
 from sqlalchemy.exc import DBAPIError, SQLAlchemyError
@@ -113,8 +113,6 @@ def run_peptide_import(prot_map, exp_id, peptides, mod_map, data_runs, headers, 
 
     i = 0
     for acc in accessions:
-        pep_tasks = []
-
         for pep in peptides[acc]:
             key = (acc, pep)
             for mod_str in mod_map[key]:

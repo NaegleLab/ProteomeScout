@@ -1,5 +1,6 @@
 from behave import *
 import bot
+from mock import patch
 
 @given(u'a user chooses to assign default accessions for an experiment')
 def assign_default_accessions(context):

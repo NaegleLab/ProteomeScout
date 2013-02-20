@@ -1,7 +1,6 @@
 from scripts.DB_init import DatabaseInitialization
 from ptmscout.database import DBSession, protein
 from ptmworker.helpers import quickgo_tools
-from ptmworker import GO_tasks
 import sys, os
 import traceback
 import logging

@@ -1,8 +1,7 @@
 from pyramid.view import view_config
 from ptmscout.config import strings
-from ptmscout.database import experiment, modifications, protein, upload
-from ptmscout.utils import forms, webutils, downloadutils, uploadutils
-from pyramid.httpexceptions import HTTPFound, HTTPForbidden
+from ptmscout.database import experiment, modifications
+from ptmscout.utils import webutils
 
 def format_peptide_list(peptide_list):
     formatted_peptides = []

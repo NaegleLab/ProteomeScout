@@ -1,9 +1,8 @@
-from celery.canvas import group
 from ptmscout.database import protein, taxonomies, modifications, experiment, gene_expression, mutations, uniprot
 from ptmscout.utils import uploadutils
 from ptmscout.config import strings, settings
 from ptmscout.database.modifications import NoSuchPeptide
-from ptmworker.helpers import scansite_tools, quickgo_tools
+from ptmworker.helpers import scansite_tools
 import logging
 import pickle
 import re
@@ -64,7 +63,7 @@ class ProteinRecord(object):
             strain = m.group(2)
             return species_root, strain
 
-        return species, None
+        return self.species, None
 
     def copy(self):
         pr = ProteinRecord(self.name, self.gene, self.locus, self.species,
@@ -78,30 +77,15 @@ class ProteinRecord(object):
         return pr
 
 
-def handle_errors(exp_id_arg):
-    def decorate(fn):
-        def ttask(*args):
-            try:
-                return fn(*args)
-            except Exception, exc:
-                exp_id = args[exp_id_arg]
-                notify_tasks.finalize_experiment_error_state.apply_async((exc, traceback.format_exc(), exp_id))
-                raise
-
-        ttask.__name__ = fn.__name__
-        return ttask
-    return decorate
-
 
 def transaction_task(fn):
     def ttask(*args):
-        from ptmscout.database import DBSession
         log.debug("Running task: %s", fn.__name__)
         try:
             result = fn(*args)
             transaction.commit()
             return result
-        except Exception, e:
+        except:
             log.error(traceback.format_exc())
             transaction.abort()
             raise
@@ -119,7 +103,7 @@ def dynamic_transaction_task(fn):
             if result != None and len(result) == 3:
                 new_task, task_args, errback = result
                 new_task.apply_async(task_args, link_error=errback )
-        except Exception:
+        except:
             log.error(traceback.format_exc())
             transaction.abort()
             raise
@@ -169,7 +153,7 @@ def find_activation_loops(prot):
         loop_start = d.start + m1.end() - 3
         loop_end = d.start + m1.end() + m2.start() - 1 + 3
 
-        label = strings.kinase_loop_name if len(domain_seq) <= 35 else strings.possible_kinase_name
+        label = strings.kinase_loop_name if len(domain_seq) <= cutoff_loop_size else strings.possible_kinase_name
         source = 'predicted'
         region = protein.ProteinRegion(label, source, loop_start, loop_end)
 
@@ -186,7 +170,7 @@ def check_ambiguity(measured_pep, species_name):
 
 def parse_variants(acc, prot_seq, variants):
     new_mutations = []
-    j = 0
+    
     for mutantDict in variants:
         # for now we're only working with single mutants, but could expand
         # to double mutants in the future...
@@ -274,7 +258,7 @@ def get_taxonomic_lineage(species):
 
     try:
         taxon = find_taxon(species, strain)
-    except TaxonError, te:
+    except TaxonError:
         raise uploadutils.ParseError(None, None, "Species: " + species + " does not match any taxon node")
 
     taxonomic_lineage = [taxon.formatted_name.lower()]
@@ -294,7 +278,7 @@ def find_or_create_species(species):
         
         try:
             tx = find_taxon(species_root, strain)
-        except TaxonError, te:
+        except TaxonError:
             raise uploadutils.ParseError(None, None, "Species: " + species + " does not match any taxon node")
         
         sp = taxonomies.Species(species)

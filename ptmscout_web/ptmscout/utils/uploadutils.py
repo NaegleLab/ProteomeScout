@@ -67,7 +67,7 @@ def check_unique_column(session, ctype, required=False):
         return None
     return cols[0]
 
-def find_root(parents):
+def find_root(row, parents):
     for p1 in parents:
         is_root = True
         for p2 in parents:
@@ -123,7 +123,7 @@ def check_modification_type_matches_peptide(row, peptide, modification, taxon_no
             if len(parents) == 0:
                 raise ParseError(row, None, strings.experiment_upload_warning_ambiguous_modification_type_for_amino_acid % (mod_type, residue))
             else:
-                selected_mod = find_most_specific_parent(find_root(parents), residue)
+                selected_mod = find_most_specific_parent(find_root(row, parents), residue)
 
         mod_indices.append(r)
         mod_object.append(selected_mod)
@@ -178,7 +178,7 @@ def check_data_row(r, row, acc_col, pep_col, mod_col, run_col, data_cols, stddev
     
 def check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols, N=MAX_ROW_CHECK):
     errors = []
-    header, data = load_header_and_data_rows(session.data_file, N)
+    _, data = load_header_and_data_rows(session.data_file, N)
     
     keys = set([])
     

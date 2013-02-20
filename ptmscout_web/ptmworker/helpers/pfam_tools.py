@@ -7,7 +7,6 @@ from ptmscout.database import protein
 from xml.parsers.expat import ExpatError
 from ptmscout.utils.decorators import rate_limit
 from ptmscout.utils import protein_utils
-import traceback
 import pickle
 import os
 

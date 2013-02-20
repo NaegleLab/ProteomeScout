@@ -1,15 +1,10 @@
 from pyramid.testing import DummyRequest
 from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
-from mock import patch, Mock
-from tests.views.mocking import createMockExperiment, createMockMeasurement,\
-        createMockAmbiguity, createMockProtein, createMockPeptide,\
-        createMockPeptideModification, createMockPTM
+from mock import patch
+from tests.views.mocking import createMockExperiment
 from ptmscout.views.experiment import comparison_view
 from ptmscout.config import strings
-from ptmscout.utils import forms
-from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from webob.multidict import MultiDict
-from ptmscout.views.experiment import comparison_view
 
 
 class ComparisonViewIntegrationTests(IntegrationTestCase):

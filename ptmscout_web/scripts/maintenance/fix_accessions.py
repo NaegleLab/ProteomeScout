@@ -1,9 +1,6 @@
 from scripts.DB_init import DatabaseInitialization
 from ptmscout.database import DBSession, protein
-import time, datetime
-from ptmworker.helpers import upload_helpers
 import sys, os
-from ptmscout.utils.decorators import rate_limit
 import traceback
 import re
 

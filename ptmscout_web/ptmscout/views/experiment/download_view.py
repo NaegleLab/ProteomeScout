@@ -1,6 +1,5 @@
 from pyramid.view import view_config
-from ptmscout.utils import uploadutils, webutils
-import sys
+from ptmscout.utils import webutils
 from ptmscout.database import experiment
 from pyramid.httpexceptions import HTTPForbidden
 from ptmscout.utils import downloadutils

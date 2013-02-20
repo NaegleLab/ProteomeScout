@@ -1,6 +1,6 @@
 from HTMLParser import HTMLParser
 import json
-from DB_init import DatabaseInitialization
+from scripts.DB_init import DatabaseInitialization
 from ptmscout.database import DBSession, modifications, taxonomies
 import os
 import traceback

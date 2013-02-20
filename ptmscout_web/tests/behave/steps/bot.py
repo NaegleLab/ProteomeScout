@@ -146,7 +146,6 @@ def log_abort():
 
 def session_flush():
     import logging
-    from ptmscout.database import DBSession
     DBSession.flush()
     logging.getLogger('ptmscout').debug("Transaction committed")
 

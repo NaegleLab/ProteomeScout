@@ -2,8 +2,6 @@ import celery
 import logging
 from ptmworker.helpers import upload_helpers
 from ptmscout.database import experiment
-import transaction
-import traceback
 log = logging.getLogger('ptmscout')
 
 @celery.task

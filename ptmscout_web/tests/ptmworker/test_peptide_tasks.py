@@ -1,8 +1,6 @@
 from ptmworker import peptide_tasks
 from tests.PTMScoutTestCase import IntegrationTestCase
-from tests.views.mocking import createMockExperiment, createMockError
 from mock import patch, call
-from ptmscout.config import settings, strings
 
 class PeptideTasksTest(IntegrationTestCase):
     @patch('transaction.commit')
@@ -35,7 +33,7 @@ class PeptideTasksTest(IntegrationTestCase):
         load_ambiguities = True
 
 
-        result = peptide_tasks.run_peptide_import(prot_map, exp_id, peptides, mod_map, data_runs, headers, units, load_ambiguities)
+        peptide_tasks.run_peptide_import(prot_map, exp_id, peptides, mod_map, data_runs, headers, units, load_ambiguities)
 
         patch_store_input.assert_called_once_with(exp_id, 'peptides', prot_map)
         patch_set_stage.apply_async.assert_called_once_with((exp_id, 'peptides', 4))

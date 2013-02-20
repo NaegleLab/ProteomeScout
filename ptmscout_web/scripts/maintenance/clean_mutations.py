@@ -1,10 +1,7 @@
 from scripts.DB_init import DatabaseInitialization
-from ptmscout.database import DBSession, protein, mutations
-from ptmworker.helpers import upload_helpers
-from ptmscout.config import settings
-from geeneus import Proteome
+from ptmscout.database import DBSession, protein
 import traceback
-import sys, os
+import os
 
 FLUSH_FREQ = 1000
 if __name__ == "__main__":

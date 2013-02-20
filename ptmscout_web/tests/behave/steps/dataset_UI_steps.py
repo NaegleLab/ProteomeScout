@@ -1,5 +1,4 @@
 from behave import *
-import json
 from ptmscout.database import experiment, upload
 from ptmscout.config import strings
 from tests.behave.steps.assertions import assertEqual

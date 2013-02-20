@@ -1,10 +1,8 @@
 from scripts.DB_init import DatabaseInitialization
-from ptmscout.database import DBSession, modifications, taxonomies
-import time, datetime
+from ptmscout.database import DBSession, modifications
 from ptmworker.helpers import upload_helpers
 from ptmworker import peptide_tasks
-import sys, os
-from ptmscout.utils.decorators import rate_limit
+import os
 import traceback
 
 FLUSH_EVERY=100

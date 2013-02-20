@@ -1,4 +1,3 @@
-import unittest
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockProtein, createMockMeasurement,\

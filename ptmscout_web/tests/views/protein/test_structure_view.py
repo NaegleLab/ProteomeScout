@@ -63,10 +63,10 @@ class TestProteinStructureViews(UnitTestCase):
         pep2.protein_domain = createMockDomain(prot.id, 'd1')
         pep3.protein_domain = None
 
-        pepmod1 = createMockPeptideModification(ms1, pep1, ptm1)
-        pepmod2 = createMockPeptideModification(ms1, pep2, ptm1)
-        pepmod3 = createMockPeptideModification(ms2, pep2, ptm2)
-        pepmod4 = createMockPeptideModification(ms2, pep3, ptm1)
+        createMockPeptideModification(ms1, pep1, ptm1)
+        createMockPeptideModification(ms1, pep2, ptm1)
+        createMockPeptideModification(ms2, pep2, ptm2)
+        createMockPeptideModification(ms2, pep3, ptm1)
 
         region1 = createMockRegion(pid=prot.id, label='kinase', start=190, stop=220)
         prot.regions.append(region1)

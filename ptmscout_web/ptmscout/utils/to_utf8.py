@@ -15,8 +15,7 @@ def recode(infilename, outfilename, source_encoding, target_encoding):
 def test_file_encoding(filename, encoding):
     try:
         with codecs.open(filename, 'r', encoding) as f:
-            for line in f:
-                pass
+            for _line in f: pass
     except UnicodeDecodeError:
         return False
     return True
@@ -27,8 +26,6 @@ def convert_encoding_to_utf8(infilename, outfilename):
     valid_encodings = set(['ascii', 'utf-8', 'utf8'])
     predicted_encoding = prediction['encoding'].lower()
 
-    print predicted_encoding
-
     if predicted_encoding not in valid_encodings:
         recode(infilename, outfilename, predicted_encoding, 'utf8')
     else:
@@ -36,8 +33,6 @@ def convert_encoding_to_utf8(infilename, outfilename):
         alternate_encodings = ['utf8','cp1252','utf16','utf32']
         while not test_file_encoding(infilename, alternate_encodings[i]):
             i+=1
-
-        print alternate_encodings[i]
 
         if alternate_encodings[i] == 'utf8':
             shutil.copyfile(infilename, outfilename)

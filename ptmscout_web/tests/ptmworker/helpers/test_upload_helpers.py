@@ -2,13 +2,13 @@ from tests.PTMScoutTestCase import IntegrationTestCase
 from ptmworker.helpers import upload_helpers
 from ptmscout.database import modifications, experiment
 from tests.views.mocking import createMockExperiment, createMockProtein,\
-    createMockProbe, createMockAccession, createMockSpecies,\
+    createMockAccession, createMockSpecies,\
     createMockTaxonomy, createMockMeasurement, createMockDomain
 from mock import patch
 from ptmscout.utils import uploadutils
 from ptmscout.config import settings, strings
 import os
-import pickle
+from ptmscout.database import DBSession
 
 class UploadHelpersTest(IntegrationTestCase):
 
@@ -104,7 +104,7 @@ IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
             'hominidae',
             'homininae',
             'homo',
-            'Homo sapiens' ]
+            'homo sapiens' ]
 
         lineage = upload_helpers.get_taxonomic_lineage('Homo sapiens')
 
@@ -118,7 +118,7 @@ IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
         prot.acc_gene = 'SIRPB1'
         prot.accessions = []
         for acc in accessions:
-            prot.accessions.append(createMockAccession(prot.id, value=acc[1], type=acc[0]))
+            prot.accessions.append(createMockAccession(prot.id, value=acc[1], atype=acc[0]))
         
         upload_helpers.map_expression_probesets(prot)
 
@@ -199,7 +199,6 @@ IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
         self.assertEqual(pid, pepinst.protein_id)
         
     def test_insert_run_data_when_exists_should_modify_existing(self):
-        from ptmscout.database import DBSession
         MS_peptide = modifications.MeasuredPeptide()
         MS_peptide.query_accession = 'Q01234'
         MS_peptide.experiment_id = 1
@@ -272,7 +271,6 @@ IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
  
 
     def test_insert_run_data_should_create_data_records_when_timeseries(self):
-        from ptmscout.database import DBSession
         MS_peptide = modifications.MeasuredPeptide()
         MS_peptide.experiment_id = 1
         MS_peptide.protein_id = 35546

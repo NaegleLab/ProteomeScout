@@ -1,14 +1,11 @@
 import celery
 import logging
 from ptmworker import notify_tasks
-from ptmworker.helpers import upload_helpers, entrez_tools, pfam_tools, quickgo_tools, picr_tools, uniprot_tools
-from ptmscout.database import upload, modifications, protein, experiment
-from celery.canvas import group
-from ptmscout.config import strings, settings
-from ptmscout.utils import mail, uploadutils
-import datetime
+from ptmworker.helpers import upload_helpers, entrez_tools, pfam_tools, picr_tools, uniprot_tools
+from ptmscout.database import protein, experiment
+from ptmscout.config import strings
+from ptmscout.utils import uploadutils
 import traceback
-from ptmscout.utils.decorators import rate_limit
 from sqlalchemy.exc import DBAPIError, SQLAlchemyError
 
 log = logging.getLogger('ptmscout')

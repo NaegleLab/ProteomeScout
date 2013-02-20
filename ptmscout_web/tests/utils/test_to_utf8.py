@@ -12,8 +12,7 @@ class UTF8TestCase(unittest.TestCase):
         to_utf8.convert_encoding_to_utf8(source, dest)
 
         with codecs.open(dest, 'rb', encoding='utf8') as f:
-            for line in f:
-                pass
+            for _line in f: pass
 
         os.remove(dest)
 

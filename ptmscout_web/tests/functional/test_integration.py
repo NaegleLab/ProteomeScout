@@ -1,6 +1,3 @@
-import unittest
-from webtest.app import TestApp
-from ptmscout import main
 from ptmscout.config import strings
 from tests.PTMScoutTestCase import IntegrationTestCase
 from ptmscout.database import experiment

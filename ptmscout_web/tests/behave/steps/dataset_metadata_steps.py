@@ -1,7 +1,5 @@
 from behave import *
-import json
 from ptmscout.database import upload
-from ptmscout.config import strings
 
 def create_column(cnum, ctype, clabel=''):
     c = upload.SessionColumn()
@@ -9,9 +7,6 @@ def create_column(cnum, ctype, clabel=''):
     c.type=ctype
     c.label=clabel
     return c
-
-    
-    return session.id
 
 @given(u'a user is submitting publication information for a new dataset')
 def setup_pre_existing_session(context):

@@ -1,10 +1,8 @@
-from pyramid import testing
-from sqlalchemy import engine_from_config
-from ptmscout.database import DBSession, Base  # base declarative object
+from ptmscout.database import DBSession
 import os, sys
 import traceback
 from ptmscout.database import protein
-from DB_init import DatabaseInitialization
+from scripts.DB_init import DatabaseInitialization
 from obo_parser import GeneOntologyFile
 
 if __name__ == '__main__':

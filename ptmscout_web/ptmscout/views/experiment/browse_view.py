@@ -1,8 +1,6 @@
+from ptmscout.database import experiment, protein, taxonomies
 from ptmscout.config import strings
-from ptmscout.database import experiment, taxonomies
-from ptmscout.config import strings
-from ptmscout.database import protein, modifications, taxonomies
-from ptmscout.utils import webutils, forms, paginate
+from ptmscout.utils import forms, paginate
 from ptmscout.views.protein import search_view
 from pyramid.view import view_config
 
@@ -23,7 +21,6 @@ def browse_experiment(request):
     experiment_id = int(request.matchdict['id'])
     ptm_exp = experiment.getExperimentById(experiment_id, request.user)
     
-    protein_cnt = 0
     proteins = []
     protein_metadata = {}
     errors = []

@@ -1,9 +1,9 @@
 import celery
-import logging
 from ptmworker.helpers import upload_helpers
 from ptmscout.database import experiment, modifications
 from ptmscout.config import strings, settings
 from ptmscout.utils import mail
+import traceback
 
 @celery.task
 @upload_helpers.transaction_task
@@ -67,4 +67,16 @@ def finalize_import(exp_id, user_email, application_url):
     mail.celery_send_mail([user_email], subject, message)
 
 
+def handle_errors(exp_id_arg):
+    def decorate(fn):
+        def ttask(*args):
+            try:
+                return fn(*args)
+            except Exception, exc:
+                exp_id = args[exp_id_arg]
+                finalize_experiment_error_state.apply_async((exc, traceback.format_exc(), exp_id))
+                raise
 
+        ttask.__name__ = fn.__name__
+        return ttask
+    return decorate

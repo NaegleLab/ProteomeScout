@@ -1,9 +1,6 @@
 from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPFound
 import ptmscout.database.experiment as experiment
 from ptmscout.config import strings
-from ptmscout.utils import webutils
-from ptmscout.database import modifications, protein
 
 
 @view_config(route_name='experiments', renderer='ptmscout:templates/experiments/experiments.pt')

@@ -106,7 +106,7 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
         validator.validate.return_value = []
 
         try:
-            result = ambiguity_view.experiment_ambiguity_view(request)
+            ambiguity_view.experiment_ambiguity_view(request)
         except HTTPFound, f:
             self.assertEqual("%s/upload/%d" % (request.application_url, session_id), f.location)
         else:
@@ -193,8 +193,6 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
         request.matchdict['id'] = '1323'
         request.user = None
    
-        schema = forms.FormSchema()
-        pep_list = "Some peptide list"
         exp = createMockExperiment(1323)
         exp.ambiguity = 0
 

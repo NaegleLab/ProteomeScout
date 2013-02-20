@@ -1,6 +1,4 @@
 import re
-from Bio.Seq import Seq
-from Bio.Alphabet import ProteinAlphabet
 
 def get_accession_type(acc):
     acc_type = None

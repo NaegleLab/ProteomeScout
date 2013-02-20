@@ -3,7 +3,6 @@ import logging
 from ptmworker import notify_tasks
 from ptmworker.helpers import upload_helpers, quickgo_tools
 from ptmscout.database import protein
-import traceback
 
 log = logging.getLogger('ptmscout')
 

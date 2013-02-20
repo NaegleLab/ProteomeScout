@@ -9,9 +9,7 @@ from Bio import SeqIO
 import re
 import traceback
 import logging
-import ptmscout.database.taxonomies
 import xml.dom.minidom as xml
-from xml.parsers.expat import ExpatError
 import mmap
 from ptmworker.helpers import upload_helpers
 
@@ -157,7 +155,7 @@ def parse_xml(xml):
     locus = xml.name
     taxons = [ t.lower() for t in xml.annotations['taxonomy'] ]
     species = get_scientific_name(xml.annotations['organism'])
-    taxon_id = None
+#    taxon_id = None
 
     taxons.append(species.lower())
 
@@ -290,7 +288,7 @@ def get_uniprot_records(accs):
                     r2 = get_uniprot_records(accs[bisect:])
 
                     return map_combine(r1, r2)
-        except Exception, e:
+        except Exception:
             i+=1
             log.info("Uniprot query failed (retry %d / %d)", i, MAX_RETRIES)
 

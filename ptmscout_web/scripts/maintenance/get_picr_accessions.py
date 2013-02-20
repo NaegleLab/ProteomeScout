@@ -1,9 +1,7 @@
 from scripts.DB_init import DatabaseInitialization
 from ptmscout.database import DBSession, protein
-import time, datetime
 from ptmworker.helpers import upload_helpers, picr_tools
 import sys, os
-from ptmscout.utils.decorators import rate_limit
 import traceback
 
 def get_picr_results(accessions, taxon_id):

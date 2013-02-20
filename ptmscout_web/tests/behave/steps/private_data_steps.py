@@ -3,7 +3,6 @@ from bot import Bot
 from assertions import assertDoesNotContain, assertContains
 from ptmscout.config import strings
 from mock import patch
-from ptmscout.database import permissions
 import assertions
 import helpers
 

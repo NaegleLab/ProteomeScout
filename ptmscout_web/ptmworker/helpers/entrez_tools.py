@@ -6,7 +6,6 @@ from geeneus import Proteome
 import logging
 import re
 from Bio.SubsMat import MatrixInfo
-from ptmscout.utils import protein_utils
 
 log = logging.getLogger('ptmscout')
 

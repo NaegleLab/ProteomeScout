@@ -1,6 +1,6 @@
 import sys, os
 from scripts.DB_init import DatabaseInitialization
-from ptmscout.database import DBSession, uniprot, modifications, experiment
+from ptmscout.database import DBSession, modifications, experiment
 from ptmworker.helpers import upload_helpers
 import traceback
 

@@ -2,7 +2,7 @@ from scripts.DB_init import DatabaseInitialization
 from ptmscout.config import settings
 from ptmscout.database import DBSession, experiment, upload
 import datetime
-import sys, os
+import os
 import re
 import traceback
 import shutil

@@ -4,7 +4,6 @@ from ptmscout.database.user import NoSuchUser
 from ptmscout.utils import webutils, mail, forms
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
-import urllib
 
 def create_schema(request):
     schema = forms.FormSchema()

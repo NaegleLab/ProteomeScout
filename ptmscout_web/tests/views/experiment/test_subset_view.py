@@ -1,22 +1,20 @@
-from pyramid import testing
-import unittest
 from pyramid.testing import DummyRequest
 from ptmscout.views.experiment import subset_view
-from mock import patch, Mock
+from mock import patch
 from ptmscout.config import strings
 from tests.views.mocking import createMockExperiment
-from tests.PTMScoutTestCase import IntegrationTestCase
+from tests.PTMScoutTestCase import UnitTestCase, IntegrationTestCase
 
 class ExperimentSubsetIntegrationTest(IntegrationTestCase):
     def test_integration(self):
         self.ptmscoutapp.get('/experiments/26/subsets', status=200)
 
-class ExperimentSubsetViewTests(unittest.TestCase):
+class ExperimentSubsetViewTests(UnitTestCase):
 
     @patch('ptmscout.views.dataset.dataset_explorer_view.format_explorer_view')
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_experiment_subset_view(self, patch_getExperiment, patch_format_explorer):
-        mock_experiment = Mock('ptmscout.database.experiment.Experiment')
+        mock_experiment = createMockExperiment()
         mock_experiment.measurements = ["some","list","of","measurements"]
 
         patch_getExperiment.return_value = mock_experiment

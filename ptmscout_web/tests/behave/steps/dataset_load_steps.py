@@ -1,9 +1,5 @@
 from behave import *
-from ptmscout.config import strings
-import time
-from assertions import assertContains, assertRegexMatch
 from mock import patch
-import re
 from tests.behave.steps import bot
 import helpers, assertions
 

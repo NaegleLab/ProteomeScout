@@ -1,6 +1,5 @@
 from scripts.DB_init import DatabaseInitialization
 from ptmscout.database import DBSession, protein, gene_expression
-import time, datetime
 import sys, os
 import traceback
 FLUSH_EVERY = 100
@@ -44,7 +43,7 @@ if __name__ == "__main__":
             if i % FLUSH_EVERY == 0:
                 DBSession.flush()
                 print i, "/", len(proteins)
-       
+
         DBSession.flush()
     except Exception, e:
         traceback.print_exc()

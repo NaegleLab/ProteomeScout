@@ -79,7 +79,6 @@ def protein_search_view(request):
     pager = paginate.Paginator(form_schema, QUERY_PAGE_LIMIT)
     pager.parse_parameters(request)
 
-    protein_cnt = 0
     proteins = []
     protein_metadata = {}
     errors = []

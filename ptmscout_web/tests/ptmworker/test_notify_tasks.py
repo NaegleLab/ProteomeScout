@@ -1,6 +1,6 @@
 from ptmworker import notify_tasks
 from tests.PTMScoutTestCase import IntegrationTestCase
-from tests.views.mocking import createMockExperiment, createMockError
+from tests.views.mocking import createMockExperiment
 from mock import patch
 from ptmscout.config import settings, strings
 

@@ -7,7 +7,6 @@ from tests.views.mocking import createMockProtein, createMockMeasurement, \
     createMockPeptide, createMockUser, createMockPTM,\
     createMockPeptideModification
 from tests.PTMScoutTestCase import UnitTestCase, IntegrationTestCase
-import urllib
 
 class TestProteinSearchViewIntegration(IntegrationTestCase):
 #    def setUp(self):
@@ -98,16 +97,13 @@ class TestProteinSearchViews(UnitTestCase):
         patch_getSpecies.assert_called_with()
         self.assertEqual(strings.protein_search_page_title, result['pageTitle'])
         
-        sorted_peps = sorted([pep1, pep2, pep3], key=lambda pep: pep.getName())
-        parsed_peps = [{'site':pep.getName(), 'peptide':pep.getPeptide()} for pep in sorted_peps]
-        
         self.assertEqual(protein_list, result['proteins'])
         self.assertEqual(True, result['submitted'])
 
     @patch('ptmscout.database.modifications.getMeasuredPeptidesByProtein')
     @patch('ptmscout.database.protein.searchProteins')
     @patch('ptmscout.database.taxonomies.getAllSpecies')
-    def test_protein_search_view_should_process_search_form(self, patch_getSpecies, patch_getProteins, patch_getMods):
+    def test_protein_search_view_should_process_search_form_with_accession(self, patch_getSpecies, patch_getProteins, patch_getMods):
         request = DummyRequest()
         request.GET['submitted'] = "true"
         request.GET['acc_search'] = "ACK1"
@@ -121,7 +117,7 @@ class TestProteinSearchViews(UnitTestCase):
     @patch('ptmscout.database.modifications.getMeasuredPeptidesByProtein')
     @patch('ptmscout.database.protein.searchProteins')
     @patch('ptmscout.database.taxonomies.getAllSpecies')
-    def test_protein_search_view_should_process_search_form(self, patch_getSpecies, patch_getProteins, patch_getMods):
+    def test_protein_search_view_should_process_search_form_with_peptide(self, patch_getSpecies, patch_getProteins, patch_getMods):
         request = DummyRequest()
         request.GET['submitted'] = "true"
         request.GET['acc_search'] = ""

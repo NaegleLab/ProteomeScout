@@ -2,7 +2,6 @@ from pyramid.view import view_config
 from ptmworker.helpers import entrez_tools
 from ptmscout.database import experiment
 from ptmscout.utils import webutils
-import json
 
 @view_config(route_name='pmid_fetch', renderer='json', permission='private')
 def call_get_pubmed_record_by_id(request):
