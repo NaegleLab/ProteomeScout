@@ -1,0 +1,1314 @@
+Name		Description	Accession #	Site	Peptide	Charge	XCorr bj635	XCorr bj504	XCorr cs97	XCorr cs98	XCorr cs110	XCorr cs122	Mass Accuracy bj635	Mass Accuracy bj504	Mass Accuracy cs97	Mass Accuracy cs98	Mass Accuracy cs110	Mass Accuracy cs122
+ABI1	Adaptor/scaffold	Abl interactor 1 	Q8IZP0	§212	TLEPVKPPTVPNDyMTSPAR 	3		2.63						-0.71				
+ABI1	Adaptor/scaffold	Abl interactor 1 	Q8IZP0	§212	TLEPVKPPTVPNDYmTSPAR 	3		2.63						-0.71				
+ABI1	Adaptor/scaffold	Abl interactor 1 	Q8IZP0	§212	TLEPVKPPTVPNDyMTSPAR 	3		3.5						-1.88				
+ANK3	Adaptor/scaffold	Ankyrin-3 	Q12955	533	ADIVQQLLQQGASPNAATTSGyTPLHLSAR 	4	3.59						0.41					
+BCAR1	Adaptor/scaffold	Breast cancer anti-estrogen resistance protein 1 	P56945	§128	AQQGLyQVPGPSPQFQSPPAK 	3	4.57						1.08					
+BCAR1	Adaptor/scaffold	Breast cancer anti-estrogen resistance protein 1 	P56945	§234	VGQGYVYEAAQPEQDEyDIPR 	3	4.53	3.04		3.92			0.8	-0.44		-4.46		
+BCAR1	Adaptor/scaffold	Breast cancer anti-estrogen resistance protein 1 	P56945	§249	HLLAPGPQDIyDVPPVR 	3				2.34						-2.7		
+BCAR1	Adaptor/scaffold	Breast cancer anti-estrogen resistance protein 1 	P56945	§387	RPGPGTLyDVPRER 	3	2.7						3.05					
+CAV1	Adaptor/scaffold	Caveolin-1	Q03135	§14	YVDSEGHLyTVPIR 	2				4						-4.03		
+CAV1	Adaptor/scaffold	Caveolin-1	Q03135	§14	YVDSEGHLyTVPIR 	3			1.92	2.63					-6.79	-4.78		
+CAV1	Adaptor/scaffold	Caveolin-1	Q03135	§14	YVDSEGHLyTVPIR 	3				2.15						-2.98		
+CBLB	Adaptor/scaffold	E3 ubiquitin-protein ligase CBL-B 	Q13191	§889	TSQDyDQLPSCSDGSQAPARPPKPRPR 	4	2.75						2.1					
+CTNND1	Adaptor/scaffold	Catenin delta-1 	O60716	§96	LNGPQDHSHLLySTIPR 	3	4.17						0.05					
+CTNND1	Adaptor/scaffold	Catenin delta-1 	O60716	§257	APSRQDVyGPQPQVR 	3	4.08						2.82					
+CTNND1	Adaptor/scaffold	Catenin delta-1 	O60716	§257	QDVyGPQPQVR 	2			1.9						-6.01			
+CTNND1	Adaptor/scaffold	Catenin delta-1 	O60716	904	SLDNNySTPNER 	2	3.29	2.47	3.25	3.42		2.7	3.31	-2.34	-2.02	-2.02		-2.26
+CTNND1	Adaptor/scaffold	Catenin delta-1 	O60716	904	SLDNNySTPNERGDHNR 	3	3.1						1.66					
+DAPP1	Adaptor/scaffold	Dual adaptor of phosphotyrosine and 3-phosphoinositides	Q9UHF2	§139	KVEEPSIyESVR 	2			2.9						-7.98			
+DAPP1	Adaptor/scaffold	Dual adaptor of phosphotyrosine and 3-phosphoinositides	Q9UHF2	§139	KVEEPSIyESVR 	3			2.24						-7.12			
+DLG1	Adaptor/scaffold	Disks large homolog 1 	Q12959	760	DYEVDGRDyHFVTSR 	3			3.15	3.68					-8.58	-6.41		
+DLG1	Adaptor/scaffold	Disks large homolog 1 	Q12959	760	RDYEVDGRDyHFVTSR 	3			3.76	3.36					-8.75	-5.6		
+DLG1	Adaptor/scaffold	Disks large homolog 1 	Q12959	760	RDYEVDGRDyHFVTSR 	4				3.91						-7.18		
+DLG3	Adaptor/scaffold	Discs large homolog 3 	Q92796	673	RDNEVDGQDyHFVVSR 	3	3.79						0.25					
+DLG3	Adaptor/scaffold	Discs large homolog 3 	Q92796	808	QIIEDQSGHyIWVPSPEKL 	3			2.33						-7.99			
+DLGAP4	Adaptor/scaffold	Disks large-associated protein 4 	Q9Y2H0	369	ETDAAAEGPIPCRRMRSGSyIK 	4		2.06						-1.87				
+DOK1	Adaptor/scaffold	Docking protein 1 	Q99704	§315	IAPCPSQDSLySDPLDSTSAQAGEGVQR 	3	6.07						2.04					
+DOK1	Adaptor/scaffold	Docking protein 1 	Q99704	§449	SHNSALySQVQK 	2	4.06						3.75					
+DOK2	Adaptor/scaffold	Docking protein 2 	O60496	§299	GQEGEyAVPFDAVAR 	2	4.18		3.61				-0.33		-6.11			
+EPS8	Adaptor/scaffold	Epidermal growth factor receptor kinase substrate 8	Q12929	525	HIDRNyEPLK 	3	3.07		2.77	3.18			1.99		-6.67	-3.51		
+EPS8	Adaptor/scaffold	Epidermal growth factor receptor kinase substrate 8	Q12929	525	HIDRNyEPLKTQPK 	3	4.31						0.54					
+EPS8	Adaptor/scaffold	Epidermal growth factor receptor kinase substrate 8	Q12929	525	HIDRNyEPLKTQPK 	4	3.03						1.34					
+EPS8	Adaptor/scaffold	Epidermal growth factor receptor kinase substrate 8	Q12929	774	VySQITVQK 	2	2.95		3	2.94			1.31		-5.51	-5.08		
+FLOT1	Adaptor/scaffold	Flotillin-1	O75955	203	VSAQyLSEIEMAK 	2			3.74						-6.37			
+FLOT1	Adaptor/scaffold	Flotillin-1	O75955	203	VSAQYLSEIEmAK 	2			3.74						-6.37			
+FLOT1	Adaptor/scaffold	Flotillin-1	O75955	203	VSAQyLSEIEMAK 	2			3.68						-6.81			
+FYB	Adaptor/scaffold	FYN-binding protein 	O15117	§571	TTAVEIDyDSLK 	2	3.26			3.51			4.34			-4.52		
+GAB1	Adaptor/scaffold	GRB2-associated-binding protein 1 	Q13480	§406	DASSQDCyDIPR 	2	3.14	2.62	3.1	3.31			4.79	0.5	-4.61	-2.58		
+GAB1	Adaptor/scaffold	GRB2-associated-binding protein 1 	Q13480	§406	KDASSQDCyDIPR 	3				4.08						-0.96		
+GAB1	Adaptor/scaffold	GRB2-associated-binding protein 1 	Q13480	§627	GDKQVEyLDLDLDSGK 	3	3.04						1					
+GAB1	Adaptor/scaffold	GRB2-associated-binding protein 1 	Q13480	§659	SSGSGSSVADERVDyVVVDQQK 	3	3.9	5.74		5.61		4.94	3.88	-0.69		-5.05		-4.21
+GAB2	Adaptor/scaffold	GRB2-associated-binding protein 2 	Q9UQC2	§266	DSTyDLPR 	2				1.86						-1.4		
+GRB10	Adaptor/scaffold	Growth factor receptor-bound protein 10 	Q13322	404	YGmLLYQNYR 	2					1.9						-4.21	
+GRB10	Adaptor/scaffold	Growth factor receptor-bound protein 10 	Q13322	404	YGMLLyQNYR 	2					1.9						-4.21	
+GRB10	Adaptor/scaffold	Growth factor receptor-bound protein 10 	Q13322	404	YGMLLyQNYR 	2			2.44						-6.51			
+HEFL	Adaptor/scaffold	HEF-like protein	Q9NQ75	329	GTFPLDEDVSyKVPSSFLIPR 	3				2.96						-2.93		
+HEFL	Adaptor/scaffold	HEF-like protein	Q9NQ75	350	VEQQNTKPNIyDIPK 	3				3.08						-5.75		
+HGS	Adaptor/scaffold	Hepatocyte growth factor-regulated tyrosine kinase substrate 	O14964	132	VVQDTyQIMK 	2			2.93		2.95				-3.32		-2.58	
+HGS	Adaptor/scaffold	Hepatocyte growth factor-regulated tyrosine kinase substrate 	O14964	132	VVQDTYQImK 	2			2.93		2.95				-3.32		-2.58	
+HGS	Adaptor/scaffold	Hepatocyte growth factor-regulated tyrosine kinase substrate 	O14964	132	YKVVQDTyQIMK 	2			3.68						-4.54			
+HGS	Adaptor/scaffold	Hepatocyte growth factor-regulated tyrosine kinase substrate 	O14964	132	YKVVQDTyQIMK 	3			2.66						-7.34			
+HGS	Adaptor/scaffold	Hepatocyte growth factor-regulated tyrosine kinase substrate 	O14964	§216	VCEPCyEQLNR 	2			3.35	3.39		3.19			-4.51	-2.15		-2.15
+IRS1	Adaptor/scaffold	Insulin receptor substrate 1 	P35568	§46	LEyYENEK 	2					2.08						-1.91	
+IRS1	Adaptor/scaffold	Insulin receptor substrate 1 	P35568	§46	LEyYENEKK 	2					2.42						-1.71	
+IRS1	Adaptor/scaffold	Insulin receptor substrate 1 	P35568	§46	LEyYENEKK 	3					3.01						-1.07	
+IRS1	Adaptor/scaffold	Insulin receptor substrate 1 	P35568	§612	GGHHRPDSSTLHTDDGyMPMSPGVAPVPSGR 	4					4.55						-1.49	
+IRS1	Adaptor/scaffold	Insulin receptor substrate 1 	P35568	§612	GGHHRPDSSTLHTDDGYmPMSPGVAPVPSGR 	4					4.55						-1.49	
+IRS1	Adaptor/scaffold	Insulin receptor substrate 1 	P35568	§612	GGHHRPDSSTLHTDDGYMPmSPGVAPVPSGR 	4					4.55						-1.49	
+IRS1	Adaptor/scaffold	Insulin receptor substrate 1 	P35568	§612	RGGHHRPDSSTLHTDDGyMPMSPGVAPVPSGR 	4					5						-2.14	
+IRS1	Adaptor/scaffold	Insulin receptor substrate 1 	P35568	§612	RGGHHRPDSSTLHTDDGYmPMSPGVAPVPSGR 	4					5						-2.14	
+IRS1	Adaptor/scaffold	Insulin receptor substrate 1 	P35568	§612	RGGHHRPDSSTLHTDDGYMPmSPGVAPVPSGR 	4					5						-2.14	
+IRS1	Adaptor/scaffold	Insulin receptor substrate 1 	P35568	§612	RGGHHRPDSSTLHTDDGyMPMSPGVAPVPSGR 	5					3.12						-3.36	
+IRS1	Adaptor/scaffold	Insulin receptor substrate 1 	P35568	§612	RGGHHRPDSSTLHTDDGYmPMSPGVAPVPSGR 	5					3.12						-3.36	
+IRS1	Adaptor/scaffold	Insulin receptor substrate 1 	P35568	§612	RGGHHRPDSSTLHTDDGYMPmSPGVAPVPSGR 	5					3.12						-3.36	
+IRS1	Adaptor/scaffold	Insulin receptor substrate 1 	P35568	§632	KGSGDyMPMSPK 	2					2.59						-1.88	
+IRS1	Adaptor/scaffold	Insulin receptor substrate 1 	P35568	§632	KGSGDYmPMSPK 	2					2.59						-1.88	
+IRS1	Adaptor/scaffold	Insulin receptor substrate 1 	P35568	§632	KGSGDYMPmSPK 	2					2.59						-1.88	
+IRS2	Adaptor/scaffold	Insulin receptor substrate 2	Q9Y4H2	75	GPGAGGDEATAGGGSAPQPPRLEyYESEKK 	4					3.31						-4.57	
+IRS2	Adaptor/scaffold	Insulin receptor substrate 2 	Q9Y4H2	§653	SSSSNLGADDGyMPMTPGAALAGSGSGSCR 	3					6.14						-3.79	
+IRS2	Adaptor/scaffold	Insulin receptor substrate 2 	Q9Y4H2	§653	SSSSNLGADDGYmPMTPGAALAGSGSGSCR 	3					6.14						-3.79	
+IRS2	Adaptor/scaffold	Insulin receptor substrate 2 	Q9Y4H2	§653	SSSSNLGADDGYMPmTPGAALAGSGSGSCR 	3					6.14						-3.79	
+IRS2	Adaptor/scaffold	Insulin receptor substrate 2 	Q9Y4H2	§675	SDDyMPMSPASVSAPK 	2					4.11						-0.64	
+IRS2	Adaptor/scaffold	Insulin receptor substrate 2 	Q9Y4H2	§675	SDDYmPMSPASVSAPK 	2					4.11						-0.64	
+IRS2	Adaptor/scaffold	Insulin receptor substrate 2 	Q9Y4H2	§675	SDDYMPmSPASVSAPK 	2					4.11						-0.64	
+IRS2	Adaptor/scaffold	Insulin receptor substrate 2 	Q9Y4H2	742	ASSPAESSPEDSGyMR 	2					3.34						-2.87	
+IRS2	Adaptor/scaffold	Insulin receptor substrate 2 	Q9Y4H2	742	ASSPAESSPEDSGYmR 	2					3.34						-2.87	
+IRS2	Adaptor/scaffold	Insulin receptor substrate 2 	Q9Y4H2	§823	APYTCGGDSDQyVLMSSPVGR 	3					4.85						-3.16	
+IRS2	Adaptor/scaffold	Insulin receptor substrate 2 	Q9Y4H2	§823	APYTCGGDSDQYVLmSSPVGR 	3					4.85						-3.16	
+IRS4	Adaptor/scaffold	Insulin receptor substrate 4 (IRS-4)	O14654	1038	yDAETGR 	2			1.68						-6.02			
+ITSN2	Adaptor/scaffold	Intersectin-2 	Q9NZM3	§552	LIyLVPEK 	2			2.37						-8.57			
+LIME1	Adaptor/scaffold	Lck-interacting transmembrane adapter 1	Q9NX69	200	SPQEPQQGKTEVTPAAQVDVLySR 	3	6.01						1.4					
+LMO7	Adaptor/scaffold	LIM domain only protein 7 	Q8WWI1	1672	NHQLYCNDCyLR 	3			4.53		4.14				-7.16		-3.35	
+LPP	Adaptor/scaffold	Lipoma-preferred partner 	Q93052	§317	NDSDPTyGQQGHPNTWK 	3				2.68						-1.63		
+LPP	Adaptor/scaffold	Lipoma-preferred partner 	Q93052	§317	NDSDPTyGQQGHPNTWKR 	3	2.04						-1.61					
+MAGED1	Adaptor/scaffold	Melanoma-associated antigen D1 	Q9Y5V3	§92	GPNGVyDFSQAHNAK 	3					2.63						-3.6	
+MPZL1	Adaptor/scaffold	Myelin protein zero-like protein 1	O95297	§241	SLPSGSHQGPVIyAQLDHSGGHHSDKINK 	3				3.93						-4.66		
+MPZL1	Adaptor/scaffold	Myelin protein zero-like protein 1	O95297	§263	SESVVyADIR 	2		2.88	3.26	3.04	2.14	2.98		2.31	-6.38	-6.79	-3.18	-2.61
+NEDD9	Adaptor/scaffold	Enhancer of filamentation 1 	Q14511	317	HQSLSPNHPPPQLGQSVGSQNDAyDVPR 	3				6.73						-3.52		
+NEDD9	Adaptor/scaffold	Enhancer of filamentation 1 	Q14511	317	HQSLSPNHPPPQLGQSVGSQNDAyDVPR 	4				4.34						-5.66		
+NEDD9	Adaptor/scaffold	Enhancer of filamentation 1 	Q14511	317	RHQSLSPNHPPPQLGQSVGSQNDAyDVPR 	4	4.59			4.22			3.28			-6.08		
+NEDD9	Adaptor/scaffold	Enhancer of filamentation 1 	Q14511	345	ANPQERDGVyDVPLHNPPDAK 	3				3.97						-4.79		
+NEDD9	Adaptor/scaffold	Enhancer of filamentation 1 	Q14511	345	DGVyDVPLHNPPDAK 	2				3.79						-5.76		
+PACS1	Adaptor/scaffold	Phosphofurin acidic cluster sorting protein 1 	Q6VY07	251	IySLSSQPIDHEGIK 	3			2.44						-6.91			
+PAG1	Adaptor/scaffold	Phosphoprotein associated with glycosphingolipid-enriched microdomains 1 	Q9NWQ8	§317	SREEDPTLTEEEISAMySSVNKPGQLVNK 	4	5.72						4.52					
+PAG1	Adaptor/scaffold	Phosphoprotein associated with glycosphingolipid-enriched microdomains 1 	Q9NWQ8	§341	SGQSLTVPESTyTSIQGDPQR 	2	4.35						-0.27					
+PAG1	Adaptor/scaffold	Phosphoprotein associated with glycosphingolipid-enriched microdomains 1 	Q9NWQ8	§341	SGQSLTVPESTyTSIQGDPQR 	3	3.32						-0.41					
+PAG1	Adaptor/scaffold	Phosphoprotein associated with glycosphingolipid-enriched microdomains 1 	Q9NWQ8	§359	SPSSCNDLyATVK 	2	3.38						2.94					
+PAG1	Adaptor/scaffold	Phosphoprotein associated with glycosphingolipid-enriched microdomains 1 	Q9NWQ8	§417	ENDyESISDLQQGR 	2	3.93		3.91	3.27			0.68		-6.57	-5.8		
+PAG1	Adaptor/scaffold	Phosphoprotein associated with glycosphingolipid-enriched microdomains 1 	Q9NWQ8	§417	ENDyESISDLQQGR 	3	3.47						3.03					
+PARD3	Adaptor/scaffold	Partitioning-defective 3	Q8TEW0	489	DVTIGGSAPIyVK 	2	3.07		3.35				-0.54		-5.95			
+PARD3B	Adaptor/scaffold	Partitioning-defective 3 homolog B 	Q8TEW8	1000	DGHPLSPERDHLEGLyAK 	3				2.16						-5.56		
+PDLIM5	Adaptor/scaffold	PDZ and LIM domain protein 5 	Q96HC4	§250	YTEFyHVPTHSDASK 	3	3.43						0.28					
+PIK3AP1	Adaptor/scaffold	Phosphoinositide-3-kinase adaptor protein 1	Q6ZUJ8	694	HSQHLPAKVEFGVyESGPR 	4	2.61						1.44					
+PIK3AP1	Adaptor/scaffold	Phosphoinositide-3-kinase adaptor protein 1	Q6ZUJ8	694	HSQHLPAKVEFGVyESGPRK 	4	3.15						1.05					
+SDCBP	Adaptor/scaffold	Syntenin-1 	O00560	46	VIQAQTAFSANPANPAILSEASAPIPHDGNLyPR 	3				6.84						-3.4		
+SDCBP	Adaptor/scaffold	Syntenin-1 	O00560	46	VIQAQTAFSANPANPAILSEASAPIPHDGNLyPR 	4			4.81						-3.51			
+SDCBP	Adaptor/scaffold	Syntenin-1 	O00560	91	PSSINyMVAPVTGNDVGIR 	3				2.31						-3.43		
+SDCBP	Adaptor/scaffold	Syntenin-1 	O00560	91	PSSINYmVAPVTGNDVGIR 	3				2.31						-3.43		
+SH2D3C	Adaptor/scaffold	SH2 domain-containing protein 3C 	Q8N5H7	183	GAAGEPEAGSDyVK 	2				3.41						-3.47		
+SHANK1	Adaptor/scaffold	SH3 and multiple ankyrin repeat domains protein 1 	Q9Y566	275	AACARHCLALTALLDLGGSPNyK 	3				2.3						-3.91		
+SHC1	Adaptor/scaffold	SHC-transforming protein 1 	P29353	§427	ELFDDPSyVNVQNLDK 	2	4.55		4.65	5.04	4.7	4.23	0.37		-6.05	-3.46	-2.59	-3.64
+SHC1	Adaptor/scaffold	SHC-transforming protein 1 	P29353	§427	ELFDDPSyVNVQNLDK 	3	4.26		3.27	3.27	5.57	3.15	-0.31		-7.17	-3.84	-3.84	0.28
+SHC1	Adaptor/scaffold	SHC-transforming protein 1 	P29353	§427	ELFDDPSyVNVQNLDKAR 	3	3						0.51					
+SKAP1	Adaptor/scaffold	Src kinase-associated phosphoprotein 1 (Src family-associated	O15268	142	GLFYyYANEK 	2			1.96						-5.69			
+SKAP2	Adaptor/scaffold	Src kinase-associated phosphoprotein 2	Q9UED8	151	TVFYyYGSDKDK 	2			2.92						-7.18			
+SKAP2	Adaptor/scaffold	Src kinase associated phosphoprotein 2	Q9UED8	§197	IyQFTAASPK 	2			2.75						-7.86			
+SPRY1	Adaptor/scaffold	Sprouty homolog 1 	O43609	53	GSNEyTEGPSVVK 	2						3.09						-1.69
+SPTAN1	Adaptor/scaffold	"""Spectrin alpha chain, brain """	Q13813	2423	ALSSEGKPyVTKEELYQNLTR 	3			4.7						-5.74			
+TJP2	Adaptor/scaffold	Tight junction protein ZO-2 	Q9UDY2	261	AYDPDyER 	2			1.7						-2.23			
+TJP2	Adaptor/scaffold	Tight junction protein ZO-2 	Q9UDY2	§1118	HPDIyAVPIK 	2				1.81						-2.82		
+TJP2	Adaptor/scaffold	Tight junction protein ZO-2 	Q9UDY2	§1118	IEIAQKHPDIyAVPIK 	3	3.74		3.66	3.74			0.69		-7.34	-4.86		
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	327	IQGMEHLENGPSVSVDyNTSDPLIR 	5			2.8						-7.54			
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	"""339, 366"""	WDSyDNFSGHRDDGMEEVVGHTQGPLDGSLYAK 	4	4.08			3.82			3.59			-1.08		
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	"""339, 366"""	WDSYDNFSGHRDDGmEEVVGHTQGPLDGSLYAK 	4	4.08			3.82			3.59			-1.08		
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	"""339, 366"""	WDSYDNFSGHRDDGMEEVVGHTQGPLDGSLyAK 	4	4.08			3.82			3.59			-1.08		
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	"""339, 366"""	WDSyDNFSGHRDDGMEEVVGHTQGPLDGSLYAK 	3				4.09						-0.59		
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	"""339, 366"""	WDSYDNFSGHRDDGMEEVVGHTQGPLDGSLyAK 	3				4.09						-0.59		
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	"""339, 366"""	WDSyDNFSGHRDDGMEEVVGHTQGPLDGSLYAK 	4	4.74	4.26		3.56		2.8	4.1	-1.72		-1.11		-2.4
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	"""339, 366"""	WDSYDNFSGHRDDGMEEVVGHTQGPLDGSLyAK 	4	4.74	4.26		3.56		2.8	4.1	-1.72		-1.11		-2.4
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	366	DDGmEEVVGHTQGPLDGSLYAK 	3				4.45						-4.36		
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	366	DDGMEEVVGHTQGPLDGSLyAK 	3				4.45						-4.36		
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	366	DDGMEEVVGHTQGPLDGSLyAK 	3				4.74						-5.42		
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	366	WDSYDNFSGHRDDGMEEVVGHTQGPLDGSLyAK 	4				5.01						-1.22		
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	796	SYSPyDYQPCLAGPNQDFHSK 	3			3.91	3.98					-7.35	-2.69		
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	903	AASDGQyENQSPEATSPR 	3				4.13						-3.07		
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	903	RAASDGQyENQSPEATSPR 	3				5.13						-3.63		
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	1149	NYQSSSPLPTVGSSYSSPDySLQHFSSSPESQAR 	3				6.04						-1.41		
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	§1323	HVAyGGYSTPEDR 	2			3.58						-5.27			
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	"""§1323, §1326"""	HVAyGGYSTPEDRRPTLSR 	4				2.85						-4.67		
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	"""§1323, §1326"""	HVAYGGySTPEDRRPTLSR 	4				2.85						-4.67		
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	§1326	HVAYGGySTPEDR 	2				4.4						-2.64		
+TNS1	Adaptor/scaffold	Tensin-1	Q9HBL0	1404	AGSLPNyATINGK 	2	2.95	2.83	1.97	2.71			0.35	0.71	-5.11	-4.49		
+TNS3	Adaptor/scaffold	Tensin 3	Q8IZW7	"""§333, §354"""	WDSyENLSADGEVLHTQGPVDGSLYAK 	3				6.08						-2.47		
+TNS3	Adaptor/scaffold	Tensin 3	Q8IZW7	"""§333, §354"""	WDSYENLSADGEVLHTQGPVDGSLyAK 	3				6.08						-2.47		
+TNS3	Adaptor/scaffold	Tensin 3	Q8IZW7	"""§333, §354"""	WDSyENLSADGEVLHTQGPVDGSLYAK 	3				6.05						-3.26		
+TNS3	Adaptor/scaffold	Tensin 3	Q8IZW7	"""§333, §354"""	WDSYENLSADGEVLHTQGPVDGSLyAK 	3				6.05						-3.26		
+WAS	Adaptor/scaffold	Wiskott-Aldrich syndrome protein 	P42768	§290	AGISEAQLTDAETSKLIyDFIEDQGGLEAVR 	3			5.73						-2.9			
+WASL	Adaptor/scaffold	Neural Wiskott-Aldrich syndrome protein 	O00401	§256	VIyDFIEK 	2		2.08				2.32		-1.35				-3.99
+CD93	Adhesion or extracellular matrix protein	Complement component C1q receptor	Q9NPY3	644	AMENQySPTPGTDC 	2						2.51						0.03
+CDH23	Adhesion or extracellular matrix protein	Cadherin-23	Q9H251	3195	AAIQEyDNIAK 	2		2.54						-0.65				
+CDH5	Adhesion or extracellular matrix protein	Cadherin-5	P33151	§685	PSLyAQVQKPPR 	3		2.7		3.4				-0.63		-5.88		
+COL6A2	Adhesion or extracellular matrix protein	Collagen alpha-2	P12110	597	GVPGPEGEPGPPGDPGLTECDVMTyVRETCGCCDCEKR 	4					3.31						-7	
+DSP	Adhesion or extracellular matrix protein	Desmoplakin 	P15924	28	AESGPDLRyEVTSGGGGTSR 	3			3.65						-7.77			
+DSP	Adhesion or extracellular matrix protein	Desmoplakin 	P15924	56	GVITDQNSDGyCQTGTMSR 	3	3.06					3.12	2.31					-0.9
+DSP	Adhesion or extracellular matrix protein	Desmoplakin 	P15924	56	GVITDQNSDGYCQTGTmSR 	3	3.06					3.12	2.31					-0.9
+DSP	Adhesion or extracellular matrix protein	Desmoplakin 	P15924	56	GVITDQNSDGyCQTGTMSR 	2			4.79						-3.36			
+DSP	Adhesion or extracellular matrix protein	Desmoplakin 	P15924	56	GVITDQNSDGyCQTGTMSR 	3						4.25						-2.72
+DSP	Adhesion or extracellular matrix protein	Desmoplakin 	P15924	56	RGVITDQNSDGyCQTGTMSR 	3						5.08						-2.16
+DSP	Adhesion or extracellular matrix protein	Desmoplakin 	P15924	2275	LGIyEAMK 	2					2.32						-2.8	
+DSP	Adhesion or extracellular matrix protein	Desmoplakin 	P15924	2275	LGIYEAmK 	2					2.32						-2.8	
+DSP	Adhesion or extracellular matrix protein	Desmoplakin 	P15924	2275	LGIyEAMK 	2					1.93						-3.28	
+DSP	Adhesion or extracellular matrix protein	Desmoplakin 	P15924	2275	LGIYEAmK 	2					1.93						-3.28	
+F11R	Adhesion or extracellular matrix protein	Junctional adhesion molecule A	Q9Y624	280	KVIySQPSAR 	2	2.74		3.18	2.74		2.47	3.21		-5.04	-1.06		-1.66
+ITGA3	Adhesion or extracellular matrix protein	Integrin alpha-3	P26006	1051	SQPSETERLTDDy 	2			3.35						-5.7			
+ITGB1	Adhesion or extracellular matrix protein	Integrin beta-1	P05556	§783	WDTGENPIyK 	2			2.31	2.08	2.59				-7.48	-6.82	-4.1	
+ITGB1	Adhesion or extracellular matrix protein	Integrin beta-1	P05556	§783	WDTGENPIyKSAVTTVVNPK 	3	4.12						1.85					
+ITGB4	Adhesion or extracellular matrix protein	Integrin beta-4	P16144	§1207	VCAYGAQGEGPySSLVSCR 	2			5.24						-7.73			
+ITGB4	Adhesion or extracellular matrix protein	Integrin beta-4	P16144	§1207	VCAYGAQGEGPySSLVSCR 	3			4.81						-7.51			
+LAMC2	Adhesion or extracellular matrix protein	Laminin subunit gamma-2	Q13753	"""250, 265, 273"""	LDPVyFVAPAKFLGNQQVSYGQSLSFDYRVDR 	3				2.32						-4.33		
+LAMC2	Adhesion or extracellular matrix protein	Laminin subunit gamma-2	Q13753	"""250, 265, 273"""	LDPVYFVAPAKFLGNQQVSyGQSLSFDYRVDR 	3				2.32						-4.33		
+LAMC2	Adhesion or extracellular matrix protein	Laminin subunit gamma-2	Q13753	"""250, 265, 273"""	LDPVYFVAPAKFLGNQQVSYGQSLSFDyRVDR 	3				2.32						-4.33		
+LLGL1	Adhesion or extracellular matrix protein	Lethal(2) giant larvae protein homolog 1 (LLGL)	O00188	509	VGCFDPySDDPR 	2				2.73						-2.5		
+MLLT4	Adhesion or extracellular matrix protein	Afadin 	P55196	94	YSLyEVHVSGER 	3	2.7						0.86					
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	1191	NyGQLDIFPAR 	2				2.51						-3.63		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	1191	RKNyGQLDIFPAR 	3				3.47						-4.88		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	§1203	DTyHPMSEYPTYHTHGR 	3				3.76						-1.35		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	§1203	DTYHPmSEYPTYHTHGR 	3				3.76						-1.35		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	§1203	DTyHPMSEYPTYHTHGR 	4				2.36						-2.31		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	§1203	DTYHPmSEYPTYHTHGR 	4				2.36						-2.31		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209"""	DTyHPMSEYPTYHTHGR 	2				3.37						-3.34		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209"""	DTYHPmSEYPTYHTHGR 	2				3.37						-3.34		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209"""	DTYHPMSEyPTYHTHGR 	2				3.37						-3.34		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209"""	DTyHPMSEYPTYHTHGR 	3	4.06			3.36			-1.6			-1.44		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209"""	DTYHPmSEYPTYHTHGR 	3	4.06			3.36			-1.6			-1.44		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209"""	DTYHPMSEyPTYHTHGR 	3	4.06			3.36			-1.6			-1.44		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209"""	DTyHPMSEYPTYHTHGR 	3				4.4						-3.36		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209"""	DTYHPMSEyPTYHTHGR 	3				4.4						-3.36		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209"""	DTyHPMSEYPTYHTHGR 	4				3.27						-2.66		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209"""	DTYHPMSEyPTYHTHGR 	4				3.27						-2.66		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209, §1212"""	DTyHPMSEYPTYHTHGR 	3	3.49			2.43			-0.93			-4.23		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209, §1212"""	DTYHPMSEyPTYHTHGR 	3	3.49			2.43			-0.93			-4.23		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209, §1212"""	DTYHPMSEYPTyHTHGR 	3	3.49			2.43			-0.93			-4.23		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209, §1212"""	DTyHPMSEYPTYHTHGR 	3				3.64						-4.05		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209, §1212"""	DTYHPMSEyPTYHTHGR 	3				3.64						-4.05		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209, §1212"""	DTYHPMSEYPTyHTHGR 	3				3.64						-4.05		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209, §1212"""	DTyHPMSEYPTYHTHGR 	3				2.43						-2.35		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209, §1212"""	DTYHPMSEyPTYHTHGR 	3				2.43						-2.35		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209, §1212"""	DTYHPMSEYPTyHTHGR 	3				2.43						-2.35		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209, §1212"""	DTyHPMSEYPTYHTHGR 	3				2.4						-0.46		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209, §1212"""	DTYHPMSEyPTYHTHGR 	3				2.4						-0.46		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209, §1212"""	DTYHPMSEYPTyHTHGR 	3				2.4						-0.46		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209, §1212"""	DTyHPMSEYPTYHTHGR 	3				2.25						-2.11		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209, §1212"""	DTYHPMSEyPTYHTHGR 	3				2.25						-2.11		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209, §1212"""	DTYHPMSEYPTyHTHGR 	3				2.25						-2.11		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209, §1212"""	DTyHPMSEYPTYHTHGR 	4				2.2						-1.94		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209, §1212"""	DTYHPMSEyPTYHTHGR 	4				2.2						-1.94		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, 1209, §1212"""	DTYHPMSEYPTyHTHGR 	4				2.2						-1.94		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, §1212"""	DTyHPMSEYPTYHTHGR 	3				2.79						-4.74		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, §1212"""	DTYHPmSEYPTYHTHGR 	3				2.79						-4.74		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, §1212"""	DTYHPMSEYPTyHTHGR 	3				2.79						-4.74		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, §1212"""	DTyHPMSEYPTYHTHGR 	2				3.56						-2.92		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, §1212"""	DTYHPMSEYPTyHTHGR 	2				3.56						-2.92		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, §1212"""	DTyHPMSEYPTYHTHGR 	3	3.71			3.54			1.93			-3.68		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, §1212"""	DTYHPMSEYPTyHTHGR 	3	3.71			3.54			1.93			-3.68		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, §1212"""	DTyHPMSEYPTYHTHGR 	4				2.34						-5.15		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""§1203, §1212"""	DTYHPMSEYPTyHTHGR 	4				2.34						-5.15		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	1209	DTYHPmSEYPTYHTHGR 	2				3.92						-5.48		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	1209	DTYHPMSEyPTYHTHGR 	2				3.92						-5.48		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	1209	DTYHPmSEYPTYHTHGR 	2				3.57						-2.02		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	1209	DTYHPMSEyPTYHTHGR 	2				3.57						-2.02		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	1209	DTYHPmSEYPTYHTHGR 	3	4.83			4.67			0.57			-3.45		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	1209	DTYHPMSEyPTYHTHGR 	3	4.83			4.67			0.57			-3.45		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	1209	DTYHPmSEYPTYHTHGR 	3	4.13			4.01			0.57			-2.69		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	1209	DTYHPMSEyPTYHTHGR 	3	4.13			4.01			0.57			-2.69		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	1209	DTYHPmSEYPTYHTHGR 	4				1.94						-3.65		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	1209	DTYHPMSEyPTYHTHGR 	4				1.94						-3.65		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	1209	DTYHPMSEyPTYHTHGR 	2				3.67						-5.17		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	1209	DTYHPMSEyPTYHTHGR 	3	4.05			4.77			2.05			-5.12		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPmSEYPTYHTHGR 	2				3.8						-3.13		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEyPTYHTHGR 	2				3.8						-3.13		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEYPTyHTHGR 	2				3.8						-3.13		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPmSEYPTYHTHGR 	3				4.27						-2.49		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEyPTYHTHGR 	3				4.27						-2.49		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEYPTyHTHGR 	3				4.27						-2.49		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPmSEYPTYHTHGR 	3				3.48						-2		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEyPTYHTHGR 	3				3.48						-2		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEYPTyHTHGR 	3				3.48						-2		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPmSEYPTYHTHGR 	3				3.15						-1.92		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEyPTYHTHGR 	3				3.15						-1.92		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEYPTyHTHGR 	3				3.15						-1.92		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPmSEYPTYHTHGR 	4				2.2						-3.4		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEyPTYHTHGR 	4				2.2						-3.4		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEYPTyHTHGR 	4				2.2						-3.4		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEyPTYHTHGR 	2				3.97						-2.05		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEYPTyHTHGR 	2				3.97						-2.05		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEyPTYHTHGR 	2				3.52						-2.92		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEYPTyHTHGR 	2				3.52						-2.92		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEyPTYHTHGR 	3	4.07			3.77			2.17			-2.3		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEYPTyHTHGR 	3	4.07			3.77			2.17			-2.3		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEyPTYHTHGR 	3	2.51			3.81			2.9			-5.47		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEYPTyHTHGR 	3	2.51			3.81			2.9			-5.47		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEyPTYHTHGR 	3				2.43						-5.39		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEYPTyHTHGR 	3				2.43						-5.39		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEyPTYHTHGR 	4	2.26			1.91			1.57			-6.78		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEYPTyHTHGR 	4	2.26			1.91			1.57			-6.78		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEyPTYHTHGR 	4				2.71						-2.12		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEYPTyHTHGR 	4				2.71						-2.12		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEyPTYHTHGR 	4				2.11						-3.74		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1209, §1212"""	DTYHPMSEYPTyHTHGR 	4				2.11						-3.74		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	§1212	DTYHPmSEYPTYHTHGR 	3	3.44						2.33					
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	§1212	DTYHPMSEYPTyHTHGR 	3	3.44						2.33					
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	§1212	DTYHPmSEYPTYHTHGR 	4	2.54						2.27					
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	§1212	DTYHPMSEYPTyHTHGR 	4	2.54						2.27					
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	§1212	DTYHPMSEYPTyHTHGR 	2				3.95						-5.5		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	§1212	DTYHPMSEYPTyHTHGR 	3	4.03			4.75			0.03			-6.46		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	§1212	DTYHPMSEYPTyHTHGR 	4	3.15			3.09			0.72			-6.25		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	§1212	DTYHPMSEYPTyHTHGR 	4				2.7						-5.24		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1218, §1229"""	yVPPSSTDRSPYEK 	2				3.19						-3.32		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1218, §1229"""	YVPPSSTDRSPyEK 	2				3.19						-3.32		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1218, §1229"""	yVPPSSTDRSPYEK 	2				2.75						-4.58		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1218, §1229"""	YVPPSSTDRSPyEK 	2				2.75						-4.58		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1218, §1229"""	yVPPSSTDRSPYEK 	2				2.52						-0.54		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1218, §1229"""	YVPPSSTDRSPyEK 	2				2.52						-0.54		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1218, §1229"""	yVPPSSTDRSPYEK 	2				2.17						-5.88		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1218, §1229"""	YVPPSSTDRSPyEK 	2				2.17						-5.88		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1218, §1229"""	yVPPSSTDRSPYEK 	2				1.92						-6.83		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1218, §1229"""	YVPPSSTDRSPyEK 	2				1.92						-6.83		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1218, §1229"""	yVPPSSTDRSPYEK 	2				1.71						-1.57		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1218, §1229"""	YVPPSSTDRSPyEK 	2				1.71						-1.57		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1218, §1229"""	yVPPSSTDRSPYEKVSAGNGGSSLSYTNPAVAATSANL 	4	3.2						-1.08					
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	"""1218, §1229"""	YVPPSSTDRSPyEKVSAGNGGSSLSYTNPAVAATSANL 	4	3.2						-1.08					
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	§1229	YVPPSSTDRSPyEK 	2	1.91		2.74	2.68		2.12	3.14		-3.37	-2.72		-1.65
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	§1229	YVPPSSTDRSPyEK 	2				2.29						-3.44		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	§1229	YVPPSSTDRSPyEK 	2				1.86						-2.22		
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	§1229	YVPPSSTDRSPyEKVSAGNGGSSLSYTNPAVAATSANL 	3	5.54						-1.33					
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	§1229	YVPPSSTDRSPyEKVSAGNGGSSLSYTNPAVAATSANL 	3	3.6						-0.4					
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	§1229	YVPPSSTDRSPyEKVSAGNGGSSLSYTNPAVAATSANL 	4	4.3						3.62					
+MUC1	Adhesion or extracellular matrix protein	Mucin-1	P15941	§1243	VSAGNGGSSLSyTNPAVAATSANL 	2	5.51			4.66			-0.35			-7.9		
+PECAM1	Adhesion or extracellular matrix protein	Platelet endothelial cell adhesion molecule	P16284	§713	DLGKKDTETVySEVRK 	3	2.96						2.04					
+PECAM1	Adhesion or extracellular matrix protein	Platelet endothelial cell adhesion molecule	P16284	§713	DTETVySEVR 	2	2.72			2.69	2.47	2.74	-0.55			-1.22	-0.45	-2.46
+PECAM1	Adhesion or extracellular matrix protein	Platelet endothelial cell adhesion molecule	P16284	§713	DTETVySEVRK 	2	2.74		2.46				3.84		-6.66			
+PECAM1	Adhesion or extracellular matrix protein	Platelet endothelial cell adhesion molecule	P16284	§713	DTETVySEVRK 	3				1.52						-3.41		
+PECAM1	Adhesion or extracellular matrix protein	Platelet endothelial cell adhesion molecule	P16284	§713	KDTETVySEVR 	2				3.08						-4.58		
+PKP1	Adhesion or extracellular matrix protein	Plakophilin-1 	Q13835	214	QDPVyIPPISCNK 	2						3.06						-3.33
+PKP1	Adhesion or extracellular matrix protein	Plakophilin-1 	Q13835	499	YRQLEyNAR 	2						2.12						-1.79
+PKP1	Adhesion or extracellular matrix protein	Plakophilin-1 	Q13835	499	YRQLEyNAR 	3						3.06						-3.27
+PKP2	Adhesion or extracellular matrix protein	Plakophilin-2	Q99959	168	AHYTHSDYQySQR 	3			3.31						-6.75			
+PKP4	Adhesion or extracellular matrix protein	Plakophilin-4 	Q99569	§478	NNYALNTTATyAEPYRPIQYR 	3	2.84						1.39					
+PXN	Adhesion or extracellular matrix protein	Paxillin	P49023	§88	FIHQQPQSSSPVyGSSAK 	3	3.75	2.93	2.89	2.83	2.67		-0.03	-0.58	-5.99	-2.92	-3.73	
+PXN	Adhesion or extracellular matrix protein	Paxillin	P49023	§118	VGEEEHVySFPNK 	2			3.67	3.99					-7.28	-4.03		
+PXN	Adhesion or extracellular matrix protein	Paxillin	P49023	§118	VGEEEHVySFPNK 	3		3.4	4.08	3.64				-0.82	-7.51	-4.79		
+PXN	Adhesion or extracellular matrix protein	Paxillin	P49023	§118	VGEEEHVySFPNKQK 	3	4.53	4.82		3.35			0.87	-0.5		-5.78		
+PXN	Adhesion or extracellular matrix protein	Paxillin	P49023	§118	VGEEEHVySFPNKQK 	3		3.73						-1.09				
+RPSA	Adhesion or extracellular matrix protein	40S ribosomal protein SA 	P08865	§138	ADHQPLTEASyVNLPTIALCNTDSPLR 	3			6.42						-5.56			
+SDC1	Adhesion or extracellular matrix protein	Syndecan-1	P18827	309	QANGGAYQKPTKQEEFyA 	3	2.34		1.61				0.03		-6.39			
+SDC4	Adhesion or extracellular matrix protein	Syndecan-4	P31431	197	KAPTNEFyA 	2			1.89	1.85					-5.49	-3.75		
+TNXB	Adhesion or extracellular matrix protein	Tenascin-X	P22105	1417	YKmNLYGLRGRQR 	4		1.92						-7.13				
+TNXB	Adhesion or extracellular matrix protein	Tenascin-X	P22105	1417	YKMNLyGLRGRQR 	4		1.92						-7.13				
+URP2	Adhesion or extracellular matrix protein	Unc-112-related protein 2 	Q86UX7	504	TGSGGPGNHPHGPDASAEGLNPyGLVAPR 	4	3.44						-0.23					
+VCL	Adhesion or extracellular matrix protein	Vinculin 	P18206	691	NPGNQAAyEHFETMK 	3			2.1		1.98				-5.95		-3.64	
+VCL	Adhesion or extracellular matrix protein	Vinculin 	P18206	691	NPGNQAAYEHFETmK 	3			2.1		1.98				-5.95		-3.64	
+VCL	Adhesion or extracellular matrix protein	Vinculin 	P18206	691	NPGNQAAyEHFETMK 	3					1.91						-3.64	
+VCL	Adhesion or extracellular matrix protein	Vinculin 	P18206	691	NPGNQAAYEHFETmK 	3					1.91						-3.64	
+VCL	Adhesion or extracellular matrix protein	Vinculin 	P18206	691	NPGNQAAyEHFETMK 	2			3.71						-7.85			
+VCL	Adhesion or extracellular matrix protein	Vinculin 	P18206	691	NPGNQAAyEHFETMK 	3			2.42	2.35		1.79			-7.06	-7.06		-5.34
+VCL	Adhesion or extracellular matrix protein	Vinculin 	P18206	§821	SFLDSGyR 	2	2.26	2.52	2.73	2.13	2.59	2.44	0.21	-0.73	-8.48	-7.05	-2.88	-4.78
+VCL	Adhesion or extracellular matrix protein	Vinculin 	P18206	§821	SFLDSGyR 	2					2.26						-3.36	
+VCL	Adhesion or extracellular matrix protein	Vinculin 	P18206	§821	SFLDSGyRILGAVAK 	2	3.66						0.45					
+VCL	Adhesion or extracellular matrix protein	Vinculin 	P18206	§821	SFLDSGyRILGAVAK 	3	1.89				2.41		0.19				-2.98	
+CAT	Apoptosis	Catalase	P04040	§230	LVNANGEAVyCK 	2				3.45		2.93				-3.05		-2.97
+CAT	Apoptosis	Catalase	P04040	307	VWPHKDyPLIPVGK 	3					1.96						-6.65	
+HSP90B1	Apoptosis	Endoplasmin	P14625	677	DISTNyYASQK 	2			2.16						-4.14			
+UACA	Apoptosis	Uveal autoantigen with coiled-coil domains and ankyrin repeats	Q9BZF9	723	EIEKVyLDNK 	2			1.7						-5.9			
+ANXA1	Calcium-binding protein	Annexin A1 	P04083	38	GGPGSAVSPyPTFNPSSDVAALHK 	3				3.13						-1.98		
+ANXA1	Calcium-binding protein	Annexin A1 	P04083	206	ALyEAGERR 	2	2.36					2.59	-0.55					-2.08
+ANXA1	Calcium-binding protein	Annexin A1 	P04083	206	ALyEAGERR 	3						1.58						-2.01
+ANXA11	Calcium-binding protein	Annexin A11 	P50995	365	DAQELyAAGENR 	2			3.29						-4.52			
+ANXA11	Calcium-binding protein	Annexin A11 	P50995	482	SLyHDISGDTSGDYRK 	3			4.9						-7.06			
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	§23	LSLEGDHSTPPSAyGSVK 	2	4.03		4.87	4.08	3.68	3.94	1.1		-7.65	-6.7	-3.47	-3.6
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	§23	LSLEGDHSTPPSAyGSVK 	2	3.17		4.35				1.54		-7.27			
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	§23	LSLEGDHSTPPSAyGSVK 	3	2.48	3.07	2.95	2.53	2.61	2.35	2.17	-0.39	-7.15	-6.68	-3.06	-4.58
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	§23	LSLEGDHSTPPSAyGSVK 	3	2.11		2.7	2.3	2.07	1.97	2.64		-8.77	-6.2	-3.35	-6.77
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	§29	AyTNFDAER 	2			3	3	2.34				-5.25	-1.9	-2.01	
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	§29	AyTNFDAERDALNIETAIK 	3			4.37						-7.36			
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	187	RAEDGSVIDyELIDQDAR 	3			3.75						-6.49			
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	198	DLyDAGVKR 	2			2.49						-5.16			
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	§237	SYSPyDMLESIR 	2			1.92	2.58					-7.82	-4.69		
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	§237	SYSPYDmLESIR 	2			1.92	2.58					-7.82	-4.69		
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	§237	SYSPyDMLESIRK 	2			3.02	2.61					-6.21	-4.33		
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	§237	SYSPYDmLESIRK 	2			3.02	2.61					-6.21	-4.33		
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	§237	SYSPyDMLESIRK 	3			1.63						-5.93			
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	§237	SYSPYDmLESIRK 	3			1.63						-5.93			
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	§237	SYSPyDMLESIR 	2			2.02	2.65					-5.28	-4.48		
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	§237	SYSPyDMLESIR 	3			1.99						-6.75			
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	§237	SYSPyDMLESIRK 	2			3.31						-6.69			
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	315	SLyYYIQQDTK 	2	3.38		4.22	3.52	3.59		1		-5.58	-4.2	-3.47	
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	315	SLyYYIQQDTK 	2			4.08						-5.67			
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	316	SLYyYIQQDTK 	2			3.47	3.12					-4.67	0.65		
+ANXA2	Calcium-binding protein	Annexin A2 	P07355	317	SLYYyIQQDTK 	2	3.49		2.89	3.18			0.92		-2.01	-3.63		
+ANXA5	Calcium-binding protein	Annexin A5 	P08758	93	LYDAyELK 	2			1.98	1.98	1.95				-7.8	-6.83	-2.14	
+ANXA6	Calcium-binding protein	Annexin A6 	P08133	29	GSIHDFPGFDPNQDAEALyTAMK 	3			4.9	4.22					-6.65	-2.36		
+CALM1	Calcium-binding protein	Calmodulin 	P62158	§99	VFDKDGNGyISAAELR 	2			4.62	4.73		4.71			-6.13	-1.47		-3
+CALM1	Calcium-binding protein	Calmodulin 	P62158	§99	VFDKDGNGyISAAELR 	3	4.22		4.73	3.96	4.02		2.88		-5.1	-3.8	-3.9	
+LOC142719	Calcium-binding protein	Oncoprotein-induced transcript 3 protein	Q8WWZ8	132	SRLALGGYYVyRLTK 	3					1.58						-3.28	
+S100A10	Calcium-binding protein	Protein S100-A10 	P60903	24	FAGDKGyLTK 	2				3.16	2.13	3.35				-2.43	-3.85	-3.15
+S100A10	Calcium-binding protein	Protein S100-A10 	P60903	24	FAGDKGyLTKEDLR 	3					2.92	3.47					-1.92	-4.28
+2-Sep	Cell cycle regulation	Septin-2 	Q15019	211	IyHLPDAESDEDEDFKEQTR 	3			2.79						-6.37			
+7-Sep	Cell cycle regulation	Septin-7 	Q16181	11	NLEGyVGFANLPNQVYR 	2			5.22						-3.15			
+7-Sep	Cell cycle regulation	Septin-7 	Q16181	11	NLEGyVGFANLPNQVYR 	3			4.24						-7.14			
+9-Sep	Cell cycle regulation	Septin-9 	Q9UHD8	278	APVDFGyVGIDSILEQMR 	2			5.75						-2.58			
+9-Sep	Cell cycle regulation	Septin-9 	Q9UHD8	278	APVDFGyVGIDSILEQMR 	3			4.53						-5.98			
+TSG101	Cell cycle regulation	Tumor susceptibility gene 101 protein	Q99816	390	KTAGLSDLy 	2	1.99			1.91			1.72			-7.03		
+DNAJA1	Chaperone	DnaJ homolog subfamily A member 1 	P31689	§381	HYNGEAyEDDEHHPR 	3			4.08						-5.7			
+ERP29	Chaperone	Endoplasmic reticulum protein ERp29	P30040	64	FDTQyPYGEKQDEFK 	3		2.12						-2.12				
+ERP29	Chaperone	Endoplasmic reticulum protein ERp29	P30040	66	FDTQYPyGEKQDEFKR 	3		3.14						-0.95				
+ERP29	Chaperone	Endoplasmic reticulum protein ERp29	P30040	66	FDTQYPyGEKQDEFKR 	4		1.87						-0.99				
+HSP90AB1	Chaperone	Heat shock protein HSP 90-beta 	P08238	483	SIyYITGESK 	2			3.35		2.22				-6.84		-4.19	
+HSPA9B	Chaperone	"""Stress-70 protein, mitochondrial"""	P38646	568	NAEKyAEEDRR 	3			1.89						-5.37			
+SACS	Chaperone	Sacsin	Q9NZJ4	3583	IIRRLyLKWHPDK 	3			1.86						-4.81			
+BAZ1A	"""Chromatin, DNA-binding, DNA repair or DNA replication protein"""	Bromodomain adjacent to zinc finger domain protein 1A 	Q9NRL2	606	KLSSTSVyDLTPGEKMK 	4		1.87						1.84				
+BAZ1A	"""Chromatin, DNA-binding, DNA repair or DNA replication protein"""	Bromodomain adjacent to zinc finger domain protein 1A 	Q9NRL2	606	KLSSTSVYDLTPGEKmK 	4		1.87						1.84				
+CRY1	"""Chromatin, DNA-binding, DNA repair or DNA replication protein"""	Cryptochrome-1	Q16526	432	RyLPVLRGFPAK 	3						1.87						-1.63
+NUCB1	"""Chromatin, DNA-binding, DNA repair or DNA replication protein"""	Nucleobindin-1	Q02818	179	DLAQYDAAHHEEFKRyEMLKEHER 	4		2.92						1.99				
+NUCB1	"""Chromatin, DNA-binding, DNA repair or DNA replication protein"""	Nucleobindin-1	Q02818	179	DLAQYDAAHHEEFKRYEmLKEHER 	4		2.92						1.99				
+NUCB1	"""Chromatin, DNA-binding, DNA repair or DNA replication protein"""	Nucleobindin-1	Q02818	179	DLAQYDAAHHEEFKRyEMLKEHER 	4		4.29						1.16				
+SYCP1	"""Chromatin, DNA-binding, DNA repair or DNA replication protein"""	Synaptonemal complex protein 1 	Q15431	257	LEmHFKLKEDYEKIQHLEQEYK 	4						2.63						-9.5
+SYCP1	"""Chromatin, DNA-binding, DNA repair or DNA replication protein"""	Synaptonemal complex protein 1 	Q15431	257	LEMHFKLKEDYEKIQHLEQEyK 	4						2.63						-9.5
+ACTN1	Cytoskeletal protein	Alpha-actinin-1 	P12814	193	HRPELIDyGK 	3	3.2						0.57					
+ACTR3	Cytoskeletal protein	Actin-like protein 3 	P61158	16	LPACVVDCGTGyTK 	2			3.54						-6.97			
+ACTR3	Cytoskeletal protein	Actin-like protein 3 	P61158	202	DITyFIQQLLR 	2			3.16	3.82					-3.35	-5.07		
+ACTR3	Cytoskeletal protein	Actin-like protein 3 	P61158	202	DITyFIQQLLR 	3			3.64						-3.67			
+ACTR3	Cytoskeletal protein	Actin-like protein 3 	P61158	231	ERySYVCPDLVK 	3			2.34						-6.59			
+ARPC3	Cytoskeletal protein	Actin-related protein 2/3 complex subunit 3 	O15145	46	DTDIVDEAIyYFK 	2				3.59						-2.93		
+ARPC3	Cytoskeletal protein	Actin-related protein 2/3 complex subunit 3 	O15145	46	DTDIVDEAIyYFK 	3			4.37						-6.51			
+CFL1	Cytoskeletal protein	Cofilin-1 	P23528	§139	HELQANCyEEVKDR 	3				3.84	2.51	5.37				-2.65	-5.64	-3.68
+CLDN3	Cytoskeletal protein	Claudin-3 	O15551	214	STGPGASLGTGyDR 	2				3.37						-6.51		
+CLDN3	Cytoskeletal protein	Claudin-3 	O15551	214	STGPGASLGTGyDRK 	3				1.75						-3.1		
+CLDN3	Cytoskeletal protein	Claudin-3 	O15551	214	STGPGASLGTGyDRKDYV 	3	2.62						1.39					
+CLDN3	Cytoskeletal protein	Claudin-3 	O15551	219	STGPGASLGTGYDRKDyV 	2				3.5						-5.24		
+CLDN5	Cytoskeletal protein	Claudin-5 	O00501	"""212, 217"""	RPTATGDyDKKNYV 	3						2.78						-3.33
+CLDN5	Cytoskeletal protein	Claudin-5 	O00501	"""212, 217"""	RPTATGDYDKKNyV 	3						2.78						-3.33
+CNN2	Cytoskeletal protein	Calponin-2 	Q99439	183	CASQSGMTAyGTRR 	3	1.95						1.18					
+CNN3	Cytoskeletal protein	Calponin-3 	Q15417	§261	GmSVYGLGR 	2	1.96						2.07					
+CNN3	Cytoskeletal protein	Calponin-3 	Q15417	§261	GMSVyGLGR 	2	1.96						2.07					
+CNN3	Cytoskeletal protein	Calponin-3 	Q15417	§261	GMSVyGLGR 	2	2.85						0.2					
+CORO1C	Cytoskeletal protein	Coronin-1C 	Q9ULV4	301	YFEITDESPyVHYLNTFSSK 	3			3.49						-6.64			
+CTNNA1	Cytoskeletal protein	Catenin alpha-1 	P35221	177	NAGNEQDLGIQyK 	2	3.71		3.86	3.75			2.14		-4.8	-3.52		
+CTNNA1	Cytoskeletal protein	Catenin alpha-1 	P35221	619	LVyDGIR 	2			1.64						-5.88			
+CTTN	Cytoskeletal protein	Src substrate cortactin 	Q14247	141	GFGGKFGVQMDRVDQSAVGFEyQGK 	4						1.9						-6.9
+CYLC1	Cytoskeletal protein	Cylicin-1 	P35663	104	HLyTSKTHLKKAEYK 	4						1.94						-4.01
+DBNL	Cytoskeletal protein	Drebrin-like protein 	Q9UJU6	§162	FQDVGPQAPVGSVyQK 	3	4.26						1.17					
+ELMO2	Cytoskeletal protein	Engulfment and cell motility protein 2 	Q96JJ3	§48	EVCDGWSLPNPEyYTLR 	2			2.93						-6.04			
+EML4	Cytoskeletal protein	Echinoderm microtubule-associated protein-like 4 	Q9HC35	§226	TADKHKDVIINQEGEyIK 	3	3.52						0.02					
+EPB41L2	Cytoskeletal protein	Band 4	O43491	§623	NSLRVEGDNIyVR 	3	2.2						1.47					
+FLNA	Cytoskeletal protein	Filamin-A 	P21333	372	SPFEVyVDKSQGDASK 	3			3.03						-7.39			
+FLNA	Cytoskeletal protein	Filamin-A 	P21333	1603	KTHIQDNHDGTyTVAYVPDVTGR 	3	5.83		4.24		4.1	4.65	1.66		-6.71		-0.74	-4.29
+FLNA	Cytoskeletal protein	Filamin-A 	P21333	1603	KTHIQDNHDGTyTVAYVPDVTGR 	4	2.41		3.32		2.89	2.31	1.2		-7.41		-2.74	-4.66
+FLNA	Cytoskeletal protein	Filamin-A 	P21333	2387	VHSPSGALEECYVTEIDQDKyAVR 	3	4.33						2.52					
+FLNA	Cytoskeletal protein	Filamin-A 	P21333	2387	VHSPSGALEECYVTEIDQDKyAVR 	4	4.23						0.99					
+FLNB	Cytoskeletal protein	Filamin-B 	O75369	§2502	SSTETCySAIPK 	2			2.94						-4.36			
+FLNC	Cytoskeletal protein	Filamin-C 	Q14315	2683	TPCEEVyVK 	2			2						-6.62			
+JUP	Cytoskeletal protein	Junction plakoglobin 	P14923	658	ISEDKNPDyR 	3			1.52						-5.93			
+KRT18	Cytoskeletal protein	"""Keratin, type I cytoskeletal 18 """	P05783	12	STFSTNyR 	2			1.54						-3.91			
+KRT19	Cytoskeletal protein	"""Keratin, type I cytoskeletal 19 """	P08727	130	DYSHyYTTIQDLR 	3			2.95						-7.92			
+KRT5	Cytoskeletal protein	"""Keratin, type II cytoskeletal 5 """	P13647	60	VSLAGACGVGGyGSR 	2						3.52						-3.43
+KRT5	Cytoskeletal protein	"""Keratin, type II cytoskeletal 5 """	P13647	66	SLyNLGGSK 	2			2.15						-6.63			
+KRT7	Cytoskeletal protein	"""Keratin, type II cytoskeletal 7 """	P08729	204	DVDAAyMSK 	2			2.7	2.76					-5.24	-4.14		
+KRT7	Cytoskeletal protein	"""Keratin, type II cytoskeletal 7 """	P08729	204	DVDAAyMSK 	2			2.65	2.71					-4.34	-0.44		
+KRT7	Cytoskeletal protein	"""Keratin, type II cytoskeletal 7 """	P08729	204	DVDAAyMSKVELEAK 	2			4.02						-6.65			
+KRT7	Cytoskeletal protein	"""Keratin, type II cytoskeletal 7 """	P08729	204	DVDAAyMSKVELEAK 	3			2.95	2.85					-6.31	-4.63		
+KRT8	Cytoskeletal protein	"""Keratin, type II cytoskeletal 8 """	P05787	203	DVDEAyMNKVELESR 	3			1.97	2.87					-8.34	-4.73		
+KRT8	Cytoskeletal protein	"""Keratin, type II cytoskeletal 8 """	P05787	203	RTEmENEFVLIKKDVDEAYMNK 	4					2.43						-2.62	
+KRT8	Cytoskeletal protein	"""Keratin, type II cytoskeletal 8 """	P05787	203	RTEMENEFVLIKKDVDEAyMNK 	4					2.43						-2.62	
+KRT8	Cytoskeletal protein	"""Keratin, type II cytoskeletal 8 """	P05787	266	AQyEDIANR 	2			2.77			2.85			-5.96			-0.17
+LCP1	Cytoskeletal protein	Plastin-2 	P13796	§28	VDTDGNGyISFNELNDLFK 	2			5.77	5.38					-5.47	-1.33		
+LCP1	Cytoskeletal protein	Plastin-2 	P13796	§28	VDTDGNGyISFNELNDLFK 	3			4.76						-7.11			
+LCP1	Cytoskeletal protein	Plastin-2 	P13796	276	WANyHLENAGCNK 	3	2.26		3.24	3.58		2.37	1.32		-6.65	-5.65		-4.88
+LST1	Cytoskeletal protein	Leukocyte-specific transcript 1 protein 	O00453	88	ADyACIAENKPT 	2	4.26			3.83			3.52			-4.06		
+LST1	Cytoskeletal protein	Leukocyte-specific transcript 1 protein 	O00453	88	GTKEDPRADyACIAENKPT 	3	2.94						1.8					
+PFN1	Cytoskeletal protein	Profilin-1 	P07737	§128	CyEMASHLR 	2					2.5						-1.8	
+PFN1	Cytoskeletal protein	Profilin-1 	P07737	§128	CYEmASHLR 	2					2.5						-1.8	
+PFN1	Cytoskeletal protein	Profilin-1 	P07737	§128	CyEMASHLR 	3					2.38						-2.49	
+PFN1	Cytoskeletal protein	Profilin-1 	P07737	§128	CYEmASHLR 	3					2.38						-2.49	
+PFN1	Cytoskeletal protein	Profilin-1 	P07737	§128	KCyEMASHLR 	3					3.94						-2.1	
+PFN1	Cytoskeletal protein	Profilin-1 	P07737	§128	KCYEmASHLR 	3					3.94						-2.1	
+PFN1	Cytoskeletal protein	Profilin-1 	P07737	§128	KCyEMASHLR 	3			2.34						-7.45			
+PFN2	Cytoskeletal protein	Profilin-2 	P35080	98	SQGGEPTyNVAVGR 	2			3.35						-4.01			
+PLEC1	Cytoskeletal protein	Plectin-1	Q6S376	3225	ARQEELySELQAR 	3	3.98						1.17					
+PLEC1	Cytoskeletal protein	Plectin-1 	Q15149	4155	AVTGYKDPySGK 	2			2.57						-2.63			
+PLEK2	Cytoskeletal protein	Pleckstrin-2	Q9NYT0	333	DDTHYyIQASSK 	2			2.91						-4.95			
+TAGLN	Cytoskeletal protein	Transgelin 	Q01995	192	GASQAGmTGYGRPR 	3					2.77						-0.14	
+TAGLN	Cytoskeletal protein	Transgelin 	Q01995	192	GASQAGMTGyGRPR 	3					2.77						-0.14	
+TAGLN	Cytoskeletal protein	Transgelin 	Q01995	192	GASQAGMTGyGRPR 	2	3.55		3.04				3.59		-5.02			
+TAGLN	Cytoskeletal protein	Transgelin 	Q01995	192	GASQAGMTGyGRPR 	3	2.69		2.13				3.19		-2.59			
+TBCB	Cytoskeletal protein	Tubulin folding cofactor B 	Q99426	§98	LGEyEDVSR 	2			2.41	2.96					-3.26	-3.05		
+TENC1	Cytoskeletal protein	Tensin2	Q9UPS7	§359	GPLDGSPyAQVQRPPR 	2	2.6	2.8		2.89			1.97	0.83		-6.35		
+TENC1	Cytoskeletal protein	Tensin2	Q9UPS7	§359	GPLDGSPyAQVQRPPR 	3	2.38	2.14	2.37		2.64	2.3	-0.08	-0.49	-6.73		-2.5	-3.51
+TENC1	Cytoskeletal protein	Tensin2	Q9UPS7	§359	GPLDGSPyAQVQRPPR 	3					2.26						-3.11	
+TENC1	Cytoskeletal protein	Tensin2	Q9UPS7	646	AGEEGHEGCSyTMCPEGR 	3				3.91						-1.66		
+TENC1	Cytoskeletal protein	Tensin2	Q9UPS7	646	AGEEGHEGCSYTmCPEGR 	3				3.91						-1.66		
+TES	Cytoskeletal protein	Testin 	Q9UGI8	237	TQYSCyCCK 	2			2.06						-4.26			
+TES	Cytoskeletal protein	Testin 	Q9UGI8	251	EGDPAIyAER 	2			2.38						-5			
+TES	Cytoskeletal protein	Testin 	Q9UGI8	288	NEKLyCGR 	2			1.76						-3.4			
+TLN1	Cytoskeletal protein	Talin-1	Q9Y490	26	TMQFEPSTMVyDACR 	2			4.46						-6.48			
+TLN1	Cytoskeletal protein	Talin-1	Q9Y490	26	TMQFEPSTMVyDACR 	3			1.97						-6.99			
+TLN1	Cytoskeletal protein	Talin-1	Q9Y490	70	ALDyYMLR 	2	1.69		2.38	2.15			2.21		-7.98	-5.41		
+TLN1	Cytoskeletal protein	Talin-1	Q9Y490	70	ALDYYmLR 	2	1.69		2.38	2.15			2.21		-7.98	-5.41		
+TLN1	Cytoskeletal protein	Talin-1	Q9Y490	70	ALDyYMLR 	2	2.45		2.63	2.73		2.62	-0.04		-7.3	-4.59		-4.15
+TLN1	Cytoskeletal protein	Talin-1	Q9Y490	436	KSTVLQQQyNR 	3	2.47						-0.35					
+TLN1	Cytoskeletal protein	Talin-1	Q9Y490	§1116	AVSSAIAQLLGEVAQGNENyAGIAAR 	3			6.51	4.94					-4.38	-3.97		
+TLN1	Cytoskeletal protein	Talin-1	Q9Y490	1945	AGALQCSPSDAyTKK 	3			3.03						-2.81			
+TLN2	Cytoskeletal protein	Talin-2	Q9Y4G6	1665	DKAPGQRECDySIDGINR 	3	3.56	4.03					1.5	-0.86				
+TLN2	Cytoskeletal protein	Talin-2	Q9Y4G6	1665	ECDySIDGINR 	2		1.89		2.14				-0.91		-2.03		
+TUBGCP2	Cytoskeletal protein	Gamma-tubulin complex component 2 	Q9BSJ2	§83	NLDPLVyLLSK 	2					2.81						-0.49	
+VASP	Cytoskeletal protein	Vasodilator-stimulated phosphoprotein 	P50552	§38	VQIyHNPTANSFR 	3	2.07		2.45		2.51		0.6		-7.5		-1.99	
+VIM	Cytoskeletal protein	Vimentin	P08670	37	TySLGSALRPSTSR 	3	1.93						0.64					
+VIM	Cytoskeletal protein	Vimentin	P08670	§52	SLyASSPGGVYATR 	2	4.1	3.75	3.92	4.36	2.96	3.8	1.92	-1.33	-6.34	-5.37	-3.27	-3.75
+VIM	Cytoskeletal protein	Vimentin	P08670	§52	SLyASSPGGVYATR 	3	2.33						1.7					
+VIM	Cytoskeletal protein	Vimentin	P08670	"""§52, §60"""	SLyASSPGGVYATR 	2	3.89			3.63			0.06			-3.48		
+VIM	Cytoskeletal protein	Vimentin	P08670	"""§52, §60"""	SLYASSPGGVyATR 	2	3.89			3.63			0.06			-3.48		
+VIM	Cytoskeletal protein	Vimentin	P08670	§60	SLYASSPGGVyATR 	2	3.62	3.6	3.44		3.89	4.04	1.59	-0.11	-5.94		-2.62	-4.72
+VIM	Cytoskeletal protein	Vimentin	P08670	§60	SLYASSPGGVyATR 	2					3.68						-3.51	
+VIM	Cytoskeletal protein	Vimentin	P08670	116	FANyIDKVR 	3		1.76		2.31	2.18			-1		-6.99	-3.27	
+VIM	Cytoskeletal protein	Vimentin	P08670	116	TNEKVELQELNDRFANyIDKVR 	4	4.29	3.44	3.69		5.28		-0.23	2.08	-3.69		-3.4	
+SRP68	Endoplasmic reticulum or golgi	Signal recognition particle 68 kDa protein 	Q9UHB9	618	SGLTGyIK 	2						1.54						-9.31
+ACOX2	"""Enzyme, misc."""	"""Acyl-coenzyme A oxidase 2, peroxisomal """	Q99424	417	ACGGHGySKLSGLPSLVTK 	3		1.63						-0.04				
+ACSBG1	"""Enzyme, misc."""	Acyl-CoA synthetase bubblegum family member 1	Q96GR2	"""135, 138, 139"""	WEHISySQYYLLARRAAK 	4				2.64						-7.52		
+ACSBG1	"""Enzyme, misc."""	Acyl-CoA synthetase bubblegum family member 1	Q96GR2	"""135, 138, 139"""	WEHISYSQyYLLARRAAK 	4				2.64						-7.52		
+ACSBG1	"""Enzyme, misc."""	Acyl-CoA synthetase bubblegum family member 1	Q96GR2	"""135, 138, 139"""	WEHISYSQYyLLARRAAK 	4				2.64						-7.52		
+ADSSL1	"""Enzyme, misc."""	Adenylosuccinate synthetase isozyme 1 	Q8N142	388	RIPyFPANQEMLQK 	3						1.72						-1.17
+ADSSL1	"""Enzyme, misc."""	Adenylosuccinate synthetase isozyme 1 	Q8N142	388	RIPYFPANQEmLQK 	3						1.72						-1.17
+AGL	"""Enzyme, misc."""	Glycogen debranching enzyme 	P35573	584	EAMSAyNSHEEGR 	2			2.55						-3.61			
+ALDH4A1	"""Enzyme, misc."""	"""Delta-1-pyrroline-5-carboxylate dehydrogenase, mitochondrial"""	P30038	505	VLRNAAGNFyINDK 	3						2.82						-4.94
+ALDOA	"""Enzyme, misc."""	Fructose-bisphosphate aldolase A 	P04075	2	PyQYPALTPEQK 	2				3.67						-5.06		
+ALDOA	"""Enzyme, misc."""	Fructose-bisphosphate aldolase A 	P04075	4	PYQyPALTPEQK 	2			3.43						-7.41			
+ALDOA	"""Enzyme, misc."""	Fructose-bisphosphate aldolase A 	P04075	4	PYQyPALTPEQKK 	3			3.65		3.54				-7.46		-3.23	
+ALDOA	"""Enzyme, misc."""	Fructose-bisphosphate aldolase A 	P04075	4	PYQyPALTPEQKK 	3					2.86						-2.42	
+ALDOA	"""Enzyme, misc."""	Fructose-bisphosphate aldolase A 	P04075	222	ALSDHHIyLEGTLLKPNMVTPGHACTQK 	4					3.82						-3.74	
+ALDOA	"""Enzyme, misc."""	Fructose-bisphosphate aldolase A 	P04075	222	ALSDHHIYLEGTLLKPNmVTPGHACTQK 	4					3.82						-3.74	
+ALDOA	"""Enzyme, misc."""	Fructose-bisphosphate aldolase A 	P04075	222	ALSDHHIyLEGTLLKPNMVTPGHACTQK 	4			3.78						-5.35			
+ATIC	"""Enzyme, misc."""	Bifunctional purine biosynthesis protein PURH	P31939	104	VVACNLyPFVK 	2			2.68		2.64				-6.78		-3.09	
+ATP1A1	"""Enzyme, misc."""	Sodium/potassium-transporting ATPase alpha-1 chain	P05023	260	GIVVyTGDR 	2			2.76	2.54	2.59	2.29			-7.17	-1.91	-3.49	-5.22
+ATP1A1	"""Enzyme, misc."""	Sodium/potassium-transporting ATPase alpha-1 chain	P05023	260	GIVVyTGDR 	2					2.48						-1.53	
+CBR1	"""Enzyme, misc."""	Carbonyl reductase [NADPH] 1 	P16152	193	EGWPSSAyGVTK 	2					1.83						-3.3	
+CP	"""Enzyme, misc."""	Ceruloplasmin	P00450	"""784, 787"""	VVyRQYTDSTFR 	3						1.51						-7.57
+CP	"""Enzyme, misc."""	Ceruloplasmin	P00450	"""784, 787"""	VVYRQyTDSTFR 	3						1.51						-7.57
+DCXR	"""Enzyme, misc."""	L-xylulose reductase 	Q7Z4W1	149	AVTNHSVyCSTK 	2			1.72						-4.97			
+DNMT1	"""Enzyme, misc."""	DNA (cytosine-5-)-methyltransferase 1	P26358	969	KEPVDEDLyPEHYR 	3			2.71						-7.64			
+ELP3	"""Enzyme, misc."""	Elongator complex protein 3	Q9BVF7	§202	NLHDALSGHTSNNIyEAVK 	3					3.75						-3.81	
+ENO1	"""Enzyme, misc."""	Alpha-enolase 	P06733	§43	AAVPSGASTGIyEALELRDNDKTR 	3	2.59						-0.3					
+ENO1	"""Enzyme, misc."""	Alpha-enolase 	P06733	§286	SFIKDyPVVSIEDPFDQDDWGAWQK 	3			6.4	5.75					-5.39	-5.03		
+FAAH	"""Enzyme, misc."""	Fatty-acid amide hydrolase 	O00519	"""329, 335"""	EEVYTSSQPLRVGyYETDNYTMPSPAMRRAVLETK 	3			2.35						-7.31			
+FAAH	"""Enzyme, misc."""	Fatty-acid amide hydrolase 	O00519	"""329, 335"""	EEVYTSSQPLRVGYYETDNyTMPSPAMRRAVLETK 	3			2.35						-7.31			
+FH	"""Enzyme, misc."""	"""Fumarate hydratase, mitochondrial"""	P07954	491	ETAIELGyLTAEQFDEWVKPK 	3			3.84						-4.25			
+G6PD	"""Enzyme, misc."""	Glucose-6-phosphate 1-dehydrogenase 	P11413	§400	VQPNEAVyTK 	2	2.12		2.01	2.09		1.82	1.33		-5.72	-2.74		-1.25
+G6PD	"""Enzyme, misc."""	Glucose-6-phosphate 1-dehydrogenase 	P11413	§400	VQPNEAVyTK 	2	1.52		1.97	1.84		1.66	2.23		-3.14	-0.95		0.54
+G6PD	"""Enzyme, misc."""	Glucose-6-phosphate 1-dehydrogenase 	P11413	502	RVGFQyEGTYK 	2				3.63						-5.68		
+G6PD	"""Enzyme, misc."""	Glucose-6-phosphate 1-dehydrogenase 	P11413	502	VGFQyEGTYK 	2	1.87		2.61		1.95		0.65		-8.18		-3.19	
+G6PD	"""Enzyme, misc."""	Glucose-6-phosphate 1-dehydrogenase 	P11413	502	VGFQyEGTYK 	2					1.93						-5.1	
+G6PD	"""Enzyme, misc."""	Glucose-6-phosphate 1-dehydrogenase 	P11413	§506	VGFQYEGTyK 	2	2.13		2.8				0.75		-5.58			
+GART	"""Enzyme, misc."""	Trifunctional purine biosynthetic protein adenosine-3	P22102	348	GYPGDyTK 	2	1.58						4.12					
+GCN5L2	"""Enzyme, misc."""	General control of amino acid synthesis protein 5-like 2 	Q92830	§734	GKELKDPDQLyTTLK 	3			3.34		2.78				-6.8		-3.19	
+GOT1	"""Enzyme, misc."""	"""Aspartate aminotransferase, cytoplasmic """	P17174	70	IANDNSLNHEyLPILGLAEFR 	3			4.72						-5.91			
+GOT2	"""Enzyme, misc."""	"""Aspartate aminotransferase, mitochondrial"""	P00505	96	NLDKEyLPIGGLAEFCK 	3			4.23						-7.55			
+KIAA0082	"""Enzyme, misc."""	Protein KIAA0082	Q8N1G2	224	ANPyEMIR 	2						1.86						-0.23
+KIAA0946	"""Enzyme, misc."""	"""Homo sapiens mRNA for KIAA0946 protein, partial cds"""	BAA76790	105	ATQYGIyER 	2			1.61						-4.5			
+LDHA	"""Enzyme, misc."""	L-lactate dehydrogenase A chain 	P00338	§238	QVVESAyEVIK 	2					2.95						-4.31	
+LDHB	"""Enzyme, misc."""	L-lactate dehydrogenase B chain 	P07195	§239	mVVESAYEVIK 	2					2.32						-4.08	
+LDHB	"""Enzyme, misc."""	L-lactate dehydrogenase B chain 	P07195	§239	MVVESAyEVIK 	2					2.32						-4.08	
+LDHB	"""Enzyme, misc."""	L-lactate dehydrogenase B chain 	P07195	§239	MVVESAyEVIK 	2			3.46						-7.27			
+NAMPT	"""Enzyme, misc."""	Nicotinamide phosphoribosyltransferase 	P43490	34	QYPPNTSKVySYFECR 	3					2.02						-3.65	
+NAMPT	"""Enzyme, misc."""	Nicotinamide phosphoribosyltransferase 	P43490	34	VySYFECR 	2					2.49						-3.56	
+NDUFB10	"""Enzyme, misc."""	NADH dehydrogenase [ubiquinone] 1 beta subcomplex subunit 10 	O96000	55	NRYyYYHR 	3				3.27						-2.72		
+NDUFB10	"""Enzyme, misc."""	NADH dehydrogenase [ubiquinone] 1 beta subcomplex subunit 10 	O96000	142	YQDLGAySSAR 	2			2.85						-6.01			
+NIT2	"""Enzyme, misc."""	"""Nit protein 2 (Nitrilase family, member 2)"""	Q9NQR4	§145	TLSPGDSFSTFDTPyCR 	2					3.41						-2.12	
+NOS3	"""Enzyme, misc."""	"""Nitric-oxide synthase, endothelial """	P29474	§80	VKNWEVGSITyDTLSAQAQQDGPCTPR 	3			5.94						-5.78			
+NOS3	"""Enzyme, misc."""	"""Nitric-oxide synthase, endothelial """	P29474	§80	VKNWEVGSITyDTLSAQAQQDGPCTPR 	4			5.56						-6.83			
+PCAF	"""Enzyme, misc."""	Histone acetyltransferase PCAF 	Q92831	729	DPDQLySTLK 	2			2.45						-6.8			
+PECR	"""Enzyme, misc."""	Peroxisomal trans-2-enoyl-CoA reductase 	Q9BY49	179	AGVyNLTK 	2				2.53						-2.07		
+PGAM1	"""Enzyme, misc."""	Phosphoglycerate mutase 1 	P18669	§25	FSGWyDADLSPAGHEEAKR 	3			3.46						-6.21			
+PGAM1	"""Enzyme, misc."""	Phosphoglycerate mutase 1 	P18669	§91	HyGGLTGLNK 	2	2.66	2.61	2.9	2.96			0.47	-0.75	-6.86	-2.9		
+PGAM1	"""Enzyme, misc."""	Phosphoglycerate mutase 1 	P18669	§91	HyGGLTGLNKAETAAK 	3	4.43	4.27					1.16	-1.52				
+PGAM1	"""Enzyme, misc."""	Phosphoglycerate mutase 1 	P18669	§91	LNERHyGGLTGLNK 	3		2.77						-0.9				
+PGAM1	"""Enzyme, misc."""	Phosphoglycerate mutase 1 	P18669	§91	LNERHyGGLTGLNKAETAAK 	4	4.33						0.42					
+PGAM1	"""Enzyme, misc."""	Phosphoglycerate mutase 1 	P18669	118	RSyDVPPPPMEPDHPFYSNISK 	3			6.16						-6.17			
+PGAM1	"""Enzyme, misc."""	Phosphoglycerate mutase 1 	P18669	132	SYDVPPPPmEPDHPFYSNISK 	3			1.79						-3.9			
+PGAM1	"""Enzyme, misc."""	Phosphoglycerate mutase 1 	P18669	132	SYDVPPPPMEPDHPFySNISK 	3			1.79						-3.9			
+PLA2G4A	"""Enzyme, misc."""	Cytosolic phospholipase A2 	P47712	535	IyEPLDVK 	2	2.13						1.64					
+PLCG1	"""Enzyme, misc."""	"""1-phosphatidylinositol-4,5-bisphosphate phosphodiesterase gamma 1 """	P19174	977	ACyRDMSSFPETK 	3	3.38				2.72		1.1				-3.67	
+PLCG1	"""Enzyme, misc."""	"""1-phosphatidylinositol-4,5-bisphosphate phosphodiesterase gamma 1 """	P19174	977	ACYRDmSSFPETK 	3	3.38				2.72		1.1				-3.67	
+PLCG1	"""Enzyme, misc."""	"""1-phosphatidylinositol-4,5-bisphosphate phosphodiesterase gamma 1 """	P19174	977	ACyRDMSSFPETK 	3	2.78						1.32					
+PLCG1	"""Enzyme, misc."""	"""1-phosphatidylinositol-4,5-bisphosphate phosphodiesterase gamma 1 """	P19174	977	ACYRDmSSFPETK 	3	2.78						1.32					
+PLCG1	"""Enzyme, misc."""	"""1-phosphatidylinositol-4,5-bisphosphate phosphodiesterase gamma 1 """	P19174	977	ACyRDMSSFPETK 	2	3.12						1.79					
+PLCG1	"""Enzyme, misc."""	"""1-phosphatidylinositol-4,5-bisphosphate phosphodiesterase gamma 1 """	P19174	977	ACyRDMSSFPETK 	3	3.66	3.39					1.16	-0.59				
+PLCG2	"""Enzyme, misc."""	"""1-phosphatidylinositol-4,5-bisphosphate phosphodiesterase gamma 2 """	P16885	733	MRLRyPVTPELLERYNMER 	5					2.4						-0.49	
+PLCG2	"""Enzyme, misc."""	"""1-phosphatidylinositol-4,5-bisphosphate phosphodiesterase gamma 2 """	P16885	733	MRLRYPVTPELLERYNmER 	5					2.4						-0.49	
+PRMT1	"""Enzyme, misc."""	Protein arginine N-methyltransferase 1 	Q99873	299	TGFSTSPESPyTHWK 	2			3.36						-6.38			
+PRMT1	"""Enzyme, misc."""	Protein arginine N-methyltransferase 1 	Q99873	299	TGFSTSPESPyTHWK 	3			2.9						-6.79			
+PYGL	"""Enzyme, misc."""	"""Glycogen phosphorylase, liver form"""	P06737	74	TQQHyYDKCPK 	3	2.67						5.91					
+PYGL	"""Enzyme, misc."""	"""Glycogen phosphorylase, liver form"""	P06737	75	TQQHYyDKCPK 	2			3.37						-2.32			
+PYGL	"""Enzyme, misc."""	"""Glycogen phosphorylase, liver form"""	P06737	75	TQQHYyDKCPK 	3			2.43	2.42	2.55	2.68			-3.9	-2.84	-2.48	-2.6
+QARS	"""Enzyme, misc."""	Glutaminyl-tRNA synthetase 	P47897	§491	LNLHyAVVSK 	2					2.11						-1.72	
+REXO2	"""Enzyme, misc."""	"""Oligoribonuclease, mitochondrial"""	Q9Y3B8	122	ESTITLQQAEyEFLSFVR 	3			4.54						-2.98			
+SARS2	"""Enzyme, misc."""	"""Seryl-tRNA synthetase, mitochondrial"""	Q9NP81	52	EGySALPQLDIER 	2			2.83						-6.58			
+TARS	"""Enzyme, misc."""	"""Threonyl-tRNA synthetase, cytoplasmic """	P26639	298	IyGISFPDPK 	2			2.5						-7.09			
+TGM2	"""Enzyme, misc."""	Protein-glutamine gamma-glutamyltransferase 2 	P21980	219	SSPVyVGR 	2					1.55						-0.84	
+TGM2	"""Enzyme, misc."""	Protein-glutamine gamma-glutamyltransferase 2 	P21980	§369	SEGTyCCGPVPVR 	2			2.74	2.73	3.15	2.63			-5.81	-1.99	-3.71	-2.38
+TGM2	"""Enzyme, misc."""	Protein-glutamine gamma-glutamyltransferase 2 	P21980	§369	SEGTyCCGPVPVR 	2					2.61						-1.67	
+TGM2	"""Enzyme, misc."""	Protein-glutamine gamma-glutamyltransferase 2 	P21980	§369	SEGTyCCGPVPVR 	2					2.56						-2.45	
+TKT	"""Enzyme, misc."""	Transketolase 	P29401	§275	NMAEQIIQEIySQIQSK 	2			4.7						-6.18			
+TKT	"""Enzyme, misc."""	Transketolase 	P29401	§275	NMAEQIIQEIySQIQSK 	3			6.28						-4.53			
+TXNRD1	"""Enzyme, misc."""	"""Thioredoxin reductase 1, cytoplasmic"""	Q16881	§131	KVVYENAyGQFIGPHR 	3			4.47						-7.43			
+UMPS	"""Enzyme, misc."""	Uridine 5'-monophosphate synthase 	P11172	37	SGLSSPIyIDLR 	2	2.25		2.46				1.37		-7			
+VARS	"""Enzyme, misc."""	Valyl-tRNA synthetase 	P26640	300	EKRDPGVITYDLPTPPGEKKDVSGPMPDSySPR 	4				2.04						-4.64		
+ARHGEF5	G protein or regulator	FLJ00261 protein	Q6ZML7	1424	RTEELIyLSQK 	2				3.97	3.58					-4.13	-3.46	
+ARHGEF5	G protein or regulator	FLJ00261 protein	Q6ZML7	1424	RTEELIyLSQK 	3					3.05						-3.8	
+GDI2	G protein or regulator	Rab GDP dissociation inhibitor beta 	P50395	§203	TDDYLDQPCyETINR 	3			2.7						-3.09			
+GNAI2	G protein or regulator	Guanine nucleotide-binding protein G	P04899	68	IIHEDGYSEEECRQyR 	3			2.18						-4.98			
+GNAI3	G protein or regulator	Guanine nucleotide-binding protein G	P08754	68	IIHEDGYSEDECKQyK 	3			3.17						-5.67			
+IQGAP1	G protein or regulator	Ras GTPase-activating-like protein IQGAP1 	P46940	654	SPDVGLyGVIPECGETYHSDLAEAK 	3			4.54						-3.36			
+IQGAP1	G protein or regulator	Ras GTPase-activating-like protein IQGAP1 	P46940	§1510	LQQTyAALNSK 	2			3.26						-5.95			
+IQGAP3	G protein or regulator	Ras GTPase-activating-like protein IQGAP3	Q86VI3	1537	KQPSLHyTAAQLLEK 	3			2.35						-7.29			
+MX1	G protein or regulator	Interferon-induced GTP-binding protein Mx1 	P20591	128	GKVSYQDyEIEISDASEVEKEINK 	3			6.71						-6.08			
+MX1	G protein or regulator	Interferon-induced GTP-binding protein Mx1 	P20591	128	GKVSYQDyEIEISDASEVEKEINK 	4			3.88						-6.58			
+MX1	G protein or regulator	Interferon-induced GTP-binding protein Mx1 	P20591	128	VSYQDyEIEISDASEVEKEINK 	3			3.93						-6.74			
+MX1	G protein or regulator	Interferon-induced GTP-binding protein Mx1 	P20591	450	ELPGFVNyRTFETIVKQQIK 	5						1.92						-1.41
+MX2	G protein or regulator	Interferon-induced GTP-binding protein Mx2 	P20592	697	ERIyRLTQAR 	2				1.56						-3.71		
+NF1	G protein or regulator	Neurofibromin 	P21359	2476	CSLKHRKSLLLTDISmENVPMDTYPIHHGDPSYRTLK 	3						2.34						-9.51
+NF1	G protein or regulator	Neurofibromin 	P21359	2476	CSLKHRKSLLLTDISMENVPMDTyPIHHGDPSYRTLK 	3						2.34						-9.51
+RAN	G protein or regulator	GTP-binding nuclear protein Ran 	P62826	§147	NLQYyDISAK 	2					2.41						-2.84	
+RAN	G protein or regulator	GTP-binding nuclear protein Ran 	P62826	155	SNyNFEKPFLWLAR 	3			3.86						-8.1			
+RASA1	G protein or regulator	Ras GTPase-activating protein 1 	P20936	§615	HFTNPyCNIYLNSVQVAK 	2					4.87						-3.69	
+RASA1	G protein or regulator	Ras GTPase-activating protein 1 	P20936	§615	HFTNPyCNIYLNSVQVAK 	3					4.23						-2.82	
+RIN1	G protein or regulator	Ras and Rab interactor 1 	Q13671	§36	EKPAQDPLyDVPNASGGQAGGPQRPGR 	3			3.14	3.15	2.9				-6.26	-5.74	-2.52	
+RIN1	G protein or regulator	Ras and Rab interactor 1 	Q13671	§36	EKPAQDPLyDVPNASGGQAGGPQRPGR 	4			2.98	2.62	2.63				-6.52	-2.57	-3.17	
+ERRFI1	Inhibitor protein	ERBB receptor feedback inhibitor 1 	Q9UJM3	394	KVSSTHyYLLPERPPYLDKYEK 	4	3.12						0.53					
+ERRFI1	Inhibitor protein	ERBB receptor feedback inhibitor 1 	Q9UJM3	394	VSSTHyYLLPERPPYLDKYEK 	3	3.69		4.68	4.02			1.74		-5.3	-2.77		
+ERRFI1	Inhibitor protein	ERBB receptor feedback inhibitor 1 	Q9UJM3	394	VSSTHyYLLPERPPYLDKYEK 	4	2.97		2.96	2.88			-0.82		-7.2	-4.01		
+ERRFI1	Inhibitor protein	ERBB receptor feedback inhibitor 1 	Q9UJM3	395	KVSSTHYyLLPERPPYLDKYEK 	3				4.06						-3.84		
+CKMT1A	Kinase (non-protein)	"""Creatine kinase, ubiquitous mitochondrial"""	P12532	153	SGyFDER 	2						2.24						-1.8
+DGKA	Kinase (non-protein)	Diacylglycerol kinase alpha 	P23743	22	YMEySTKK 	2			1.5						-3.99			
+NME5	Kinase (non-protein)	Nucleoside diphosphate kinase homolog 5 	P56597	58	LSPEQCSNFyVEK 	2			1.96						-6.95			
+PIK3CD	Kinase (non-protein)	"""Phosphatidylinositol-4,5-bisphosphate 3-kinase catalytic subunit delta"""	O00329	§524	RGSGELyEHEKDLVWK 	3			2.89						-7.58			
+PIK3R1	Kinase (non-protein)	Phosphatidylinositol 3-kinase regulatory subunit alpha 	P27986	452	LHEyNTQFQEK 	2				3.16						-2.49		
+PIK3R1	Kinase (non-protein)	Phosphatidylinositol 3-kinase regulatory subunit alpha 	P27986	467	SREYDRLyEEYTR 	2			3.22	3.26	3.18				-7.42	-4.99	-2.89	
+PIK3R1	Kinase (non-protein)	Phosphatidylinositol 3-kinase regulatory subunit alpha 	P27986	467	SREYDRLyEEYTR 	3	4.49	3.35		3.97	3.57	3.86	1.3	-1.45		-5.69	-3.62	-3.13
+PIK3R1	Kinase (non-protein)	Phosphatidylinositol 3-kinase regulatory subunit alpha 	P27986	467	SREYDRLyEEYTR 	3				3.6						-5		
+PIK3R1	Kinase (non-protein)	Phosphatidylinositol 3-kinase regulatory subunit alpha 	P27986	§556	QAAEyREIDKR 	3			2.35						-5.61			
+PIK3R1	Kinase (non-protein)	Phosphatidylinositol 3-kinase regulatory subunit alpha 	P27986	§580	DQyLMWLTQK 	2	3.86						0.68					
+PIK3R1	Kinase (non-protein)	Phosphatidylinositol 3-kinase regulatory subunit alpha 	P27986	§580	DQYLmWLTQK 	2	3.86						0.68					
+PIK3R1	Kinase (non-protein)	Phosphatidylinositol 3-kinase regulatory subunit alpha 	P27986	§580	TRDQyLMWLTQK 	3				3.64						-2.82		
+PIK3R1	Kinase (non-protein)	Phosphatidylinositol 3-kinase regulatory subunit alpha 	P27986	§580	TRDQYLmWLTQK 	3				3.64						-2.82		
+PIK3R2	Kinase (non-protein)	Phosphatidylinositol 3-kinase regulatory subunit beta 	O00459	365	IQGEyTLTLR 	2					1.84						-3.02	
+PIK3R2	Kinase (non-protein)	Phosphatidylinositol 3-kinase regulatory subunit beta 	O00459	§464	EYDQLyEEYTR 	2	3.07	2.86		2.76	2.92	2.4	1.85	0.08		-3.46	-3.3	-3.3
+PIK3R2	Kinase (non-protein)	Phosphatidylinositol 3-kinase regulatory subunit beta 	O00459	§464	SREYDQLyEEYTR 	3	4.3						0.12					
+PYGB	Kinase (non-protein)	"""Glycogen phosphorylase, brain form"""	P11216	75	TQQHYyERDPK 	2			3.09						-4.45			
+PYGB	Kinase (non-protein)	"""Glycogen phosphorylase, brain form"""	P11216	75	TQQHYyERDPKR 	3			2.97						-5.9			
+PYGB	Kinase (non-protein)	"""Glycogen phosphorylase, brain form"""	P11216	196	ARPEyMLPVHFYGR 	3			4.66						-6.63			
+DBI	Lipid binding protein	Acyl-CoA-binding protein 	P07108	28	TKPSDEEMLFIyGHYK 	3				2.93						-4.51		
+PLEKHA6	Lipid binding protein	Pleckstrin homology domain-containing family A member 6 	Q9Y2H5	§492	FERLPPRSEDIyADPAAYVMR 	4	2.6						1.41					
+PLEKHA6	Lipid binding protein	Pleckstrin homology domain-containing family A member 6 	Q9Y2H5	§492	FERLPPRSEDIYADPAAYVmR 	4	2.6						1.41					
+SCP2	Lipid binding protein	Nonspecific lipid-transfer protein 	P22307	"""197, 204"""	HSVNNPySQFQDEYSLDEVMASK 	3					7.2						-1.45	
+SCP2	Lipid binding protein	Nonspecific lipid-transfer protein 	P22307	"""197, 204"""	HSVNNPYSQFQDEySLDEVMASK 	3					7.2						-1.45	
+SCP2	Lipid binding protein	Nonspecific lipid-transfer protein 	P22307	"""197, 204"""	HSVNNPYSQFQDEYSLDEVmASK 	3					7.2						-1.45	
+SCP2	Lipid binding protein	Nonspecific lipid-transfer protein 	P22307	204	HSVNNPYSQFQDEySLDEVMASK 	3					6.4						-3.63	
+SCP2	Lipid binding protein	Nonspecific lipid-transfer protein 	P22307	204	HSVNNPYSQFQDEYSLDEVmASK 	3					6.4						-3.63	
+SCP2	Lipid binding protein	Nonspecific lipid-transfer protein 	P22307	204	HSVNNPYSQFQDEySLDEVMASK 	3					7.14						-3.16	
+SFTPC	Lipid binding protein	Pulmonary surfactant-associated protein C	P11686	16	EVLmESPPDYSAAPR 	2				3.29						-0.13		
+SFTPC	Lipid binding protein	Pulmonary surfactant-associated protein C	P11686	16	EVLMESPPDySAAPR 	2				3.29						-0.13		
+SFTPC	Lipid binding protein	Pulmonary surfactant-associated protein C	P11686	16	EVLMESPPDySAAPR 	2				2.49		3.44				-4.25		-3.41
+HSPE1	Mitochondrial protein	"""10 kDa heat shock protein, mitochondrial """	P61604	87	VVLDDKDyFLFR 	2			3.64						-7.73			
+MYH10	Motor or contractile protein	Myosin-10 	P35580	1415	ALAyDKLEK 	2				2.83						-3.39		
+MYH10	Motor or contractile protein	Myosin-10 	P35580	1415	ALAyDKLEK 	2				2.38						-3.72		
+MYH9	Motor or contractile protein	Myosin-9 	P35579	753	ALELDSNLyR 	2				3.09	3.07					-4.26	-3.21	
+MYH9	Motor or contractile protein	Myosin-9 	P35579	753	ALELDSNLyRIGQSK 	2	4.05						1.09					
+MYH9	Motor or contractile protein	Myosin-9 	P35579	753	ALELDSNLyRIGQSK 	3	2.68						-0.29					
+MYH9	Motor or contractile protein	Myosin-9 	P35579	1407	DLEGLSQRHEEKVAAyDKLEK 	4	3.93						1.15					
+MYH9	Motor or contractile protein	Myosin-9 	P35579	1407	HEEKVAAyDKLEK 	3	3.27						4.45					
+MYH9	Motor or contractile protein	Myosin-9 	P35579	1407	VAAyDKLEK 	2	2.66	1.89	3.06	3.1	2.68	2.86	2.27	-0.24	-6.04	-2.32	-2.87	-2.87
+MYH9	Motor or contractile protein	Myosin-9 	P35579	1407	VAAyDKLEK 	2					2.51						-1.33	
+MYL6	Motor or contractile protein	Myosin light polypeptide 6 	P60660	28	ILySQCGDVMR 	2			2.66						-7.93			
+ACP1	Phosphatase	Low molecular weight phosphotyrosine protein phosphatase 	P24666	§131	QLIIEDPyYGNDSDFETVYQQCVR 	3			4.84						-5.49			
+INPP5D	Phosphatase	SH2-containing inositol 5-phosphatase	Q92835	§864	EKLyDFVKTERDESSGPK 	3	3.31						0.56					
+INPP5D	Phosphatase	SH2-containing inositol 5-phosphatase	Q92835	§864	LyDFVK 	2			2.23	1.9					-6.1	-3.78		
+INPP5D	Phosphatase	SH2-containing inositol 5-phosphatase	Q92835	§864	LyDFVKTERDESSGPK 	3	2.74						2.86					
+INPP5D	Phosphatase	SH2-containing inositol 5-phosphatase	Q92835	§864	TREKLyDFVK 	2	2.58		2.48				2.46		-6.32			
+INPP5D	Phosphatase	SH2-containing inositol 5-phosphatase	Q92835	§864	TREKLyDFVK 	3	3.31		2.32				0.71		-6.13			
+INPP5D	Phosphatase	SH2-containing inositol 5-phosphatase	Q92835	§864	TREKLyDFVKTER 	3	4.26						0.15					
+INPP5D	Phosphatase	SH2-containing inositol 5-phosphatase	Q92835	§864	TREKLyDFVKTERDESSGPK 	3	3.98						-2.41					
+INPP5D	Phosphatase	SH2-containing inositol 5-phosphatase	Q92835	§864	TREKLyDFVKTERDESSGPK 	4	5.22						0.3					
+INPP5D	Phosphatase	SH2-containing inositol 5-phosphatase	Q92835	§1021	NAGDTLPQEDLPLTKPEmFENPLYGSLSSFPKPAPR 	4	3.4		3.14				-1.05		-3.4			
+INPP5D	Phosphatase	SH2-containing inositol 5-phosphatase	Q92835	§1021	NAGDTLPQEDLPLTKPEMFENPLyGSLSSFPKPAPR 	4	3.4		3.14				-1.05		-3.4			
+INPP5D	Phosphatase	SH2-containing inositol 5-phosphatase	Q92835	§1021	NAGDTLPQEDLPLTKPEmFENPLYGSLSSFPKPAPR 	5	3.48						0.3					
+INPP5D	Phosphatase	SH2-containing inositol 5-phosphatase	Q92835	§1021	NAGDTLPQEDLPLTKPEMFENPLyGSLSSFPKPAPR 	5	3.48						0.3					
+INPP5D	Phosphatase	SH2-containing inositol 5-phosphatase	Q92835	§1021	NAGDTLPQEDLPLTKPEMFENPLyGSLSSFPKPAPR 	3				5.13						-5.62		
+INPP5D	Phosphatase	SH2-containing inositol 5-phosphatase	Q92835	§1021	NAGDTLPQEDLPLTKPEMFENPLyGSLSSFPKPAPR 	4	3.27			3.09			-0.39			-2.81		
+INPP5D	Phosphatase	SH2-containing inositol 5-phosphatase	Q92835	§1021	NAGDTLPQEDLPLTKPEMFENPLyGSLSSFPKPAPR 	5	3.17						-2.13					
+INPPL1	Phosphatase	Inositol polyphosphate phosphatase-like protein 1	O15357	§986	NSFNNPAyYVLEGVPHQLLPPEPPSPAR 	3			4.36	4.71					-5.76	0.55		
+PPP1CB	Phosphatase	Serine/threonine-protein phosphatase PP1-beta catalytic subunit 	P62140	305	YQyGGLNSGRPVTPPR 	3	2.57						0.48					
+PPP2R3B	Phosphatase	Serine/threonine-protein phosphatase 2A 48 kDa regulatory subunit B 	Q9Y5P8	23	GPLFyGAGGERTGSVSVHK 	3		2.05						-1.85				
+PTPN11	Phosphatase	Tyrosine-protein phosphatase non-receptor type 11 	Q06124	§62	IQNTGDyYDLYGGEK 	2	3.76			3.46	3.94	3.61	1.46			-4.79	-2.7	-3.92
+PTPN11	Phosphatase	Tyrosine-protein phosphatase non-receptor type 11 	Q06124	§62	IQNTGDyYDLYGGEK 	3				4.34	4.15					-4.66	-3.05	
+PTPN11	Phosphatase	Tyrosine-protein phosphatase non-receptor type 11 	Q06124	63	IQNTGDYyDLYGGEKFATLAELVQYYMEHHGQLKEK 	5	3.64						0.47					
+PTPN11	Phosphatase	Tyrosine-protein phosphatase non-receptor type 11 	Q06124	§580	EDSARVyENVGLMQQQK 	3	4.64						-0.78					
+PTPN11	Phosphatase	Tyrosine-protein phosphatase non-receptor type 11 	Q06124	§580	EDSARVYENVGLmQQQK 	3	4.64						-0.78					
+PTPN11	Phosphatase	Tyrosine-protein phosphatase non-receptor type 11 	Q06124	§580	VyENVGLMQQQK 	2			2.24						-6.09			
+PTPN18	Phosphatase	Tyrosine-protein phosphatase non-receptor type 18 	Q99952	§387	SAEEAPLySK 	2			2.3	1.92		2.1			-4.15	-1.47		-0.94
+PTPN6	Phosphatase	Tyrosine-protein phosphatase non-receptor type 6 	P29350	§536	GQESEyGNITYPPAMK 	2	4.44						1.44					
+PTPN6	Phosphatase	Tyrosine-protein phosphatase non-receptor type 6 	P29350	§536	KLEVLQSQKGQESEyGNITYPPAMK 	4	2.86						1.75					
+PTPN6	Phosphatase	Tyrosine-protein phosphatase non-receptor type 6 	P29350	§564	HKEDVyENLHTK 	2	3.18						0.81					
+PTPN6	Phosphatase	Tyrosine-protein phosphatase non-receptor type 6 	P29350	§564	HKEDVyENLHTK 	3	4.33						1.41					
+PTPN6	Phosphatase	Tyrosine-protein phosphatase non-receptor type 6 	P29350	§564	HKEDVyENLHTK 	4			2.37						-6.11			
+PTPN6	Phosphatase	Tyrosine-protein phosphatase non-receptor type 6 	P29350	§564	TSSKHKEDVyENLHTK 	4	2.63						1.29					
+PTPRA	Phosphatase	Receptor-type tyrosine-protein phosphatase alpha	P18433	§798	VVQEYIDAFSDyANFK 	2	5.71			5.08			0.55			-4.85		
+PTPRA	Phosphatase	Receptor-type tyrosine-protein phosphatase alpha	P18433	§798	VVQEYIDAFSDyANFK 	3	4.34	3.55	4.34				0.12	-2.09	-6.88			
+PTPRR	Phosphatase	Receptor-type tyrosine-protein phosphatase R	Q15256	370	VAmEYLQSASRILTR 	2						1.52						-8.63
+PTPRR	Phosphatase	Receptor-type tyrosine-protein phosphatase R	Q15256	370	VAMEyLQSASRILTR 	2						1.52						-8.63
+SYNJ2	Phosphatase	Synaptojanin-2 	O15056	130	ILSSGVFyFSWPNDGSR 	3	1.87						5.14					
+ADAM9	Protease	ADAM 9	Q13443	815	VSSQGNLIPARPAPAPPLySSLT 	3			3.28						-6.45			
+CPD	Protease	Carboxypeptidase D	O75976	1344	LRQHHDEyEDEIR 	3			4.09						-7.23			
+CPD	Protease	Carboxypeptidase D	O75976	1376	SLLSHEFQDETDTEEETLySSKH 	3			6.23						-6.02			
+MMP16	Protease	Matrix metalloproteinase-16	P51512	52	YGyLPPTDPRMSVLR 	3	1.77						-2.53					
+MMP16	Protease	Matrix metalloproteinase-16	P51512	52	YGYLPPTDPRmSVLR 	3	1.77						-2.53					
+NAALADL2	Protease	N-acetylated alpha-linked acidic dipeptidase-like protein 2	Q58DX5	106	LQEESDyITHYTR 	3	1.92						1.54					
+PSMA2	Protease	Proteasome subunit alpha type 2 	P25787	56	SILyDER 	2				1.88						-4.51		
+PSMA2	Protease	Proteasome subunit alpha type 2 	P25787	75	HIGLVySGMGPDYR 	2					3.69						-5.12	
+PSMA2	Protease	Proteasome subunit alpha type 2 	P25787	75	HIGLVYSGmGPDYR 	2					3.69						-5.12	
+PSMA2	Protease	Proteasome subunit alpha type 2 	P25787	75	HIGLVySGMGPDYR 	3			3.62	3.72	4.41				-7.99	-4.14	-4.68	
+PSMA2	Protease	Proteasome subunit alpha type 2 	P25787	75	HIGLVYSGmGPDYR 	3			3.62	3.72	4.41				-7.99	-4.14	-4.68	
+PSMA6	Protease	Proteasome subunit alpha type 6 	P60900	160	CDPAGYyCGFK 	2			2.96						-6.46			
+PSMC6	Protease	26S protease regulatory subunit S10B 	P62333	207	VVSSSIVDKyIGESAR 	3			3.57						-6.13			
+DYRK1A	"""Protein kinase, dual-specificity"""	Dual specificity tyrosine-phosphorylation-regulated kinase 1A 	Q13627	§145	KVYNDGYDDDNyDYIVK 	2			5.5		5.48				-4.99		-2.52	
+DYRK1A	"""Protein kinase, dual-specificity"""	Dual specificity tyrosine-phosphorylation-regulated kinase 1A 	Q13627	§145	KVYNDGYDDDNyDYIVK 	3			5.45		5.36				-7.43		-3.4	
+DYRK1A	"""Protein kinase, dual-specificity"""	Dual specificity tyrosine-phosphorylation-regulated kinase 1A 	Q13627	§145	VYNDGYDDDNyDYIVK 	2			5.42						-7.8			
+DYRK1A	"""Protein kinase, dual-specificity"""	Dual specificity tyrosine-phosphorylation-regulated kinase 1A 	Q13627	§145	VYNDGYDDDNyDYIVK 	3					2.9						-0.83	
+DYRK3	"""Protein kinase, dual-specificity"""	Dual specificity tyrosine-phosphorylation-regulated kinase 3	O43781	§369	LYTyIQSR 	2	1.61		1.86	1.7			4.17		-5.62	-0.28		
+BCR	"""Protein kinase, Ser/Thr (non-receptor)"""	Breakpoint cluster region protein 	P11274	§177	KGHGQPGADAEKPFyVNVEFHHER 	4	6.02			4.93			1.36			-8		
+Cdc2	"""Protein kinase, Ser/Thr (non-receptor)"""	Cell division control protein 2	P06493	§15	IEKIGEGTyGVVYK 	2	3.58		3.51				1.02		-5.77			
+Cdc2	"""Protein kinase, Ser/Thr (non-receptor)"""	Cell division control protein 2	P06493	§15	IEKIGEGTyGVVYK 	3	3.6		3.62				1.31		-8.65			
+Cdc2	"""Protein kinase, Ser/Thr (non-receptor)"""	Cell division control protein 2	P06493	§15	IEKIGEGTyGVVYKGR 	3	5.24						1.71					
+Cdc2	"""Protein kinase, Ser/Thr (non-receptor)"""	Cell division control protein 2	P06493	§15	IEKIGEGTyGVVYKGR 	4	2.4						2.77					
+Cdc2	"""Protein kinase, Ser/Thr (non-receptor)"""	Cell division control protein 2	P06493	§15	IGEGTyGVVYKGR 	2	3.54						0.92					
+Cdc2	"""Protein kinase, Ser/Thr (non-receptor)"""	Cell division control protein 2	P06493	§15	IGEGTyGVVYKGR 	3		1.71						2.78				
+Cdc2	"""Protein kinase, Ser/Thr (non-receptor)"""	Cell division control protein 2	P06493	"""§15, §19"""	IEKIGEGTyGVVYK 	2	2.33		2.64				0.05		-6.28			
+Cdc2	"""Protein kinase, Ser/Thr (non-receptor)"""	Cell division control protein 2	P06493	"""§15, §19"""	IEKIGEGTYGVVyK 	2	2.33		2.64				0.05		-6.28			
+Cdc2	"""Protein kinase, Ser/Thr (non-receptor)"""	Cell division control protein 2	P06493	"""§15, §19"""	IEKIGEGTyGVVYK 	3			2.9	2.45	2.65				-7.03	-7.57	-3.51	
+Cdc2	"""Protein kinase, Ser/Thr (non-receptor)"""	Cell division control protein 2	P06493	"""§15, §19"""	IEKIGEGTYGVVyK 	3			2.9	2.45	2.65				-7.03	-7.57	-3.51	
+Cdc2	"""Protein kinase, Ser/Thr (non-receptor)"""	Cell division control protein 2	P06493	"""§15, §19"""	IEKIGEGTyGVVYKGR 	4	2.12						0.35					
+Cdc2	"""Protein kinase, Ser/Thr (non-receptor)"""	Cell division control protein 2	P06493	"""§15, §19"""	IEKIGEGTYGVVyKGR 	4	2.12						0.35					
+Cdc2	"""Protein kinase, Ser/Thr (non-receptor)"""	Cell division control protein 2	P06493	§19	IGEGTYGVVyKGR 	2			3.11						-7.26			
+Cdc2	"""Protein kinase, Ser/Thr (non-receptor)"""	Cell division control protein 2	P06493	§19	IGEGTYGVVyKGR 	3			2.16						-6.32			
+CDK5	"""Protein kinase, Ser/Thr (non-receptor)"""	Cell division protein kinase 5 	Q00535	§15	IGEGTyGTVFK 	2	1.9						1.06					
+HIPK3	"""Protein kinase, Ser/Thr (non-receptor)"""	Homeodomain-interacting protein kinase 3 	Q9H422	§359	TVCSTyLQSR 	2	3.15	3.19	3.11	3.47	2.96	2.9	1.61	0.76	-3.68	-3.11	-0.56	-3.02
+H11	"""Protein kinase, Ser/Thr (non-receptor)"""	Heat-shock protein beta-8 	Q9UJY1	118	TKDGyVEVSGKHEEK 	3			3.94						-5.53			
+ICK	"""Protein kinase, Ser/Thr (non-receptor)"""	Serine/threonine-protein kinase ICK 	Q9UPZ9	"""156, §159"""	SKPPyTDYVSTR 	2					2.16						-1.24	
+ICK	"""Protein kinase, Ser/Thr (non-receptor)"""	Serine/threonine-protein kinase ICK 	Q9UPZ9	"""156, §159"""	SKPPYTDyVSTR 	2					2.16						-1.24	
+ICK	"""Protein kinase, Ser/Thr (non-receptor)"""	Serine/threonine-protein kinase ICK 	Q9UPZ9	§159	SKPPYTDyVSTR 	3					2.53						-3.74	
+SgK269	"""Protein kinase, Ser/Thr (non-receptor)"""	SgK269	XP_370878	§635	NAIKVPIVINPNAyDNLAIYK 	3				4.53						-3.39		
+KHS1	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase kinase kinase kinase 5 	Q9Y4K4	31	VGSGTyGDVYK 	2			2.29			1.93			-5.11			-3.78
+ERK2	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 1 	P28482	§186	VADPDHDHTGFLTEyVATR 	2	3.26		3.78	4.37	3.85		1.82		-5.98	-2.8	-2.36	
+ERK2	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 1 	P28482	§186	VADPDHDHTGFLTEyVATR 	3	5.31	4.95	5.38	5.06	4.94	5	1.07	-0.99	-6.26	-3.87	-2.55	-3.21
+ERK2	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 1 	P28482	§186	VADPDHDHTGFLTEyVATR 	3			3.32						-5.19			
+ERK2	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 1 	P28482	§186	VADPDHDHTGFLTEyVATR 	4			2.2			2.45			-7.58			-3.52
+p38-beta	"""Protein kinase, Ser/Thr (non-receptor)"""	p38-beta	Q15759	190	QADEEmTGYVATR 	2				2.34	2.8	2.14				-5.19	-1.99	-2.3
+p38-beta	"""Protein kinase, Ser/Thr (non-receptor)"""	p38-beta	Q15759	190	QADEEMTGyVATR 	2				2.34	2.8	2.14				-5.19	-1.99	-2.3
+p38-beta	"""Protein kinase, Ser/Thr (non-receptor)"""	p38-beta	Q15759	190	QADEEmTGYVATR 	3					2.26						-3.05	
+p38-beta	"""Protein kinase, Ser/Thr (non-receptor)"""	p38-beta	Q15759	190	QADEEMTGyVATR 	3					2.26						-3.05	
+p38-beta	"""Protein kinase, Ser/Thr (non-receptor)"""	p38-beta	Q15759	190	QADEEMTGyVATR 	2	3.24			2.84		3.34	2.26			-1.99		-3.26
+p38-gamma	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 12 	P53778	185	QADSEmTGYVVTR 	2	2.56			3.22	2.7	2.9	3.11			-2.32	-1.22	-0.59
+p38-gamma	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 12 	P53778	185	QADSEMTGyVVTR 	2	2.56			3.22	2.7	2.9	3.11			-2.32	-1.22	-0.59
+p38-gamma	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 12 	P53778	185	QADSEmTGYVVTR 	2	2.47						0.2					
+p38-gamma	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 12 	P53778	185	QADSEMTGyVVTR 	2	2.47						0.2					
+p38-gamma	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 12 	P53778	185	QADSEMTGyVVTR 	2	3.41	2.96	3.25			3.08	1.09	1.73	-5.5			-3.04
+p38-gamma	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 12 	P53778	185	QADSEMTGyVVTR 	3						2.99						1.32
+p38-delta	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 13 	O15264	182	HADAEmTGYVVTR 	2	2.88			3.54	3.46	3.56	-0.23			-2.83	-0.86	-2.28
+p38-delta	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 13 	O15264	182	HADAEMTGyVVTR 	2	2.88			3.54	3.46	3.56	-0.23			-2.83	-0.86	-2.28
+p38-delta	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 13 	O15264	182	HADAEmTGYVVTR 	3			2.31	2.93	3.62				-5.45	-4.26	-1.77	
+p38-delta	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 13 	O15264	182	HADAEMTGyVVTR 	3			2.31	2.93	3.62				-5.45	-4.26	-1.77	
+p38-delta	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 13 	O15264	182	HADAEMTGyVVTR 	2	3.93		4.63	4.08	3.85	4.43	-0.77		-6.83	-4.36	-1.65	-4.12
+p38-delta	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 13 	O15264	182	HADAEMTGyVVTR 	2						4.15						-3.56
+p38-delta	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 13 	O15264	182	HADAEMTGyVVTR 	3	2.18		2.62	2.8		3.84	0.59		-7.06	-1.8		-4.07
+p38-delta	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 13 	O15264	182	HADAEMTGyVVTR 	3						2.3						-4.85
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEmTGYVATR 	2	4.07	3.78	4.37	4	3.69	3.82	2.79	-0.05	-2.81	-1.82	-1.43	-1.82
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	2	4.07	3.78	4.37	4	3.69	3.82	2.79	-0.05	-2.81	-1.82	-1.43	-1.82
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEmTGYVATR 	2	3.95	2.77	4.21	3.94	3.02	3.55	2.25	-1.35	-3.35	-1.51	-2.35	-3.73
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	2	3.95	2.77	4.21	3.94	3.02	3.55	2.25	-1.35	-3.35	-1.51	-2.35	-3.73
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEmTGYVATR 	2	3.79	4.13	3.5	3.94		3.32	3.25	2.17	-4.5	-3.5		0.1
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	2	3.79	4.13	3.5	3.94		3.32	3.25	2.17	-4.5	-3.5		0.1
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEmTGYVATR 	2	3.53	3.7	2.96	3.86			4.86	0.87	-6.46	-1.35		
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	2	3.53	3.7	2.96	3.86			4.86	0.87	-6.46	-1.35		
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEmTGYVATR 	2	3.8	3.49		3.76			0.26	1.1		-3.12		
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	2	3.8	3.49		3.76			0.26	1.1		-3.12		
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEmTGYVATR 	2	3.74			3.06			4.4			-2.04		
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	2	3.74			3.06			4.4			-2.04		
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEmTGYVATR 	2	2.8			3.67			1.48			0.95		
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	2	2.8			3.67			1.48			0.95		
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEmTGYVATR 	2				3.19						-3.19		
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	2				3.19						-3.19		
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEmTGYVATR 	3	2.35	3.35	3.35	3.56	3.08	3	2.27	-0.29	-3.39	-2.48	-2.02	-2.36
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	3	2.35	3.35	3.35	3.56	3.08	3	2.27	-0.29	-3.39	-2.48	-2.02	-2.36
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEmTGYVATR 	3	3.74	3.03	2.98	3.5	2.67	2.57	2.48	-1.33	-4.66	-2.02	-1.44	-2.59
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	3	3.74	3.03	2.98	3.5	2.67	2.57	2.48	-1.33	-4.66	-2.02	-1.44	-2.59
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEmTGYVATR 	3	3.11	3.25		3.45	1.92		1.55	-0.18		-3.39	-2.7	
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	3	3.11	3.25		3.45	1.92		1.55	-0.18		-3.39	-2.7	
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEmTGYVATR 	3	2.96	3.04		3.31			1.78	1.55		-3.17		
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	3	2.96	3.04		3.31			1.78	1.55		-3.17		
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEmTGYVATR 	3	2.61	2.77		2.89			1.65	0.63		-2.82		
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	3	2.61	2.77		2.89			1.65	0.63		-2.82		
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEmTGYVATR 	3	2.88	2.93		2.1			1.55	-0.29		-1.78		
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	3	2.88	2.93		2.1			1.55	-0.29		-1.78		
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEmTGYVATR 	3	2.37	3.08		2.24			4.2	1.09		-2.59		
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	3	2.37	3.08		2.24			4.2	1.09		-2.59		
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEmTGYVATR 	3	2.48						3.74					
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	3	2.48						3.74					
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEmTGYVATR 	3	2.16						-0.18					
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	3	2.16						-0.18					
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	2	3.79	4.41	4.44	3.85	4.28	3.33	2.06	0.97	-4.45	-2.2	-2.13	-2.82
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	2	3.04	3.44		3.31	4.29		1.98	1.44		-1.12	-2.05	
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	2				2.74	4.11					-1.28	-2.13	
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	3	2.6	3.73	3.69	3.36	3.18		1.39	-0.12	-5.7	-1.86	-3.37	
+p38-alpha	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 14 	Q16539	§181	HTDDEMTGyVATR 	3			3.49		2.53				-4.77		-1.4	
+ERK1	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 3 	P27361	§204	IADPEHDHTGFLTEyVATR 	2	4.04		4.11	3.71	3.99	3.98	-0.51		-7.12	-3.11	-2.46	-2.57
+ERK1	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 3 	P27361	§204	IADPEHDHTGFLTEyVATR 	3	5.6	4.36	5.38	5.3	5.54	4.8	0.46	-1.9	-5.63	-3.6	-3.28	-3.44
+ERK1	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 3 	P27361	§204	IADPEHDHTGFLTEyVATR 	3			2.7						-2.01			
+ERK1	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 3 	P27361	§204	IADPEHDHTGFLTEyVATR 	4	2.01		2.64				1.71		-7.51			
+ERK5	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 7 	Q13164	§220	GLCTSPAEHQYFmTEYVATR 	3	4.48				3.72		0.82				-2.76	
+ERK5	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 7 	Q13164	§220	GLCTSPAEHQYFMTEyVATR 	3	4.48				3.72		0.82				-2.76	
+ERK5	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 7 	Q13164	§220	GLCTSPAEHQYFMTEyVATR 	3	5.81		5.25	5.19		4.77	1.38		-6.79	-4.76		-4.24
+JNK2	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 9 	P45984	§185	TACTNFmMTPYVVTR 	3					1.79						-2.47	
+JNK2	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 9 	P45984	§185	TACTNFMmTPYVVTR 	3					1.79						-2.47	
+JNK2	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 9 	P45984	§185	TACTNFMMTPyVVTR 	3					1.79						-2.47	
+JNK2	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 9 	P45984	§185	TACTNFmMTPYVVTR 	2			3.71						-6.48			
+JNK2	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 9 	P45984	§185	TACTNFMMTPyVVTR 	2			3.71						-6.48			
+JNK2	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 9 	P45984	§185	TACTNFmMTPYVVTR 	3	2.66						1.33					
+JNK2	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 9 	P45984	§185	TACTNFMMTPyVVTR 	3	2.66						1.33					
+JNK2	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 9 	P45984	§185	TACTNFmMTPYVVTR 	3	1.98						0.07					
+JNK2	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 9 	P45984	§185	TACTNFMMTPyVVTR 	3	1.98						0.07					
+JNK2	"""Protein kinase, Ser/Thr (non-receptor)"""	Mitogen-activated protein kinase 9 	P45984	§185	TACTNFMMTPyVVTR 	3			2.12						-7.21			
+AMPK1	"""Protein kinase, Ser/Thr (non-receptor)"""	5&apos;-AMP-activated protein kinase catalytic subunit alpha-1 	Q13131	433	VVNPYyLR 	2					1.82						-4.1	
+PKCD	"""Protein kinase, Ser/Thr (non-receptor)"""	Protein kinase C delta type 	Q05655	§313	RSDSASSEPVGIyQGFEK 	2			5.28						-4.98			
+PKCD	"""Protein kinase, Ser/Thr (non-receptor)"""	Protein kinase C delta type 	Q05655	§313	RSDSASSEPVGIyQGFEK 	3	3.93		4.39	3.13		3.83	0.94		-8.22	-4.54		-2.66
+PKCD	"""Protein kinase, Ser/Thr (non-receptor)"""	Protein kinase C delta type 	Q05655	§313	RSDSASSEPVGIyQGFEKK 	3	4.77			5.22			0.19			-4.38		
+PKCD	"""Protein kinase, Ser/Thr (non-receptor)"""	Protein kinase C delta type 	Q05655	§313	SDSASSEPVGIyQGFEK 	2	4.17						1.44					
+PKCD	"""Protein kinase, Ser/Thr (non-receptor)"""	Protein kinase C delta type 	Q05655	§313	SDSASSEPVGIyQGFEKK 	3	2.77						3.05					
+PKCD	"""Protein kinase, Ser/Thr (non-receptor)"""	Protein kinase C delta type 	Q05655	§334	KTGVAGEDmQDNSGTYGK 	3					3.49						-0.27	
+PKCD	"""Protein kinase, Ser/Thr (non-receptor)"""	Protein kinase C delta type 	Q05655	§334	KTGVAGEDMQDNSGTyGK 	3					3.49						-0.27	
+PKCD	"""Protein kinase, Ser/Thr (non-receptor)"""	Protein kinase C delta type 	Q05655	§334	KTGVAGEDMQDNSGTyGK 	3	3.69						-1.37					
+PKCD	"""Protein kinase, Ser/Thr (non-receptor)"""	Protein kinase C delta type 	Q05655	§334	TGVAGEDmQDNSGTYGKIWEGSSK 	3	4.59						3.32					
+PKCD	"""Protein kinase, Ser/Thr (non-receptor)"""	Protein kinase C delta type 	Q05655	§334	TGVAGEDMQDNSGTyGKIWEGSSK 	3	4.59						3.32					
+PKCD	"""Protein kinase, Ser/Thr (non-receptor)"""	Protein kinase C delta type 	Q05655	§334	TGVAGEDMQDNSGTyGK 	2	3.8		4.58	4.45			4.64		-2.04	-1.84		
+PKCD	"""Protein kinase, Ser/Thr (non-receptor)"""	Protein kinase C delta type 	Q05655	§334	TGVAGEDMQDNSGTyGKIWEGSSK 	3	4.35						-0.64					
+PKCD	"""Protein kinase, Ser/Thr (non-receptor)"""	"""Protein kinase C, delta"""	Q05655	374	GRGEyFAIK 	2			2.2	2.38					-8.22	-5.6		
+DNA-PK	"""Protein kinase, Ser/Thr (non-receptor)"""	DNA-dependent protein kinase catalytic subunit 	P78527	2743	RFmRDQEKLSLMYARK 	4						2.36						-5.7
+DNA-PK	"""Protein kinase, Ser/Thr (non-receptor)"""	DNA-dependent protein kinase catalytic subunit 	P78527	2743	RFMRDQEKLSLMyARK 	4						2.36						-5.7
+PRP4	"""Protein kinase, Ser/Thr (non-receptor)"""	Serine/threonine-protein kinase PRP4	Q13523	§849	LCDFGSASHVADNDITPyLVSR 	2	5.36	5.61	5.29	4.75	5.25	4.78	0.79	-2.51	-6.29	-3.96	-3.38	-1.54
+PRP4	"""Protein kinase, Ser/Thr (non-receptor)"""	Serine/threonine-protein kinase PRP4	Q13523	§849	LCDFGSASHVADNDITPyLVSR 	3	5.78	5.22	5.4	5.45	5.57		0.9	1.75	-6.44	-3.97	-4.04	
+PRP4	"""Protein kinase, Ser/Thr (non-receptor)"""	Serine/threonine-protein kinase PRP4	Q13523	§849	LCDFGSASHVADNDITPyLVSR 	3	5.17	4.8					2.58	-7.44				
+PRP4	"""Protein kinase, Ser/Thr (non-receptor)"""	Serine/threonine-protein kinase PRP4	Q13523	§849	LCDFGSASHVADNDITPyLVSR 	3	4.76						2.58					
+PRP4	"""Protein kinase, Ser/Thr (non-receptor)"""	Serine/threonine-protein kinase PRP4	Q13523	§849	LCDFGSASHVADNDITPyLVSR 	4					2.38						-2.96	
+SgK223	"""Protein kinase, Ser/Thr (non-receptor)"""	Tyrosine-protein kinase SgK223 	Q86YV5	§390	CLGLTGEPQPPAHPQEATQPEPIyAESTKR 	4	2.51						4.53					
+SgK223	"""Protein kinase, Ser/Thr (non-receptor)"""	Tyrosine-protein kinase SgK223 	Q86YV5	§390	EATQPEPIyAESTK 	2				2.01						-3.03		
+Abl	"""Protein kinase, Tyr (non-receptor)"""	Proto-oncogene tyrosine-protein kinase ABL1 	P00519-2	§204	INTASDGKLyVSSESR 	3					3.08	2.91					-2.56	-4.18
+BTK	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase BTK 	Q06187	§550	YVLDDEyTSSVGSKFPVR 	3	3.21						0.62					
+Fer	"""Protein kinase, Tyr (non-receptor)"""	Proto-oncogene tyrosine-protein kinase FER 	P16591	402	VQENDGKEPPPVVNyEEDAR 	3				5.07						-4.47		
+Fer	"""Protein kinase, Tyr (non-receptor)"""	Proto-oncogene tyrosine-protein kinase FER 	P16591	§714	QEDGGVySSSGLK 	2	2.64						4.89					
+Fgr	"""Protein kinase, Tyr (non-receptor)"""	Proto-oncogene tyrosine-protein kinase FGR 	P09769	"""28, 34"""	SyGAADHYGPDPTK 	3				2.29						0.46		
+Fgr	"""Protein kinase, Tyr (non-receptor)"""	Proto-oncogene tyrosine-protein kinase FGR 	P09769	"""28, 34"""	SYGAADHyGPDPTK 	3				2.29						0.46		
+Fgr	"""Protein kinase, Tyr (non-receptor)"""	Proto-oncogene tyrosine-protein kinase FGR 	P09769	34	SYGAADHyGPDPTK 	2				3.26						-2.07		
+Fgr	"""Protein kinase, Tyr (non-receptor)"""	Proto-oncogene tyrosine-protein kinase FGR 	P09769	208	KLDMGGyYITTR 	2			3.97	4.04					-6.92	-3.67		
+Fgr	"""Protein kinase, Tyr (non-receptor)"""	Proto-oncogene tyrosine-protein kinase FGR 	P09769	208	KLDMGGyYITTR 	3				1.82						-3.63		
+Fgr	"""Protein kinase, Tyr (non-receptor)"""	Proto-oncogene tyrosine-protein kinase FGR 	P09769	§412	LIKDDEyNPCQGSK 	3			2.73						-3.12			
+Fgr	"""Protein kinase, Tyr (non-receptor)"""	Proto-oncogene tyrosine-protein kinase FGR 	P09769	§412	LIKDDEyNPCQGSKFPIK 	3				3.76						-5.84		
+FRK	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase FRK 	P42685	46	HGHyFVALFDYQAR 	3	4.02						0.97					
+FRK	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase FRK 	P42685	§387	VFKVDNEDIyESRHEIKLPVK 	4	5.14						-0.31					
+FRK	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase FRK 	P42685	§497	WKLEDYFETDSSySDANNFIR 	3	5.63						0.13					
+Hck	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase HCK 	P08631	§208	TLDNGGFyISPR 	2			3.15	3.13		2.79			-6.86	-1.68		-3.42
+Hck	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase HCK 	P08631	§208	TLDNGGFyISPR 	2						2.04						-3.68
+JAK1	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase JAK1 	P23458	"""§1022, §1023"""	AIETDKEyYTVKDDR 	3			2.92	2.81					-7.65	-2.54		
+JAK1	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase JAK1 	P23458	"""§1022, §1023"""	AIETDKEYyTVKDDR 	3			2.92	2.81					-7.65	-2.54		
+LCK	"""Protein kinase, Tyr (non-receptor)"""	Proto-oncogene tyrosine-protein kinase LCK 	P06239	§192	NLDNGGFyISPR 	2			3.17			3.5			-6.55			-4.76
+LCK	"""Protein kinase, Tyr (non-receptor)"""	Proto-oncogene tyrosine-protein kinase LCK 	P06239	§505	SVLEDFFTATEGQyQPQP 	2			5.36						-6.2			
+LCK	"""Protein kinase, Tyr (non-receptor)"""	Proto-oncogene tyrosine-protein kinase LCK 	P06239	§505	SVLEDFFTATEGQyQPQP 	3			5.84						-6.89			
+Lyn	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase Lyn	P07948	§192	SLDNGGyYISPR 	2						2.79						-4.03
+Lyn	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase Lyn	P07948	193	SLDNGGYyISPR 	2	3			3.04			0.35			-6.87		
+Lyn	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase Lyn	P07948	305	LyAVVTR 	2			2.13						-5.95			
+Lyn	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase Lyn	P07948	§472	VENCPDELyDIMK 	2				3.71						-4.65		
+Lyn	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase Lyn	P07948	§472	VENCPDELYDImK 	2				3.71						-4.65		
+Lyn	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase Lyn	P07948	§472	VENCPDELyDIMK 	2			3.84						-6.9			
+Lyn	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase Lyn	P07948	§507	AEERPTFDYLQSVLDDFYTATEGQyQQQP 	3			5.61						-3.27			
+Lyn	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase Lyn	P07948	§507	AEERPTFDYLQSVLDDFYTATEGQyQQQP 	4					3.92						-1.53	
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§397	THAVSVSETDDyAEIIDEEDTYTMPSTR 	3	4.33						3.32					
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§397	THAVSVSETDDYAEIIDEEDTYTmPSTR 	3	4.33						3.32					
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§397	THAVSVSETDDyAEIIDEEDTYTMPSTR 	3	4.65						2.04					
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	"""570, §576"""	yMEDSTYYK 	2			1.79	2.72		2.14			-7.2	-4.24		-1.23
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	"""570, §576"""	YMEDSTyYK 	2			1.79	2.72		2.14			-7.2	-4.24		-1.23
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§576	YmEDSTYYK 	2	2.84	2.5	2.39	2.97		2.26	3.35	1.56	-4.57	-1.93		0.24
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§576	YMEDSTyYK 	2	2.84	2.5	2.39	2.97		2.26	3.35	1.56	-4.57	-1.93		0.24
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§576	YmEDSTYYK 	2	2	2.67	2.54	2.11		2.86	-0.42	0.42	-5.51	-1.33		-4.1
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§576	YMEDSTyYK 	2	2	2.67	2.54	2.11		2.86	-0.42	0.42	-5.51	-1.33		-4.1
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§576	YmEDSTYYK 	2	2.77	2.18		2.92			3.06	0.8		-1.64		
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§576	YMEDSTyYK 	2	2.77	2.18		2.92			3.06	0.8		-1.64		
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§576	YmEDSTYYK 	2	2.74			2.61			1.09			-2.1		
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§576	YMEDSTyYK 	2	2.74			2.61			1.09			-2.1		
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§576	YmEDSTYYKASK 	2	4.02	3.69			3.24		4.11	2.33			-2.45	
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§576	YMEDSTyYKASK 	2	4.02	3.69			3.24		4.11	2.33			-2.45	
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§576	YmEDSTYYKASK 	3	2.85	2.51		2.34	2.77		1.93	-0.27		-4.31	-2.81	
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§576	YMEDSTyYKASK 	3	2.85	2.51		2.34	2.77		1.93	-0.27		-4.31	-2.81	
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§576	YmEDSTYYKASK 	3	2.42	2.38					3.67	1.01				
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§576	YMEDSTyYKASK 	3	2.42	2.38					3.67	1.01				
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§576	YMEDSTyYK 	2	2.92	2.96			2.42		2.65	0.16			-1.65	
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§576	YMEDSTyYK 	2	2.49				2.08		2.65				-2.13	
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§576	YMEDSTyYKASK 	2	3.55	3.82	3.83			3.78	1.12	-0.59	-6.59			-2.7
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§576	YMEDSTyYKASK 	3	2.47	2.43	2.02				2.6	-0.79	-6.41			
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§576	YMEDSTyYKASK 	3	2.42						2.71					
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	"""§576, §577"""	YmEDSTYYKASKGKLPIK 	3	3.53						0.58					
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	"""§576, §577"""	YMEDSTyYKASKGKLPIK 	3	3.53						0.58					
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	"""§576, §577"""	YMEDSTYyKASKGKLPIK 	3	3.53						0.58					
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	"""§576, §577"""	YmEDSTYYKASKGKLPIK 	4		2.33						1.32				
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	"""§576, §577"""	YMEDSTyYKASKGKLPIK 	4		2.33						1.32				
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	"""§576, §577"""	YMEDSTYyKASKGKLPIK 	4		2.33						1.32				
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	"""§576, §577"""	YMEDSTyYKASK 	2	2.58		3.48	3.57		3.47	0.04		-4.93	-4.41		-3.74
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	"""§576, §577"""	YMEDSTYyKASK 	2	2.58		3.48	3.57		3.47	0.04		-4.93	-4.41		-3.74
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	"""§576, §577"""	YMEDSTyYKASK 	2						3.24						-0.93
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	"""§576, §577"""	YMEDSTYyKASK 	2						3.24						-0.93
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	"""§576, §577"""	YMEDSTyYKASK 	3		1.5	1.95	1.71		2.02		-1.6	-2.83	-1.49		-1.82
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	"""§576, §577"""	YMEDSTYyKASK 	3		1.5	1.95	1.71		2.02		-1.6	-2.83	-1.49		-1.82
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	"""§576, §577"""	YMEDSTyYKASKGKLPIK 	3		3.76						0.46				
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	"""§576, §577"""	YMEDSTYyKASKGKLPIK 	3		3.76						0.46				
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§577	YmEDSTYYK 	2		2.73		2.52				1.37		-3.92		
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§577	YMEDSTYyK 	2		2.73		2.52				1.37		-3.92		
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§577	YMEDSTYyK 	2		2.41	2.72	2.97		2.65		-0.02	-4.7	-3.27		-2.03
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§577	YMEDSTYyK 	2						1.6						-1.65
+FAK	"""Protein kinase, Tyr (non-receptor)"""	Focal adhesion kinase 1 	Q05397	§861	GSIDREDGSLQGPIGNQHIyQPVGKPDPAAPPK 	4				4.26						-0.02		
+Pyk2	"""Protein kinase, Tyr (non-receptor)"""	Protein tyrosine kinase 2 beta 	Q14289	"""§579, §580"""	YIEDEDyYKASVTR 	3			2.52						-4.42			
+Pyk2	"""Protein kinase, Tyr (non-receptor)"""	Protein tyrosine kinase 2 beta 	Q14289	"""§579, §580"""	YIEDEDYyKASVTR 	3			2.52						-4.42			
+Pyk2	"""Protein kinase, Tyr (non-receptor)"""	Protein tyrosine kinase 2 beta 	Q14289	"""§579, §580"""	YIEDEDyYKASVTRLPIK 	3	4.46						0.97					
+Pyk2	"""Protein kinase, Tyr (non-receptor)"""	Protein tyrosine kinase 2 beta 	Q14289	"""§579, §580"""	YIEDEDYyKASVTRLPIK 	3	4.46						0.97					
+Brk	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase 6 	Q13882	§447	LSSFTSyENPT 	2	2.05			1.78			1.32			-2.82		
+Syk	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase SYK 	P43405	296	IKSySFPKPGHR 	3	2.88		2.77				1.86		-7.56			
+Syk	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase SYK 	P43405	296	SySFPKPGHR 	2				2.82						-1.83		
+Syk	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase SYK 	P43405	296	SySFPKPGHR 	3			2.77	2.65		2.41			-5.73	0.06		-3.33
+Syk	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase SYK 	P43405	§323	QESTVSFNPyEPELAPWAADKGPQR 	3	4.29		2.96				1.36		-6.6			
+Syk	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase SYK 	P43405	§323	QESTVSFNPyEPELAPWAADKGPQR 	3			2.81						-5.47			
+Syk	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase SYK 	P43405	§323	SSPAQGNRQESTVSFNPyEPELAPWAADKGPQR 	4	3.88						-1.54					
+Syk	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase SYK 	P43405	"""§348, §352"""	EALPmDTEVYESPYADPEEIRPK 	3	3.79						-0.65					
+Syk	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase SYK 	P43405	"""§348, §352"""	EALPMDTEVyESPYADPEEIRPK 	3	3.79						-0.65					
+Syk	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase SYK 	P43405	"""§348, §352"""	EALPMDTEVYESPyADPEEIRPK 	3	3.79						-0.65					
+Syk	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase SYK 	P43405	"""§348, §352"""	EALPMDTEVyESPYADPEEIRPK 	3	3.28						3.05					
+Syk	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase SYK 	P43405	"""§348, §352"""	EALPMDTEVYESPyADPEEIRPK 	3	3.28						3.05					
+Syk	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase SYK 	P43405	§352	EALPMDTEVYESPyADPEEIRPK 	3				3.17						-3.45		
+Syk	"""Protein kinase, Tyr (non-receptor)"""	Tyrosine-protein kinase SYK 	P43405	§526	ADENYyKAQTHGK 	3			1.73						-6.26			
+Ack	"""Protein kinase, Tyr (non-receptor)"""	Activated CDC42 kinase 1 	Q07912	§518	KPTyDPVSEDQDPLSSDFKR 	3			4.08	3.67					-7.31	-3.58		
+Ack	"""Protein kinase, Tyr (non-receptor)"""	Activated CDC42 kinase 1 	Q07912	§857	KVSSTHyYLLPERPSYLER 	3				3.09						-4.41		
+Ack	"""Protein kinase, Tyr (non-receptor)"""	Activated CDC42 kinase 1 	Q07912	§857	VSSTHyYLLPERPSYLER 	3				3.06						-2.95		
+Tyk2	"""Protein kinase, Tyr (non-receptor)"""	Non-receptor tyrosine-protein kinase TYK2	P29597	§292	LLAQAEGEPCyIR 	2	3.75	3.29		4.19			4.58	-0.91		-5.34		
+Yes	"""Protein kinase, Tyr (non-receptor)"""	Proto-oncogene tyrosine-protein kinase Yes 	P07947	31	YRPENTPEPVSTSVSHyGAEPTTVSPCPSSSAK 	4	3.36						3.04					
+Yes	"""Protein kinase, Tyr (non-receptor)"""	Proto-oncogene tyrosine-protein kinase Yes 	P07947	§536	KDPDERPTFEYIQSFLEDYFTATEPQyQPGENL 	3					5.06						-1.35	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	§1078	KHQELQAmQMELQSPEYK 	3					5.45						-2.41	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	§1078	KHQELQAMQmELQSPEYK 	3					5.45						-2.41	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	§1078	KHQELQAMQMELQSPEyK 	3					5.45						-2.41	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	§1078	KHQELQAmQMELQSPEYK 	3					5.07						-2.88	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	§1078	KHQELQAMQmELQSPEYK 	3					5.07						-2.88	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	§1078	KHQELQAMQMELQSPEyK 	3					5.07						-2.88	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	§1096	TSTImTDYNPNYCFAGK 	2					4.88						-2.57	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	§1096	TSTIMTDYNPNyCFAGK 	2					4.88						-2.57	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	§1096	TSTImTDYNPNYCFAGK 	3					3.21						-2.66	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	§1096	TSTIMTDYNPNyCFAGK 	3					3.21						-2.66	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	§1096	TSTIMTDYNPNyCFAGK 	2					4.15						-3.41	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	§1096	TSTIMTDYNPNyCFAGK 	3					3.39						-3.18	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	"""1278, 1282"""	DIyRASYYRK 	3					2.09						-0.51	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	"""1278, 1282"""	DIYRASyYRK 	3					2.09						-0.51	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	"""1278, 1282, 1283"""	DIyRASYYRK 	3					2.39						-1.23	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	"""1278, 1282, 1283"""	DIYRASyYRK 	3					2.39						-1.23	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	"""1278, 1282, 1283"""	DIYRASYyRK 	3					2.39						-1.23	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	"""1278, 1282, 1283"""	DIyRASYYRK 	3					1.76						-2.04	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	"""1278, 1282, 1283"""	DIYRASyYRK 	3					1.76						-2.04	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	"""1278, 1282, 1283"""	DIYRASYyRK 	3					1.76						-2.04	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	1359	NCPGPVyR 	2					1.57						-2.18	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	§1507	NKPTSLWNPTyGSWFTEKPTKK 	3					3.72						-3.67	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	§1507	NKPTSLWNPTyGSWFTEKPTKK 	4					3.01						-3.72	
+ALK	"""Protein kinase, Tyr (receptor)"""	ALK tyrosine kinase receptor	Q9UM73	§1507	NKPTSLWNPTyGSWFTEKPTKK 	4					2.59						-2.54	
+AXL	"""Protein kinase, Tyr (receptor)"""	Tyrosine-protein kinase receptor UFO	P30530	695	IYNGDyYR 	2	2.34		1.92	2.31			1.9		-4.19	-2.31		
+AXL	"""Protein kinase, Tyr (receptor)"""	Tyrosine-protein kinase receptor UFO	P30530	695	KIYNGDyYR 	2			2.55	2.66					-4.62	-5.01		
+AXL	"""Protein kinase, Tyr (receptor)"""	Tyrosine-protein kinase receptor UFO	P30530	"""695, 696"""	IYNGDyYRQGR 	3	2.12						1.63					
+AXL	"""Protein kinase, Tyr (receptor)"""	Tyrosine-protein kinase receptor UFO	P30530	"""695, 696"""	IYNGDYyRQGR 	3	2.12						1.63					
+AXL	"""Protein kinase, Tyr (receptor)"""	Tyrosine-protein kinase receptor UFO	P30530	"""695, 696"""	KIYNGDyYRQGR 	3	2.95						-0.01					
+AXL	"""Protein kinase, Tyr (receptor)"""	Tyrosine-protein kinase receptor UFO	P30530	"""695, 696"""	KIYNGDYyRQGR 	3	2.95						-0.01					
+DDR1	"""Protein kinase, Tyr (receptor)"""	Epithelial discoidin domain-containing receptor 1	Q08345	"""792, §796"""	NLyAGDYYR 	2		2.31		3.05		2.19		2.05		-2.37		-1.34
+DDR1	"""Protein kinase, Tyr (receptor)"""	Epithelial discoidin domain-containing receptor 1	Q08345	"""792, §796"""	NLYAGDyYR 	2		2.31		3.05		2.19		2.05		-2.37		-1.34
+DDR1	"""Protein kinase, Tyr (receptor)"""	Epithelial discoidin domain-containing receptor 1	Q08345	"""792, §796"""	NLyAGDYYR 	2		1.89		2.63				-1.06		-2.56		
+DDR1	"""Protein kinase, Tyr (receptor)"""	Epithelial discoidin domain-containing receptor 1	Q08345	"""792, §796"""	NLYAGDyYR 	2		1.89		2.63				-1.06		-2.56		
+DDR1	"""Protein kinase, Tyr (receptor)"""	Epithelial discoidin domain-containing receptor 1	Q08345	"""792, §796"""	NLyAGDYYRVQGR 	3	2.18						-0.62					
+DDR1	"""Protein kinase, Tyr (receptor)"""	Epithelial discoidin domain-containing receptor 1	Q08345	"""792, §796"""	NLYAGDyYRVQGR 	3	2.18						-0.62					
+DDR1	"""Protein kinase, Tyr (receptor)"""	Epithelial discoidin domain-containing receptor 1	Q08345	"""792, §796, 797"""	NLyAGDYYRVQGR 	3				1.81		2.1				0.69		-2.67
+DDR1	"""Protein kinase, Tyr (receptor)"""	Epithelial discoidin domain-containing receptor 1	Q08345	"""792, §796, 797"""	NLYAGDyYRVQGR 	3				1.81		2.1				0.69		-2.67
+DDR1	"""Protein kinase, Tyr (receptor)"""	Epithelial discoidin domain-containing receptor 1	Q08345	"""792, §796, 797"""	NLYAGDYyRVQGR 	3				1.81		2.1				0.69		-2.67
+DDR1	"""Protein kinase, Tyr (receptor)"""	Epithelial discoidin domain-containing receptor 1	Q08345	§796	NLYAGDyYR 	2	2.8						1.98					
+DDR2	"""Protein kinase, Tyr (receptor)"""	Discoidin domain-containing receptor 2	Q16832	"""§736, §740"""	NLySGDYYR 	2	2.68	2.35	2.41	2.29		2.32	3.68	0.05	-4.61	-4.24		-3.21
+DDR2	"""Protein kinase, Tyr (receptor)"""	Discoidin domain-containing receptor 2	Q16832	"""§736, §740"""	NLYSGDyYR 	2	2.68	2.35	2.41	2.29		2.32	3.68	0.05	-4.61	-4.24		-3.21
+EGFR	"""Protein kinase, Tyr (receptor)"""	Epidermal growth factor receptor	P00533	§869	LLGAEEKEyHAEGGKVPIK 	3				3.74						-2.79		
+EGFR	"""Protein kinase, Tyr (receptor)"""	Epidermal growth factor receptor	P00533	§1092	YSSDPTGALTEDSIDDTFLPVPEyINQSVPK 	3	5.51		4.53	5.86			1.19		-3.51	-3.81		
+EGFR	"""Protein kinase, Tyr (receptor)"""	Epidermal growth factor receptor	P00533	§1172	GSHQISLDNPDyQQDFFPK 	3	4.57		3.72	4.35			0.56		-6.24	-2.25		
+EGFR	"""Protein kinase, Tyr (receptor)"""	Epidermal growth factor receptor	P00533	§1197	EAKPNGIFKGSTAENAEyLR 	3	4.91						1.18					
+EGFR	"""Protein kinase, Tyr (receptor)"""	Epidermal growth factor receptor	P00533	§1197	GSTAENAEyLR 	2	2.65	1.69	2.7	2.99	2.8	2.47	0.58	-0.46	-4.33	-3.49	-2.54	-2.54
+EGFR	"""Protein kinase, Tyr (receptor)"""	Epidermal growth factor receptor	P00533	§1197	GSTAENAEyLR 	2				2.95						-2.82		
+EphA2	"""Protein kinase, Tyr (receptor)"""	Ephrin type-A receptor 2	P29317	575	QSPEDVyFSKSEQLKPLK 	3			2.02						-7.06			
+EphA2	"""Protein kinase, Tyr (receptor)"""	Ephrin type-A receptor 2	P29317	§588	SEQLKPLKTyVDPHTYEDPNQAVLK 	4			2.9						-6.06			
+EphA2	"""Protein kinase, Tyr (receptor)"""	Ephrin type-A receptor 2	P29317	§594	TYVDPHTyEDPNQAVLK 	3			2.86		2.6				-7.14		-2.98	
+EphA2	"""Protein kinase, Tyr (receptor)"""	Ephrin type-A receptor 2	P29317	§772	VLEDDPEATyTTSGGK 	2			4.54						-3.73			
+EphA2	"""Protein kinase, Tyr (receptor)"""	Ephrin type-A receptor 2	P29317	§772	VLEDDPEATyTTSGGK 	3			2.24						-6.13			
+EphA2	"""Protein kinase, Tyr (receptor)"""	Ephrin type-A receptor 2	P29317	§772	VLEDDPEATyTTSGGKIPIR 	3			2.63						-6.55			
+EphB3	"""Protein kinase, Tyr (receptor)"""	Ephrin type-B receptor 3	P54753	600	LQQyIAPGMK 	2		2.27						0.18				
+FGFR1	"""Protein kinase, Tyr (receptor)"""	Basic fibroblast growth factor receptor 1	P11362	§653	DIHHIDyYKK 	3				2.57						-3.02		
+VEGFR-1	"""Protein kinase, Tyr (receptor)"""	Vascular endothelial growth factor receptor 1	P17948	"""1048, 1053"""	DIyKNPDYVR 	2				3.85						-1.51		
+VEGFR-1	"""Protein kinase, Tyr (receptor)"""	Vascular endothelial growth factor receptor 1	P17948	"""1048, 1053"""	DIYKNPDyVR 	2				3.85						-1.51		
+VEGFR-1	"""Protein kinase, Tyr (receptor)"""	Vascular endothelial growth factor receptor 1	P17948	"""1048, 1053"""	DIyKNPDYVR 	3			1.79						-3.98			
+VEGFR-1	"""Protein kinase, Tyr (receptor)"""	Vascular endothelial growth factor receptor 1	P17948	"""1048, 1053"""	DIYKNPDyVR 	3			1.79						-3.98			
+KIT	"""Protein kinase, Tyr (receptor)"""	Mast/stem cell growth factor receptor	P10721	§936	QISESTNHIySNLANCSPNR 	3	2.49						0.68					
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	§1003	SVSPTTEMVSNESVDyR 	2			2.51						-7.82			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	"""§1230, §1234"""	DMyDKEYYSVHNK 	3			3.68						-4.85			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	"""§1230, §1234"""	DMYDKEyYSVHNK 	3			3.68						-4.85			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	§1234	DmYDKEYYSVHNK 	3	2.72		4.19				2.26		-5.83			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	§1234	DMYDKEyYSVHNK 	3	2.72		4.19				2.26		-5.83			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	§1234	DmYDKEYYSVHNK 	3			4.15						-3.68			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	§1234	DMYDKEyYSVHNK 	3			4.15						-3.68			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	§1234	DMYDKEyYSVHNK 	2			4.25						-6.2			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	§1234	DMYDKEyYSVHNK 	3			4.32						-6.56			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	"""§1234, §1235"""	DmYDKEYYSVHNK 	3			3.69						-4.07			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	"""§1234, §1235"""	DMYDKEyYSVHNK 	3			3.69						-4.07			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	"""§1234, §1235"""	DMYDKEYySVHNK 	3			3.69						-4.07			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	"""§1234, §1235"""	DmYDKEYYSVHNK 	3			3.28						-5.35			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	"""§1234, §1235"""	DMYDKEyYSVHNK 	3			3.28						-5.35			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	"""§1234, §1235"""	DMYDKEYySVHNK 	3			3.28						-5.35			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	"""§1234, §1235"""	DmYDKEYYSVHNK 	3			2.46						-7.31			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	"""§1234, §1235"""	DMYDKEyYSVHNK 	3			2.46						-7.31			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	"""§1234, §1235"""	DMYDKEYySVHNK 	3			2.46						-7.31			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	"""§1234, §1235"""	DmYDKEYYSVHNKTGAK 	3			3.53						-7.53			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	"""§1234, §1235"""	DMYDKEyYSVHNKTGAK 	3			3.53						-7.53			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	"""§1234, §1235"""	DMYDKEYySVHNKTGAK 	3			3.53						-7.53			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	"""§1234, §1235"""	DMYDKEyYSVHNK 	2			2.62						-5.01			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	"""§1234, §1235"""	DMYDKEYySVHNK 	2			2.62						-5.01			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	"""§1234, §1235"""	DMYDKEyYSVHNK 	3			1.98						-5.74			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	"""§1234, §1235"""	DMYDKEYySVHNK 	3			1.98						-5.74			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	"""§1234, §1235"""	DMYDKEyYSVHNKTGAK 	3			3.55						-5.8			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	"""§1234, §1235"""	DMYDKEYySVHNKTGAK 	3			3.55						-5.8			
+Met	"""Protein kinase, Tyr (receptor)"""	Hepatocyte growth factor receptor	P08581	§1235	DMYDKEYySVHNK 	3			3.74						-6.45			
+PDGFRa	"""Protein kinase, Tyr (receptor)"""	Alpha platelet-derived growth factor receptor	P16234	§762	SLyDRPASYK 	2		2.96	2.63					1.54	-5.81			
+PDGFRa	"""Protein kinase, Tyr (receptor)"""	Alpha platelet-derived growth factor receptor	P16234	"""§762, §768"""	SLyDRPASYK 	2	1.74	2.92	3.05	3.06		2.64	4.33	-0.08	-3.4	-2.77		-3.13
+PDGFRa	"""Protein kinase, Tyr (receptor)"""	Alpha platelet-derived growth factor receptor	P16234	"""§762, §768"""	SLYDRPASyK 	2	1.74	2.92	3.05	3.06		2.64	4.33	-0.08	-3.4	-2.77		-3.13
+PDGFRa	"""Protein kinase, Tyr (receptor)"""	Alpha platelet-derived growth factor receptor	P16234	"""§762, §768"""	SLyDRPASYK 	3						2.47						-2.82
+PDGFRa	"""Protein kinase, Tyr (receptor)"""	Alpha platelet-derived growth factor receptor	P16234	"""§762, §768"""	SLYDRPASyK 	3						2.47						-2.82
+PDGFRa	"""Protein kinase, Tyr (receptor)"""	Alpha platelet-derived growth factor receptor	P16234	849	DIMHDSNyVSK 	2		2.58						-1.29				
+PDGFRa	"""Protein kinase, Tyr (receptor)"""	Alpha platelet-derived growth factor receptor	P16234	§1018	LSADSGyIIPLPDIDPVPEEEDLGKR 	3		5.82						2.6				
+ABCA3	"""Receptor, channel, transporter or cell surface protein"""	ATP-binding cassette sub-family A member 3 	Q99758	"""1265, 1268"""	TLDHVFLVLPNHCLGMAVSSFyENYETR 	4				3.33						-1.91		
+ABCA3	"""Receptor, channel, transporter or cell surface protein"""	ATP-binding cassette sub-family A member 3 	Q99758	"""1265, 1268"""	TLDHVFLVLPNHCLGMAVSSFYENyETR 	4				3.33						-1.91		
+ALB	"""Receptor, channel, transporter or cell surface protein"""	Serum albumin	P02768	108	ETyGEMADCCAK 	2						2.35						-2.24
+ALB	"""Receptor, channel, transporter or cell surface protein"""	Serum albumin	P02768	164	YLyEIAR 	2			2.22						-5.7			
+ANTXR1	"""Receptor, channel, transporter or cell surface protein"""	Anthrax toxin receptor 1	Q9H6X2	425	VKMPEQEyEFPEPR 	3	3.32		3.8				0.52		-5.89			
+APLP2	"""Receptor, channel, transporter or cell surface protein"""	Amyloid-like protein 2	Q06481	750	mQNHGYENPTYK 	2			2.88						-3.36			
+APLP2	"""Receptor, channel, transporter or cell surface protein"""	Amyloid-like protein 2	Q06481	750	MQNHGyENPTYK 	2			2.88						-3.36			
+APLP2	"""Receptor, channel, transporter or cell surface protein"""	Amyloid-like protein 2	Q06481	750	mQNHGYENPTYK 	3			2.86						-4.72			
+APLP2	"""Receptor, channel, transporter or cell surface protein"""	Amyloid-like protein 2	Q06481	750	MQNHGyENPTYK 	3			2.86						-4.72			
+APLP2	"""Receptor, channel, transporter or cell surface protein"""	Amyloid-like protein 2	Q06481	750	MQNHGyENPTYK 	2			3.59						-5.1			
+APLP2	"""Receptor, channel, transporter or cell surface protein"""	Amyloid-like protein 2	Q06481	750	MQNHGyENPTYK 	3			2.57						-5.89			
+APLP2	"""Receptor, channel, transporter or cell surface protein"""	Amyloid-like protein 2	Q06481	"""750, 755"""	MQNHGyENPTYK 	2			2.73						-3.58			
+APLP2	"""Receptor, channel, transporter or cell surface protein"""	Amyloid-like protein 2	Q06481	"""750, 755"""	MQNHGYENPTyK 	2			2.73						-3.58			
+APLP2	"""Receptor, channel, transporter or cell surface protein"""	Amyloid-like protein 2	Q06481	755	mQNHGYENPTYK 	3			2.6						-4.84			
+APLP2	"""Receptor, channel, transporter or cell surface protein"""	Amyloid-like protein 2	Q06481	755	MQNHGYENPTyK 	3			2.6						-4.84			
+APP	"""Receptor, channel, transporter or cell surface protein"""	Amyloid beta A4 protein	P05067	§757	mQQNGYENPTYK 	2			3.38						-3.86			
+APP	"""Receptor, channel, transporter or cell surface protein"""	Amyloid beta A4 protein	P05067	§757	MQQNGyENPTYK 	2			3.38						-3.86			
+APP	"""Receptor, channel, transporter or cell surface protein"""	Amyloid beta A4 protein	P05067	§757	mQQNGYENPTYK 	2			2.89						-3.6			
+APP	"""Receptor, channel, transporter or cell surface protein"""	Amyloid beta A4 protein	P05067	§757	MQQNGyENPTYK 	2			2.89						-3.6			
+APP	"""Receptor, channel, transporter or cell surface protein"""	Amyloid beta A4 protein	P05067	§757	MQQNGyENPTYK 	2			3.53	3.54		3.31			-8.88	-6.09		-3.1
+APP	"""Receptor, channel, transporter or cell surface protein"""	Amyloid beta A4 protein	P05067	§762	MQQNGYENPTyK 	2			3.8						-4.36			
+CACNB3	"""Receptor, channel, transporter or cell surface protein"""	Voltage-dependent L-type calcium channel subunit beta-3 	P54284	171	RSPPPSLAKQKQKQAEHVPPyDVVPSMR 	3				2.38						0.56		
+CD244	"""Receptor, channel, transporter or cell surface protein"""	Natural killer cell receptor 2B4	Q9BZW8	271	EFLTIyEDVK 	2						1.55						-6.19
+CD247	"""Receptor, channel, transporter or cell surface protein"""	T-cell surface glycoprotein CD3 zeta chain	P20963	§111	KNPQEGLyNELQKDK 	3	3.31						-0.64					
+CD3E	"""Receptor, channel, transporter or cell surface protein"""	T-cell surface glycoprotein CD3 epsilon chain	P07766	§199	DLySGLNQR 	2	2.55						1.65					
+CD46	"""Receptor, channel, transporter or cell surface protein"""	Membrane cofactor protein	P15529-4	§354	ADGGAEyATYQTK 	2	3.67			3.88		3.67	3.47			-4.59		-1.31
+CD46	"""Receptor, channel, transporter or cell surface protein"""	Membrane cofactor protein	P15529-4	§354	ADGGAEyATYQTK 	2	3.38						1.29					
+CD46	"""Receptor, channel, transporter or cell surface protein"""	Membrane cofactor protein	P15529-4	§354	GKADGGAEyATYQTK 	2	3.68						-0.18					
+CD46	"""Receptor, channel, transporter or cell surface protein"""	Membrane cofactor protein	P15529-4	§354	GKADGGAEyATYQTK 	3			3.43						-2.68			
+CD46	"""Receptor, channel, transporter or cell surface protein"""	Membrane cofactor protein	P15529-4	§354	KGKADGGAEyATYQTK 	3	3.49						-0.14					
+CD46	"""Receptor, channel, transporter or cell surface protein"""	Membrane cofactor protein	P15529-4	§357	ADGGAEYATyQTK 	2	3.47			3.11			1.2			-1.57		
+CD46	"""Receptor, channel, transporter or cell surface protein"""	Membrane cofactor protein	P15529-4	§357	GKADGGAEYATyQTK 	3	3.43						2.9					
+CD84	"""Receptor, channel, transporter or cell surface protein"""	SLAM family member 5 precursor (Signaling lymphocytic activation	O15430	§262	TIyTYIMASR 	2	2.86						2.39					
+CD84	"""Receptor, channel, transporter or cell surface protein"""	SLAM family member 5 precursor (Signaling lymphocytic activation	O15430	§262	TIYTYImASR 	2	2.86						2.39					
+CD84	"""Receptor, channel, transporter or cell surface protein"""	SLAM family member 5 precursor (Signaling lymphocytic activation	O15430	§262	TIyTYIMASR 	2	3.41						0.27					
+CD84	"""Receptor, channel, transporter or cell surface protein"""	SLAM family member 5 precursor (Signaling lymphocytic activation	O15430	279	NTQPAESRIyDEILQSK 	3	2.07						0.66					
+CR2	"""Receptor, channel, transporter or cell surface protein"""	Complement receptor type 2	P20023	1029	EVYSVDPyNPAS 	2			2.29						-4.88			
+FCAR	"""Receptor, channel, transporter or cell surface protein"""	Immunoglobulin alpha Fc receptor	P24071	56	IQCQAIREAyLTQLMIIK 	3	2.92						-0.87					
+FCAR	"""Receptor, channel, transporter or cell surface protein"""	Immunoglobulin alpha Fc receptor	P24071	56	IQCQAIREAYLTQLmIIK 	3	2.92						-0.87					
+FCAR	"""Receptor, channel, transporter or cell surface protein"""	Immunoglobulin alpha Fc receptor	P24071	56	IQCQAIREAyLTQLMIIK 	3					2.68						-3.73	
+FCER1G	"""Receptor, channel, transporter or cell surface protein"""	High affinity immunoglobulin epsilon receptor gamma-subunit	P30273	65	AAITSYEKSDGVyTGLSTR 	3	4.34						1.62					
+FCER1G	"""Receptor, channel, transporter or cell surface protein"""	High affinity immunoglobulin epsilon receptor gamma-subunit	P30273	65	KAAITSYEKSDGVyTGLSTR 	3	5.54						5.18					
+FCER1G	"""Receptor, channel, transporter or cell surface protein"""	High affinity immunoglobulin epsilon receptor gamma-subunit	P30273	65	SDGVyTGLSTR 	2	2.85		2.57	2.55	2.95	2.36	3.77		-5.13	-3.29	-1.89	-4.32
+FCER1G	"""Receptor, channel, transporter or cell surface protein"""	High affinity immunoglobulin epsilon receptor gamma-subunit	P30273	65	SDGVyTGLSTR 	2	2.24		2.43	3.19	2.55		5.62		-4.9	-1.1	-0.91	
+FCER1G	"""Receptor, channel, transporter or cell surface protein"""	High affinity immunoglobulin epsilon receptor gamma-subunit	P30273	65	SDGVyTGLSTR 	2				3.19						-1.08		
+FCER1G	"""Receptor, channel, transporter or cell surface protein"""	High affinity immunoglobulin epsilon receptor gamma-subunit	P30273	76	NQETyETLK 	2	2.42		2.21	2.44		2.25	2.68		-2.69	-6.24		-5.43
+FCER1G	"""Receptor, channel, transporter or cell surface protein"""	High affinity immunoglobulin epsilon receptor gamma-subunit	P30273	76	NQETyETLK 	2				2.03						-4.01		
+FCER1G	"""Receptor, channel, transporter or cell surface protein"""	High affinity immunoglobulin epsilon receptor gamma-subunit	P30273	76	NQETyETLKHEKPPQ 	2	4.03						-0.16					
+FCER1G	"""Receptor, channel, transporter or cell surface protein"""	High affinity immunoglobulin epsilon receptor gamma-subunit	P30273	76	NQETyETLKHEKPPQ 	3	2.85		1.81	2.48			1.05		-7.24	-2.38		
+FCER1G	"""Receptor, channel, transporter or cell surface protein"""	High affinity immunoglobulin epsilon receptor gamma-subunit	P30273	76	NQETyETLKHEKPPQ 	3	2.61						4.67					
+FCGR1A	"""Receptor, channel, transporter or cell surface protein"""	High affinity immunoglobulin gamma Fc receptor I	P12314	"""133, 138"""	DKLVyNVLYYRNGK 	3					1.94						-3.36	
+FCGR1A	"""Receptor, channel, transporter or cell surface protein"""	High affinity immunoglobulin gamma Fc receptor I	P12314	"""133, 138"""	DKLVYNVLYyRNGK 	3					1.94						-3.36	
+FCGR2A	"""Receptor, channel, transporter or cell surface protein"""	Low affinity immunoglobulin gamma Fc region receptor II-a	P12318	§288	KRQLEETNNDYETADGGyMTLNPR 	3	6.07						4.9					
+FCGR2A	"""Receptor, channel, transporter or cell surface protein"""	Low affinity immunoglobulin gamma Fc region receptor II-a	P12318	§288	KRQLEETNNDYETADGGyMTLNPR 	4	3.28						-1.8					
+FCGR2A	"""Receptor, channel, transporter or cell surface protein"""	Low affinity immunoglobulin gamma Fc region receptor II-a	P12318	§288	QLEETNNDYETADGGyMTLNPR 	3	4.17						0.27					
+FCGR2A	"""Receptor, channel, transporter or cell surface protein"""	Low affinity immunoglobulin gamma Fc region receptor II-a	P12318	§288	QLEETNNDYETADGGYmTLNPR 	3	4.17						0.27					
+FCGR2A	"""Receptor, channel, transporter or cell surface protein"""	Low affinity immunoglobulin gamma Fc region receptor II-a	P12318	§288	QLEETNNDYETADGGyMTLNPR 	3	3.97						2.13					
+FER1L3	"""Receptor, channel, transporter or cell surface protein"""	Myoferlin 	Q9NZM1	458	NDVVGTTyLHLSK 	2			4.09						-6.31			
+FER1L3	"""Receptor, channel, transporter or cell surface protein"""	Myoferlin 	Q9NZM1	1816	SITGEEMSDIyVK 	2			3.43						-6.73			
+GALR2	"""Receptor, channel, transporter or cell surface protein"""	Galanin receptor type 2 	O43603	213	yLWRAVDPVAAGSGARRAK 	3	1.93						-0.57					
+GJA1	"""Receptor, channel, transporter or cell surface protein"""	Gap junction alpha-1 protein 	P17302	§246	SDPyHATSGALSPAK 	3				2.21						-1.25		
+GJA1	"""Receptor, channel, transporter or cell surface protein"""	Gap junction alpha-1 protein 	P17302	312	QASEQNWANySAEQNR 	3						3.59						-4.29
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	"""§317, 320"""	AYSQEEITQGFEETGDTLyAPYSTHFQLQNQPPQK 	4				5.85						-0.94		
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	"""§317, 320"""	AYSQEEITQGFEETGDTLYAPySTHFQLQNQPPQK 	4				5.85						-0.94		
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	320	AYSQEEITQGFEETGDTLYAPySTHFQLQNQPPQK 	3				5.57						-3.8		
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	320	AYSQEEITQGFEETGDTLYAPySTHFQLQNQPPQK 	4			4.62	5.13					-2.59	-0.16		
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	§347	AHAWPSPyKDYEVK 	2				4.11						-2.72		
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	§347	AHAWPSPyKDYEVK 	3	3.04		2.89	3.59	2.9		0.06		-6.97	-3.97	-3.14	
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	§347	AHAWPSPyKDYEVK 	3				3.07						-3.45		
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	§347	AHAWPSPyKDYEVKK 	2				4.25						-4.79		
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	§347	AHAWPSPyKDYEVKK 	3	3.37			3.81		3.9	-1.42			-3.54		-3.64
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	§347	AHAWPSPyKDYEVKKEGS 	3	4.36						0.3					
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	"""§347, §350"""	AHAWPSPyKDYEVK 	3				3						-6.24		
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	"""§347, §350"""	AHAWPSPYKDyEVK 	3				3						-6.24		
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	"""§347, §350"""	AHAWPSPyKDYEVKK 	2				4.22						-3.97		
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	"""§347, §350"""	AHAWPSPYKDyEVKK 	2				4.22						-3.97		
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	"""§347, §350"""	AHAWPSPyKDYEVKK 	3				3.52		1.6				-6.23		-4.29
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	"""§347, §350"""	AHAWPSPYKDyEVKK 	3				3.52		1.6				-6.23		-4.29
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	"""§347, §350"""	AHAWPSPyKDYEVKK 	3				3.37						-5.68		
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	"""§347, §350"""	AHAWPSPYKDyEVKK 	3				3.37						-5.68		
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	"""§347, §350"""	AHAWPSPyKDYEVKK 	3				2.84						-3.18		
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	"""§347, §350"""	AHAWPSPYKDyEVKK 	3				2.84						-3.18		
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	"""§347, §350"""	AHAWPSPyKDYEVKKEGS 	3	3.52			3.26		3.71	0.56			-6.35		-4.8
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	"""§347, §350"""	AHAWPSPYKDyEVKKEGS 	3	3.52			3.26		3.71	0.56			-6.35		-4.8
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	§350	AHAWPSPYKDyEVK 	3						3.25						-4.28
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	§350	AHAWPSPYKDyEVKK 	3			4.08	2.8					-7.4	-4.22		
+GPRC5A	"""Receptor, channel, transporter or cell surface protein"""	Retinoic acid-induced protein 3 	Q8NFJ5	§350	AHAWPSPYKDyEVKKEGS 	3	3.76			3.86			-0.71			-5.77		
+GPRC5C	"""Receptor, channel, transporter or cell surface protein"""	G-protein coupled receptor family C group 5 member C	Q9NQ84	324	GVGyETILK 	2	2.43						0.77					
+GPRC5C	"""Receptor, channel, transporter or cell surface protein"""	G-protein coupled receptor family C group 5 member C	Q9NQ84	324	GVGyETILKEQK 	2	2.71						1.18					
+HBA1	"""Receptor, channel, transporter or cell surface protein"""	Hemoglobin subunit alpha 	P69905	24	VGAHAGEyGAEALER 	2	3.96		3.54			3.75	1.83		-6.36			-2.95
+HBA1	"""Receptor, channel, transporter or cell surface protein"""	Hemoglobin subunit alpha 	P69905	24	VGAHAGEyGAEALER 	3			4.76	4.76	4.77				-6.22	-5.42	-2.81	
+HBA1	"""Receptor, channel, transporter or cell surface protein"""	Hemoglobin subunit alpha 	P69905	42	TyFPHFDLSHGSAQVK 	3			3.74						-7.9			
+HBB	"""Receptor, channel, transporter or cell surface protein"""	Hemoglobin subunit beta 	P68871	130	EFTPPVQAAyQK 	2			2.28						-5.78			
+HCRTR1	"""Receptor, channel, transporter or cell surface protein"""	Orexin receptor type 1 	O43613	27	EPSPVPPDyEDEFLRYLWR 	3	2.28						5.06					
+HDLBP	"""Receptor, channel, transporter or cell surface protein"""	Vigilin 	Q00341	§437	MDyVEINIDHK 	3					2.48						-3.13	
+KCNJ2	"""Receptor, channel, transporter or cell surface protein"""	Inward rectifier potassium channel 2 	P63252	337	HYyKVDYSR 	3					1.91						-3.78	
+KCNMA1	"""Receptor, channel, transporter or cell surface protein"""	Calcium-activated potassium channel subunit alpha 1 	Q12791	1086	GGySTPQTLANR 	2			3.06						-5.12			
+KCTD7	"""Receptor, channel, transporter or cell surface protein"""	BTB/POZ domain-containing protein KCTD7	Q96MP8	"""162, 163"""	QAFLGLMPyYKDHLER 	4						2.32						-0.25
+KCTD7	"""Receptor, channel, transporter or cell surface protein"""	BTB/POZ domain-containing protein KCTD7	Q96MP8	"""162, 163"""	QAFLGLMPYyKDHLER 	4						2.32						-0.25
+LILRB4	"""Receptor, channel, transporter or cell surface protein"""	Leukocyte immunoglobulin-like receptor subfamily B member 4	Q8NHJ6	360	QSPHDEDPQAVTyAK 	3	2.85						3.9					
+LOC137019	"""Receptor, channel, transporter or cell surface protein"""	Solute carrier family 20 member 2 (Gibbon leukemia virus receptor 2)	Q08357	377	GPEEKPAQESNyR 	3			2.28						-5.81			
+LOC94839	"""Receptor, channel, transporter or cell surface protein"""	CUB domain-containing protein 1	Q96QU7	707	GPAVGIyNGNINTEMPR 	2	4.68		4.91				1.81		-5.58			
+LOC94839	"""Receptor, channel, transporter or cell surface protein"""	CUB domain-containing protein 1	Q96QU7	707	GPAVGIYNGNINTEmPR 	2	4.68		4.91				1.81		-5.58			
+LOC94839	"""Receptor, channel, transporter or cell surface protein"""	CUB domain-containing protein 1	Q96QU7	707	GPAVGIyNGNINTEMPR 	3	3.62						1.61					
+LOC94839	"""Receptor, channel, transporter or cell surface protein"""	CUB domain-containing protein 1	Q96QU7	707	GPAVGIYNGNINTEmPR 	3	3.62						1.61					
+LOC94839	"""Receptor, channel, transporter or cell surface protein"""	CUB domain-containing protein 1	Q96QU7	707	GPAVGIyNGNINTEMPR 	2	4.86		5.41				3.78		-5.75			
+LOC94839	"""Receptor, channel, transporter or cell surface protein"""	CUB domain-containing protein 1	Q96QU7	707	GPAVGIyNGNINTEMPR 	3	3		2.93				0.4		-7.28			
+LOC94839	"""Receptor, channel, transporter or cell surface protein"""	CUB domain-containing protein 1	Q96QU7	707	TNKGPAVGIyNGNINTEMPR 	3	4.81						0.64					
+LOC94839	"""Receptor, channel, transporter or cell surface protein"""	CUB domain-containing protein 1	Q96QU7	707	TNKGPAVGIYNGNINTEmPR 	3	4.81						0.64					
+LOC94839	"""Receptor, channel, transporter or cell surface protein"""	CUB domain-containing protein 1	Q96QU7	707	TNKGPAVGIyNGNINTEMPR 	3	5.17		5.39	4.72			1.02		-6.39	-3.76		
+LSR	"""Receptor, channel, transporter or cell surface protein"""	Lipolysis-stimulated lipoprotein receptor	Q86X29	261	CCCPEALyAAGK 	2				2.69						-4.06		
+LSR	"""Receptor, channel, transporter or cell surface protein"""	Lipolysis-stimulated lipoprotein receptor	Q86X29	280	AATSGVPSIYAPSTyAHLSPAK 	3			2.2	2.67					-6.54	-4.12		
+LSR	"""Receptor, channel, transporter or cell surface protein"""	Lipolysis-stimulated lipoprotein receptor	Q86X29	§358	VLyYMEK 	2				1.9						-1.52		
+LSR	"""Receptor, channel, transporter or cell surface protein"""	Lipolysis-stimulated lipoprotein receptor	Q86X29	§358	VLYYmEK 	2				1.9						-1.52		
+LSR	"""Receptor, channel, transporter or cell surface protein"""	Lipolysis-stimulated lipoprotein receptor	Q86X29	487	SRDDLyDQDDSRDFPR 	3				3.53						-7		
+LSR	"""Receptor, channel, transporter or cell surface protein"""	Lipolysis-stimulated lipoprotein receptor	Q86X29	503	SRDPHyDDFR 	2			2.99	3.36					-5.71	-4.57		
+LSR	"""Receptor, channel, transporter or cell surface protein"""	Lipolysis-stimulated lipoprotein receptor	Q86X29	538	SGDLPyDGR 	2				2.28						-0.24		
+LSR	"""Receptor, channel, transporter or cell surface protein"""	Lipolysis-stimulated lipoprotein receptor	Q86X29	538	SGDLPyDGR 	2				1.77						-2.12		
+LSR	"""Receptor, channel, transporter or cell surface protein"""	Lipolysis-stimulated lipoprotein receptor	Q86X29	567	RRPHKEEEEEAyYPPAPPPYSETDSQASR 	4				3.14						-5.95		
+LSR	"""Receptor, channel, transporter or cell surface protein"""	Lipolysis-stimulated lipoprotein receptor	Q86X29	567	RRPHKEEEEEAyYPPAPPPYSETDSQASR 	4				2.45						-5.01		
+MXRA8	"""Receptor, channel, transporter or cell surface protein"""	Matrix-remodelling associated 8 (Limitrin)	Q9BRK3	409	SEDIQLDyKNNILK 	3			2.2						-8.4			
+NRP1	"""Receptor, channel, transporter or cell surface protein"""	Neuropilin-1	O14786	920	DKLNTQSTySEA 	2	3.04					2.82	1.09					-0.19
+OSMR	"""Receptor, channel, transporter or cell surface protein"""	Oncostatin-M specific receptor subunit beta	Q99650	837	SLTETELTKPNyLYLLPTEK 	3			2.98						-7.73			
+SLAMF1	"""Receptor, channel, transporter or cell surface protein"""	Signaling lymphocytic activation molecule	Q13291	§281	KSLTIyAQVQKPGPLQK 	3			4.12	2.97					-7.11	-3.13		
+SLAMF1	"""Receptor, channel, transporter or cell surface protein"""	Signaling lymphocytic activation molecule	Q13291	§281	SLTIyAQVQKPGPLQK 	2	3.99		4.59	4.85			0.62		-5.79	-4.07		
+SLAMF1	"""Receptor, channel, transporter or cell surface protein"""	Signaling lymphocytic activation molecule	Q13291	§281	SLTIyAQVQKPGPLQK 	3	1.7		1.81	2.34		1.74	0.93		-7.17	-4.01		-4.51
+SLAMF6	"""Receptor, channel, transporter or cell surface protein"""	SLAM family member 6	Q96DU3	285	NLEYVSVSPTNNTVyASVTHSNR 	3	3.7						0.91					
+SLC25A5	"""Receptor, channel, transporter or cell surface protein"""	ADP/ATP translocase 2 	P05141	190	AAyFGIYDTAK 	2				3.15						-4		
+SLC25A5	"""Receptor, channel, transporter or cell surface protein"""	ADP/ATP translocase 2 	P05141	194	AAYFGIyDTAK 	2			2.07						-4.52			
+SLC38A2	"""Receptor, channel, transporter or cell surface protein"""	"""Amino acid transporter system A (Solute carrier family 38, member 2)"""	Q9HAV3	41	SHyADVDPENQNFLLESNLGK 	3			5.91						-4.89			
+SLC4A1	"""Receptor, channel, transporter or cell surface protein"""	Band 3 anion transport protein 	P02730	§359	YQSSPAKPDSSFyK 	2			3.98						-6.17			
+SLC4A1	"""Receptor, channel, transporter or cell surface protein"""	Band 3 anion transport protein 	P02730	§904	ATFDEEEGRDEyDEVAMPV 	2			2.61						-5.63			
+TYROBP	"""Receptor, channel, transporter or cell surface protein"""	TYRO protein tyrosine kinase-binding protein	O43914	91	ITETESPyQELQGQR 	2	3.47			4.33			1.31			-5.91		
+VDAC1	"""Receptor, channel, transporter or cell surface protein"""	Voltage-dependent anion-selective channel protein 1 	P21796	66	WTEyGLTFTEK 	2					2.32						-2.58	
+XPO7	"""Receptor, channel, transporter or cell surface protein"""	Exportin-7 	Q9UIA9	57	GSSSySQLLAATCLTKLVSR 	3						2.28						-2.45
+DCP1B	RNA processing	mRNA-decapping enzyme 1B	Q8IZD4	§110	LSIyGIWFYDKEECQR 	3					3.03						-2.08	
+DDX1	RNA processing	ATP-dependent RNA helicase DDX1 	Q92499	628	VWyHVCSSR 	3			1.89						-6.89			
+HNRPA0	RNA processing	Heterogeneous nuclear ribonucleoprotein A0 	Q13151	§180	KAVPKEDIySGGGGGGSR 	3	2.71						5.07					
+HNRPA1	RNA processing	Heterogeneous nuclear ribonucleoprotein A1 	P09651	§346	SSGPYGGGGQyFAKPR 	3				2.8						-5.45		
+HNRPH3	RNA processing	Heterogeneous nuclear ribonucleoprotein H3 	P31942	§296	DGMDNQGGyGSVGR 	2						2.94						-3.84
+MTO1	RNA processing	"""Protein MTO1 homolog, mitochondrial"""	Q9Y2Z2	"""471, 488"""	VSRKPPFVVSRTEGyIGVLIDDLTTLGTSEPYRMFTSR 	4				1.79						-7.83		
+MTO1	RNA processing	"""Protein MTO1 homolog, mitochondrial"""	Q9Y2Z2	"""471, 488"""	VSRKPPFVVSRTEGYIGVLIDDLTTLGTSEPyRMFTSR 	4				1.79						-7.83		
+MTO1	RNA processing	"""Protein MTO1 homolog, mitochondrial"""	Q9Y2Z2	"""471, 488"""	VSRKPPFVVSRTEGYIGVLIDDLTTLGTSEPYRmFTSR 	4				1.79						-7.83		
+MVP	RNA processing	Major vault protein 	Q14764	14	IPPYHyIHVLDQNSNVSR 	3					2.81						-3.71	
+PTBP1	RNA processing	Polypyrimidine tract-binding protein 1 	P26599	§127	GQPIyIQFSNHK 	2			2.77						-6.83			
+PUS1	RNA processing	tRNA pseudouridine synthase A 	Q9Y606	239	LLACyKGTHNFHNFTSQKGPQDPSACR 	3						2.16						-2.71
+SF3B4	RNA processing	Splicing factor 3B subunit 4 	Q15427	16	NQDATVyVGGLDEK 	2			4.82						-5.62			
+SNRP70	RNA processing	U1 small nuclear ribonucleoprotein 70 kDa 	P08621	§126	EFEVyGPIK 	2			1.77						-7.87			
+FGA	Secreted protein	Fibrinogen alpha chain	P02671	277	GGSTSyGTGSETESPR 	2			2.61						-2.1			
+SEMA3G	Secreted protein	Semaphorin-3G	Q9NS98	707	PEEPPARGGLASTPPKAWyK 	3	2.01						-1.16					
+TF	Secreted protein	Serotransferrin	P02787	536	EGYYGyTGAFR 	2				1.85						-5.36		
+DTX2	Transcriptional regulator	Deltex homolog 2	Q86UW9	425	LSAASGySDVTDSK 	3		2.12						-3.12				
+GRLF1	Transcriptional regulator	Glucocorticoid receptor DNA-binding factor 1 	Q9NRY4	§1087	KSVSSSPWLPQDGFDPSDyAEPMDAVVKPR 	4			3.92						-3.64			
+GRLF1	Transcriptional regulator	Glucocorticoid receptor DNA-binding factor 1 	Q9NRY4	§1087	SVSSSPWLPQDGFDPSDyAEPMDAVVKPR 	3			4.17						-6.83			
+GRLF1	Transcriptional regulator	Glucocorticoid receptor DNA-binding factor 1 	Q9NRY4	§1087	SVSSSPWLPQDGFDPSDYAEPmDAVVKPR 	3			4.17						-6.83			
+GRLF1	Transcriptional regulator	Glucocorticoid receptor DNA-binding factor 1 	Q9NRY4	§1087	SVSSSPWLPQDGFDPSDyAEPMDAVVKPR 	3	4.61	5.02	4.86	4.81			1.77	0.91	-3.38	-3.85		
+GRLF1	Transcriptional regulator	Glucocorticoid receptor DNA-binding factor 1 	Q9NRY4	§1087	SVSSSPWLPQDGFDPSDyAEPMDAVVKPR 	4		3.16	3.24					0.61	-3.19			
+GRLF1	Transcriptional regulator	Glucocorticoid receptor DNA-binding factor 1 	Q9NRY4	§1105	NEEENIySVPHDSTQGK 	2	5.24	4.59	4.42	4.86	4.93		-0.79	1.13	-4.89	-1.76	-3.87	
+GRLF1	Transcriptional regulator	Glucocorticoid receptor DNA-binding factor 1 	Q9NRY4	§1105	NEEENIySVPHDSTQGK 	2					4.16						-0.25	
+GRLF1	Transcriptional regulator	Glucocorticoid receptor DNA-binding factor 1 	Q9NRY4	§1105	NEEENIySVPHDSTQGK 	3	3.02	3.55		2.93	3.53	3.68	1.79	0.98		-6.07	-2.46	-2.73
+GRLF1	Transcriptional regulator	Glucocorticoid receptor DNA-binding factor 1 	Q9NRY4	§1105	NEEENIySVPHDSTQGK 	3		2.39			3.53			-6.68			-0.92	
+GRLF1	Transcriptional regulator	Glucocorticoid receptor DNA-binding factor 1 	Q9NRY4	§1105	NEEENIySVPHDSTQGK 	3					2.75						-1.28	
+PHB2	Transcriptional regulator	Prohibitin-2 	Q99623	248	MLGEALSKNPGyIK 	2			4.22						-6.4			
+PTRF	Transcriptional regulator	Polymerase I and transcript release factor	Q9HAP4	§308	KSFTPDHVVyAR 	3	2.26						-0.1					
+PTRF	Transcriptional regulator	Polymerase I and transcript release factor	Q9HAP4	§308	SFTPDHVVyAR 	2	1.8						0.3					
+S100A11	Transcriptional regulator	S100-A11 	P31949	30	YAGKDGyNYTLSK 	3			1.92			1.93			-6.48			-1.76
+S100A11	Transcriptional regulator	S100-A11 	P31949	32	DGYNyTLSK 	2			2.22						-4.18			
+SND1	Transcriptional regulator	Staphylococcal nuclease domain-containing protein 1	Q13122	84	EyGMIYLGK 	2					2.04						-2.92	
+SND1	Transcriptional regulator	Staphylococcal nuclease domain-containing protein 1	Q13122	84	EYGmIYLGK 	2					2.04						-2.92	
+SND1	Transcriptional regulator	Staphylococcal nuclease domain-containing protein 1	Q13122	84	EyGMIYLGK 	2					1.93						-1.03	
+SND1	Transcriptional regulator	Staphylococcal nuclease domain-containing protein 1	Q13122	84	EYGmIYLGK 	2					1.93						-1.03	
+SND1	Transcriptional regulator	Staphylococcal nuclease domain-containing protein 1	Q13122	84	EyGMIYLGK 	2					1.75						-2.92	
+SND1	Transcriptional regulator	Staphylococcal nuclease domain-containing protein 1	Q13122	84	EYGmIYLGK 	2					1.75						-2.92	
+SND1	Transcriptional regulator	Staphylococcal nuclease domain-containing protein 1	Q13122	84	TPQGREyGMIYLGK 	2					2.86						-1.98	
+SND1	Transcriptional regulator	Staphylococcal nuclease domain-containing protein 1	Q13122	84	TPQGREYGmIYLGK 	2					2.86						-1.98	
+SND1	Transcriptional regulator	Staphylococcal nuclease domain-containing protein 1	Q13122	84	TPQGREyGMIYLGK 	3					2.53						-3.39	
+SND1	Transcriptional regulator	Staphylococcal nuclease domain-containing protein 1	Q13122	84	TPQGREYGmIYLGK 	3					2.53						-3.39	
+SND1	Transcriptional regulator	Staphylococcal nuclease domain-containing protein 1	Q13122	84	TPQGREyGMIYLGK 	3					2.44						-3.74	
+SND1	Transcriptional regulator	Staphylococcal nuclease domain-containing protein 1	Q13122	84	TPQGREYGmIYLGK 	3					2.44						-3.74	
+SND1	Transcriptional regulator	Staphylococcal nuclease domain-containing protein 1	Q13122	84	TPQGREyGMIYLGK 	3					2.29						-3.26	
+STAT3	Transcriptional regulator	Signal transducer and activator of transcription 3 	P40763-2	§704	YCRPESQEHPEADPGAAPyLK 	2			3.07	3.25		3.92			-5.71	-4.05		-3.07
+STAT3	Transcriptional regulator	Signal transducer and activator of transcription 3 	P40763-2	§704	YCRPESQEHPEADPGAAPyLK 	3	4.38	3.42	4.35	3.91	4.54	4.21	1.57	1.06	-8.12	-5.84	-2.61	-3.27
+STAT3	Transcriptional regulator	Signal transducer and activator of transcription 3 	P40763-2	§704	YCRPESQEHPEADPGAAPyLK 	3				3.82						-5.62		
+STAT3	Transcriptional regulator	Signal transducer and activator of transcription 3 	P40763-2	§704	YCRPESQEHPEADPGAAPyLK 	4		2.5	2.33		2.1	2.53		-0.2	-6.06		-2.93	-4.11
+STAT3	Transcriptional regulator	Signal transducer and activator of transcription 3 	P40763-2	§704	YCRPESQEHPEADPGAAPyLKTK 	3	4.55					3.2	1.01					-6.31
+STAT3	Transcriptional regulator	Signal transducer and activator of transcription 3 	P40763-2	§704	YCRPESQEHPEADPGAAPyLKTK 	4	2.54						1.57					
+STAT3	Transcriptional regulator	Signal transducer and activator of transcription 3 	P40763	§705	YCRPESQEHPEADPGSAAPyLK 	2			4.59	4.49		4.45			-5.92	-3.53		-3.18
+STAT3	Transcriptional regulator	Signal transducer and activator of transcription 3 	P40763	§705	YCRPESQEHPEADPGSAAPyLK 	3	3.8	4.11	4.3	4.06	3.97	4.2	0.18	0.18	-6.7	-6.06	-3.37	-4.57
+STAT3	Transcriptional regulator	Signal transducer and activator of transcription 3 	P40763	§705	YCRPESQEHPEADPGSAAPyLK 	4	2.85	2.62	2.18	2.41	2.22	2.47	2.44	-0.4	-6.82	-6.35	-3.8	-3.42
+STAT3	Transcriptional regulator	Signal transducer and activator of transcription 3 	P40763	§705	YCRPESQEHPEADPGSAAPyLK 	5						1.91						-5.03
+STAT3	Transcriptional regulator	Signal transducer and activator of transcription 3 	P40763	§705	YCRPESQEHPEADPGSAAPyLKTK 	3	5.31	3.76	4.79			4.04	2.16	1.77	-4.61			-5.07
+STAT3	Transcriptional regulator	Signal transducer and activator of transcription 3 	P40763	§705	YCRPESQEHPEADPGSAAPyLKTK 	4	3.31	3.03	2.9				1.87	-1.17	-5.94			
+ZHX1	Transcriptional regulator	Zinc fingers and homeoboxes 1	Q9UKY1	"""289, 303"""	VLIPVNSIPTyNAALDNNPLLLNTYNK 	4						3.33						-1.1
+ZHX1	Transcriptional regulator	Zinc fingers and homeoboxes 1	Q9UKY1	"""289, 303"""	VLIPVNSIPTYNAALDNNPLLLNTyNK 	4						3.33						-1.1
+EEF1A1	Translational regulator	Elongation factor 1-alpha 1 	P68104	86	FETSKYyVTIIDAPGHR 	3			4.26						-7.74			
+EIF3S10	Translational regulator	Eukaryotic translation initiation factor 3 subunit 10 	Q14152	382	FNVLQyVVPEVK 	2				1.74						0.14		
+EIF3S2	Translational regulator	Eukaryotic translation initiation factor 3 subunit 2 	Q13347	308	SYSSGGEDGyVR 	2			2.4		2.71				-8.9		-1.56	
+EIF4H	Translational regulator	Eukaryotic translation initiation factor 4H 	Q15056	§44	ELPTEPPYTAyVGNLPFNTVQGDIDAIFK 	3			3.88						-2.81			
+MRPS9	Translational regulator	"""28S ribosomal protein S9, mitochondrial"""	P82933	262	QLIEPVQyDEQGMAFSKSEGKRKTAK 	3						1.86						-1.1
+PES1	Translational regulator	Pescadillo homolog 1	O00541	548	KREKYLyQKIMFGK 	3		1.79						2.95				
+PES1	Translational regulator	Pescadillo homolog 1	O00541	548	KREKYLYQKImFGK 	3		1.79						2.95				
+RPL3	Translational regulator	60S ribosomal protein L3 	P39023	§306	NNASTDyDLSDK 	2			2.07			2.6			-4.2			-2.91
+RPLP0	Translational regulator	60S acidic ribosomal protein P0 	P05388	§24	IIQLLDDyPK 	2			3.11						-8.34			
+RPS10	Translational regulator	40S ribosomal protein S10	P46783	§12	IAIyELLFK 	2	2.35		2.62		2.73		0.98		-8.25		-2.92	
+RPS27	Translational regulator	40S ribosomal protein S27 	P42677	30	LVQSPNSyFMDVK 	2				3.24	2.64					-4.77	-3.5	
+RPS27	Translational regulator	40S ribosomal protein S27 	P42677	30	LVQSPNSYFmDVK 	2				3.24	2.64					-4.77	-3.5	
+RPS27	Translational regulator	40S ribosomal protein S27 	P42677	30	LVQSPNSyFMDVK 	2			3.17	3.26					-6.85	-5.41		
+RFFL	Ubiquitin conjugating system	E3 ubiquitin-protein ligase rififylin 	Q8WZ73	34	MQAYSNPGySSFPSPTGLEPSCK 	3			4.9						-6.49			
+RNF20	Ubiquitin conjugating system	E3 ubiquitin-protein ligase BRE1A	Q96JD3	314	VYGAGSSLyGGTITINARKFEEMNAELEENK 	5		2.33						1.37				
+UBXD8	Ubiquitin conjugating system	UBX domain-containing protein 8	Q9BVM7	89	IySYVVSRPQPR 	3	2.11						1.33					
+AFAP1L2	Unknown function	Actin filament-associated protein 1-like 2	Q8N4X5	383	DNHLHFyQDR 	2			1.93						-5.23			
+AFAP1L2	Unknown function	Actin filament-associated protein 1-like 2	Q8N4X5	383	DNHLHFyQDR 	3			2.19						-6.5			
+AFAP1L2	Unknown function	Actin filament-associated protein 1-like 2	Q8N4X5	383	DNHLHFyQDRNR 	4	2.54						1.71					
+AFAP1L2	Unknown function	Actin filament-associated protein 1-like 2	Q8N4X5	§413	SKVAQQPLSLVGCEVVPDPSPDHLySFR 	3	6.21	5.94	5.5		6.27		0.92	-3.79	-3.65		-3.77	
+AFAP1L2	Unknown function	Actin filament-associated protein 1-like 2	Q8N4X5	§413	SKVAQQPLSLVGCEVVPDPSPDHLySFR 	4	4.55	4.28	4.05		5.41		1.58	-2.23	-5.15		-3.07	
+AFAP1L2	Unknown function	Actin filament-associated protein 1-like 2	Q8N4X5	§413	VAQQPLSLVGCEVVPDPSPDHLySFR 	3	5.17	4.97	5.37		4.83	4.83	0.38	-3.47	-7.03		-2.55	-2.68
+AFAP1L2	Unknown function	Actin filament-associated protein 1-like 2	Q8N4X5	§413	VAQQPLSLVGCEVVPDPSPDHLySFR 	3			3.97						-7.33			
+AFAP1L2	Unknown function	Actin filament-associated protein 1-like 2	Q8N4X5	§413	VAQQPLSLVGCEVVPDPSPDHLySFR 	4	4.4	4.51	4.28	3.37	4.76	4.44	-0.33	-1.89	-5.4	-0.74	-3.19	-4.58
+ANKRD17	Unknown function	Ankyrin repeat domain 17	Q6PKA2	1333	GHyKFCELLIGR 	3						1.5						0.24
+ARHGAP27	Unknown function	Rho GTPase activating protein 27	XP_113914	§28	ALPAQVDDPPEPVyANIER 	2			3.94	4.07					-4.88	-3.53		
+ARHGAP27	Unknown function	Rho GTPase activating protein 27	XP_113914	§28	ALPAQVDDPPEPVyANIER 	3			3.76	3.34					-6.82	-3.79		
+ARHGAP27	Unknown function	Rho GTPase activating protein 27	XP_113914	§28	ALPAQVDDPPEPVyANIERQPR 	3	1.98						1.56					
+ARHGAP27	Unknown function	Rho GTPase activating protein 27	XP_113914	§28	ALPAQVDDPPEPVyANIERQPR 	4	2.31						2.27					
+C11orf52	Unknown function	Uncharacterized protein C11orf52	Q96A22	103	HVHLENATEyATLR 	2				3.5						-3.69		
+C11orf52	Unknown function	Uncharacterized protein C11orf52	Q96A22	103	HVHLENATEyATLR 	3	2.66						0.81					
+C11orf52	Unknown function	Uncharacterized protein C11orf52	Q96A22	103	HVHLENATEyATLRFPQATPR 	3	3.62						1.21					
+C11orf52	Unknown function	Uncharacterized protein C11orf52	Q96A22	103	HVHLENATEyATLRFPQATPR 	4	4.41						0.6					
+C11orf59	Unknown function	UPF0404 protein C11orf59	Q9NWT0	§40	ALNGAEPNyHSLPSAR 	3			2.64						-7.68			
+C19orf19	Unknown function	Uncharacterized protein C19orf19	Q3SX64	"""90, 107"""	RPSEAPPQDTSPGPIyFLDPKVTRFGRSCTPAYSMQGR 	3				2.57						0.81		
+C19orf19	Unknown function	Uncharacterized protein C19orf19	Q3SX64	"""90, 107"""	RPSEAPPQDTSPGPIYFLDPKVTRFGRSCTPAySMQGR 	3				2.57						0.81		
+C19orf19	Unknown function	Uncharacterized protein C19orf19	Q3SX64	"""90, 107"""	RPSEAPPQDTSPGPIYFLDPKVTRFGRSCTPAYSmQGR 	3				2.57						0.81		
+C2orf4	Unknown function	Protein memo 	Q9Y316	§210	YSYYDESQGEIyR 	2			3.88						-6.68			
+C9orf88	Unknown function	Niban-like protein 	Q96TA1	469	KYDyDSSSVR 	2			2.58						-2.31			
+CAMTA1	Unknown function	Calmodulin-binding transcription activator 1	Q9Y6Y1	117	VKyRKDGYCWKK 	3	1.78						-0.55					
+CASKIN2	Unknown function	Caskin-2	Q8WXE0	§253	NTyNQTALDIVNQFTTSQASR 	2				4.36						-4.25		
+CASKIN2	Unknown function	Caskin-2	Q8WXE0	§253	NTyNQTALDIVNQFTTSQASR 	3			5.06	5.78		6.17			-7.69	-3.88		-2.84
+CASP7	Unknown function	Uncharacterized protein C10orf81	Q5SXH7	209	QTHLQDLSEATQDVKEENHyLTPR 	4	3.56						0.53					
+CDV3	Unknown function	Protein CDV3 homolog	Q9UKY7	§190	KTPQGPPEIySDTQFPSLQSTAK 	3	5.85						1.63					
+CLDN23	Unknown function	Claudin-23	Q96B33	"""223, 224"""	RSSVSTIQVEWPEPDLAPAIKyYSDGQHRPPPAQHR 	3				2.11						-0.13		
+CLDN23	Unknown function	Claudin-23	Q96B33	"""223, 224"""	RSSVSTIQVEWPEPDLAPAIKYySDGQHRPPPAQHR 	3				2.11						-0.13		
+CLDN6	Unknown function	Claudin-6 	P56747	"""214, 219"""	GPSEyPTKNYV 	2			1.92						-4.35			
+CLDN6	Unknown function	Claudin-6 	P56747	"""214, 219"""	GPSEYPTKNyV 	2			1.92						-4.35			
+CLDN9	Unknown function	Claudin-9	O95484	200	LGySIPSR 	2				2.53						-1.02		
+CRIP2	Unknown function	Cysteine-rich protein 2 	P52943	77	GVNIGGAGSYIyEKPLAEGPQVTGPIEVPAAR 	3	7.53						2.29					
+EAW84943	Unknown function	hCG1645503	EAW84943		AFySSSNLTLHK 	3		1.67						2.29				
+EAW96536	Unknown function	hCG2041311	EAW96536	244	SPGEyAALMKLDPSADVQVDASLQGGKR 	3					2.58						-2.49	
+FAM127C	Unknown function	"""Family with sequence similarity 127, member C"""	Q17RB0	94	KESPLLSDyRGFLAEMK 	3						2.03						-9.61
+FAM62A	Unknown function	Protein FAM62A 	Q9BSJ8	§822	HLSPyATLTVGDSSHK 	2	3.17			4.05			-0.3			-4.73		
+FAM62A	Unknown function	Protein FAM62A 	Q9BSJ8	§822	HLSPyATLTVGDSSHK 	3	4.26	4.41	3.37	3.84	4.25	4.13	1.39	-1.37	-8.11	-5.76	-4.64	-4.33
+FAM62A	Unknown function	Protein FAM62A 	Q9BSJ8	§1009	DPPDPyVSLLLLPDKNR 	3			2.84						-6.37			
+FAM62A	Unknown function	Protein FAM62A 	Q9BSJ8	§1009	QNGRDPPDPyVSLLLLPDKNR 	3			1.92						-6.71			
+FAM62A	Unknown function	Protein FAM62A 	Q9BSJ8	§1009	QNGRDPPDPyVSLLLLPDKNR 	4	1.93						-0.48					
+FAM70B	Unknown function	Protein FAM70B	Q8WV15	"""241, 250"""	DmVPLSQLAYGPAVPPQTLYNPAQQILAYAGFR 	5	1.88						-0.45					
+FAM70B	Unknown function	Protein FAM70B	Q8WV15	"""241, 250"""	DMVPLSQLAYGPAVPPQTLyNPAQQILAYAGFR 	5	1.88						-0.45					
+FAM70B	Unknown function	Protein FAM70B	Q8WV15	"""241, 250"""	DMVPLSQLAYGPAVPPQTLYNPAQQILAyAGFR 	5	1.88						-0.45					
+FLJ10769	Unknown function	Hypothetical protein LOC55739	Q9NVF5	85	IGVVGGCQEyTGAPYFAAISALK 	2	5.09						0.83					
+FLJ10769	Unknown function	Hypothetical protein LOC55739	Q9NVF5	85	IGVVGGCQEyTGAPYFAAISALK 	3	4.46	4.14	4.25			3.48	0.8	-1.29	-6.44			-2.86
+FLJ32810	Unknown function	Hypothetical protein LOC143872	XP_930908	373	KLWLEAMDGKEPIyTLPAIISK 	3				5.61						-3.44		
+FLJ38482	Unknown function	Hypothetical protein DKFZp686K0275	Q7Z3A1	232	AKPEPDILEEEKIyAYPSNITSETGFR 	4	2.89						0.26					
+KIAA0174	Unknown function	Putative MAPK activating protein PM28	P53990	43	KEIADyLAAGKDER 	3					2.87						-5.02	
+KIAA1128	Unknown function	Protein KIAA1128	Q9H7U1	286	KLALPNGPGVTSTLGyR 	3						1.75						1.73
+KIAA1217	Unknown function	KIAA1217 protein	Q9ULK3	239	NVyYELNDVR 	2	3.18				2.72		0.26				-3.76	
+KLHDC7A	Unknown function	Kelch domain-containing protein 7A	Q5VTJ3	"""278, 279"""	VYDyYVESTSQAIFQGR 	3	2.14						-1.37					
+KLHDC7A	Unknown function	Kelch domain-containing protein 7A	Q5VTJ3	"""278, 279"""	VYDYyVESTSQAIFQGR 	3	2.14						-1.37					
+LAPTM4B	Unknown function	Lysosomal-associated transmembrane protein 4B 	Q86VI4	367	EPPPPyVSA 	2			1.8						-3.43			
+LOC285556	Unknown function	Hypothetical protein	XP_373030	227	yVDMCASAEVQRESPQTMK 	3				2.45						-0.61		
+LOC285556	Unknown function	Hypothetical protein	XP_373030	227	YVDmCASAEVQRESPQTMK 	3				2.45						-0.61		
+LOC340580	Unknown function	Tight junction-associated protein 1 (Tight junction protein 4)	Q9H7V7	§342	NSPLPNCTyATR 	2	2.3						-1.26					
+LOC378025	Unknown function	CDC14C	Q8NCT2	419	PySDDDEINGVTQGDRSR 	3				1.72						-7.7		
+LOC401228	Unknown function	Similar to RPL23AP7 protein	Q6P0M1	33	STPRRNKLGHyAIIK 	3	1.72						3.96					
+LOC92247	Unknown function	TIP41-like	O75663	209	LYHEADKTyMLR 	3					2.39						-3.7	
+LOC92247	Unknown function	TIP41-like	O75663	209	LYHEADKTYmLR 	3					2.39						-3.7	
+LRRC8C	Unknown function	Leucine-rich repeat-containing protein 8C 	Q8TDW0	687	IRyLDLSYNDIR 	3				1.82						0.14		
+NHLRC2	Unknown function	NHL repeat-containing protein 2	Q8NBF2	403	FAGSGNEENRNNAyPHK 	3			2.78						-4.23			
+NSUN6	Unknown function	Putative methyltransferase NSUN6 	Q8TEA1	151	AGDVISVySDIKGKCK 	3	1.6						1.75					
+PHC1	Unknown function	Polyhomeotic-like protein 1 	P78364	32	METESEQNSNSTNGSSSSGGSSRPQIAQmSLYER 	4	1.76						2.48					
+PHC1	Unknown function	Polyhomeotic-like protein 1 	P78364	32	METESEQNSNSTNGSSSSGGSSRPQIAQMSLyER 	4	1.76						2.48					
+PTTG1IP	Unknown function	Pituitary tumor-transforming gene 1 protein-interacting protein	P53801	"""165, 174"""	yGLFKEENPYAR 	3	2.98						0.32					
+PTTG1IP	Unknown function	Pituitary tumor-transforming gene 1 protein-interacting protein	P53801	"""165, 174"""	YGLFKEENPyAR 	3	2.98						0.32					
+PTTG1IP	Unknown function	Pituitary tumor-transforming gene 1 protein-interacting protein	P53801	174	KKYGLFKEENPyAR 	3	4.54						1.19					
+PTTG1IP	Unknown function	Pituitary tumor-transforming gene 1 protein-interacting protein	P53801	174	KYGLFKEENPyAR 	3	3.4						0.99					
+PTTG1IP	Unknown function	Pituitary tumor-transforming gene 1 protein-interacting protein	P53801	174	YGLFKEENPyAR 	2	2.9						4.6					
+PTTG1IP	Unknown function	Pituitary tumor-transforming gene 1 protein-interacting protein	P53801	174	YGLFKEENPyAR 	3	3.21		3.43		2.82	2.78	0.87		-6.14		-4.85	-4.74
+SH3PXD2B	Unknown function	Homo sapiens SH3 and PX domains 2B 	NP_001017995	25	RVPNKHyVYIIR 	3					3.04						-2.16	
+SH3PXD2B	Unknown function	Homo sapiens SH3 and PX domains 2B 	NP_001017995	25	RVPNKHyVYIIR 	4					2.94						-3.26	
+SH3PXD2B	Unknown function	Homo sapiens SH3 and PX domains 2B 	NP_001017995	25	VPNKHyVYIIR 	3					1.84						-3.83	
+TKTL2	Unknown function	Transketolase-like protein 2	Q8NCT0	325	TyGLALAKLGR 	3		1.62						-3.28				
+TMEM106B	Unknown function	Transmembrane protein 106B	Q8N353	90	NGDVSQFPyVEFTGR 	2			3.75						-5.28			
+TMEM63A	Unknown function	Transmembrane protein 63A	O94886	798	TALSPQQQQQQTyGAIHNISGTIPGQCLAQSATGSVAAAPQEA 	4	3.82						4.01					
+TTC25	Unknown function	Tetratricopeptide repeat protein 25 (TPR repeat protein 25)	Q9H0K5	499	ELRKTNyVENLK 	3						1.97						-2.6
+UBXD1	Unknown function	UBX domain-containing protein 1	Q9BZV1	336	KYNyTLLR 	2	2.71	2.07			2.18		0.52	-1.82			-2.98	
+WDR18	Unknown function	WD repeat protein 18	Q9BV38	61	NyISAWELQR 	2			3.28						-7.06			
+ZBTB7C	Unknown function	Zinc finger and BTB domain containing 7C	A1YPR0	331	AENDyGAYLNFLSATHLGGLFPPWPLVEER 	6		2.4						2.88				
+ZDHHC5	Unknown function	Probable palmitoyltransferase ZDHHC5 	Q9C0B5	91	AEEDEDKEDDFRAPLyK 	3			3.22	2.81					-6.52	-5.75		
+ZNF665	Unknown function	Zinc finger protein 665	Q9H7R5	"""97, 99"""	IyEYNQVEKSPNNRGKHYKCDECGK 	3	1.73						-2.19					
+ZNF665	Unknown function	Zinc finger protein 665	Q9H7R5	"""97, 99"""	IYEyNQVEKSPNNRGKHYKCDECGK 	3	1.73						-2.19					
+AP2B1	Vesicle protein	AP-2 complex subunit beta-1 	P63010	737	QGHIyMEMNFTNK 	3					2.68						-3.68	
+AP2B1	Vesicle protein	AP-2 complex subunit beta-1 	P63010	737	QGHIYmEMNFTNK 	3					2.68						-3.68	
+AP2B1	Vesicle protein	AP-2 complex subunit beta-1 	P63010	737	QGHIYMEmNFTNK 	3					2.68						-3.68	
+CLTC	Vesicle protein	Clathrin heavy chain 1 	Q00610	633	ALEHFTDLyDIKR 	3			5.03						-7.81			
+CLTC	Vesicle protein	Clathrin heavy chain 1 	Q00610	898	FLRENPyYDSR 	3	2.87						3.61					
+COG4	Vesicle protein	Conserved oligomeric Golgi complex component 4	Q9H9E3	714	ELRSLIAyLTTVTTWTIR 	3		2.05						-7.03				
+COPB2	Vesicle protein	Coatomer subunit beta'	P35606	353	DMGSCEIyPQTIQHNPNGR 	3			3.21						-5.99			
+KIAA1012	Vesicle protein	Protein TRS85	Q9Y2L5	584	CyCQAMQVYKGK 	3						2.08						0.82
+LAPTM4A	Vesicle protein	Lysosomal-associated transmembrane protein 4A 	Q15012	230	MPEKEPPPPyLPA 	2			2.44						-7.03			
+SEC24B	Vesicle protein	Protein transport protein Sec24B 	O95487	1100	LDDRVyAMCQIK 	3					4						-3.24	
+SEC24B	Vesicle protein	Protein transport protein Sec24B 	O95487	1100	LDDRVYAmCQIK 	3					4						-3.24	
+SEC24B	Vesicle protein	Protein transport protein Sec24B 	O95487	1100	LDDRVyAMCQIK 	3					3.19						-3.58	
+SEC24B	Vesicle protein	Protein transport protein Sec24B 	O95487	1100	LDDRVYAmCQIK 	3					3.19						-3.58	
+SEC24B	Vesicle protein	Protein transport protein Sec24B 	O95487	1100	VyAMCQIK 	2					2.33						-1.72	
+SEC24B	Vesicle protein	Protein transport protein Sec24B 	O95487	1100	VYAmCQIK 	2					2.33						-1.72	
