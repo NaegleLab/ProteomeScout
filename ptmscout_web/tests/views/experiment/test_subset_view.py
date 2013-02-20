@@ -7,11 +7,11 @@ from ptmscout.config import strings
 from tests.views.mocking import createMockExperiment
 from tests.PTMScoutTestCase import IntegrationTestCase
 
-class ExperimentListingIntegrationTest(IntegrationTestCase):
+class ExperimentSubsetIntegrationTest(IntegrationTestCase):
     def test_integration(self):
-        self.ptmscoutapp.get('/experiments/26/subset', status=200)
+        self.ptmscoutapp.get('/experiments/26/subsets', status=200)
 
-class ExperimentListingViewTests(unittest.TestCase):
+class ExperimentSubsetViewTests(unittest.TestCase):
 
     @patch('ptmscout.views.dataset.dataset_explorer_view.format_explorer_view')
     @patch('ptmscout.database.experiment.getExperimentById')
