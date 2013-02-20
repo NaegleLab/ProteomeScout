@@ -11,11 +11,13 @@ numpy
 biopython
 Geeneus-0.1.7
 webtest
+behave
+pyquery
 
 
 system:
 ----------
 dos2unix
 max2unix
-behave
-pyquery
+libxml2-dev
+libxslt-dev
