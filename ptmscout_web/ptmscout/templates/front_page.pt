@@ -23,7 +23,7 @@
     </head>
     <body>
         <div id="iewarn" title="Warning!" style="display: none;">
-            Warning! We have detected that your browser does not support Scalable Vector Graphics. We recommend viewing this site using the most recent versions of Chrome, Opera, or Firefox. We recommend Chrome for the best performance. Using Internet Explorer or a legacy browser will not allow you to use many graphical features of PTMScout.
+            Warning! We have detected that your browser does not support Scalable Vector Graphics. We recommend viewing this site using the most recent versions of Chrome, Opera, or Firefox. We recommend Chrome for the best performance. Using Internet Explorer or any legacy browser will not allow you to use many graphical features of PTMScout.
         </div>
 
         <div id="menu">
@@ -64,7 +64,7 @@
                 </a>
 <!--                <a href="${request.application_url}/annotate">
 </a>-->
-                    <div class="menuitem" style="top:200px; right:160px; color:white; opacity:0.5; background-color:gray; border: solid 5px gray; pointer: default;">
+                    <div class="inactive" style="top:200px; right:160px;">
                         <span>Annotate<br>Peptides</span>
                     </div>
 

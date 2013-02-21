@@ -7,7 +7,7 @@
 		<a href="${request.urlfilter.encode_url('/proteins/%d/data' % (protein.id))}">Data</a>
 	</div>
 	<div id="proteinInfo" >
-	   	<fieldset>
+	   	<fieldset class="object-info">
 	   		<legend>Protein</legend>
 	   		<div>
 	   			<label>Name:</label> ${protein.name}

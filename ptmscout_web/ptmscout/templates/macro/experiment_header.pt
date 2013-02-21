@@ -12,7 +12,7 @@
 	</div>
 	<div metal:define-slot="menu"></div>
 	<div id="experimentInfo" >
-	   	<fieldset>
+	   	<fieldset class="object-info">
 	   		<legend>Experiment</legend>
 	   		<a href="${experiment.getUrl()}" tal:condition="experiment.getUrl() != None">${experiment.name}</a>
 	   		<tal:expname tal:condition="experiment.getUrl() == None">${experiment.name}</tal:expname><br />

@@ -6,6 +6,10 @@ def add_views(config):
     config.add_route('terms', '/terms')
     
     config.add_route('portal','/')
+    
+    config.add_route('compute_subset', '/webservice/subsets')
+#    config.add_route('upload_clusters', '/webservice/clusters')
+    
     config.add_route('experiments','/experiments')
     config.add_route('experiment','/experiments/{id}')
     config.add_route('experiment_GO','/experiments/{id}/GO')

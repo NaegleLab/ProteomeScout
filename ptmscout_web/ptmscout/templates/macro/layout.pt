@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" metal:define-macro="layout">
   <head>
+  	<?python import urllib; ?>
     <?python import ptmscout.config as config; ?>
     <title>${pageTitle}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -12,8 +13,8 @@
     <script type="text/javascript" src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
     <script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>
 
-    <script type="text/javascript" src="${request.static_url('ptmscout:static/js/utils.js')}" ></script>
-    <script type="text/javascript" src="${request.static_url('ptmscout:static/js/base64.js')}" ></script>
+    <script type="text/javascript" src="${request.static_url('ptmscout:static/js/include/base64.js')}" ></script>
+    <script type="text/javascript" src="${request.static_url('ptmscout:static/js/include/jquery.tablesorter.min.js')}" ></script>
     <script type="text/javascript" src="${request.static_url('ptmscout:static/js/ptmscout.js')}" ></script>
 	<metal:block metal:define-slot="header"></metal:block>
   </head>
@@ -72,6 +73,8 @@
 	    </div>
       </div>
 	</div>
+	
+    <div id="webservice_url" style="display:none;">${request.application_url}/webservice</div>
     <div style="display:none" id="graph_css_export_url">${request.static_url('ptmscout:static/css/graphs.css')}</div>
     <div class="waiting-modal"><!-- Place at bottom of page -->
         <img style="position:fixed; top:50%; left:50%;" src="${request.static_url('ptmscout:static/images/ajax-loader.gif')}" />

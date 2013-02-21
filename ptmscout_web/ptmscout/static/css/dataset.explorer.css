@@ -1,0 +1,26 @@
+#subset-select {
+	margin-left:50px;
+	margin-right:50px;
+}
+
+.filter-set fieldset {
+	border:solid 1px black; 	
+}
+
+.filter-set fieldset legend {
+	font-size:medium;	
+}
+
+.filter-set {
+	background-color:#33CFDB;
+	border: solid 2px black;
+	padding: 20px;
+	margin-bottom: 10px;
+}
+
+.condition-title {
+	float:left;
+	width:100px;
+	text-align:left;
+	font-weight:bold;
+}

@@ -42,6 +42,8 @@ class GeneOntology(Base):
                 return True
         return False
 
+    def fullName(self):
+        return "%s: %s" % (self.GO, self.term)
 #    def getURL(self):
 #        return settings.accession_urls['GO'] % (self.GO)
 
@@ -113,6 +115,8 @@ class ProteinRegion(Base):
         c3 = self.stop == o.stop
         return c1 and c2 and c3
 
+    def hasSite(self, site_pos):
+        return self.start <= site_pos and site_pos <= self.stop
 
 class Protein(Base):
     __tablename__='protein'

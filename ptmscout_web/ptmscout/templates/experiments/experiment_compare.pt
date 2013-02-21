@@ -183,8 +183,6 @@
                 </table>
             </div>
         </div>
-
-        <div id="webservice_url" style="display:none;">${request.application_url}/webservice</div>
     </div>
 </div>
 	

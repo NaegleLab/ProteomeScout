@@ -7,7 +7,7 @@ then
 fi
 
 echo "Deploying codebase..."
-sudo /data/pyramid/bin/python setup.py build > logs/build.log
+#sudo /data/pyramid/bin/python setup.py build > logs/build.log
 sudo /data/pyramid/bin/python setup.py $arg > logs/deploy.log
 sudo chmod -R 775 *
 sudo chown -R www-data *

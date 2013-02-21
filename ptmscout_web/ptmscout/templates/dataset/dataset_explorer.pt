@@ -1,3 +1,66 @@
 <div metal:define-macro="dataset_explorer">
+	<script type="text/javascript" src="${request.static_url('ptmscout:static/js/export.svg.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('ptmscout:static/js/seqlogo.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('ptmscout:static/js/dataset.explorer.js')}"></script>
 
+	<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/dataset.explorer.css')}" />
+	<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/forms.css')}" />
+
+	<div id="subset-select">
+	
+		Use the search form below to perform the following tasks:
+		<ul>
+			<li>Explore a smaller portion of a large dataset based on a common feature</li>
+			<li>Generate hypotheses based on enrichment between dynamics and annotations or annotations of different sources</li>
+			<li>View enrichment in clustering imported from outside (e.g. Self organizing maps, kmeans etc.)</li>
+		</ul>
+	
+		<div id="field-data" style="display:none;" tal:content="field_data"></div>
+
+	    <div class="filter-set">
+		    <form method="GET" action="${request.application_url}/experiment/${experiment.id}/export">
+		    	<fieldset>
+		    		<legend>Export Experiment for Analysis</legend>
+		    		<div>
+		    			<span class="condition-title">Annotate:</span>
+		    			<select name="annotate">
+		    				<option value="no">No</option>
+		    				<option value="yes">Yes</option>
+		    			</select>
+		    		</div>
+		    		<input type="Submit" id="export-experiment" class="longtask" value="Export Experiment" />
+		    	</fieldset>
+	    	</form>
+	    	<form method="POST" action="${request.application_url}/upload/clustering?redirect=${request.route_path('experiment_subset', id=experiment.id)}">
+		    	<fieldset>
+		    		<legend>Import Cluster File</legend>
+	   				<input type="file" name="clusterfile" /> <br />
+		        	<input type="Submit" id="upload-clustering" class="longtask" value="Import Clusters" />
+		        </fieldset>
+	        </form>
+    		<fieldset>
+    			<legend>View Clustering Results</legend>
+    			<span class="condition-title">Cluster Set:</span> <select id="cluster-set"></select> <button id="show-clusters" class="longtask">Show All Clusters From Set</button>
+    		</fieldset>
+	    </div>
+
+		<div class="filter-set">
+			<fieldset id="filter-conditions">
+				<legend>Subset Filter Conditions</legend>
+				<div> <span class="condition-title">Background:</span> <select id="background-select"><option value="all">Entire Experiment</option></select></div>
+			</fieldset>
+			<button id="add-condition">Add Condition</button>
+			
+		    <div class="formsubmission">
+		        <button id="compute-subset" class="longtask">Compute Subset</button>
+		        <button id="clear-form">Clear</button>
+		    </div>
+		    <div class="clear"></div>
+		    
+	    </div>
+	    
+		<div id="open-subsets">
+			
+		</div>
+	</div>
 </div>
