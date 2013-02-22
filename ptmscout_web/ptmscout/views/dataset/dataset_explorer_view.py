@@ -34,7 +34,7 @@ def get_protein_metadata(measurements, metadata_fields, accessions):
         for acc in ms.protein.accessions:
             metadata_fields['Protein Accession'].add(acc.value)
         
-    accessions += list(metadata_fields['Gene'] | metadata_fields['Protein Name'] | metadata_fields['Protein Accession'])
+    accessions += sorted( list(metadata_fields['Gene'] | metadata_fields['Protein Name'] | metadata_fields['Protein Accession']) )
     del metadata_fields['Gene']
     del metadata_fields['Protein Name']
     del metadata_fields['Protein Accession']
@@ -106,7 +106,7 @@ def format_explorer_view(measurements):
 
     
     for field in metadata_fields.keys():
-        metadata_fields[field] = list(metadata_fields[field])
+        metadata_fields[field] =sorted( list(metadata_fields[field]) )
     
     
     field_data = {'quantitative_fields': sorted( list(quantitative_fields) ),
