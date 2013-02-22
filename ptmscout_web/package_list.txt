@@ -17,7 +17,13 @@ pyquery
 
 system:
 ----------
+build-essential
 dos2unix
 max2unix
 libxml2-dev
 libxslt-dev
+python
+python-dev
+python-virtualenv
+libmysqlclient-dev
+
