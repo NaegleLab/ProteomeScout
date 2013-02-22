@@ -12,5 +12,6 @@ ptmscout_web/modules
 pfam.map
 .*\.pyc
 .*.project
+.*.settings
 .*.pydevproject
 .includepath
