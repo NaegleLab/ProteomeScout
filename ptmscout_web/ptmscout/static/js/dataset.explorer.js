@@ -130,18 +130,89 @@ QuantitativeSelector.prototype.addVariable = function() {
 	variable_select.appendTo(this.element);
 };
 
-function SubsetSelector(parent_element) {
+function SubsetSelector(parent_element, saved_subsets) {
 	this.element = $("<span />");
 	
 	this.element.appendTo(parent_element);
 	
+	$("<span>Peptide</span>").appendTo(this.element);
+	
 	this.operation = $("<select />").appendTo(this.element);
 	$("<option value=\"in\">in</option>").appendTo(this.operation);
-	$("<option value=\"not in\">not in</option>").appendTo(this.operation);
+	$("<option value=\"nin\">not in</option>").appendTo(this.operation);
 	
 	$("<span class=\"field_label\">Subset: </span>").appendTo(this.element);
 	this.value = $("<select />").appendTo(this.element);
+	
+	$("<option />").appendTo(this.value);
+	for(var i in saved_subset){
+		$("<option value=\"{0}\">{0}</option>".format(saved_subset[i])).appendTo(this.value);
+	}
 };
+
+function ScansiteSelector(parent_element, scansite_keys, scansite_fields) {
+	var selector = this;
+	this.element = $("<span />");
+	
+	this.field_values = scansite_fields;
+	this.element.appendTo(parent_element);
+	
+	$("<span>Type: </span>").appendTo(this.element);
+	this.field = $("<select />").appendTo(this.element);
+	
+	$('<option />').appendTo(this.field);
+	for(var i in scansite_keys){
+		var k = scansite_keys[i];
+		$('<option value="{0}">{0}</option>'.format(k)).appendTo(this.field);
+	}
+	this.field.on('change', function(){
+		var field_val = selector.field.val();
+		selector.value.empty();
+		
+		if(field_val in selector.field_values){
+			$("<option />").appendTo(selector.value);
+			for(var i in selector.field_values[field_val]){
+				$("<option value=\"{0}\">{0}</option>".format( selector.field_values[field_val][i] )).appendTo(selector.value);
+			}
+		}
+	});
+	
+	
+	this.operation = $("<select />").appendTo(this.element);
+	$("<option value=\"eq\">=</option>").appendTo(this.operation);
+	$("<option value=\"neq\">\u2260</option>").appendTo(this.operation);
+	
+	$("<span class=\"field_label\">Term: </span>").appendTo(this.element);
+	this.value = $("<select />").appendTo(this.element);
+//	this.value.combobox();
+	
+	$("<span class=\"field_label\">Stringency: </span>").appendTo(this.element);
+	this.stringency = $("<select />").appendTo(this.element);
+	
+	$("<option value=\"5\">Low</option>").appendTo(this.stringency);
+	$("<option value=\"1\">Medium</option>").appendTo(this.stringency);
+	$("<option value=\"0.2\">High</option>").appendTo(this.stringency);
+};
+
+function ProteinSelector(parent_element, field_values) {
+	var selector = this;
+	
+	this.element = $("<span />");
+	this.element.appendTo(parent_element);
+	$("<span class=\"field_label\">Gene/Protein: </span>").appendTo(this.element);
+	this.value = $("<input type=\"text\" width=\"50\" />").appendTo(this.element);
+	
+	this.value.autocomplete({
+	      source: field_values
+	    });
+	
+//	$('<option />').appendTo(this.value);
+//	for(var i in field_values){
+//		$("<option value=\"{0}\">{0}</option>".format(field_values[i])).appendTo(this.value);
+//	}
+//	this.value.combobox();
+};
+
 
 function MetadataSelector(parent_element, field_name, value_name, field_values, values_by_field) {
 	var selector = this;
@@ -151,7 +222,7 @@ function MetadataSelector(parent_element, field_name, value_name, field_values, 
 	
 	this.element = $("<span />");
 	this.element.appendTo(parent_element);
-	$("<span class=\"field_label\">{0}: </span>".format(field_name)).appendTo(this.element);
+	$("<span class=\"field_label\">{0}</span>".format(field_name)).appendTo(this.element);
 	this.field_name = $("<select />").appendTo(this.element);
 	
 	$("<option />").appendTo(this.field_name);
@@ -159,13 +230,11 @@ function MetadataSelector(parent_element, field_name, value_name, field_values, 
 		$("<option value=\"{0}\">{0}</option>".format( field_values[i] )).appendTo(this.field_name);
 	}
 	
-
-	
 	this.operation = $("<select />").appendTo(this.element);
-	$("<option value=\"in\">in</option>").appendTo(this.operation);
-	$("<option value=\"not in\">not in</option>").appendTo(this.operation);
+	$("<option value=\"eq\">=</option>").appendTo(this.operation);
+	$("<option value=\"neq\">\u2260</option>").appendTo(this.operation);
 	
-	$("<span class=\"field_label\">{0}: </span>".format(value_name)).appendTo(this.element);
+	$("<span class=\"field_label\">{0}</span>".format(value_name)).appendTo(this.element);
 	this.value = $("<select />").appendTo(this.element);
 	
 	this.field_name.on('change', function(){
@@ -179,6 +248,7 @@ function MetadataSelector(parent_element, field_name, value_name, field_values, 
 			}
 		}
 	});
+//	this.value.combobox();
 };
 
 function SequenceSelector(parent_element) {
@@ -196,10 +266,11 @@ function SelectorCondition(parent_element, field_data, show_boolean_op) {
 	this.element = $('<div></div>');
 	var boolean_container = $('<span class="condition-boolean"></span>');
 	boolean_container.appendTo(this.element);
+	
 	if(show_boolean_op){
 		$('<select><option value="and">and</option><option value="or">or</option></select>').appendTo(boolean_container);
 	}else{
-		boolean_container.text("+");
+		boolean_container.text("-");
 	}
 	$("<span class=\"condition-title\">Condition:</span>").appendTo(this.element);
 	this.type_select = $("<select />").appendTo(this.element);
@@ -209,7 +280,10 @@ function SelectorCondition(parent_element, field_data, show_boolean_op) {
 	$("<option value=\"subset\">Subset</option>").appendTo(this.type_select);
 	$("<option value=\"cluster\">Cluster</option>").appendTo(this.type_select);
 	$("<option value=\"metadata\">Metadata</option>").appendTo(this.type_select);
+	$("<option value=\"protein\">Protein</option>").appendTo(this.type_select);
+	$("<option value=\"scansite\">Scansite</option>").appendTo(this.type_select);
 	$("<option value=\"sequence\">Sequence</option>").appendTo(this.type_select);
+	
 	
 	this.type_select.on('change', function(){
 		condition.changed();
@@ -229,22 +303,23 @@ SelectorCondition.prototype.changed = function() {
 		this.selector = new QuantitativeSelector(this.element, this.field_data.quantitative_fields);
 	}
 	if(value == 'metadata'){
-		console.log(this.field_data.metadata_keys);
-		this.selector = new MetadataSelector(this.element, "Metadata Field", "", this.field_data.metadata_keys, this.field_data.metadata_fields);
+		this.selector = new MetadataSelector(this.element, "Metadata Field: ", "", this.field_data.metadata_keys, this.field_data.metadata_fields);
 	}
 	if(value == 'subset'){
-		this.selector = new SubsetSelector(this.element);
+		this.selector = new SubsetSelector(this.element, []);
 	}
 	if(value == 'cluster'){
-		this.selector = new MetadataSelector(this.element, "Cluster Set", "Cluster ID", this.field_data.clustering_sets, this.field_data.clustering_labels);
+		this.selector = new MetadataSelector(this.element, "Cluster Set: ", "Cluster ID: ", this.field_data.clustering_sets, this.field_data.clustering_labels);
 	}
 	if(value == 'sequence'){
 		this.selector = new SequenceSelector(this.element);
 	}
-};
-
-SelectorCondition.prototype.remove = function() {
-	this.element.remove();
+	if(value == 'protein'){
+		this.selector = new ProteinSelector(this.element, this.field_data.accessions);
+	}
+	if(value == 'scansite'){
+		this.selector = new ScansiteSelector(this.element, this.field_data.scansite_keys, this.field_data.scansite_fields);
+	}
 };
 
 function SubsetSelection(element) {
@@ -258,6 +333,10 @@ function SubsetSelection(element) {
 	this.add_condition = $("#add-condition");
 	this.add_condition.on('click', function(){
 		selector.add_condition_field();
+	});
+	this.remove_condition = $("#remove-condition");
+	this.remove_condition.on('click', function(){
+		selector.remove_condition_field();
 	});
 	
 	this.compute_subset = $("#compute-subset");
@@ -273,6 +352,13 @@ SubsetSelection.prototype.add_condition_field = function() {
 	var is_first = this.conditions.length == 0;
 	var new_field = new SelectorCondition(this.condition_list, this.field_data, !is_first);
 	this.conditions.push(new_field);
+};
+
+SubsetSelection.prototype.remove_condition_field = function() {
+	if(this.conditions.length > 0){
+		var field = this.conditions.pop();
+		field.element.remove();
+	}
 };
 
 SubsetSelection.prototype.clear_conditions = function() {

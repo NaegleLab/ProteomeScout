@@ -50,10 +50,30 @@
 .ui-accordion .ui-accordion-header .ui-accordion-header-icon { position: absolute; left: .5em; top: 50%; margin-top: -8px; }
 .ui-accordion .ui-accordion-content { padding: 1em 2.2em; border-top: 0; overflow: auto; zoom: 1; }
 .ui-autocomplete {
+	max-height: 200px;
 	position: absolute;
 	top: 0; /* #8656 */
 	cursor: default;
+	overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
 }
+
+ .ui-combobox {
+   position: relative;
+   display: inline-block;
+ }
+ .ui-combobox-toggle {
+   position: absolute;
+   top: 0;
+   bottom: 0;
+   margin-left: -1px;
+   padding: 0;
+ }
+ .ui-combobox-input {
+   margin: 0;
+   padding: 0.3em;
+ }
 
 /* workarounds */
 * html .ui-autocomplete { width:1px; } /* without this, the menu expands to 100% in IE6 */

@@ -18,13 +18,13 @@ def get_pfam_metadata(measurements, metadata_fields):
                 if region.hasSite(modpep.peptide.site_pos):
                     metadata_fields['Region'].add(region.label)
 
-def get_protein_metadata(measurements, metadata_fields):
-    metadata_fields.update({
+def get_protein_metadata(measurements, metadata_fields, accessions):
+    metadata_fields = {
                        'Gene':set(),
                        'Protein Accession':set(),
                        'Protein Name':set(),
                        'Species':set(),
-                       })
+                       }
     
     for ms in measurements:
         metadata_fields['Gene'].add(ms.protein.getGeneName())
@@ -33,7 +33,11 @@ def get_protein_metadata(measurements, metadata_fields):
         
         for acc in ms.protein.accessions:
             metadata_fields['Protein Accession'].add(acc.value)
-            
+        
+    accessions += list(metadata_fields['Gene'] | metadata_fields['Protein Name'] | metadata_fields['Protein Accession'])
+    del metadata_fields['Gene']
+    del metadata_fields['Protein Name']
+    del metadata_fields['Protein Accession']
         
 def get_scansite_metadata(measurements, metadata_fields):
     metadata_fields.update({'Scansite-Kinase':set(),
@@ -47,6 +51,8 @@ def get_scansite_metadata(measurements, metadata_fields):
                 if scansite.source == 'scansite_bind':
                     metadata_fields['Scansite-Bind'].add(scansite.value)
 
+    for key in metadata_fields:
+        metadata_fields[key] = list(metadata_fields[key])
 
 
 def get_GO_metadata(measurements, metadata_fields):
@@ -80,13 +86,17 @@ def get_modification_metadata(measurements, metadata_fields):
 def format_explorer_view(measurements):
     quantitative_fields = set()
     
+    accessions = []
     metadata_fields = {}
+    scansite_fields = {}
     cluster_labels = {}
     subset_labels = []
     
-    get_protein_metadata(measurements, metadata_fields)
+    get_protein_metadata(measurements, metadata_fields, accessions)
     get_pfam_metadata(measurements, metadata_fields)
-    get_scansite_metadata(measurements, metadata_fields)
+    
+    get_scansite_metadata(measurements, scansite_fields)
+    
     get_GO_metadata(measurements, metadata_fields)
     get_modification_metadata(measurements, metadata_fields)
     
@@ -98,7 +108,11 @@ def format_explorer_view(measurements):
     for field in metadata_fields.keys():
         metadata_fields[field] = list(metadata_fields[field])
     
+    
     field_data = {'quantitative_fields': sorted( list(quantitative_fields) ),
+                  'accessions': accessions,
+                  'scansite_fields': scansite_fields,
+                  'scansite_keys': sorted( scansite_fields.keys() ),
                   'metadata_fields': metadata_fields,
                   'metadata_keys': sorted( metadata_fields.keys() ),
                   'clustering_sets': sorted( list(cluster_labels.keys()) ),

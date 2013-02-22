@@ -50,6 +50,7 @@
 				<div> <span class="condition-title">Background:</span> <select id="background-select"><option value="all">Entire Experiment</option></select></div>
 			</fieldset>
 			<button id="add-condition">Add Condition</button>
+			<button id="remove-condition">Remove Condition</button>
 			
 		    <div class="formsubmission">
 		        <button id="compute-subset" class="longtask">Compute Subset</button>
