@@ -109,13 +109,32 @@ QuantitativeSelector.prototype.addVariable = function() {
 	
 	var i = this.selectors.length;
 	
-	var variable_select = $("<select />", {class:"variable"});
-	this.selectors.push(variable_select);
+	var container = $("<span />"); 
+	var variable_select = $("<select />", {class:"variable"}).appendTo(container);
+	var numeric_input = $('<input type="text" style="display:none;"/>').appendTo(container);
+	var last_val = "";
+	
+	numeric_input.on('change', function(){
+		var val = $(this).val();
+		
+		if(isNaN(parseFloat(val)) || !isFinite(val)){
+			$(this).val(last_val);
+		} else {
+			last_val = val;
+		}
+	});
+	
+	this.selectors.push(container);
 	
 	variable_select.on('change', function(){
 		if($(this).val() == ''){
 			selector.removeAfter(i);
 		} 
+		if($(this).val() == 'numeric'){
+			numeric_input.show();
+		} else {
+			numeric_input.hide();
+		}
 		if(i+1 == selector.selectors.length && selector.computeOperState(i) != 'D'){
 			selector.addOperator();
 		}
@@ -123,11 +142,12 @@ QuantitativeSelector.prototype.addVariable = function() {
 	});
 	
 	$("<option />").appendTo(variable_select);
+	$('<option value="numeric">Numeric</option>').appendTo(variable_select);
 	for(var j in this.field_values){
 		$("<option value=\"{0}\">{0}</option>".format( this.field_values[j] )).appendTo(variable_select);
 	}
 	
-	variable_select.appendTo(this.element);
+	container.appendTo(this.element);
 };
 
 function SubsetSelector(parent_element, saved_subsets) {
