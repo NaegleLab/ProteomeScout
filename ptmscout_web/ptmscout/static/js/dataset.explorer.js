@@ -154,8 +154,9 @@ function MetadataSelector(parent_element, field_name, value_name, field_values, 
 	$("<span class=\"field_label\">{0}: </span>".format(field_name)).appendTo(this.element);
 	this.field_name = $("<select />").appendTo(this.element);
 	
+	$("<option />").appendTo(this.field_name);
 	for(var i in field_values){
-		$("<option value=\"{0}\">{0}</option>".format( field_values[i] ));
+		$("<option value=\"{0}\">{0}</option>".format( field_values[i] )).appendTo(this.field_name);
 	}
 	
 
@@ -168,9 +169,14 @@ function MetadataSelector(parent_element, field_name, value_name, field_values, 
 	this.value = $("<select />").appendTo(this.element);
 	
 	this.field_name.on('change', function(){
+		var field_val = selector.field_name.val();
 		selector.value.empty();
-		for(var i in values_by_field){
-			$("<option value=\"{0}\">{0}</option>".format( selector.values_by_field[i] ));
+		
+		if(field_val in selector.values_by_field){
+			$("<option />").appendTo(selector.value);
+			for(var i in selector.values_by_field[field_val]){
+				$("<option value=\"{0}\">{0}</option>".format( selector.values_by_field[field_val][i] )).appendTo(selector.value);
+			}
 		}
 	});
 };
@@ -183,12 +189,19 @@ function SequenceSelector(parent_element) {
 	this.value = $("<input type=\"text\" length=\"15\" width=\"15\" />").appendTo(this.element);
 };
 
-function SelectorCondition(parent_element, field_data) {
+function SelectorCondition(parent_element, field_data, show_boolean_op) {
 	var condition = this;
-	
 	this.field_data = field_data;
 	
-	this.element = $('<div><span class=\"condition-title\">Condition:</span></div>');
+	this.element = $('<div></div>');
+	var boolean_container = $('<span class="condition-boolean"></span>');
+	boolean_container.appendTo(this.element);
+	if(show_boolean_op){
+		$('<select><option value="and">and</option><option value="or">or</option></select>').appendTo(boolean_container);
+	}else{
+		boolean_container.text("+");
+	}
+	$("<span class=\"condition-title\">Condition:</span>").appendTo(this.element);
 	this.type_select = $("<select />").appendTo(this.element);
 	
 	$("<option></option>").appendTo(this.type_select);
@@ -216,6 +229,7 @@ SelectorCondition.prototype.changed = function() {
 		this.selector = new QuantitativeSelector(this.element, this.field_data.quantitative_fields);
 	}
 	if(value == 'metadata'){
+		console.log(this.field_data.metadata_keys);
 		this.selector = new MetadataSelector(this.element, "Metadata Field", "", this.field_data.metadata_keys, this.field_data.metadata_fields);
 	}
 	if(value == 'subset'){
@@ -256,7 +270,8 @@ function SubsetSelection(element) {
 };
 
 SubsetSelection.prototype.add_condition_field = function() {
-	var new_field = new SelectorCondition(this.condition_list, this.field_data);
+	var is_first = this.conditions.length == 0;
+	var new_field = new SelectorCondition(this.condition_list, this.field_data, !is_first);
 	this.conditions.push(new_field);
 };
 

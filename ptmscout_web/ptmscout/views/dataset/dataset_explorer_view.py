@@ -57,11 +57,11 @@ def get_GO_metadata(measurements, metadata_fields):
     for ms in measurements:
         for go_term in ms.protein.GO_terms:
             if go_term.GO_term.aspect == 'C':
-                metadata_fields['GO-Cellular Component'].add(go_term.GO_term.term)
+                metadata_fields['GO-Cellular Component'].add(go_term.GO_term.fullName())
             if go_term.GO_term.aspect == 'P':
-                metadata_fields['GO-Biological Process'].add(go_term.GO_term.term)
+                metadata_fields['GO-Biological Process'].add(go_term.GO_term.fullName())
             if go_term.GO_term.aspect == 'F':
-                metadata_fields['GO-Molecular Function'].add(go_term.GO_term.term)
+                metadata_fields['GO-Molecular Function'].add(go_term.GO_term.fullName())
 
 
 def get_modification_metadata(measurements, metadata_fields):

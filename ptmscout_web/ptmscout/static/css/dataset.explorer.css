@@ -18,6 +18,12 @@
 	margin-bottom: 10px;
 }
 
+.condition-boolean {
+	float:left;
+	width:75px;
+	text-align:left;
+}
+
 .condition-title {
 	float:left;
 	width:100px;
