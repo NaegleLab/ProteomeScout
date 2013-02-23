@@ -3,54 +3,7 @@ from ptmscout.config import strings
 from ptmscout.database import experiment, modifications
 import base64
 import json
-import math
-
-
-def create_sequence_profile(measurements):
-    peptides = [p.peptide for m in measurements for p in m.peptides]
-
-    frequencies = [0]*15
-    N = float(len(peptides))
-    
-    for i in xrange(0, 15):
-        frequencies[i] = {}
-       
-    for pep in peptides:
-        sequence = pep.pep_aligned.upper()
-        
-        for i, s in enumerate(sequence):
-            if s == ' ':
-                s = '-'
-            val = frequencies[i].get(s, 0)
-            frequencies[i][s] = val+1
-        
-    seqlogo = {'total':len(peptides), 'frequencies':[]}
-    
-    if len(peptides) == 0:
-        return seqlogo
-    
-    en = 19 / (2 * math.log(2) * len(peptides)) 
-    
-    for i in xrange(0, 15):
-        Ri = math.log(20, 2)
-        
-        for s in frequencies[i]:
-            f = frequencies[i][s] / N
-            Ri += f * math.log(f, 2)
-        
-        Ri -= en
-        
-        sorted_freqs = sorted([ (k, v) for (k,v) in frequencies[i].items() ], key=lambda item: -item[1])
-        final = []
-        
-        d=0
-        for k,v in sorted_freqs:
-            final.append((k, v, d))
-            d += v
-                
-        seqlogo['frequencies'].append({'R':Ri, 'f':final})
-    
-    return seqlogo
+from ptmscout.utils import protein_utils
 
 def summarize_measurements(measurements):
     summary = {'modifications':0,
@@ -101,7 +54,7 @@ def experiment_summary_view(request):
     rejected_peps = len(set([err.peptide for err in exp.errors]))
     
     measurement_summary = summarize_measurements(measurements)
-    sequence_profile = create_sequence_profile(measurements)
+    sequence_profile = protein_utils.create_sequence_profile(measurements)
     
     encoded = base64.b64encode(json.dumps(sequence_profile))
     return {'experiment':exp,

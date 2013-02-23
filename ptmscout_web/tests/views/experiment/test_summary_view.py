@@ -1,5 +1,5 @@
 from ptmscout.views.experiment.summary_view import experiment_summary_view,\
-    summarize_measurements, create_sequence_profile
+    summarize_measurements
 from pyramid.testing import DummyRequest
 from ptmscout.config import strings
 from tests.views.mocking import createMockExperiment, createMockProtein,\
@@ -8,7 +8,6 @@ from tests.views.mocking import createMockExperiment, createMockProtein,\
 from mock import patch
 import json
 import base64
-import math
 from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 
 class SummaryViewIntegrationTests(IntegrationTestCase):
@@ -17,69 +16,6 @@ class SummaryViewIntegrationTests(IntegrationTestCase):
         self.ptmscoutapp.get('/experiments/26')
 
 class SummaryViewsTests(UnitTestCase):
-    
-    def test_get_sequence_profile_with_empty_set(self):
-        result = create_sequence_profile([])
-        
-        self.assertEqual({'total':0, 'frequencies':[]}, result)
-    
-    def test_get_sequence_profile(self):
-        p1 = createMockProtein()
-        
-        m1 = createMockMeasurement(p1.id, 1)
-        m2 = createMockMeasurement(p1.id, 1)
-        
-        pep1 = createMockPeptide(p1.id)
-        pep2 = createMockPeptide(p1.id)
-        pep3 = createMockPeptide(p1.id)
-        
-        mod = createMockPTM()
-        
-        createMockPeptideModification(m1, pep1, mod)
-        createMockPeptideModification(m1, pep2, mod)
-        createMockPeptideModification(m2, pep3, mod)
-        
-        pep1.pep_aligned='LKKVVALyDYMPMNA'
-        pep2.pep_aligned=' SHWQQQsYLDSGIH'
-        pep3.pep_aligned=' ATWTAQsLLGSGIP'
-        
-        mods = [m1,m2]
-        result = create_sequence_profile(mods)
-        
-        en = 19 / (2 * math.log(2) * 3)
-        R21 = math.log(20, 2) + ( (2/3.0) * math.log((2/3.0), 2) + (1/3.0) * math.log((1/3.0), 2) ) - en
-        R111 = math.log(20, 2) + ( (1/3.0) * math.log((1/3.0), 2) + (1/3.0) * math.log((1/3.0), 2) + (1/3.0) * math.log((1/3.0), 2) ) - en
-        
-        expected_peps = []
-        expected_peps.append({'R':R21, 'f':[('-', 2, 0),('L', 1, 2)]})
-        expected_peps.append({'R':R111, 'f':[('A', 1, 0),('K', 1, 1),('S', 1, 2)]})
-        expected_peps.append({'R':R111, 'f':[('H', 1, 0),('K', 1, 1),('T', 1, 2)]})
-        expected_peps.append({'R':R21, 'f':[('W', 2, 0),('V', 1, 2)]})
-        expected_peps.append({'R':R111, 'f':[('Q', 1, 0),('T', 1, 1),('V', 1, 2)]})
-        expected_peps.append({'R':R21, 'f':[('A', 2, 0),('Q', 1, 2)]})
-        expected_peps.append({'R':R21, 'f':[('Q', 2, 0),('L', 1, 2)]})
-        expected_peps.append({'R':R21, 'f':[('S', 2, 0),('Y', 1, 2)]})
-        expected_peps.append({'R':R111, 'f':[('Y', 1, 0),('D', 1, 1),('L',1, 2)]})
-        expected_peps.append({'R':R21, 'f':[('L', 2, 0),('Y', 1, 2)]})
-        expected_peps.append({'R':R111, 'f':[('M', 1, 0),('D', 1, 1),('G',1, 2)]})
-        expected_peps.append({'R':R21, 'f':[('S', 2, 0),('P', 1, 2)]})
-        expected_peps.append({'R':R21, 'f':[('G', 2, 0),('M', 1, 2)]})
-        expected_peps.append({'R':R21, 'f':[('I', 2, 0),('N', 1, 2)]})
-        expected_peps.append({'R':R111, 'f':[('A', 1, 0),('H', 1, 1),('P',1, 2)]})
-        
-        expected = {'total': 3, 'frequencies': expected_peps}
-        
-        self.assertEqual(expected['total'], result['total'])
-        self.assertEqual( len(expected['frequencies']), len(result['frequencies']) )
-        
-        for i in xrange(0, 15):
-            exp = expected['frequencies'][i]
-            res = result['frequencies'][i]
-            
-            self.assertAlmostEqual(exp['R'], res['R'], 6)
-            self.assertEqual(exp['f'], res['f'])        
-        
-    
     def test_summarize_measurements(self):
         p1 = createMockProtein()
         m1 = createMockMeasurement(p1.id, 1)
@@ -114,7 +50,7 @@ class SummaryViewsTests(UnitTestCase):
         self.assertEqual({'homo sapiens': 3}, result['by_species'])
         self.assertEqual({'phosphorylation':3}, result['by_type'])
 
-    @patch('ptmscout.views.experiment.summary_view.create_sequence_profile')
+    @patch('ptmscout.utils.protein_utils.create_sequence_profile')
     @patch('ptmscout.views.experiment.summary_view.summarize_measurements')
     @patch('ptmscout.database.modifications.getMeasuredPeptidesByExperiment')    
     @patch('ptmscout.database.experiment.getExperimentById')

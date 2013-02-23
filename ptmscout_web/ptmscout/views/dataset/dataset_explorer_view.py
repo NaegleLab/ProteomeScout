@@ -1,6 +1,8 @@
 from pyramid.view import view_config
 import json
 import base64
+from ptmscout.database import experiment
+from ptmscout.utils import protein_utils
 
 def get_pfam_metadata(measurements, metadata_fields):
     metadata_fields.update({'Pfam-Domain':set(),'Pfam-Site':set(),'Region':set()})
@@ -83,7 +85,7 @@ def get_modification_metadata(measurements, metadata_fields):
                 metadata_fields['Modification Type'].add(ptm.name)
 
 
-def format_explorer_view(measurements):
+def format_explorer_view(experiment_id, measurements):
     quantitative_fields = set()
     
     accessions = []
@@ -102,14 +104,16 @@ def format_explorer_view(measurements):
     
     for ms in measurements:
         for d in ms.data:
-            quantitative_fields.add("%s:%s:%s" % (d.run, d.type, d.label))
+            quantitative_fields.add(d.formatted_label)
 
     
     for field in metadata_fields.keys():
-        metadata_fields[field] =sorted( list(metadata_fields[field]) )
+        metadata_fields[field] = sorted( list(metadata_fields[field]) )
     
     
-    field_data = {'quantitative_fields': sorted( list(quantitative_fields) ),
+    field_data = {
+                  'experiment_id': experiment_id,
+                  'quantitative_fields': sorted( list(quantitative_fields) ),
                   'accessions': accessions,
                   'scansite_fields': scansite_fields,
                   'scansite_keys': sorted( scansite_fields.keys() ),
@@ -123,6 +127,73 @@ def format_explorer_view(measurements):
 
 
 
+def calculate_feature_enrichment(foreground, background):
+    pass
+
+def parse_condition(condition):
+    pass
+
+def parse_dnf_clause(conditions):
+    def conjunction(operands):
+        def apply_conjunction(ms):
+            for op in operands:
+                if not op(ms):
+                    return False
+            return True
+        
+        return apply_conjunction
+    
+    return conjunction( [ parse_condition(cond) for cond in conditions] )
+
+def parse_query_expression(expression):
+    def passthrough(ms):
+        return True
+    
+    def disjunction(operands):
+        def apply_disjunction(ms):
+            for op in operands:
+                if op(ms):
+                    return True
+            return False
+        
+        return apply_disjunction
+    
+    if expression == 'experiment':
+        return passthrough
+    
+    dnf_clauses = []
+    
+    for op, condition in expression:
+        if op != 'and':
+            dnf_clauses.append([])
+        
+        dnf_clauses[-1].append(condition)
+        
+    disjunction( [ parse_dnf_clause(op) for op in dnf_clauses ] )
+        
+        
+    
+
 @view_config(route_name='compute_subset', renderer='json', permission='private')
 def compute_subset_enrichment(request):
-    return {}
+    query_expression = json.loads(request.body, encoding=request.charset)
+    exp_id = int(query_expression['experiment'])
+    exp = experiment.getExperimentById(exp_id, request.user)
+    
+    foreground_decision_func = parse_query_expression(query_expression['foreground'])
+    background_decision_func = parse_query_expression(query_expression['background'])
+    
+    background = [ms for ms in exp.measurements if background_decision_func(ms)]
+    foreground = [ms for ms in exp.measurements if foreground_decision_func(ms)]
+    
+    enrichment = calculate_feature_enrichment(foreground, background)
+    
+    foreground_seqlogo = protein_utils.create_sequence_profile(foreground)
+    background_seqlogo = protein_utils.create_sequence_profile(background)
+    
+    return {'experiment': exp_id,
+            'name': query_expression['name'],
+            'background': background_seqlogo,
+            'foreground': foreground_seqlogo,
+            'enrichment': enrichment
+            }

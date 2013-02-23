@@ -4,9 +4,9 @@ from ptmscout.config import settings as config
 from ptmscout.database.permissions import Permission
 from sqlalchemy.schema import ForeignKey, Table
 from sqlalchemy.types import Float, Enum, DateTime
-from sqlalchemy.sql.expression import null, or_, and_
+from sqlalchemy.sql.expression import  or_, and_
 import datetime
-from sqlalchemy.orm import relationship, deferred
+from sqlalchemy.orm import relationship
 import logging
 
 log = logging.getLogger('ptmscout')
@@ -53,9 +53,15 @@ class ExperimentData(Base):
     
     MS_id = Column(Integer(10), ForeignKey('MS.id'))
     MS = relationship("MeasuredPeptide")
+        
+    def __format_name(self):
+        return "%s:%s:%s" % (self.run, self.type, self.label)
+    
+    formatted_label = property(__format_name)
     
     def save(self):
         DBSession.add(self)
+    
 
 
 class ExperimentProgress(Base):

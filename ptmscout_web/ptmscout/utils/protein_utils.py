@@ -1,4 +1,51 @@
 import re
+import math
+
+def create_sequence_profile(measurements):
+    peptides = [p.peptide for m in measurements for p in m.peptides]
+
+    frequencies = [0]*15
+    N = float(len(peptides))
+    
+    for i in xrange(0, 15):
+        frequencies[i] = {}
+       
+    for pep in peptides:
+        sequence = pep.pep_aligned.upper()
+        
+        for i, s in enumerate(sequence):
+            if s == ' ':
+                s = '-'
+            val = frequencies[i].get(s, 0)
+            frequencies[i][s] = val+1
+        
+    seqlogo = {'total':len(peptides), 'frequencies':[]}
+    
+    if len(peptides) == 0:
+        return seqlogo
+    
+    en = 19 / (2 * math.log(2) * len(peptides)) 
+    
+    for i in xrange(0, 15):
+        Ri = math.log(20, 2)
+        
+        for s in frequencies[i]:
+            f = frequencies[i][s] / N
+            Ri += f * math.log(f, 2)
+        
+        Ri -= en
+        
+        sorted_freqs = sorted([ (k, v) for (k,v) in frequencies[i].items() ], key=lambda item: -item[1])
+        final = []
+        
+        d=0
+        for k,v in sorted_freqs:
+            final.append((k, v, d))
+            d += v
+                
+        seqlogo['frequencies'].append({'R':Ri, 'f':final})
+    
+    return seqlogo
 
 def get_accession_type(acc):
     acc_type = None

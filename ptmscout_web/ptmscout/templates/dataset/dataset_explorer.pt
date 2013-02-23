@@ -47,7 +47,7 @@
 		<div class="filter-set">
 			<fieldset id="filter-conditions">
 				<legend>Subset Filter Conditions</legend>
-				<div> <span class="condition-title">Background:</span> <select id="background-select"><option value="all">Entire Experiment</option></select></div>
+				<div> <span class="condition-title">Background:</span> <select id="background-select"><option value="experiment">Entire Experiment</option></select></div>
 			</fieldset>
 			<button id="add-condition">Add Condition</button>
 			<button id="remove-condition">Remove Condition</button>
