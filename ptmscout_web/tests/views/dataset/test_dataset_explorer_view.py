@@ -21,19 +21,26 @@ class TestDatasetExplorerView(UnitTestCase):
         
         selector = dataset_explorer_view.parse_query_expression(foreground_query)
 
-        d1 = createMockDataItem('run1', 1, 'data', '0', 'time(sec)', '0.4')
-        d2 = createMockDataItem('run1', 2, 'data', '1', 'time(sec)', '0.1')
-        d3 = createMockDataItem('run1', 3, 'data', '5', 'time(sec)', '0.01')
-        d4 = createMockDataItem('run1', 4, 'stddev', '1', 'time(sec)', '0.001')
-        d5 = createMockDataItem('run1', 5, 'stddev', '5', 'time(sec)', '0.002')
+        d1 = createMockDataItem('run1', 1, 'data', '0', 'time(sec)', 0.4)
+        d2 = createMockDataItem('run1', 2, 'data', '1', 'time(sec)', 0.1)
+        d3 = createMockDataItem('run1', 3, 'data', '5', 'time(sec)', 0.01)
+        d4 = createMockDataItem('run1', 4, 'stddev', '1', 'time(sec)', 0.001)
+        d5 = createMockDataItem('run1', 5, 'stddev', '5', 'time(sec)', 0.002)
         passing_series = [d1,d2,d3,d4,d5]
         
-        d1 = createMockDataItem('run1', 1, 'data', '0', 'time(sec)', '0.1')
-        d2 = createMockDataItem('run1', 2, 'data', '1', 'time(sec)', '0.2')
-        d3 = createMockDataItem('run1', 3, 'data', '5', 'time(sec)', '0.5')
-        d4 = createMockDataItem('run1', 4, 'stddev', '1', 'time(sec)', '0.01')
-        d5 = createMockDataItem('run1', 5, 'stddev', '5', 'time(sec)', '0.002')
+        d1 = createMockDataItem('run1', 1, 'data', '0', 'time(sec)', 0.1)
+        d2 = createMockDataItem('run1', 2, 'data', '1', 'time(sec)', 0.2)
+        d3 = createMockDataItem('run1', 3, 'data', '5', 'time(sec)', 0.5)
+        d4 = createMockDataItem('run1', 4, 'stddev', '1', 'time(sec)', 0.01)
+        d5 = createMockDataItem('run1', 5, 'stddev', '5', 'time(sec)', 0.002)
         failing_series = [d1,d2,d3,d4,d5]
+        
+        d1 = createMockDataItem('run1', 1, 'data', '0', 'time(sec)', 0.1)
+        d2 = createMockDataItem('run1', 2, 'data', '1', 'time(sec)', 0.2)
+        d3 = createMockDataItem('run1', 3, 'data', '5', 'time(sec)', None)
+        d4 = createMockDataItem('run1', 4, 'stddev', '1', 'time(sec)', 0.01)
+        d5 = createMockDataItem('run1', 5, 'stddev', '5', 'time(sec)', 0.002)
+        missing_values_series = [d1,d2,d3,d4,d5]
          
         
         ptm1 = createMockPTM(name='phosphoserine')
@@ -115,9 +122,21 @@ class TestDatasetExplorerView(UnitTestCase):
         createMockPeptideModification(ms8, pep, ptm2)
         ms8.data = passing_series
         
+        
+        ms9 = createMockMeasurement(p2.id, 101)
+        ms9.protein = p2
+        pep = createMockPeptide(p2.id, '31', 'S')
+        scansite = createMockScansite(pep.id)
+        scansite.value = 'PDGFRB_Y_kin'
+        scansite.source = 'scansite_kinase'
+        scansite.score = 0.01
+        pep.predictions = [scansite]
+        createMockPeptideModification(ms9, pep, ptm1)
+        ms9.data = missing_values_series
+        
         result = [ ms for ms in [ms1, ms2, ms3, ms4, ms5, ms6, ms7, ms8] if selector(ms) ]
         
-        self.assertEqual([ms1, ms5], result)
+        self.assertEqual([ms2, ms5], result)
         
     
     @patch('ptmscout.views.dataset.dataset_explorer_view.calculate_feature_enrichment')
@@ -169,6 +188,25 @@ class TestDatasetExplorerView(UnitTestCase):
         self.assertEqual("Subset 1", result['name'])
         
         
-#class IntegrationTestDatasetExplorerView(IntegrationTestCase):
-#    def test_view_integration(self):
-#        self.ptmscoutapp.get("/webservice/subsets", status=200)
+class IntegrationTestDatasetExplorerView(IntegrationTestCase):
+    def test_view_integration(self):
+        exp_id = 28
+        foreground_query = [
+               ['nop', [ 'metadata', 'GO-Biological Process', 'eq', 'GO:0000187: activation of MAPK activity' ]]
+            ]
+        
+        query_expression = {
+                            'experiment': exp_id,
+                            'type': 'create',
+                            'name': 'Subset 1',
+                            'background': 'experiment',
+                            'foreground': foreground_query}
+        
+        result = self.ptmscoutapp.post_json("/webservice/subsets", params=query_expression, status=200)
+        result = result.json
+        
+        self.assertEqual(4, result['protein_cnt'])
+        self.assertEqual(7, result['peptide_cnt'])
+        self.assertEqual('Subset 1', result['name'])
+        self.assertEqual(exp_id, result['experiment'])
+        

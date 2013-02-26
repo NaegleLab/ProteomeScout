@@ -4,7 +4,7 @@ function QuantitativeSelector(parent_element, field_values) {
 
 	this.field_values = field_values;
 	this.compare_values = {'eq':"=", 'neq':"\u2260", 'gt':">", 'geq':"\u2265", 'lt':"<", 'leq':"\u2264"};
-	this.oper_values = {'plus':"+", 'minus':"-", 'multiply':"x", 'divide':"/"}
+	this.oper_values = {'add':"+", 'sub':"-", 'mul':"x", 'div':"/"}
 	
 	this.selectors = [];
 	this.oper_state = 'LHS';
