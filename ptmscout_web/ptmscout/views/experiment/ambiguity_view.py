@@ -141,7 +141,7 @@ def experiment_ambiguity_view(request):
 
         if errors == []:
             session_id = prepopulate_upload_session(exp, request.user, form_schema, defaults)
-            raise HTTPFound('%s/upload/%d' % (request.application_url, session_id))
+            return HTTPFound('%s/upload/%d' % (request.application_url, session_id))
 
     return {'errors': errors,
             'experiment':exp,

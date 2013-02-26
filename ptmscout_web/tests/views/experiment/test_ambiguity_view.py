@@ -142,12 +142,8 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
         patch_createSession.return_value = session_id
         validator.validate.return_value = []
 
-        try:
-            result = ambiguity_view.experiment_ambiguity_view(request)
-        except HTTPFound, f:
-            self.assertEqual("%s/upload/%d" % (request.application_url, session_id), f.location)
-        else:
-            self.fail("Expected HTTPFound")
+        f = ambiguity_view.experiment_ambiguity_view(request)
+        self.assertEqual("%s/upload/%d" % (request.application_url, session_id), f.location)
 
         patch_createSession.assert_called_once_with(exp, request.user, schema, False)
         patch_getExperiment.assert_called_once_with(1323, user=request.user)
