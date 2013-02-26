@@ -272,6 +272,21 @@ def createMockPeptide(pid, site_pos=None, site_type=None):
     
     return mock
 
+def createMockDataItem(run, priority, dtype, label, units, value):
+    mock = Mock(spec=ExperimentData)
+    
+    mock.id = random.randint(0, 100000)
+    
+    mock.type = dtype
+    mock.units= units
+    mock.formatted_label = "%s:%s:%s" % (run, dtype, label)
+    mock.run = run
+    mock.label = label
+    
+    mock.priority = priority
+    mock.value = value
+
+
 def createMockData(num, run, mod_id):
     rval = []
     
