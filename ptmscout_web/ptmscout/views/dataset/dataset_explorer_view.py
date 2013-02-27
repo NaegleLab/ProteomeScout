@@ -125,13 +125,238 @@ def format_explorer_view(experiment_id, measurements):
     
     return {'field_data': base64.b64encode( json.dumps(field_data) )}
 
-
+class QueryError(Exception):
+    pass
 
 def calculate_feature_enrichment(foreground, background):
     pass
 
-def parse_condition(condition):
+
+def create_protein_filter(filter_value):
+    def protein_filter(ms):
+        return ms.protein.hasAccession(filter_value) or \
+                ms.protein.name == filter_value or \
+                ms.protein.acc_gene == filter_value or \
+                ms.protein.locus == filter_value
+    return protein_filter
+
+
+def create_metadata_filter(field, op, value):
+    def op_apply_wrapper(filter_func):
+        def op_apply(ms):
+            result = reduce(bool.__or__, filter_func(ms), False)
+            return (op == 'eq' and result) or \
+                    (op == 'neq' and not result)
+                    
+        return op_apply
+    
+    @op_apply_wrapper
+    def modtype_filter(ms):
+        return [ modpep.modification.name.lower() == value.lower() for modpep in ms.peptides ]
+    
+    @op_apply_wrapper    
+    def modsite_filter(ms):
+        return [ modpep.peptide.site_type == value for modpep in ms.peptides ]
+    
+    @op_apply_wrapper
+    def GO_filter(ms):
+        return [ value == go_term.GO_term.fullName() for go_term in ms.protein.GO_terms ]
+
+    @op_apply_wrapper
+    def pfam_domain_filter(ms):
+        return [ value.lower() == domain.label.lower() for domain in ms.protein.domains ]
+    
+    @op_apply_wrapper
+    def pfam_site_filter(ms):
+        return [ None != modpep.peptide.protein_domain.lower() and modpep.peptide.protein_domain.label.lower() == value.lower() for modpep in ms.peptides ]
+    
+    @op_apply_wrapper
+    def region_filter(ms):
+        return [ region.label.lower() == value.lower() and region.hasSite(modpep.peptide.site_pos) for region in ms.protein.regions for modpep in ms.peptides ]
+                
+    if field == 'Modification Type':
+        return modtype_filter
+    if field == 'Modified Residue':
+        return modsite_filter
+    if field.find('GO-') == 0:
+        return GO_filter
+    if field == 'Pfam-Domain':
+        return pfam_domain_filter
+    if field == 'Pfam-Site':
+        return pfam_site_filter
+    if field == 'Region':
+        return region_filter
+    
+    raise QueryError("Unrecognized metadata filter field '%s'" % (field))
+
+def create_scansite_filter(field, op, value, stringency):
+    try:
+        stringency = float(stringency)
+    except:
+        raise QueryError("Stringency filter must be numeric value")
+    
+    def op_apply_wrapper(filter_func):
+        def op_apply(ms):
+            result = reduce(bool.__or__, filter_func(ms), False)
+            return (op == 'eq' and result) or \
+                    (op == 'neq' and not result)
+        return op_apply
+    
+    @op_apply_wrapper
+    def kinase_filter(ms):
+        return [prediction.source == 'scansite_kinase' and prediction.value == value and prediction.score < stringency 
+                 for modpep in ms.peptides for prediction in modpep.peptide.predictions]
+    
+    @op_apply_wrapper
+    def bind_filter(ms):
+        return [prediction.source == 'scansite_bind' and prediction.value == value and prediction.score < stringency 
+                 for modpep in ms.peptides for prediction in modpep.peptide.predictions]
+
+    
+    if field=='Scansite-Kinase':
+        return kinase_filter
+    if field=='Scansite-Bind':
+        return bind_filter
+    
+    raise QueryError("Unrecognized scansite filter field '%s'" % (field))
+
+def create_sequence_filter(sequence):
+    def seq_filter(ms):
+        return reduce(bool.__or__, [modpep.peptide.pep_aligned.upper() == sequence.upper() for modpep in ms.peptides ])
+
+    return seq_filter
+
+def find_in(array, checkset):
+        return [i for i, item in enumerate(array) if item in checkset]
+
+def readable_expression(expression):
+    readable_op_map = {'eq':"=", 'neq':"\u2260", 'gt':">", 'geq':"\u2265", 'lt':"<", 'leq':"\u2264", 'add':"+", 'sub':"-", 'mul':"x", 'div':"/"}
+    return [ readable_op_map[term] if term in readable_op_map else term 
+                for term in expression ]
+
+class MissingMeasurementError(Exception):
     pass
+
+def parse_value(value):
+    try:
+        num = float(value)
+        def get_data(ms):
+                return num
+        return get_data
+    except:
+        def get_data(ms):
+            for d in ms.data:
+                if d.formatted_label == value:
+                    if d.value == None:
+                        raise MissingMeasurementError()
+                    return d.value
+            
+            raise QueryError("No such data label: '%s'" % (value))
+        return get_data
+
+
+def parse_arthmetic_expression(expression):
+    if len(expression) == 1:
+        return parse_value(expression[0])
+    elif len(expression) == 3:
+        v1 = parse_value(expression[0])
+        op = expression[1]
+        v2 = parse_value(expression[2])
+        
+        def adder(ms):
+            return v1(ms) + v2(ms)
+        def suber(ms):
+            return v1(ms) - v2(ms)
+        def muler(ms):
+            return v1(ms) * v2(ms)
+        def diver(ms):
+            return v1(ms) / v2(ms)
+        
+        if op == 'add':
+            return adder
+        if op == 'sub':
+            return suber
+        if op == 'mul':
+            return muler
+        if op == 'div':
+            return diver
+        
+        raise QueryError("Invalid operator type: '%s'" % (op))
+        
+
+def create_quantitative_filter(expression):
+    comparison_operators = set([ 'eq', 'neq', 'gt', 'lt', 'geq', 'leq' ])
+    
+    comp_index = find_in(expression, comparison_operators)
+    if len(comp_index) == 0:
+        raise QueryError("No comparison found in quantitative expression: %s" % (readable_expression(expression)))
+    comp_index = comp_index[0]
+    
+    LHS = expression[:comp_index]
+    RHS = expression[comp_index+1:]
+    
+    LHS_func = parse_arthmetic_expression(LHS)
+    RHS_func = parse_arthmetic_expression(RHS)
+    
+    def catch_wrapper(func):
+        def catcher(ms):
+            try:
+                return func(ms)
+            except MissingMeasurementError:
+                return False
+        return catcher
+    
+    @catch_wrapper
+    def eq_func(ms):
+        return LHS_func(ms) == RHS_func(ms)
+    
+    @catch_wrapper
+    def neq_func(ms):
+        return LHS_func(ms) != RHS_func(ms)
+    
+    @catch_wrapper
+    def gt_func(ms):
+        return LHS_func(ms) > RHS_func(ms)
+    
+    @catch_wrapper
+    def lt_func(ms):
+        return LHS_func(ms) < RHS_func(ms)
+    
+    @catch_wrapper
+    def geq_func(ms):
+        return LHS_func(ms) >= RHS_func(ms)
+    
+    @catch_wrapper
+    def leq_func(ms):
+        return LHS_func(ms) <= RHS_func(ms)
+    
+    if expression[comp_index] == 'eq':
+        return eq_func
+    if expression[comp_index] == 'neq':
+        return neq_func
+    if expression[comp_index] == 'gt':
+        return gt_func
+    if expression[comp_index] == 'lt':
+        return lt_func
+    if expression[comp_index] == 'geq':
+        return geq_func
+    if expression[comp_index] == 'leq':
+        return leq_func
+    
+    raise QueryError("Invalid comparison operator '%s'" % ( expression[comp_index] ))
+
+def parse_condition(condition):
+    if condition[0] == 'protein':
+        return create_protein_filter(condition[1])
+    if condition[0] == 'metadata':
+        return create_metadata_filter(*tuple(condition[1:]))
+    if condition[0] == 'scansite':
+        return create_scansite_filter(*tuple(condition[1:]))
+    if condition[0] == 'sequence':
+        return create_sequence_filter(condition[1])
+    if condition[0] == 'quantitative':
+        return create_quantitative_filter(condition[1:])
+
 
 def parse_dnf_clause(conditions):
     def conjunction(operands):
@@ -169,10 +394,29 @@ def parse_query_expression(expression):
         
         dnf_clauses[-1].append(condition)
         
-    disjunction( [ parse_dnf_clause(op) for op in dnf_clauses ] )
-        
-        
+    return disjunction( [ parse_dnf_clause(op) for op in dnf_clauses ] )
+
+
+def format_measurement_data(measurements):
+    experiment_data = []
     
+    for ms in measurements:
+        series_label = '%s:%s' % (ms.protein.getGeneName(), ','.join([ modpep.peptide.getName() for modpep in ms.peptides ]))
+        run_labels = {}
+        run_units = {}
+        
+        for d in ms.data:
+            datapts = run_labels.get(d.run, [])
+            run_units[d.run] = d.units
+            
+            datapts.append( (d.priority, d.label, d.value, d.type) )
+            run_labels[d.run] = datapts
+        
+        for run in run_labels.keys():
+            experiment_data.append({'name':run, 'units': run_units[run], 'label':series_label, 'series': [(l,v,t) for _,l,v,t in  sorted( run_labels[run] )]})
+        
+    return experiment_data
+
 
 @view_config(route_name='compute_subset', renderer='json', permission='private')
 def compute_subset_enrichment(request):
@@ -185,15 +429,32 @@ def compute_subset_enrichment(request):
     
     background = [ms for ms in exp.measurements if background_decision_func(ms)]
     foreground = [ms for ms in exp.measurements if foreground_decision_func(ms)]
-    
     enrichment = calculate_feature_enrichment(foreground, background)
     
-    foreground_seqlogo = protein_utils.create_sequence_profile(foreground)
     background_seqlogo = protein_utils.create_sequence_profile(background)
+    background_protein_cnt = len(set( [ms.protein.id for ms in background] ))
+    background_peptide_cnt = len( background )
+    
+    foreground_seqlogo = protein_utils.create_sequence_profile(foreground)
+    foreground_protein_cnt = len(set( [ms.protein.id for ms in foreground] ))
+    foreground_peptide_cnt = len( foreground )
+    
+    measurement_data = format_measurement_data(foreground)
     
     return {'experiment': exp_id,
             'name': query_expression['name'],
-            'background': background_seqlogo,
-            'foreground': foreground_seqlogo,
+            'background': {
+                           'query': query_expression['background'],
+                           'proteins': background_protein_cnt,
+                           'peptides': background_peptide_cnt,
+                           'seqlogo':background_seqlogo
+                           },
+            'foreground': {
+                           'query': query_expression['foreground'],
+                           'proteins': foreground_protein_cnt,
+                           'peptides': foreground_peptide_cnt,
+                           'seqlogo': foreground_seqlogo
+                           },
+            'measurements': measurement_data,
             'enrichment': enrichment
-            }
+        }

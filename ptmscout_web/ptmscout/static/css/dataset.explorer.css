@@ -22,6 +22,7 @@
 	float:left;
 	width:75px;
 	text-align:left;
+	font-weight:bold;
 }
 
 .condition-title {
@@ -29,4 +30,14 @@
 	width:80px;
 	text-align:left;
 	font-weight:bold;
+}
+
+.condition-op {
+	margin-left:10px;
+	margin-right:10px;
+}
+
+.condition-arg {
+	margin-left:5px;
+	margin-right:5px;
 }

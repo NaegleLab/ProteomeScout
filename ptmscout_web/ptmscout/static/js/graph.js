@@ -1,11 +1,11 @@
 
 
 function addLegend(graph, legendEntries, xpos, ypos, width, marker) {
-	h = 20;
+	var h = 20;
 	
-	height = legendEntries.length * h;
+	var height = legendEntries.length * h;
 	
-	legend = graph.append("g")
+	var legend = graph.append("g")
 				.attr("class", "legend")
 				.attr("transform", "translate({0},{1})".format( xpos, ypos ));
 	
@@ -65,9 +65,9 @@ function addTimeSeries(graph, name, pts, xaxis, yaxis, color) {
 			.x(function(d) { return xaxis( d.x ) } )
 			.y(function(d) { return yaxis( d.y ) } )
 
-    non_null = [];
-    consecutive_runs = [];
-    crun = [];
+    var non_null = [];
+    var consecutive_runs = [];
+    var crun = [];
     for(var i in pts){
         if(!isNaN(pts[i].y)){
             crun.push(pts[i]);
@@ -81,23 +81,24 @@ function addTimeSeries(graph, name, pts, xaxis, yaxis, color) {
     if(crun.length > 0)
         consecutive_runs.push(crun);
 
-    console.log(pts);
-    console.log(consecutive_runs);
-    console.log(non_null);
+//    console.log(pts);
+//    console.log(consecutive_runs);
+//    console.log(non_null);
 
-	graph.selectAll('circle.'+name)
+    var clsname = name.replace(":","").replace(",","");
+	graph.selectAll('circle.'+clsname)
 		.data(non_null)
 	.enter().append('circle')
-		.attr("class", "point")
+		.attr("class", "point "+clsname)
 		.attr("r", 2)
 		.attr("cx", function(d) { return xaxis( parseFloat(d.x) ) })
 		.attr("cy", function(d) { return yaxis( parseFloat(d.y) ) })
 		.style("stroke", color);
 	
-	graph.selectAll('path.'+name)
+	graph.selectAll('path.'+clsname)
 		.data(consecutive_runs)
 	.enter().append("path")
-		.attr("class", "series")
+		.attr("class", "series "+clsname)
     	.attr("d", line)
     	.style("stroke", color);
 }
@@ -108,22 +109,23 @@ function addBarSeries(graph, name, pts, xaxis, yaxis, color, i, num) {
 	if(typeof(num) === 'undefined')
 		num = 1;
 
-    non_null = [];
+    var non_null = [];
     for(var i in pts){
         if(!isNaN(pts[i].y)){
             non_null.push(pts[i]);
         }
     }
 	
-	xsize = Array.max(xaxis.range()) - Array.min(xaxis.range());
-	barw = xsize / (2 * xaxis.domain().length) - 5;
+	var xsize = Array.max(xaxis.range()) - Array.min(xaxis.range());
+	var barw = xsize / (2 * xaxis.domain().length) - 5;
 	
-	offset = i * 2 * barw / num;
+	var offset = i * 2 * barw / num;
 	
-	graph.selectAll('rect.'+name)
+	var clsname = name.replace(":","").replace(",","");
+	graph.selectAll('rect.'+clsname)
 			.data(non_null)
 		.enter().append('rect')
-			.attr("class", "bar")
+			.attr("class", "bar "+clsname)
 			.attr("x", function(d) { return xaxis(d.x) - barw + offset })
 			.attr("y", function(d) { return yaxis(d.y) })
 			.attr("width", function(d) { return 2 * (barw / num) })
@@ -137,19 +139,20 @@ function addErrorBars(graph, name, errorbars, xaxis, yaxis, color, i, num) {
 	if(typeof(num) === 'undefined')
 		num = 1;
 	
-	offset = 0;
+	var offset = 0;
 	
 	if(num > 1){
-		xsize = Array.max(xaxis.range()) - Array.min(xaxis.range());
-		barw = xsize / (2 * xaxis.domain().length) - 5;
+		var xsize = Array.max(xaxis.range()) - Array.min(xaxis.range());
+		var barw = xsize / (2 * xaxis.domain().length) - 5;
 		offset = i * 2 * barw / num + barw / num - barw;
 	}
 	
-	ebar = 
-		graph.selectAll('g.'+name)
+	var clsname = name.replace(":","").replace(",","");
+	var ebar = 
+		graph.selectAll('g.'+clsname)
 				.data(errorbars)
 			.enter().append("g")
-				.attr("class", "errorbar")
+				.attr("class", "errorbar "+clsname)
 				.attr("transform", function(d) { return "translate({0},{1})".format(xaxis( d.x ), yaxis( d.y )) });
 	
 	ebar.append("line")
@@ -180,8 +183,8 @@ function addErrorBars(graph, name, errorbars, xaxis, yaxis, color, i, num) {
 
 function addAxes(graph, title, xlabels, ylabels, xaxis, yaxis, rotate) {
 	
-	xrange = xaxis.range()
-	yrange = yaxis.range()
+	var xrange = xaxis.range()
+	var yrange = yaxis.range()
 	
 	graph.append('svg:line')
 		.attr('class', 'axis')
@@ -198,7 +201,7 @@ function addAxes(graph, title, xlabels, ylabels, xaxis, yaxis, rotate) {
 		.attr('x2', Array.max(xrange) );
 	
 
-	ticks = 
+	var ticks = 
 		graph.selectAll('.ytick')
 			.data(ylabels)
 		.enter().append('svg:g')
@@ -230,7 +233,8 @@ function addAxes(graph, title, xlabels, ylabels, xaxis, yaxis, rotate) {
 		.attr('x1', 0)
 		.attr('x2', 0);
 	
-	titleoffset = 30
+	var titleoffset = 30;
+	
 	if(rotate){
 		ticks.append('svg:g')
 			.attr("transform", "rotate(90)")
@@ -250,7 +254,7 @@ function addAxes(graph, title, xlabels, ylabels, xaxis, yaxis, rotate) {
 			.attr('dx', 4);
 	}
 	
-	xm = ( Array.max(xrange) + Array.min(xrange) ) / 2
+	var xm = ( Array.max(xrange) + Array.min(xrange) ) / 2
 	graph.append('svg:text')
 		.text(title)
 		.attr('class', "label")
@@ -260,7 +264,7 @@ function addAxes(graph, title, xlabels, ylabels, xaxis, yaxis, rotate) {
 }
 
 function createGraph(parent, title, w, h, margin) {
-	graph = 
+	var graph = 
 		parent 
 			.append("svg")
 			.attr("class", "graph")

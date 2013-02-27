@@ -285,6 +285,8 @@ def createMockDataItem(run, priority, dtype, label, units, value):
     
     mock.priority = priority
     mock.value = value
+    
+    return mock
 
 
 def createMockData(num, run, mod_id):
