@@ -1,4 +1,20 @@
 import time
+import os
+
+def pushdir(new_dir):
+    def wrap(fn):
+        def push_stack(*args, **kwargs):
+            cwd = os.getcwd()
+            os.chdir(new_dir)
+            result = fn(*args, **kwargs)
+            os.chdir(cwd)
+            
+            return result
+        
+        push_stack.__name__ = fn.__name__
+        return push_stack
+    
+    return wrap
 
 def rate_limit(rate=None):
     def wrap(fn):

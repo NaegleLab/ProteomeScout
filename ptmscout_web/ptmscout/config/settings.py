@@ -1,3 +1,5 @@
+import os
+
 documentationUrl="http://ptmscout.mit.edu/docs/index.php?"
 adminEmail = "ptmscout@seas.wustl.edu"
 automailerEmail = "automailer@naegledev.seas.wustl.edu"
@@ -22,6 +24,7 @@ ptmscout_scratch_space = "/tmp"
 experiment_data_file_path = "data/experiments"
 pfam_map_file_path = "ptmworker/helpers/pfam.map"
 ptmscout_path = "/data/ptmscout/ptmscout_web"
+motif_script_path = os.path.join('scripts', 'motif')
 
 email_regex = "[a-z0-9\.\-\_]+@[a-z0-9\.\-\_]+\.([a-z]+)$"
 
