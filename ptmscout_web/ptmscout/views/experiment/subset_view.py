@@ -5,7 +5,7 @@ from ptmscout.views.dataset import dataset_explorer_view
 
 @view_config(route_name='experiment_subset', renderer='ptmscout:templates/experiments/experiment_subset.pt', permission='private')
 def view_experiment_subset(request):
-    experiment_id = request.matchdict['id']
+    experiment_id = int(request.matchdict['id'])
     ptm_exp = experiment.getExperimentById(experiment_id, request.user)
 
     
