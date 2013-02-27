@@ -24,9 +24,14 @@ $(document).ready(function() {
 				ndata.push(data[i])
 			}
 			
-			var div = d3.select(this).append('div');
-			createPieChart(div, ndata, 450, 400);
-			addExport(div, d3.select(this));
+			var div = d3.select(this)
+							.append('div')
+								.style('display', "inline-block")
+								.style('position', "relative");
+			var span = div.append('span');
+			
+			createPieChart(span, ndata, 450, 400);
+			addExport(span, div);
 			num+=1;
 		});
 });

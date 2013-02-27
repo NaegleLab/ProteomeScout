@@ -3,13 +3,16 @@ function createSeqlogo(node, data, w, h){
 	if(data.frequencies.length == 0)
 		return;
 	
-	chartContainer = 
-		node
-			.append('div');
+	container = 
+		node.append('div')
+			.style('position', "relative")
+			.style('display', "inline-block");
+	
+	chartContainer =
+		container.append('span');
 	
 	chart =
-		chartContainer
-			.append("svg")
+		chartContainer.append("svg")
 			.attr("class", "seqlogo")
 			.attr("width", w)
 			.attr("height", h+20);
@@ -44,5 +47,5 @@ function createSeqlogo(node, data, w, h){
 	    .style("fill", function(d, i) { return colors(d[0]) })
 	    .text(function(d) { return d[0] });
     
-    addExport(chartContainer, node);
+    addExport(chartContainer, container);
 }

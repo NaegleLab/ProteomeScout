@@ -124,3 +124,9 @@
 .GO circle.child {
   pointer-events: none;
 }
+
+.absolute-lr {
+	position: absolute;
+	bottom: -15px;
+	right: 0px;
+}

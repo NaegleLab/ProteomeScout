@@ -29,8 +29,7 @@ var export_num = 0;
 
 function addExport(parent, container) {
 	var svg = 
-		parent
-			.select('svg')
+		parent.select('svg')
 			.attr('version', "1.1")
 			.attr('xmlns', "http://www.w3.org/2000/svg");
 	
@@ -38,9 +37,10 @@ function addExport(parent, container) {
 	export_num++;
 	
 	container
+		.style('text-align', "right")
 		.append('div')
-		.style("text-align", "right")
+			.attr('class', 'absolute-lr')
 			.append('button')
-			.text("Export SVG")
-			.on('click', function() { exportSVG(parent) });
+				.text("Export SVG")
+				.on('click', function() { exportSVG(parent) });
 }

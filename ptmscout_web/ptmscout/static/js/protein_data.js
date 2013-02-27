@@ -99,7 +99,12 @@ function createTimeSeriesGraph(experiment_data, run) {
 	var lwidth = 125;
 	var colors = d3.scale.category20();
 	
-	var container = d3.select(experiment_data).select(".chart").append("span");
+	var container = d3.select(experiment_data)
+						.select(".chart")
+							.append("div")
+								.style('display', "inline-block")
+								.style('position', "relative");
+	
 	var parent = container.append("span");
 	var graph = createGraph(parent, run.name, w, h, margin);
 	
@@ -170,7 +175,13 @@ function createBarGraph(experiment_data, run) {
 	if(w > 750)
 		w = 750;
 	
-	var parent = d3.select(experiment_data).select(".chart");
+	var container = d3.select(experiment_data)
+						.select(".chart")
+							.append("div")
+								.style('display', "inline-block")
+								.style('position', "relative");
+	
+	var parent = container.append("span");
 	var graph = createGraph(parent, run.name, w, h, margin);
 	
 	
@@ -206,5 +217,5 @@ function createBarGraph(experiment_data, run) {
 	
 	addAxes(graph, run.axis, xvals, yaxis.ticks(7), xaxis, yaxis, true);
 	addLegend(graph, legendEntries, w-lwidth, margin, lwidth, "square");
-	addExport(parent, d3.select(experiment_data));
+	addExport(parent, container);
 }
