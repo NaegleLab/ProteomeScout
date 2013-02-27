@@ -395,7 +395,28 @@ def parse_query_expression(expression):
         dnf_clauses[-1].append(condition)
         
     return disjunction( [ parse_dnf_clause(op) for op in dnf_clauses ] )
+
+
+def format_measurement_data(measurements):
+    experiment_data = []
     
+    for ms in measurements:
+        series_label = '%s:%s' % (ms.protein.getGeneName(), ','.join([ modpep.peptide.getName() for modpep in ms.peptides ]))
+        run_labels = {}
+        run_units = {}
+        
+        for d in ms.data:
+            datapts = run_labels.get(d.run, [])
+            run_units[d.run] = d.units
+            
+            datapts.append( (d.priority, d.label, d.value, d.type) )
+            run_labels[d.run] = datapts
+        
+        for run in run_labels.keys():
+            experiment_data.append({'name':run, 'units': run_units[run], 'label':series_label, 'series': [(l,v,t) for _,l,v,t in  sorted( run_labels[run] )]})
+        
+    return experiment_data
+
 
 @view_config(route_name='compute_subset', renderer='json', permission='private')
 def compute_subset_enrichment(request):
@@ -408,18 +429,32 @@ def compute_subset_enrichment(request):
     
     background = [ms for ms in exp.measurements if background_decision_func(ms)]
     foreground = [ms for ms in exp.measurements if foreground_decision_func(ms)]
-    protein_cnt = len(set( [ms.protein.id for ms in foreground] ))
     enrichment = calculate_feature_enrichment(foreground, background)
     
+    background_seqlogo = protein_utils.create_sequence_profile(background)
+    background_protein_cnt = len(set( [ms.protein.id for ms in background] ))
+    background_peptide_cnt = len( background )
     
     foreground_seqlogo = protein_utils.create_sequence_profile(foreground)
-    background_seqlogo = protein_utils.create_sequence_profile(background)
+    foreground_protein_cnt = len(set( [ms.protein.id for ms in foreground] ))
+    foreground_peptide_cnt = len( foreground )
+    
+    measurement_data = format_measurement_data(foreground)
     
     return {'experiment': exp_id,
             'name': query_expression['name'],
-            'background': background_seqlogo,
-            'foreground': foreground_seqlogo,
-            'enrichment': enrichment,
-            'protein_cnt': protein_cnt,
-            'peptide_cnt': len(foreground)
-            }
+            'background': {
+                           'query': query_expression['background'],
+                           'proteins': background_protein_cnt,
+                           'peptides': background_peptide_cnt,
+                           'seqlogo':background_seqlogo
+                           },
+            'foreground': {
+                           'query': query_expression['foreground'],
+                           'proteins': foreground_protein_cnt,
+                           'peptides': foreground_peptide_cnt,
+                           'seqlogo': foreground_seqlogo
+                           },
+            'measurements': measurement_data,
+            'enrichment': enrichment
+        }

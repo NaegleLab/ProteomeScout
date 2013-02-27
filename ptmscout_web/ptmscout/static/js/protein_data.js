@@ -4,17 +4,17 @@ $(document).ready( function() {
 });
 
 function processDataPoint(dp, points, stddev) {
-	csv = d3.select(dp).text();
-	columns = csv.split(",");
+	var csv = d3.select(dp).text();
+	var columns = csv.split(",");
 	
-	x = columns[0];
-	y = columns[1];
-	type = columns[2];
+	var x = columns[0];
+	var y = columns[1];
+	var type = columns[2];
 	
 	if(type == "stddev"){
-		ypos = -1;
+		var ypos = -1;
 		
-		for(j = 0; j < points.length; j++) {
+		for(var j = 0; j < points.length; j++) {
 			if(points[j].label == x)
 				ypos = points[j].y
 		}
@@ -29,17 +29,17 @@ function processDataPoint(dp, points, stddev) {
 }
 
 function processRun(run, experiment_data, run_map) {
-	name = d3.select(run).select(".name").text();
+	var name = d3.select(run).select(".name").text();
 	
-	points = []
-	stddev = []
+	var points = [];
+	var stddev = [];
 	
-	peptides = 
+	var peptides = 
 		d3.select(run)
 			.select(".peptides")
 			.text();
 	
-	units = 
+	var units = 
 		d3.select(run)
 			.select(".units")
 			.text();
@@ -48,7 +48,7 @@ function processRun(run, experiment_data, run_map) {
 		.selectAll(".datapoint")
 		.each(function() { processDataPoint(this, points, stddev); });
 	
-	isTime = (units.indexOf("time") >= 0)
+	var isTime = (units.indexOf("time") >= 0)
 	
 	if (! (name in run_map)){
 		run_map[name] = {'name':name, 'series':[], 'isTime': isTime, 'axis': units};
@@ -58,7 +58,7 @@ function processRun(run, experiment_data, run_map) {
 }
 
 function processRuns(experiment_data){
-	run_map = {}
+	var run_map = {}
 	
 	d3.select(experiment_data)
 		.selectAll(".run")
@@ -68,8 +68,8 @@ function processRuns(experiment_data){
 }
 
 function createGraphs(experiment_data, run_map) {
-	for(r in run_map) {
-		run = run_map[r]
+	for(var r in run_map) {
+		var run = run_map[r]
 		if(run.isTime)
 			createTimeSeriesGraph(experiment_data, run);
 		else
@@ -78,10 +78,10 @@ function createGraphs(experiment_data, run_map) {
 }
 
 function getMaxValue(run, property) {
-	mval = -10000.0;
-	for(i = 0; i < run.series.length; i++) {
-		for(j = 0; j < run.series[i].points.length; j++) {
-			val = parseFloat(run.series[i].points[j][property]);
+	var mval = -10000.0;
+	for(var i = 0; i < run.series.length; i++) {
+		for(var j = 0; j < run.series[i].points.length; j++) {
+			var val = parseFloat(run.series[i].points[j][property]);
 			if(val > mval) {
 				mval = val;
 			}
@@ -99,35 +99,35 @@ function createTimeSeriesGraph(experiment_data, run) {
 	var lwidth = 125;
 	var colors = d3.scale.category20();
 	
-	container = d3.select(experiment_data).select(".chart").append("span");
-	parent = container.append("span");
-	graph = createGraph(parent, run.name, w, h, margin);
+	var container = d3.select(experiment_data).select(".chart").append("span");
+	var parent = container.append("span");
+	var graph = createGraph(parent, run.name, w, h, margin);
 	
-	xmax = getMaxValue(run, "label");
-	ymax = getMaxValue(run, "y") * ceiling;
+	var xmax = getMaxValue(run, "label");
+	var ymax = getMaxValue(run, "y") * ceiling;
 	
-	xaxis = d3.scale.linear().domain([0, xmax]).range([margin, w-rmargin]);
-	yaxis = d3.scale.linear().domain([0, ymax]).range([h-margin, margin]);
+	var xaxis = d3.scale.linear().domain([0, xmax]).range([margin, w-rmargin]);
+	var yaxis = d3.scale.linear().domain([0, ymax]).range([h-margin, margin]);
 	
-	legendEntries = [];
+	var legendEntries = [];
 	
-	xticks = []
+	var xticks = []
 	for(i = 0; i < run.series.length; i++){
-		pts = []
-		stddev = []
+		var pts = []
+		var stddev = []
 		for(j = 0; j < run.series[i].points.length; j++){
-			pt = run.series[i].points[j];
+			var pt = run.series[i].points[j];
 			
 			xticks.push( parseFloat(pt.label) );
 			pts.push( { 'x':parseFloat(pt.label), 'y':parseFloat(pt.y) } );
 		}
 		
 		for(j = 0; j < run.series[i].stddev.length; j++){
-			pt = run.series[i].stddev[j]
+			var pt = run.series[i].stddev[j]
 			
 			stddev.push( {'x': parseFloat(pt.label), 'y': parseFloat(pt.y), 's': parseFloat(pt.dev)} )
 		}
-		name = run.series[i].peps
+		var name = run.series[i].peps
 		
 		addTimeSeries(graph, name, pts, xaxis, yaxis, colors(i));
 		addErrorBars(graph, name, stddev, xaxis, yaxis, colors(i));
@@ -159,44 +159,44 @@ function createBarGraph(experiment_data, run) {
 	var lwidth = 125;
 	var colors = d3.scale.category20();
 
-	xvals = Array.unique(getArray(run, "label"));
+	var xvals = Array.unique(getArray(run, "label"));
 	xvals.unshift("");
 	xvals.push(" ");
 	
-	defaultBarWidth = 30;
+	var defaultBarWidth = 30;
 	
 	var w = margin + rmargin + defaultBarWidth * run.series.length * xvals.length;
 	
 	if(w > 750)
 		w = 750;
 	
-	parent = d3.select(experiment_data).select(".chart");
-	graph = createGraph(parent, run.name, w, h, margin);
+	var parent = d3.select(experiment_data).select(".chart");
+	var graph = createGraph(parent, run.name, w, h, margin);
 	
 	
-	ymax = getMaxValue(run, "y") * ceiling;
+	var ymax = getMaxValue(run, "y") * ceiling;
 	
-	xaxis = d3.scale.ordinal().domain(xvals).rangePoints([margin, w-rmargin]);
-	yaxis = d3.scale.linear().domain([0, ymax]).range([h-bmargin, margin]);
+	var xaxis = d3.scale.ordinal().domain(xvals).rangePoints([margin, w-rmargin]);
+	var yaxis = d3.scale.linear().domain([0, ymax]).range([h-bmargin, margin]);
 	
-	legendEntries = [];
+	var legendEntries = [];
 	
-	xticks = []
+	var xticks = []
 	for(i = 0; i < run.series.length; i++){
-		pts = [];
-		stddev = [];
+		var pts = [];
+		var stddev = [];
 		
 		for(j = 0; j < run.series[i].points.length; j++){
-			pt = run.series[i].points[j];
+			var pt = run.series[i].points[j];
 			xticks.push( parseFloat(pt.label) );
 			pts.push( { 'x':pt.label, 'y':parseFloat(pt.y) } );
 		}
 		
 		for(j = 0; j < run.series[i].stddev.length; j++){
-			pt = run.series[i].stddev[j]
+			var pt = run.series[i].stddev[j]
 			stddev.push( {'x':pt.label, 'y': parseFloat(pt.y), 's': parseFloat(pt.dev)} )
 		}
-		name = run.series[i].peps
+		var name = run.series[i].peps
 		
 		addBarSeries(graph, name, pts, xaxis, yaxis, colors(i), i, run.series.length);
 		addErrorBars(graph, name, stddev, xaxis, yaxis, "#000", i, run.series.length);

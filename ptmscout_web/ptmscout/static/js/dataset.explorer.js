@@ -1,3 +1,88 @@
+function format_op_arg(arg){
+	var oper_values = {'eq':"=", 'neq':"\u2260", 'gt':">", 'geq':"\u2265", 'lt':"<", 'leq':"\u2264", 'add':"+", 'sub':"-", 'mul':"x", 'div':"/"};
+
+	if(arg in oper_values){
+		return $('<span class="condition-op">{0}</span>'.format(oper_values[arg]));
+	}
+	return $('<span class="condition-arg">{0}</span>'.format(arg));
+}
+
+function format_query(query){
+	if(query == 'experiment')
+		return $('<div class="query-clause"><span class="condition-boolean">-</span><span class="condition-title">Entire Experiment</span></div>')
+	
+	var complete_query = $('<div></div>');
+	
+	for(var i in query){
+		var bop = query[i][0];
+		if(bop == 'nop'){
+			bop = '-';
+		}
+		
+		var condition = query[i][1];
+		var title = condition[0];
+		
+		var qclause = $('<div class="query-clause"/>').appendTo(complete_query);
+		
+		$('<span class="condition-boolean">{0}</span>'.format(bop.toUpperCase())).appendTo(qclause);
+		$('<span class="condition-title">{0}:</span>'.format(title.capitalize())).appendTo(qclause);
+		
+		for(var i = 1; i < condition.length; i++){
+			format_op_arg( condition[i] ).appendTo( qclause );
+		}
+	}
+	
+	return complete_query;
+}
+
+function SubsetTab(tabId, name) {
+	var tabTemplate = "<li><a href='#{0}'>{1}</a> <span class='ui-icon ui-icon-close' role='presentation'>Remove Tab</span></li>";
+	this.tabId = "tabs-" + tabId;
+	
+	this.tabElement = $( tabTemplate.format(this.tabId, name) );
+	this.contentContainer = $( "<div id=\"{0}\" />".format(this.tabId) );
+	
+	this.filterset = $('<div class="filter-set" />').appendTo(this.contentContainer);
+	this.fquery = $('<fieldset class="query"><legend>Foreground Query</legend></fieldset>').appendTo(this.filterset);
+	this.bquery = $('<fieldset class="query"><legend>Background Query</legend></fieldset>').appendTo(this.filterset);
+	this.summary = $('<div class="result-summary" />').appendTo(this.contentContainer);
+	this.enrichment = $('<div class="enrichment-tables" />').appendTo(this.contentContainer);
+	this.frequency = $('<div class="frequency-charts"><table><tr><th>Foreground:</th><th>Background:</th></tr><tr><td class="foreground-seqlogo"></td><td class="background-seqlogo"></td></tr></table></div>').appendTo(this.contentContainer);
+	this.proteins = $('<div />').appendTo(this.contentContainer);
+	this.data = $('<div class="experiment_data" />').appendTo(this.contentContainer);
+};
+
+SubsetTab.prototype.init = function(query_response) {
+	format_query(query_response.foreground.query).appendTo(this.fquery);
+	format_query(query_response.background.query).appendTo(this.bquery);
+	
+	$("<div>{0} out of {1} proteins selected</div>".format(query_response.foreground.proteins, query_response.background.proteins)).appendTo(this.summary)
+	$("<div>{0} out of {1} peptides selected</div>".format(query_response.foreground.peptides, query_response.background.peptides)).appendTo(this.summary)
+	
+	createSeqlogo(d3.select("#{0}".format(this.tabId)).select(".foreground-seqlogo".format(this.tabId)), query_response.foreground.seqlogo, 500, 400);
+	createSeqlogo(d3.select("#{0}".format(this.tabId)).select(".background-seqlogo".format(this.tabId)), query_response.background.seqlogo, 500, 400);
+	
+	for(var i in query_response.measurements){
+		var run_div = $('<div class="run" />').appendTo(this.data);
+		var run = query_response.measurements[i];
+		
+		$('<div class="name">{0}</div>'.format(run.name)).appendTo(run_div);
+		$('<div class="units">{0}</div>'.format(run.units)).appendTo(run_div);
+		$('<div class="peptides">{0}</div>'.format(run.label)).appendTo(run_div);
+		
+		for(var j in run.series){
+			datapt = run.series[j]
+			
+			$('<div class="datapoint">{0},{1},{2}</div>'.format(datapt[0],datapt[1],datapt[2])).appendTo(run_div);
+		}
+	}
+	
+	$('<div class="chart" />').appendTo(this.data);
+	d3.select("#{0}".format(this.tabId)).select(".experiment_data").each(function(){
+		processRuns(this);
+	});
+};
+
 function QuantitativeSelector(parent_element, field_values) {
 	this.element = $("<span>:</span>");
 	this.element.appendTo(parent_element);
@@ -477,8 +562,43 @@ SelectorCondition.prototype.changed = function() {
 	}
 };
 
+function SubsetManager(element) {
+	this.tabCounter = 0;
+	this.tabs = element.tabs();
+	var tabs = this.tabs
+	
+	tabs.delegate( "span.ui-icon-close", "click", function() {
+	      var panelId = $( this ).closest( "li" ).remove().attr( "aria-controls" );
+	      $( "#" + panelId ).remove();
+	      tabs.tabs( "refresh" );
+	    });
+	 
+    tabs.bind( "keyup", function( event ) {
+      if ( event.altKey && event.keyCode === $.ui.keyCode.BACKSPACE ) {
+        var panelId = tabs.find( ".ui-tabs-active" ).remove().attr( "aria-controls" );
+        $( "#" + panelId ).remove();
+        tabs.tabs( "refresh" );
+      }
+    });
+}
+
+SubsetManager.prototype.addSubset = function(query_result) {
+	var st = new SubsetTab(this.tabCounter, query_result.name)
+	
+	var numtabs = this.tabs.find( ".ui-tabs-nav > li" ).length;
+	this.tabs.find( ".ui-tabs-nav" ).append( st.tabElement );
+    this.tabs.append( st.contentContainer );
+    this.tabs.tabs( "refresh" );
+    
+    st.init(query_result);
+    this.tabs.tabs('option', 'active', numtabs);
+    
+	this.tabCounter++;
+};
+
 function SubsetSelection(element, webservice_url) {
 	var selector = this;
+	
 	this.element = element;
 	
 	this.webservice_url = webservice_url;
@@ -513,7 +633,7 @@ function SubsetSelection(element, webservice_url) {
 		selector.clearConditions();
 	});
 	
-	this.open_subsets = element.find('#open-subsets').tabs();
+	this.subsetManager = new SubsetManager( element.find('#open-subsets') );
 };
 
 SubsetSelection.prototype.displayError = function(errorMessage) {
@@ -559,7 +679,7 @@ SubsetSelection.prototype.submitQuery = function() {
 		data: JSON.stringify(subset_query),
 		dataType:'json',
 		success: function(data) {
-			app.processResult(data);
+			app.subsetManager.addSubset(data);
 			done_waiting();
 		} ,
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -569,10 +689,6 @@ SubsetSelection.prototype.submitQuery = function() {
 		}
 	});
 }
-
-SubsetSelection.prototype.processResult = function(data) {
-	console.log(data);
-};
 
 SubsetSelection.prototype.addConditionField = function() {
 	var is_first = this.conditions.length == 0;
