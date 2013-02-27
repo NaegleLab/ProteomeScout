@@ -113,11 +113,11 @@ table.protein_list, .protein_list table {
 	background:#CCC;
 }
 
-tr.even {
+.protein_list tr.even {
 	background:#FFF;
 }
 
-tr.odd {
+.protein_list tr.odd {
 	background:#CCC;
 }
 
