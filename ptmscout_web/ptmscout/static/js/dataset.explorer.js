@@ -35,44 +35,88 @@ function format_query(query){
 	return complete_query;
 }
 
-function SubsetTab(tabId, name) {
+function SubsetTab(tabId, name, selectionEngine) {
 	var tabTemplate = "<li><a href='#{0}'>{1}</a> <span class='ui-icon ui-icon-close' role='presentation'>Remove Tab</span></li>";
 	this.tabId = "tabs-" + tabId;
 	
+	var subsetTab = this;
+	this.selectionEngine = selectionEngine;
+	
 	this.tabElement = $( tabTemplate.format(this.tabId, name) );
-	this.contentContainer = $( "<div id=\"{0}\" />".format(this.tabId) );
+	this.contentContainer = $( '<div class="subset-content" id="{0}" />'.format(this.tabId) );
 	
 	this.filterset = $('<div class="filter-set" />').appendTo(this.contentContainer);
 	this.fquery = $('<fieldset class="query"><legend>Foreground Query</legend></fieldset>').appendTo(this.filterset);
 	this.bquery = $('<fieldset class="query"><legend>Background Query</legend></fieldset>').appendTo(this.filterset);
-	this.summary = $('<div class="result-summary" />').appendTo(this.contentContainer);
-	this.enrichment = $('<div class="enrichment-tables" />').appendTo(this.contentContainer);
-	this.frequency = $('<div class="frequency-charts"><table><tr><th>Foreground:</th><th>Background:</th></tr><tr><td class="foreground-seqlogo"></td><td class="background-seqlogo"></td></tr></table></div>').appendTo(this.contentContainer);
-	this.proteins = $('<div />').appendTo(this.contentContainer);
-	this.data = $('<div class="experiment_data" />').appendTo(this.contentContainer);
+	var tmpdiv = $('<div class="formsubmission"></div>').appendTo(this.filterset);
+	$('<div />', {'class':"clear"}).appendTo(this.filterset);
+	
+	$('<span>Subset Name:</span>').appendTo(tmpdiv);
+	this.subsetName = $('<input type="text" value="{0}" />'.format(name)).appendTo(tmpdiv);
+	this.saveSubset = $('<button>Save Subset</button>').appendTo(tmpdiv);
+	this.saveSubset.on('click', function(){
+		var name = subsetTab.subsetName.val();
+		subsetTab.selectionEngine.saveSubset(name, subsetTab.response.foreground.query, subsetTab.response.background.query);
+	});
+	
+	this.summary = $('<fieldset class="result-summary"><legend>Results</legend></fieldset>').appendTo(this.contentContainer);
+	this.enrichment = $('<fieldset class="enrichment-tables"><legend>Feature Enrichment</legend></fieldset>').appendTo(this.contentContainer);
+	
+	this.frequency = $('<fieldset class="frequency-charts"><legend>Residue Frequency</legend><table><thead><tr><th>Foreground:</th><th>Background:</th></tr></thead><tbody><tr><td class="foreground-seqlogo"></td><td class="background-seqlogo"></td></tr></tbody></table></div>').appendTo(this.contentContainer);
+	this.motif = $('<fieldset class="motifs"><legend>Motif Enrichment</legend></div>').appendTo(this.contentContainer);
+	this.motifTable = $('<table><thead><tr><th>Motif</th><th>In Foreground</th><th>In Background</th><th>P-value</th></tr></thead></table>').appendTo(this.motif);
+	this.motifEntries = $('<tbody></tbody>').appendTo(this.motifTable);
+
+	this.proteins = $('<fieldset><legend>Proteins</legend></fieldset>').appendTo(this.contentContainer);
+	this.proteinTable = $('<table class="protein_list"><thead><tr><th>MS id</th><th>Accession</th><th>Gene</th><th>Peptide</th><th>Site</th><th>Modifications</th></tr></thead></table>').appendTo(this.proteins);
+	this.proteinEntries = $('<tbody></tbody>').appendTo(this.proteinTable);
+	
+	this.dataContainer = $('<fieldset><legend>Experiment Data</legend></fieldset>').appendTo(this.contentContainer);
+	this.data = $('<div class="experiment_data"></div>').appendTo(this.dataContainer);
 };
 
-SubsetTab.prototype.init = function(query_response) {
-	format_query(query_response.foreground.query).appendTo(this.fquery);
-	format_query(query_response.background.query).appendTo(this.bquery);
-	
-	$("<div>{0} out of {1} proteins selected</div>".format(query_response.foreground.proteins, query_response.background.proteins)).appendTo(this.summary)
-	$("<div>{0} out of {1} peptides selected</div>".format(query_response.foreground.peptides, query_response.background.peptides)).appendTo(this.summary)
-	
-	createSeqlogo(d3.select("#{0}".format(this.tabId)).select(".foreground-seqlogo".format(this.tabId)), query_response.foreground.seqlogo, 500, 400);
-	createSeqlogo(d3.select("#{0}".format(this.tabId)).select(".background-seqlogo".format(this.tabId)), query_response.background.seqlogo, 500, 400);
-	
-	for(var i in query_response.measurements){
+SubsetTab.prototype.formatPeptides = function(peptides) {
+	for(var i in peptides){
+		var pepEntry = peptides[i];
+		var rowClass = 'odd';
+		if(i % 2 == 0)
+			rowClass = 'even';
+		
+		var tableRow = $('<tr />', {"class":rowClass}).appendTo(this.proteinEntries);
+		$('<td>{0}</td>'.format(pepEntry[0])).appendTo(tableRow);
+		$('<td>{0}</td>'.format(pepEntry[1])).appendTo(tableRow);
+		$('<td>{0}</td>'.format(pepEntry[2])).appendTo(tableRow);
+		$('<td class="peptide">{0}</td>'.format(pepEntry[3])).appendTo(tableRow);
+		$('<td class="modsite">{0}</td>'.format(pepEntry[4])).appendTo(tableRow);
+		$('<td class="modsite">{0}</td>'.format(pepEntry[5])).appendTo(tableRow);
+	}
+};
+
+SubsetTab.prototype.formatMotif = function(motif) {
+	for(var i in motif.results){
+		var rowClass = 'odd';
+		if(i % 2 == 0)
+			rowClass = 'even';
+		var tableRow = $('<tr />', {"class":rowClass}).appendTo(this.motifEntries);
+		
+		$('<td />',{ 'class':"peptide", 'text':motif.results[i][0] }).appendTo(tableRow);
+		$('<td>{0} / {1}</td>'.format(motif.results[i][1][0], motif.results[i][1][1]), {'class':"numeric"}).appendTo(tableRow);
+		$('<td>{0} / {1}</td>'.format(motif.results[i][2][0], motif.results[i][2][1]), {'class':"numeric"}).appendTo(tableRow);
+		$('<td />',{ 'class':"numeric", 'text':motif.results[i][3] }).appendTo(tableRow);
+	}
+};
+
+SubsetTab.prototype.formatData = function(measurement_data){
+	for(var i in measurement_data){
 		var run_div = $('<div class="run" />').appendTo(this.data);
-		var run = query_response.measurements[i];
+		var run = measurement_data[i];
 		
 		$('<div class="name">{0}</div>'.format(run.name)).appendTo(run_div);
 		$('<div class="units">{0}</div>'.format(run.units)).appendTo(run_div);
 		$('<div class="peptides">{0}</div>'.format(run.label)).appendTo(run_div);
 		
 		for(var j in run.series){
-			datapt = run.series[j]
-			
+			var datapt = run.series[j];
 			$('<div class="datapoint">{0},{1},{2}</div>'.format(datapt[0],datapt[1],datapt[2])).appendTo(run_div);
 		}
 	}
@@ -81,6 +125,24 @@ SubsetTab.prototype.init = function(query_response) {
 	d3.select("#{0}".format(this.tabId)).select(".experiment_data").each(function(){
 		processRuns(this);
 	});
+}
+
+SubsetTab.prototype.init = function(query_response) {
+	format_query(query_response.foreground.query).appendTo(this.fquery);
+	format_query(query_response.background.query).appendTo(this.bquery);
+	
+	this.response = query_response;
+	
+	$("<div>{0} out of {1} proteins selected</div>".format(query_response.foreground.proteins, query_response.background.proteins)).appendTo(this.summary)
+	$("<div>{0} out of {1} peptides selected</div>".format(query_response.foreground.peptides, query_response.background.peptides)).appendTo(this.summary)
+	
+	this.formatPeptides(query_response.peptides);
+	
+	createSeqlogo(d3.select("#{0}".format(this.tabId)).select(".foreground-seqlogo".format(this.tabId)), query_response.foreground.seqlogo, 500, 400);
+	createSeqlogo(d3.select("#{0}".format(this.tabId)).select(".background-seqlogo".format(this.tabId)), query_response.background.seqlogo, 500, 400);
+	
+	this.formatMotif(query_response.motif);
+	this.formatData(query_response.measurements);
 };
 
 function QuantitativeSelector(parent_element, field_values) {
@@ -562,10 +624,12 @@ SelectorCondition.prototype.changed = function() {
 	}
 };
 
-function SubsetManager(element) {
+function SubsetManager(element, selectionEngine) {
 	this.tabCounter = 0;
 	this.tabs = element.tabs();
 	var tabs = this.tabs
+	
+	this.selectionEngine = selectionEngine;
 	
 	tabs.delegate( "span.ui-icon-close", "click", function() {
 	      var panelId = $( this ).closest( "li" ).remove().attr( "aria-controls" );
@@ -583,7 +647,7 @@ function SubsetManager(element) {
 }
 
 SubsetManager.prototype.addSubset = function(query_result) {
-	var st = new SubsetTab(this.tabCounter, query_result.name)
+	var st = new SubsetTab(this.tabCounter, query_result.name, this.selectionEngine)
 	
 	var numtabs = this.tabs.find( ".ui-tabs-nav > li" ).length;
 	this.tabs.find( ".ui-tabs-nav" ).append( st.tabElement );
@@ -633,13 +697,48 @@ function SubsetSelection(element, webservice_url) {
 		selector.clearConditions();
 	});
 	
-	this.subsetManager = new SubsetManager( element.find('#open-subsets') );
+	this.subsetManager = new SubsetManager( element.find('#open-subsets'), this );
 };
 
 SubsetSelection.prototype.displayError = function(errorMessage) {
 	this.failure_text.text(errorMessage);
 	this.failure_dialog.dialog( "open" );
 	done_waiting();
+};
+
+SubsetSelection.prototype.saveSubset = function(name, foreground, background){
+	if(name == ''){
+		this.displayError("Name cannot be an empty field");
+	}else{
+
+		var query_url = this.webservice_url + '/subsets/save';
+		var subset_save_query = {'name': name,
+								 'foreground': foreground,
+								 'background': background}		
+		
+		$.ajax({
+			url: query_url,
+			type: 'POST',
+			contentType:'application/json',
+			data: JSON.stringify(subset_save_query),
+			dataType:'json',
+			success: function(data) {
+				done_waiting();
+				console.log("Save response:");
+				console.log(data);
+				
+				if(data.response == 'error'){
+					app.displayError(data.response.message);
+				}
+			} ,
+			error: function(jqXHR, textStatus, errorThrown) {
+				app.displayError("Error in server response, please try again.");
+				console.log(textStatus);
+				console.log(errorThrown);
+			}
+		});
+		
+	}
 };
 
 SubsetSelection.prototype.submitQuery = function() {
@@ -670,7 +769,7 @@ SubsetSelection.prototype.submitQuery = function() {
 			'foreground': expression
 	};
 	
-	var query_url = this.webservice_url + '/subsets';
+	var query_url = this.webservice_url + '/subsets/query';
 	
 	$.ajax({
 		url: query_url,

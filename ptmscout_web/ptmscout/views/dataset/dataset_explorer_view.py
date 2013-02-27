@@ -2,7 +2,7 @@ from pyramid.view import view_config
 import json
 import base64
 from ptmscout.database import experiment
-from ptmscout.utils import protein_utils
+from ptmscout.utils import protein_utils, motif
 
 def get_pfam_metadata(measurements, metadata_fields):
     metadata_fields.update({'Pfam-Domain':set(),'Pfam-Site':set(),'Region':set()})
@@ -396,6 +396,19 @@ def parse_query_expression(expression):
         
     return disjunction( [ parse_dnf_clause(op) for op in dnf_clauses ] )
 
+def format_peptide_data(measurements):
+    formatted_peptide_data = []
+    for ms in measurements:
+        gene_name = ms.protein.getGeneName()
+        
+        for modpep in ms.peptides:
+            pep_aligned = modpep.peptide.pep_aligned
+            site_name = modpep.peptide.getName()
+            mod_name = modpep.modification.name
+            
+            formatted_peptide_data.append( (ms.id, ms.query_accession, gene_name, pep_aligned, site_name, mod_name) )
+    
+    return formatted_peptide_data
 
 def format_measurement_data(measurements):
     experiment_data = []
@@ -428,8 +441,11 @@ def compute_subset_enrichment(request):
     background_decision_func = parse_query_expression(query_expression['background'])
     
     background = [ms for ms in exp.measurements if background_decision_func(ms)]
-    foreground = [ms for ms in exp.measurements if foreground_decision_func(ms)]
+    foreground = [ms for ms in background if foreground_decision_func(ms)]
+    
     enrichment = calculate_feature_enrichment(foreground, background)
+    
+    motif_tests, motif_results = motif.calculate_motif_enrichment(foreground, background)
     
     background_seqlogo = protein_utils.create_sequence_profile(background)
     background_protein_cnt = len(set( [ms.protein.id for ms in background] ))
@@ -440,6 +456,7 @@ def compute_subset_enrichment(request):
     foreground_peptide_cnt = len( foreground )
     
     measurement_data = format_measurement_data(foreground)
+    peptide_data = format_peptide_data(foreground)
     
     return {'experiment': exp_id,
             'name': query_expression['name'],
@@ -456,5 +473,19 @@ def compute_subset_enrichment(request):
                            'seqlogo': foreground_seqlogo
                            },
             'measurements': measurement_data,
-            'enrichment': enrichment
+            'peptides': peptide_data,
+            'enrichment': enrichment,
+            'motif': {
+                      'tests': motif_tests,
+                      'results': motif_results
+                      }
         }
+    
+
+@view_config(route_name='save_subset', renderer='json', permission='private')
+def save_subset(request):
+    return {}
+
+@view_config(route_name='fetch_subset', renderer='json', permission='private')
+def fetch_subset(request):
+    return {}

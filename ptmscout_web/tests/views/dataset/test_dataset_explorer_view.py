@@ -4,9 +4,9 @@ import json
 from ptmscout.views.dataset import dataset_explorer_view
 from mock import patch, call
 from tests.views.mocking import createMockExperiment, createMockMeasurement,\
-    createMockUser, createMockProtein, createMockAccession, createMockPeptide,\
+    createMockUser, createMockPeptide,\
     createMockPeptideModification, createMockPTM, createMockScansite,\
-    createMockData, createMockDataItem
+    createMockDataItem
 from ptmscout.database import protein
 
 class TestDatasetExplorerView(UnitTestCase):
@@ -183,8 +183,12 @@ class TestDatasetExplorerView(UnitTestCase):
         self.assertIn(call(foreground_query), patch_parse.call_args_list)
         
         self.assertEqual("Some feature enrichment", result['enrichment'])
-        self.assertEqual("a seqlogo", result['foreground'])
-        self.assertEqual("a seqlogo", result['background'])
+        self.assertEqual("a seqlogo", result['foreground']['seqlogo'])
+        self.assertEqual(3, result['foreground']['proteins'])
+        self.assertEqual(3, result['foreground']['peptides'])
+        self.assertEqual("a seqlogo", result['background']['seqlogo'])
+        self.assertEqual(3, result['background']['proteins'])
+        self.assertEqual(3, result['background']['peptides'])
         self.assertEqual("Subset 1", result['name'])
         
         
@@ -205,8 +209,15 @@ class IntegrationTestDatasetExplorerView(IntegrationTestCase):
         result = self.ptmscoutapp.post_json("/webservice/subsets", params=query_expression, status=200)
         result = result.json
         
-        self.assertEqual(4, result['protein_cnt'])
-        self.assertEqual(7, result['peptide_cnt'])
+        self.assertEqual(foreground_query, result['foreground']['query'])
+        self.assertEqual(4, result['foreground']['proteins'])
+        self.assertEqual(7, result['foreground']['peptides'])
+        
+        self.assertEqual('experiment', result['background']['query'])
+        self.assertEqual(52, result['background']['proteins'])
+        self.assertEqual(68, result['background']['peptides'])
+        
+        
         self.assertEqual('Subset 1', result['name'])
         self.assertEqual(exp_id, result['experiment'])
         

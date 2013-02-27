@@ -18,6 +18,10 @@
 	margin-bottom: 10px;
 }
 
+.subset-content fieldset legend {
+	font-size:medium;
+}
+
 .condition-boolean {
 	float:left;
 	width:75px;
@@ -40,4 +44,45 @@
 .condition-arg {
 	margin-left:5px;
 	margin-right:5px;
+}
+
+.frequency-charts table {
+	margin-left:auto;
+	margin-right:auto;
+	border-collapse:collapse;	
+}
+.frequency-charts table th{
+	font-size:medium;
+	border-bottom: solid 1px black;
+}
+
+.frequency-charts table td{
+	padding:20px;
+}
+
+.motifs table {
+	border-collapse:collapse;
+	border: solid 1px black;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+.motifs td.numeric {
+	text-align:right;
+}
+
+.motifs td{
+	padding-bottom:10px;
+}
+
+.motifs th{
+	background:#CCC;
+}
+
+.motifs tr.even {
+	background:#FFF;
+}
+
+.motifs tr.odd {
+	background:#CCC;
 }

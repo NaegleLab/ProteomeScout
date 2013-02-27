@@ -7,7 +7,9 @@ def add_views(config):
     
     config.add_route('portal','/')
     
-    config.add_route('compute_subset', '/webservice/subsets')
+    config.add_route('compute_subset', '/webservice/subsets/query')
+    config.add_route('save_subset', '/webservice/subsets/save')
+    config.add_route('fetch_subset', '/webservice/subsets/fetch')
 #    config.add_route('upload_clusters', '/webservice/clusters')
     
     config.add_route('experiments','/experiments')
