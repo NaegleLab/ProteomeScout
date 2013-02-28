@@ -216,18 +216,84 @@ def calculate_GO_term_enrichment(foreground, background):
 
 def calculate_PfamDomain_enrichment(foreground, background):
     enrichment = []
+    valid_labels = set()
+    
+    for prot in foreground:
+        for dom in prot.domains:
+            valid_labels.add(dom.label)
+            
+    def create_has_domain(domain_label):
+        def has_domain(prot):
+            return reduce(bool.__or__, [ dom.label == domain_label for dom in prot.domains ], False)
+        return has_domain
+    
+    for label in valid_labels:
+        p_value = calculate_hypergeometric_enrichment(foreground, background, create_has_domain(label))
+        enrichment.append( ( 'Pfam-Domain', label, p_value ) )
+    
     return enrichment
 
 def calculate_PfamSite_enrichment(foreground, background):
     enrichment = []
+    valid_labels = set()
+    
+    for ms in foreground:
+        for modpep in ms.peptides:
+            if modpep.peptide.protein_domain:
+                valid_labels.add(modpep.peptide.protein_domain.label)
+                
+    def create_has_domain(domain_label):
+        def has_domain(ms):
+            return reduce(bool.__or__, [ modpep.peptide.protein_domain != None and modpep.peptide.protein_domain.label == domain_label for modpep in ms.peptides ], False)
+        return has_domain
+    
+    for label in valid_labels:
+        p_value = calculate_hypergeometric_enrichment(foreground, background, create_has_domain(label))
+        enrichment.append( ( 'Pfam-Site', label, p_value ))
+    
     return enrichment
 
 def calculate_Scansite_enrichment(foreground, background):
-    return []
+    enrichment = []
+    valid_labels = {}
+    source_map = {'scansite_bind': "Scansite-Bind", 'scansite_kinase': "Scansite-Kinase"}
+    for ms in foreground:
+        for modpep in ms.peptides:
+            for prediction in modpep.peptide.predictions:
+                source_labels = valid_labels.get( prediction.source, set()) 
+                source_labels.add(prediction.value)
+                valid_labels[prediction.source] = source_labels
+                
+    def create_has_scansite(source, label):
+        def has_scansite(ms):
+            return reduce(bool.__or__, [ prediction.source == source and prediction.value == label for modpep in ms.peptides for prediction in modpep.peptide.predictions ], False)
+        return has_scansite        
+        
+    for source in valid_labels:
+        for label in valid_labels[source]:
+            p_value = calculate_hypergeometric_enrichment(foreground, background, create_has_scansite(source, label))
+            enrichment.append( (source_map[source], label, p_value) )
+    
+    return enrichment
 
 
 def calculate_Region_enrichment(foreground, background):
-    return []
+    enrichment = []
+    valid_labels = set()
+    for ms in foreground:
+        for region in ms.protein.regions:
+            valid_labels.add(region.label)
+            
+    def create_has_region(label):
+        def has_region(ms):
+            return reduce(bool.__or__, [ region.hasSite( modpep.peptide.site_pos ) for region in ms.protein.regions for modpep in ms.peptides ], False)
+        return has_region
+    
+    for label in valid_labels:
+        p_value = calculate_hypergeometric_enrichment(foreground, background, create_has_region(label))
+        enrichment.append( ( 'Region', label, p_value ) )
+    
+    return enrichment
 
 
 def calculate_feature_enrichment(foreground, background):
