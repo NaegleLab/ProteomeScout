@@ -60,22 +60,34 @@
 	padding:20px;
 }
 
-.motifs table {
+td.numeric {
+	text-align:right;
+}
+
+tr.significant {
+	font-weight: bold;
+}
+
+tr.significant td.numeric {
+	color: red;
+}
+
+tr.notsignificant {
+	display: none;
+}
+
+.motifs table, .enrichment-table {
 	border-collapse:collapse;
 	border: solid 1px black;
 	margin-left:auto;
 	margin-right:auto;
 }
 
-.motifs td.numeric {
-	text-align:right;
-}
-
 .motifs td{
 	padding-bottom:10px;
 }
 
-.motifs th{
+.motifs th, .enrichment-table th {
 	background:#CCC;
 }
 

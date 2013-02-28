@@ -378,7 +378,8 @@ class IntegrationTestDatasetExplorerView(IntegrationTestCase):
                             'experiment': exp_id,
                             'name': 'Subset 1',
                             'background': 'experiment',
-                            'foreground': foreground_query}
+                            'foreground': foreground_query
+                           }
         
         result = self.ptmscoutapp.post_json("/webservice/subsets/query", params=query_expression, status=200)
         result = result.json
@@ -386,11 +387,12 @@ class IntegrationTestDatasetExplorerView(IntegrationTestCase):
         self.assertEqual(foreground_query, result['foreground']['query'])
         self.assertEqual(4, result['foreground']['proteins'])
         self.assertEqual(7, result['foreground']['peptides'])
+        self.assertEqual(7, result['foreground']['sites'])
         
         self.assertEqual('experiment', result['background']['query'])
         self.assertEqual(52, result['background']['proteins'])
         self.assertEqual(68, result['background']['peptides'])
-        
+        self.assertEqual(70, result['background']['sites'])
         
         self.assertEqual('Subset 1', result['name'])
         self.assertEqual(exp_id, result['experiment'])
@@ -437,5 +439,5 @@ class IntegrationTestDatasetExplorerView(IntegrationTestCase):
         result = self.ptmscoutapp.post_json("/webservice/subsets/query", params = query_expression, status=200)
         result = result.json
         
-        print result['foreground']['peptides']
-        print result['background']['peptides']
+        self.assertEqual(3, result['foreground']['peptides'])
+        self.assertEqual(7, result['background']['peptides'])

@@ -2,7 +2,7 @@ from pyramid.view import view_config
 import json
 import base64
 from ptmscout.database import experiment, annotations
-from ptmscout.utils import protein_utils, motif
+from ptmscout.utils import protein_utils, motif, stats
 from ptmscout.config import strings
 
 def get_pfam_metadata(measurements, metadata_fields):
@@ -141,9 +141,109 @@ def format_explorer_view(experiment_id, measurements, user):
 class QueryError(Exception):
     pass
 
-def calculate_feature_enrichment(foreground, background):
-    pass
 
+def calculate_hypergeometric_enrichment(foreground, background, decision_func):
+    foreground_ids = set()
+    a = 0
+    b = 0
+    c = 0
+    d = 0
+    
+    for item in foreground:
+        foreground_ids.add(item.id)
+        
+        if(decision_func(item)):
+            a+=1
+        else:
+            b+=1
+    
+    for item in background:
+        if item.id in foreground_ids:
+            continue
+        
+        if(decision_func(item)):
+            c+=1
+        else:
+            d+=1
+            
+    evalue = stats.fisher(a,b,c,d)
+    pvalue = stats.fisher_pvalue(evalue, a, b, c, d)
+    
+    return pvalue 
+
+
+def get_proteins(measurements):
+    ids = set()
+    prots = []
+    
+    for ms in measurements:
+        if ms.protein_id in ids:
+            continue
+        
+        prots.append(ms.protein)
+        ids.add(ms.protein_id)
+        
+    return prots
+
+
+def calculate_GO_term_enrichment(foreground, background):
+    go_term_map = {}
+    represented_go_terms = {}
+    aspect_map = {'C':'GO-Cellular Component', 'P':"GO-Biological Process", 'F': "GO-Molecular Function"}
+    enrichment = []
+    
+    for prot in foreground:
+        for entry in prot.GO_terms:
+            t = entry.GO_term
+            term_ids = represented_go_terms.get(t.aspect, set())
+            term_ids.add( t.id )
+            
+            go_term_map[t.id] = t
+            represented_go_terms[t.aspect] = term_ids
+
+    def create_has_go_id(go_id):
+        def has_go_id(prot):
+            return reduce(bool.__or__, [ entry.GO_term.id == go_id for entry in prot.GO_terms ], False)
+        return has_go_id
+    
+    for aspect in represented_go_terms:
+        for go_id in represented_go_terms[aspect]:
+            p_value = calculate_hypergeometric_enrichment(foreground, background, create_has_go_id(go_id))
+            t = go_term_map[go_id]
+            enrichment.append(( aspect_map[t.aspect], t.fullName(), p_value ))
+            
+    return enrichment
+
+def calculate_PfamDomain_enrichment(foreground, background):
+    enrichment = []
+    return enrichment
+
+def calculate_PfamSite_enrichment(foreground, background):
+    enrichment = []
+    return enrichment
+
+def calculate_Scansite_enrichment(foreground, background):
+    return []
+
+
+def calculate_Region_enrichment(foreground, background):
+    return []
+
+
+def calculate_feature_enrichment(foreground, background):
+    enrichment_table = []
+
+    p_foreground = get_proteins(foreground)
+    p_background = get_proteins(background)
+    
+    enrichment_table += calculate_GO_term_enrichment(p_foreground, p_background)
+    enrichment_table += calculate_PfamDomain_enrichment(p_foreground, p_background)
+    
+    enrichment_table += calculate_PfamSite_enrichment(foreground, background)
+    enrichment_table += calculate_Scansite_enrichment(foreground, background)
+    enrichment_table += calculate_Region_enrichment(foreground, background)
+    
+    return sorted(enrichment_table, key=lambda item: item[2])
 
 def create_protein_filter(filter_value):
     def protein_filter(ms):
@@ -468,10 +568,12 @@ def compute_subset_enrichment(exp, user, subset_name, foreground_exp, background
     motif_tests, motif_results = motif.calculate_motif_enrichment(foreground, background)
     
     background_seqlogo = protein_utils.create_sequence_profile(background)
+    background_site_cnt = len(set([(modpep.peptide_id, modpep.modification_id) for ms in background for modpep in ms.peptides]))
     background_protein_cnt = len(set( [ms.protein.id for ms in background] ))
     background_peptide_cnt = len( background )
     
     foreground_seqlogo = protein_utils.create_sequence_profile(foreground)
+    foreground_site_cnt = len(set([(modpep.peptide_id, modpep.modification_id) for ms in foreground for modpep in ms.peptides]))
     foreground_protein_cnt = len(set( [ms.protein.id for ms in foreground] ))
     foreground_peptide_cnt = len( foreground )
     
@@ -485,12 +587,14 @@ def compute_subset_enrichment(exp, user, subset_name, foreground_exp, background
                            'query': background_exp,
                            'proteins': background_protein_cnt,
                            'peptides': background_peptide_cnt,
+                           'sites': background_site_cnt,
                            'seqlogo':background_seqlogo
                            },
             'foreground': {
                            'query': foreground_exp,
                            'proteins': foreground_protein_cnt,
                            'peptides': foreground_peptide_cnt,
+                           'sites': foreground_site_cnt,
                            'seqlogo': foreground_seqlogo
                            },
             'measurements': measurement_data,

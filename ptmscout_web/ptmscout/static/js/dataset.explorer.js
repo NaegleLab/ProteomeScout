@@ -1,3 +1,91 @@
+function EnrichmentTable(parent_element, table_data){
+	var widget = this;
+	this.numTests = table_data.length;
+	
+	
+	var div = $('<div />').appendTo(parent_element);
+	$('<span>Mark as significant with p-value less than: </span>').appendTo(div);
+	
+	var last_val = "0.01";
+	this.pvalueCutoff = $('<input />', {'value':last_val, 'type':"text",'length':"7"}).appendTo(div);
+	this.pvalueCutoff.on('change', function(){
+		var val = $(this).val();
+		
+		if(isNaN(parseFloat(val)) || !isFinite(val)){
+			$(this).val(last_val);
+		} else {
+			last_val = val;
+		}
+	});
+	this.setOptions = $('<button>Go</button>').appendTo(div);
+	this.setOptions.on('click',function(){
+		var cutoff_val = parseFloat(widget.pvalueCutoff.val());
+		var correction = 'none'
+		if(widget.bonferroniOption.is(":checked")){
+			correction = 'bonferroni'
+		}else if(widget.fdrOption.is(":checked")){
+			correction = 'fdr'
+		}
+		
+		
+		widget.filter(cutoff_val, correction);
+	});
+	
+	div = $('<div />').appendTo(parent_element);
+	this.noCorrectionOption = $('<input />', {'type':"radio", 'name':"test_correction", 'value':"none", 'checked':"checked"}).appendTo(div);
+	$('<span />', {'text':"No test correction"}).appendTo(div);
+	
+	div = $('<div />').appendTo(parent_element);
+	this.bonferroniOption = $('<input />', {'type':"radio", 'name':"test_correction", 'value':"bonferoni"}).appendTo(div);
+	$('<span />', {'text':"Bonferroni correction"}).appendTo(div);
+	
+	div = $('<div />').appendTo(parent_element);
+	this.fdrOption = $('<input />', {'type':"radio", 'name':"test_correction", 'value':"fdr"}).appendTo(div);
+	$('<span />', {'text':"False Discovery Rate correction"}).appendTo(div);
+	
+	this.tableElement = $('<table />', {'class':"enrichment-table"}).appendTo(parent_element);
+	$('<thead><tr><th>Category</th><th>Term</th><th>P-Value</th></tr></thead>').appendTo(this.tableElement);
+	this.tbody = $('<tbody />').appendTo(this.tableElement);
+	
+	for(var i in table_data){
+		var value = table_data[i][2];
+		var formatted_value = parseFloat(value.toPrecision(3)).toExponential()
+		
+		var row = $("<tr />").appendTo(this.tbody);
+		$("<td />",{'text': table_data[i][0]}).appendTo(row);
+		$("<td />",{'text': table_data[i][1]}).appendTo(row);
+		$("<td />",{'value':value, 'text': formatted_value, 'class':"numeric"}).appendTo(row);
+	}
+	
+	this.filter(parseFloat(last_val), 'none');
+};
+
+EnrichmentTable.prototype.filter = function(cutoff, correction) {
+	var widget = this;
+	
+	this.tbody.find('tr').each(function() {
+		var pval_td = $(this).find(".numeric");
+		var val = pval_td.attr('value');
+		var cval = val;
+		
+		
+		if(correction == 'bonferroni')
+			cval = val * widget.numTests;
+		
+		pval_td.text(parseFloat(parseFloat(cval).toPrecision(3)).toExponential());
+		
+		if(cval < cutoff)
+			$(this).addClass('significant');
+		else
+			$(this).removeClass('significant');
+		
+		if(val > cutoff)
+			$(this).addClass('notsignificant');
+		else
+			$(this).removeClass('notsignificant');
+	});
+};
+
 function format_op_arg(arg){
 	var oper_values = {'in':"IN", 'nin':"NOT IN", 'eq':"=", 'neq':"\u2260", 'gt':">", 'geq':"\u2265", 'lt':"<", 'leq':"\u2264", 'add':"+", 'sub':"-", 'mul':"x", 'div':"/"};
 
@@ -103,11 +191,11 @@ SubsetTab.prototype.formatMotif = function(motif) {
 		if(i % 2 == 0)
 			rowClass = 'even';
 		var tableRow = $('<tr />', {"class":rowClass}).appendTo(this.motifEntries);
-		
+		var pval = parseFloat(motif.results[i][3].toPrecision(3)).toExponential();
 		$('<td />',{ 'class':"peptide", 'text':motif.results[i][0] }).appendTo(tableRow);
 		$('<td />',{ 'class':"numeric", 'text':'{0} / {1}'.format(motif.results[i][1][0], motif.results[i][1][1])}).appendTo(tableRow);
 		$('<td />',{ 'class':"numeric", 'text':'{0} / {1}'.format(motif.results[i][2][0], motif.results[i][2][1])}).appendTo(tableRow);
-		$('<td />',{ 'class':"numeric", 'text':motif.results[i][3] }).appendTo(tableRow);
+		$('<td />',{ 'class':"numeric", 'text': pval}).appendTo(tableRow);
 	}
 };
 
@@ -140,13 +228,15 @@ SubsetTab.prototype.init = function(query_response) {
 	
 	$("<div>{0} out of {1} proteins selected</div>".format(query_response.foreground.proteins, query_response.background.proteins)).appendTo(this.summary)
 	$("<div>{0} out of {1} peptides selected</div>".format(query_response.foreground.peptides, query_response.background.peptides)).appendTo(this.summary)
-	
-	this.formatPeptides(query_response.peptides);
+	$("<div>{0} out of {1} sites selected</div>".format(query_response.foreground.sites, query_response.background.sites)).appendTo(this.summary)
+
+	this.enrichmentTable = new EnrichmentTable(this.enrichment, query_response.enrichment)
 	
 	createSeqlogo(d3.select("#{0}".format(this.tabId)).select(".foreground-seqlogo".format(this.tabId)), query_response.foreground.seqlogo, 500, 400);
 	createSeqlogo(d3.select("#{0}".format(this.tabId)).select(".background-seqlogo".format(this.tabId)), query_response.background.seqlogo, 500, 400);
 	
 	this.formatMotif(query_response.motif);
+	this.formatPeptides(query_response.peptides);
 	this.formatData(query_response.measurements);
 };
 

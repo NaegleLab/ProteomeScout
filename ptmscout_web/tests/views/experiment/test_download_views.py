@@ -160,5 +160,4 @@ class IntegrationTestExperimentDownloadView(IntegrationTestCase):
         for line in lines[3:]:
             row = line.split("\t")
             self.assertEqual(len(exp_header), len(row))
-            print row
         

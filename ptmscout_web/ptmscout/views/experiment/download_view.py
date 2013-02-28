@@ -67,18 +67,17 @@ def get_experiment_header(exp):
     data_labels = set()
     for ms in exp.measurements:
         for d in ms.data:
-            data_labels.add(d.formatted_label)
+            data_labels.add((d.run,d.type,d.units,d.label))
     
-    def tuplize_data_label(label):
-        r,dt,u,l = label.split(':')
+    def float_last_term(r,dt,u,l):
         try:
             l = float(l)
         except:
             pass
         
-        return (r,dt,u, l)
+        return (r,dt,u,l)
     
-    data_labels = sorted(list(data_labels), key=lambda item: tuplize_data_label(item))
+    data_labels = [ ("%s:%s:%s:%s" % (r,dt,u,str(l)) for r,dt,u,l in sorted(list(data_labels), key=lambda item: float_last_term(*item))) ]
     header += data_labels
     
     return header, data_labels

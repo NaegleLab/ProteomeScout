@@ -36,7 +36,7 @@
 	    	</form>
 	    	<form method="POST" action="${request.application_url}/upload/clustering?redirect=${request.route_path('experiment_subset', id=experiment.id)}">
 		    	<fieldset>
-		    		<legend>Import Cluster File</legend>
+		    		<legend>Import Annotation File</legend>
 	   				<input type="file" name="clusterfile" /> <br />
 		        	<input type="Submit" id="upload-clustering" class="longtask" value="Import Clusters" />
 		        </fieldset>
