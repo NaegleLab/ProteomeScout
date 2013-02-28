@@ -1,7 +1,7 @@
 function EnrichmentTable(parent_element, table_data){
 	var widget = this;
 	this.numTests = table_data.length;
-	
+	this.data = table_data;
 	
 	var div = $('<div />').appendTo(parent_element);
 	$('<span>Mark as significant with p-value less than: </span>').appendTo(div);
@@ -63,18 +63,28 @@ function EnrichmentTable(parent_element, table_data){
 EnrichmentTable.prototype.filter = function(cutoff, correction) {
 	var widget = this;
 	
+	var corrected_cutoff = cutoff;
+	if(correction == 'fdr'){
+		for(var i = 0; i < this.data.length; i++){
+			var pval = parseFloat( this.data[i][2] );
+			if(cutoff * i / this.numTests >= pval){
+				corrected_cutoff = pval;
+			}
+			
+		}
+	}
+	
 	this.tbody.find('tr').each(function() {
 		var pval_td = $(this).find(".numeric");
 		var val = pval_td.attr('value');
 		var cval = val;
-		
 		
 		if(correction == 'bonferroni')
 			cval = val * widget.numTests;
 		
 		pval_td.text(parseFloat(parseFloat(cval).toPrecision(3)).toExponential());
 		
-		if(cval < cutoff)
+		if(cval <= corrected_cutoff)
 			$(this).addClass('significant');
 		else
 			$(this).removeClass('significant');
