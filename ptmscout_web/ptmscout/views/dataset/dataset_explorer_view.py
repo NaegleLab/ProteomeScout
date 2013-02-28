@@ -358,7 +358,16 @@ def create_quantitative_filter(expression):
     
     raise QueryError("Invalid comparison operator '%s'" % ( expression[comp_index] ))
 
-def parse_condition(condition):
+
+def create_subset_filter(op, subset_label, experiment_id=None, user=None):
+    subset = annotations.getSubsetByName(experiment_id, subset_label, user)
+    if subset == None:
+        raise QueryError("No such subset '%s'" % (subset_label))
+    
+    return parse_query_expression(subset.foreground_query, experiment_id, user)
+  
+
+def parse_condition(condition, experiment_id, user):
     if condition[0] == 'protein':
         return create_protein_filter(condition[1])
     if condition[0] == 'metadata':
@@ -369,9 +378,12 @@ def parse_condition(condition):
         return create_sequence_filter(condition[1])
     if condition[0] == 'quantitative':
         return create_quantitative_filter(condition[1:])
+    if condition[0] == 'subset':
+        return create_subset_filter(*tuple(condition[1:]), user=user, experiment_id=experiment_id)
 
+    raise QueryError("No filter type found for '%s'" % (condition[0]))
 
-def parse_dnf_clause(conditions):
+def parse_dnf_clause(conditions, experiment_id, user):
     def conjunction(operands):
         def apply_conjunction(ms):
             for op in operands:
@@ -381,9 +393,9 @@ def parse_dnf_clause(conditions):
         
         return apply_conjunction
     
-    return conjunction( [ parse_condition(cond) for cond in conditions] )
+    return conjunction( [ parse_condition(cond, experiment_id, user) for cond in conditions] )
 
-def parse_query_expression(expression):
+def parse_query_expression(expression, experiment_id, user):
     def passthrough(ms):
         return True
     
@@ -407,7 +419,7 @@ def parse_query_expression(expression):
         
         dnf_clauses[-1].append(condition)
         
-    return disjunction( [ parse_dnf_clause(op) for op in dnf_clauses ] )
+    return disjunction( [ parse_dnf_clause(op, experiment_id, user) for op in dnf_clauses ] )
 
 def format_peptide_data(measurements):
     formatted_peptide_data = []
@@ -444,9 +456,9 @@ def format_measurement_data(measurements):
     return experiment_data
 
 
-def compute_subset_enrichment(exp, subset_name, foreground_exp, background_exp):
-    foreground_decision_func = parse_query_expression(foreground_exp)
-    background_decision_func = parse_query_expression(background_exp)
+def compute_subset_enrichment(exp, user, subset_name, foreground_exp, background_exp):
+    foreground_decision_func = parse_query_expression(foreground_exp, exp.id, user)
+    background_decision_func = parse_query_expression(background_exp, exp.id, user)
     
     background = [ms for ms in exp.measurements if background_decision_func(ms)]
     foreground = [ms for ms in background if foreground_decision_func(ms)]
@@ -500,7 +512,7 @@ def perform_subset_enrichment(request):
     foreground_exp = query_expression['foreground']
     background_exp = query_expression['background']
     
-    return compute_subset_enrichment(exp, subset_name, foreground_exp, background_exp)
+    return compute_subset_enrichment(exp, request.user, subset_name, foreground_exp, background_exp)
     
 
 @view_config(route_name='save_subset', renderer='json', permission='private')
@@ -513,8 +525,8 @@ def save_subset(request):
     foreground_exp = query_expression['foreground']
     background_exp = query_expression['background']
     
-    parse_query_expression(foreground_exp)
-    parse_query_expression(background_exp)
+    parse_query_expression(foreground_exp, exp_id, request.user)
+    parse_query_expression(background_exp, exp_id, request.user)
     
     if(None != annotations.getSubsetByName(exp_id, subset_name, request.user)):
         return {'status':"error",
@@ -549,6 +561,6 @@ def fetch_subset(request):
                 'message':strings.error_message_subset_name_does_not_exist}
     
     
-    result = compute_subset_enrichment(exp, subset.name, subset.foreground_query, subset.background_query)
+    result = compute_subset_enrichment(exp, request.user, subset.name, subset.foreground_query, subset.background_query)
     result['id'] = subset.id
     return result

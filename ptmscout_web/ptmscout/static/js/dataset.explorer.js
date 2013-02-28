@@ -672,6 +672,8 @@ function SubsetSelection(element, webservice_url) {
 	
 	this.webservice_url = webservice_url;
 	this.query_num = 0;
+	
+	this.subsetPrefix = 'Subset: ';
 	this.field_data = JSON.parse( Base64.decode( element.find("#field-data").text() ) );
 	this.experiment_id = this.field_data.experiment_id;
 	
@@ -681,10 +683,13 @@ function SubsetSelection(element, webservice_url) {
 	this.failure_text = $("<span />").appendTo(this.failure_dialog);
 	
 	this.subsetSelection = $("#saved-subset-select");
+	this.backgroundSelection = $("#background-select");
 	
 	for(var i in this.field_data.subset_labels){
 		var label = this.field_data.subset_labels[i];
 		$('<option />', {'value': label, 'text': label}).appendTo(this.subsetSelection);
+		var background_label  = '{0}{1}'.format(this.subsetPrefix, label);
+		$('<option />', {'value': background_label, 'text': background_label}).appendTo(this.backgroundSelection);
 	}
 	
 	this.subsetOpen = $("#open-saved-subset");
@@ -703,6 +708,8 @@ function SubsetSelection(element, webservice_url) {
 	this.remove_condition.on('click', function(){
 		selector.removeConditionField();
 	});
+	
+
 	
 	this.compute_subset = $("#compute-subset");
 	this.compute_subset.on('click',function(){
@@ -744,7 +751,7 @@ SubsetSelection.prototype.openExistingSubset = function(name) {
 				done_waiting();
 				
 				if(data.status == 'error'){
-					app.displayError(data.response.message);
+					app.displayError(data.message);
 				}else if(data.status == 'success'){
 					app.subsetManager.addSubset(data);
 				}
@@ -784,7 +791,15 @@ SubsetSelection.prototype.saveSubset = function(tabElement, name, foreground, ba
 				if(data.status == 'error'){
 					app.displayError(data.message);
 				}else if(data.status == 'success'){
-					tabElement.changeName(data.name);
+					var label = data.name;
+					tabElement.changeName(label);
+
+					app.field_data.subset_labels.push(label);
+					$('<option />', {'value': label, 'text': label}).appendTo(app.subsetSelection);
+					
+					var background_label  = 'Subset: {0}'.format(label);
+					$('<option />', {'value': background_label, 'text': background_label}).appendTo(app.backgroundSelection);
+					
 				}
 			} ,
 			error: function(jqXHR, textStatus, errorThrown) {
@@ -817,11 +832,17 @@ SubsetSelection.prototype.submitQuery = function() {
 		}
 	}
 	
+	var background = this.backgroundSelection.val();
+	if(background.startsWith(this.subsetPrefix)){
+		var bg_subset = background.substring(this.subsetPrefix.length);
+		background = [ ['nop', ['subset', 'in', bg_subset]] ];
+	}
+	
 	var subset_query = {
 			'experiment': this.experiment_id,
 			'type': 'create',
 			'name': 'Subset {0}'.format(this.query_num),
-			'background': 'experiment',
+			'background': background,
 			'foreground': expression
 	};
 	

@@ -20,7 +20,7 @@ class TestDatasetExplorerView(UnitTestCase):
                ['and', [ 'scansite', 'Scansite-Kinase', 'eq', 'PDGFRB_Y_kin', '0.2' ]]
             ]
         
-        selector = dataset_explorer_view.parse_query_expression(foreground_query)
+        selector = dataset_explorer_view.parse_query_expression(foreground_query, None, None)
 
         d1 = createMockDataItem('run1', 1, 'data', '0', 'time(sec)', 0.4)
         d2 = createMockDataItem('run1', 2, 'data', '1', 'time(sec)', 0.1)
@@ -179,8 +179,8 @@ class TestDatasetExplorerView(UnitTestCase):
         patch_getExp.assert_called_once_with(exp_id, request.user)
         patch_calc.assert_called_once_with(measurements, measurements)
         
-        self.assertIn(call('experiment'), patch_parse.call_args_list)
-        self.assertIn(call(foreground_query), patch_parse.call_args_list)
+        self.assertIn(call('experiment', exp_id, request.user), patch_parse.call_args_list)
+        self.assertIn(call(foreground_query, exp_id, request.user), patch_parse.call_args_list)
         
         self.assertEqual('success', result['status'])
         self.assertEqual("Some feature enrichment", result['enrichment'])
@@ -325,7 +325,7 @@ class TestDatasetExplorerView(UnitTestCase):
         result = dataset_explorer_view.fetch_subset(request)
         
         self.assertEqual({'id': subset.id, 'some': 'enrichment analysis'}, result)
-        patch_compute.assert_called_once_with(exp, 'named subset', 'some exp', 'some other exp')
+        patch_compute.assert_called_once_with(exp, user, 'named subset', 'some exp', 'some other exp')
         patch_getExp.assert_called_once_with(exp_id, user)
         patch_getSubset.assert_called_once_with(exp_id, 'named subset', user)
 
@@ -356,7 +356,7 @@ class TestDatasetExplorerView(UnitTestCase):
         result = dataset_explorer_view.fetch_subset(request)
         
         self.assertEqual({'id':subset.id, 'some': 'enrichment analysis'}, result)
-        patch_compute.assert_called_once_with(exp, 'named subset', 'some exp', 'some other exp')
+        patch_compute.assert_called_once_with(exp, user, 'named subset', 'some exp', 'some other exp')
         patch_getExp.assert_called_once_with(exp_id, user)
         patch_getSubset.assert_called_once_with(100000, exp_id)
 
@@ -376,7 +376,6 @@ class IntegrationTestDatasetExplorerView(IntegrationTestCase):
         
         query_expression = {
                             'experiment': exp_id,
-                            'type': 'create',
                             'name': 'Subset 1',
                             'background': 'experiment',
                             'foreground': foreground_query}
@@ -406,16 +405,37 @@ class IntegrationTestDatasetExplorerView(IntegrationTestCase):
         
         query_expression = {
                             'experiment': exp_id,
-                            'name': 'new saved subset',
+                            'name': 'BP:MAPK',
                             'background': background_query,
                             'foreground': foreground_query}        
         
         result = self.ptmscoutapp.post_json("/webservice/subsets/save", params=query_expression, status=200)
         result = result.json
         
+        
         DBSession.flush()
         
-        subset = annotations.getSubsetByName(28, 'new saved subset', self.bot.user)
+        subset = annotations.getSubsetByName(28, 'BP:MAPK', self.bot.user)
         
         self.assertEqual(query_expression['foreground'], subset.foreground_query)
         self.assertEqual(query_expression['background'], subset.background_query)
+        
+        foreground_query = [
+                            ['nop', [ 'metadata', 'GO-Biological Process', 'eq', 'GO:0000186: activation of MAPKK activity' ]]
+                            ]
+        background_query = [
+                            ['nop', ['subset', 'in', 'BP:MAPK']]
+                            ]
+        
+        query_expression = {
+                            'experiment':exp_id,
+                            'name': 'BP:MAPK',
+                            'background': background_query,
+                            'foreground': foreground_query
+                            }
+        
+        result = self.ptmscoutapp.post_json("/webservice/subsets/query", params = query_expression, status=200)
+        result = result.json
+        
+        print result['foreground']['peptides']
+        print result['background']['peptides']
