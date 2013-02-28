@@ -248,4 +248,6 @@ The PTMScout administrator has been notified of this error. If problems persist 
 -The PTMScout Team
 """
 
+error_message_subset_name_exists = "A subset with that name already exists for this experiment, please choose another name"
+error_message_subset_name_does_not_exist = "No subset was found with that name"
 

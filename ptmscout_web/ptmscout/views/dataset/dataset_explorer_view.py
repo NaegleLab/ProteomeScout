@@ -1,8 +1,9 @@
 from pyramid.view import view_config
 import json
 import base64
-from ptmscout.database import experiment
+from ptmscout.database import experiment, annotations
 from ptmscout.utils import protein_utils, motif
+from ptmscout.config import strings
 
 def get_pfam_metadata(measurements, metadata_fields):
     metadata_fields.update({'Pfam-Domain':set(),'Pfam-Site':set(),'Region':set()})
@@ -85,14 +86,27 @@ def get_modification_metadata(measurements, metadata_fields):
                 metadata_fields['Modification Type'].add(ptm.name)
 
 
-def format_explorer_view(experiment_id, measurements):
+
+def get_valid_subset_labels(experiment_id, user):
+    subset_labels = []
+    
+    for subset in annotations.getSubsetsForUser(experiment_id, user):
+        subset_labels.append(subset.name)
+    
+    return sorted(subset_labels)
+
+def get_valid_clusterings(experiment_id, user):
+    return {}
+
+def format_explorer_view(experiment_id, measurements, user):
     quantitative_fields = set()
     
     accessions = []
     metadata_fields = {}
     scansite_fields = {}
-    cluster_labels = {}
-    subset_labels = []
+    
+    cluster_labels = get_valid_clusterings(experiment_id, user)
+    subset_labels = get_valid_subset_labels(experiment_id, user)
     
     get_protein_metadata(measurements, metadata_fields, accessions)
     get_pfam_metadata(measurements, metadata_fields)
@@ -111,8 +125,7 @@ def format_explorer_view(experiment_id, measurements):
         metadata_fields[field] = sorted( list(metadata_fields[field]) )
     
     
-    field_data = {
-                  'experiment_id': experiment_id,
+    field_data = {'experiment_id': experiment_id,
                   'quantitative_fields': sorted( list(quantitative_fields) ),
                   'accessions': accessions,
                   'scansite_fields': scansite_fields,
@@ -121,7 +134,7 @@ def format_explorer_view(experiment_id, measurements):
                   'metadata_keys': sorted( metadata_fields.keys() ),
                   'clustering_sets': sorted( list(cluster_labels.keys()) ),
                   'clustering_labels': cluster_labels,
-                  'subset_labels':subset_labels}
+                  'subset_labels': subset_labels}
     
     return {'field_data': base64.b64encode( json.dumps(field_data) )}
 
@@ -431,14 +444,9 @@ def format_measurement_data(measurements):
     return experiment_data
 
 
-@view_config(route_name='compute_subset', renderer='json', permission='private')
-def compute_subset_enrichment(request):
-    query_expression = json.loads(request.body, encoding=request.charset)
-    exp_id = int(query_expression['experiment'])
-    exp = experiment.getExperimentById(exp_id, request.user)
-    
-    foreground_decision_func = parse_query_expression(query_expression['foreground'])
-    background_decision_func = parse_query_expression(query_expression['background'])
+def compute_subset_enrichment(exp, subset_name, foreground_exp, background_exp):
+    foreground_decision_func = parse_query_expression(foreground_exp)
+    background_decision_func = parse_query_expression(background_exp)
     
     background = [ms for ms in exp.measurements if background_decision_func(ms)]
     foreground = [ms for ms in background if foreground_decision_func(ms)]
@@ -458,16 +466,17 @@ def compute_subset_enrichment(request):
     measurement_data = format_measurement_data(foreground)
     peptide_data = format_peptide_data(foreground)
     
-    return {'experiment': exp_id,
-            'name': query_expression['name'],
+    return {'status':'success',
+            'experiment': exp.id,
+            'name': subset_name,
             'background': {
-                           'query': query_expression['background'],
+                           'query': background_exp,
                            'proteins': background_protein_cnt,
                            'peptides': background_peptide_cnt,
                            'seqlogo':background_seqlogo
                            },
             'foreground': {
-                           'query': query_expression['foreground'],
+                           'query': foreground_exp,
                            'proteins': foreground_protein_cnt,
                            'peptides': foreground_peptide_cnt,
                            'seqlogo': foreground_seqlogo
@@ -479,13 +488,67 @@ def compute_subset_enrichment(request):
                       'tests': motif_tests,
                       'results': motif_results
                       }
-        }
+            }
+
+@view_config(route_name='compute_subset', renderer='json', permission='private')
+def perform_subset_enrichment(request):
+    query_expression = json.loads(request.body, encoding=request.charset)
+    exp_id = int(query_expression['experiment'])
+    exp = experiment.getExperimentById(exp_id, request.user)
+    
+    subset_name = query_expression['name']
+    foreground_exp = query_expression['foreground']
+    background_exp = query_expression['background']
+    
+    return compute_subset_enrichment(exp, subset_name, foreground_exp, background_exp)
     
 
 @view_config(route_name='save_subset', renderer='json', permission='private')
 def save_subset(request):
-    return {}
+    query_expression = json.loads(request.body, encoding=request.charset)
+    exp_id = int(query_expression['experiment'])
+    experiment.getExperimentById(exp_id, request.user)
+    
+    subset_name = query_expression['name']
+    foreground_exp = query_expression['foreground']
+    background_exp = query_expression['background']
+    
+    parse_query_expression(foreground_exp)
+    parse_query_expression(background_exp)
+    
+    if(None != annotations.getSubsetByName(exp_id, subset_name, request.user)):
+        return {'status':"error",
+                'message':strings.error_message_subset_name_exists}
+    
+    subset = annotations.Subset()
+    subset.name = subset_name
+    subset.experiment_id = exp_id
+    subset.owner_id = request.user.id
+    subset.foreground_query = foreground_exp
+    subset.background_query = background_exp
+    subset.save()
+    
+    return {'id': subset.id,
+            'name': subset.name,
+            'status':'success'}
 
 @view_config(route_name='fetch_subset', renderer='json', permission='private')
 def fetch_subset(request):
-    return {}
+    query_expression = json.loads(request.body, encoding=request.charset)
+    exp_id = int(query_expression['experiment'])
+    exp = experiment.getExperimentById(exp_id, request.user)
+    
+    subset = None
+    if 'id' in query_expression:
+        subset = annotations.getSubsetById(int(query_expression['id']), exp_id)
+    elif 'name' in query_expression:
+        subset = annotations.getSubsetByName(exp_id, query_expression['name'], request.user)
+    
+    if None == subset:
+        return {'status':"error",
+                'message':strings.error_message_subset_name_does_not_exist}
+    
+    
+    result = compute_subset_enrichment(exp, subset.name, subset.foreground_query, subset.background_query)
+    result['id'] = subset.id
+    return result

@@ -1,5 +1,5 @@
 function format_op_arg(arg){
-	var oper_values = {'eq':"=", 'neq':"\u2260", 'gt':">", 'geq':"\u2265", 'lt':"<", 'leq':"\u2264", 'add':"+", 'sub':"-", 'mul':"x", 'div':"/"};
+	var oper_values = {'in':"IN", 'nin':"NOT IN", 'eq':"=", 'neq':"\u2260", 'gt':">", 'geq':"\u2265", 'lt':"<", 'leq':"\u2264", 'add':"+", 'sub':"-", 'mul':"x", 'div':"/"};
 
 	if(arg in oper_values){
 		return $('<span class="condition-op">{0}</span>'.format(oper_values[arg]));
@@ -53,10 +53,10 @@ function SubsetTab(tabId, name, selectionEngine) {
 	
 	$('<span>Subset Name:</span>').appendTo(tmpdiv);
 	this.subsetName = $('<input type="text" value="{0}" />'.format(name)).appendTo(tmpdiv);
-	this.saveSubset = $('<button>Save Subset</button>').appendTo(tmpdiv);
+	this.saveSubset = $('<button></button>', {'class':'longtask', 'text':"Save Subset"}).appendTo(tmpdiv);
 	this.saveSubset.on('click', function(){
 		var name = subsetTab.subsetName.val();
-		subsetTab.selectionEngine.saveSubset(name, subsetTab.response.foreground.query, subsetTab.response.background.query);
+		subsetTab.selectionEngine.saveSubset(subsetTab, name, subsetTab.response.foreground.query, subsetTab.response.background.query);
 	});
 	
 	this.summary = $('<fieldset class="result-summary"><legend>Results</legend></fieldset>').appendTo(this.contentContainer);
@@ -73,6 +73,11 @@ function SubsetTab(tabId, name, selectionEngine) {
 	
 	this.dataContainer = $('<fieldset><legend>Experiment Data</legend></fieldset>').appendTo(this.contentContainer);
 	this.data = $('<div class="experiment_data"></div>').appendTo(this.dataContainer);
+};
+
+SubsetTab.prototype.changeName = function(name) {
+	this.tabElement.find('a').text(name);
+	this.subsetName.val(name);
 };
 
 SubsetTab.prototype.formatPeptides = function(peptides) {
@@ -100,8 +105,8 @@ SubsetTab.prototype.formatMotif = function(motif) {
 		var tableRow = $('<tr />', {"class":rowClass}).appendTo(this.motifEntries);
 		
 		$('<td />',{ 'class':"peptide", 'text':motif.results[i][0] }).appendTo(tableRow);
-		$('<td>{0} / {1}</td>'.format(motif.results[i][1][0], motif.results[i][1][1]), {'class':"numeric"}).appendTo(tableRow);
-		$('<td>{0} / {1}</td>'.format(motif.results[i][2][0], motif.results[i][2][1]), {'class':"numeric"}).appendTo(tableRow);
+		$('<td />',{ 'class':"numeric", 'text':'{0} / {1}'.format(motif.results[i][1][0], motif.results[i][1][1])}).appendTo(tableRow);
+		$('<td />',{ 'class':"numeric", 'text':'{0} / {1}'.format(motif.results[i][2][0], motif.results[i][2][1])}).appendTo(tableRow);
 		$('<td />',{ 'class':"numeric", 'text':motif.results[i][3] }).appendTo(tableRow);
 	}
 };
@@ -375,7 +380,7 @@ function SubsetSelector(parent_element, saved_subsets) {
 	
 	$("<option />").appendTo(this.value);
 	for(var i in saved_subsets){
-		$("<option value=\"{0}\">{0}</option>".format(saved_subset[i])).appendTo(this.value);
+		$("<option value=\"{0}\">{0}</option>".format(saved_subsets[i])).appendTo(this.value);
 	}
 };
 
@@ -608,7 +613,7 @@ SelectorCondition.prototype.changed = function() {
 		this.selector = new MetadataSelector(this.element, 'metadata', ":", "", this.field_data.metadata_keys, this.field_data.metadata_fields);
 	}
 	if(value == 'subset'){
-		this.selector = new SubsetSelector(this.element, []);
+		this.selector = new SubsetSelector(this.element, this.field_data.subset_labels);
 	}
 	if(value == 'cluster'){
 		this.selector = new MetadataSelector(this.element, 'cluster', ":", "Cluster ID:", this.field_data.clustering_sets, this.field_data.clustering_labels);
@@ -673,8 +678,20 @@ function SubsetSelection(element, webservice_url) {
 
 	this.failure_dialog = $("<div title=\"Error!\"></div>")
 								.dialog( {  autoOpen:false, modal: true, buttons: { "Ok": function(){ $(this).dialog( 'close' ); } } } );
-	
 	this.failure_text = $("<span />").appendTo(this.failure_dialog);
+	
+	this.subsetSelection = $("#saved-subset-select");
+	
+	for(var i in this.field_data.subset_labels){
+		var label = this.field_data.subset_labels[i];
+		$('<option />', {'value': label, 'text': label}).appendTo(this.subsetSelection);
+	}
+	
+	this.subsetOpen = $("#open-saved-subset");
+	this.subsetOpen.on('click', function(){
+		selector.openExistingSubset(selector.subsetSelection.val());
+	})
+	
 	
 	this.conditions = [];
 	this.condition_list = $("#filter-conditions");
@@ -706,13 +723,52 @@ SubsetSelection.prototype.displayError = function(errorMessage) {
 	done_waiting();
 };
 
-SubsetSelection.prototype.saveSubset = function(name, foreground, background){
+SubsetSelection.prototype.openExistingSubset = function(name) {
+	var app = this;
+	
+	if(name == ''){
+		this.displayError("You must choose a subset");
+	}else{
+		var query_url = this.webservice_url + '/subsets/fetch';
+		var subset_fetch_query = {	'name': name,
+									'experiment': this.experiment_id 
+				 					}
+		
+		$.ajax({
+			url: query_url,
+			type: 'POST',
+			contentType:'application/json',
+			data: JSON.stringify(subset_fetch_query),
+			dataType:'json',
+			success: function(data) {
+				done_waiting();
+				
+				if(data.status == 'error'){
+					app.displayError(data.response.message);
+				}else if(data.status == 'success'){
+					app.subsetManager.addSubset(data);
+				}
+			} ,
+			error: function(jqXHR, textStatus, errorThrown) {
+				app.displayError("Error in server response, please try again.");
+				console.log(textStatus);
+				console.log(errorThrown);
+			}
+		});
+
+	}
+}
+
+SubsetSelection.prototype.saveSubset = function(tabElement, name, foreground, background){
+	var app = this;
+	
 	if(name == ''){
 		this.displayError("Name cannot be an empty field");
 	}else{
 
 		var query_url = this.webservice_url + '/subsets/save';
 		var subset_save_query = {'name': name,
+								 'experiment': this.experiment_id,
 								 'foreground': foreground,
 								 'background': background}		
 		
@@ -724,11 +780,11 @@ SubsetSelection.prototype.saveSubset = function(name, foreground, background){
 			dataType:'json',
 			success: function(data) {
 				done_waiting();
-				console.log("Save response:");
-				console.log(data);
 				
-				if(data.response == 'error'){
-					app.displayError(data.response.message);
+				if(data.status == 'error'){
+					app.displayError(data.message);
+				}else if(data.status == 'success'){
+					tabElement.changeName(data.name);
 				}
 			} ,
 			error: function(jqXHR, textStatus, errorThrown) {

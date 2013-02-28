@@ -6,8 +6,9 @@ from mock import patch, call
 from tests.views.mocking import createMockExperiment, createMockMeasurement,\
     createMockUser, createMockPeptide,\
     createMockPeptideModification, createMockPTM, createMockScansite,\
-    createMockDataItem
-from ptmscout.database import protein
+    createMockDataItem, createMockSubset
+from ptmscout.database import protein, annotations
+from ptmscout.config import strings
 
 class TestDatasetExplorerView(UnitTestCase):
     
@@ -157,7 +158,6 @@ class TestDatasetExplorerView(UnitTestCase):
         
         query_expression = {
                             'experiment': exp_id,
-                            'type': 'create',
                             'name': 'Subset 1',
                             'background': 'experiment',
                             'foreground': foreground_query}
@@ -174,7 +174,7 @@ class TestDatasetExplorerView(UnitTestCase):
         patch_seqlogo.return_value = "a seqlogo"
         patch_calc.return_value = "Some feature enrichment"
         
-        result = dataset_explorer_view.compute_subset_enrichment(request)
+        result = dataset_explorer_view.perform_subset_enrichment(request)
         
         patch_getExp.assert_called_once_with(exp_id, request.user)
         patch_calc.assert_called_once_with(measurements, measurements)
@@ -182,6 +182,7 @@ class TestDatasetExplorerView(UnitTestCase):
         self.assertIn(call('experiment'), patch_parse.call_args_list)
         self.assertIn(call(foreground_query), patch_parse.call_args_list)
         
+        self.assertEqual('success', result['status'])
         self.assertEqual("Some feature enrichment", result['enrichment'])
         self.assertEqual("a seqlogo", result['foreground']['seqlogo'])
         self.assertEqual(3, result['foreground']['proteins'])
@@ -191,9 +192,183 @@ class TestDatasetExplorerView(UnitTestCase):
         self.assertEqual(3, result['background']['peptides'])
         self.assertEqual("Subset 1", result['name'])
         
+
+    @patch('ptmscout.database.experiment.getExperimentById')
+    @patch('ptmscout.database.annotations.getSubsetByName')
+    def test_save_subset_should_report_error_if_element_exists(self, patch_getSubset, patch_getExp):
+        exp_id = 11
+        exp = createMockExperiment(eid=exp_id)
+
+        patch_getSubset.return_value = annotations.Subset()
+        patch_getExp.return_value = exp
+        
+        foreground_query = [
+               ['nop', [ 'protein', 'P03367' ]], 
+               ['or',  [ 'quantitative', '2.0', 'gt', 'run1:data:5', 'div', 'run1:data:1' ]], 
+               ['and', [ 'scansite', 'Scansite-Kinase', 'eq', 'PDGFRB_Y_kin', '5' ]]
+            ]
+        
+        background_query = 'experiment'
+        
+        save_query = {'name': 'new named subset',
+                      'experiment': exp_id,
+                      'foreground': foreground_query,
+                      'background': background_query}
+            
+        request = DummyRequest()
+        request.user = createMockUser()
+        
+        request.body = json.dumps(save_query)
+        
+        result = dataset_explorer_view.save_subset(request)
+        
+        patch_getExp.assert_called_once_with(exp_id, request.user)
+        patch_getSubset.assert_called_once_with(exp_id, 'new named subset', request.user)
+        
+        self.assertEqual('error', result['status'])
+        self.assertEqual(strings.error_message_subset_name_exists, result['message'])
+        
+    
+    @patch('ptmscout.database.experiment.getExperimentById')
+    @patch('ptmscout.database.annotations.getSubsetByName')
+    @patch('ptmscout.database.annotations.Subset')    
+    def test_save_subset_should_create_new_subset_element_and_save(self, patch_subset, patch_getSubset, patch_getExp):
+        exp_id = 11
+        exp = createMockExperiment(eid=11)
+
+        patch_getSubset.return_value = None
+        patch_getExp.return_value = exp
+        
+        foreground_query = [
+               ['nop', [ 'protein', 'P03367' ]], 
+               ['or',  [ 'quantitative', '2.0', 'gt', 'run1:data:5', 'div', 'run1:data:1' ]], 
+               ['and', [ 'scansite', 'Scansite-Kinase', 'eq', 'PDGFRB_Y_kin', '5' ]]
+            ]
+        
+        background_query = 'experiment'
+        
+        save_query = {'name': 'new named subset',
+                      'experiment': str(exp_id),
+                      'foreground': foreground_query,
+                      'background': background_query}
+            
+        request = DummyRequest()
+        request.user = createMockUser()
+        user_id = request.user.id
+        
+        request.body = json.dumps(save_query)
+            
+        subset = patch_subset.return_value
+        
+        result = dataset_explorer_view.save_subset(request)
+        
+        self.assertEqual(exp_id, subset.experiment_id)
+        self.assertEqual(user_id, subset.owner_id)
+        self.assertEqual('new named subset', subset.name)
+        self.assertEqual(foreground_query, subset.foreground_query)
+        self.assertEqual(background_query, subset.background_query)
+        
+        subset.save.assert_called_once_with()
+        self.assertEqual('new named subset', result['name'])
+        self.assertEqual('success', result['status'])
+        
+        patch_getExp.assert_called_once_with(exp_id, request.user)
+        
+    @patch('ptmscout.database.experiment.getExperimentById')
+    @patch('ptmscout.database.annotations.getSubsetByName')
+    def test_fetch_subset_should_return_error_if_subset_does_not_exist(self, patch_getSubset, patch_getExp):
+        exp_id = 11
+        exp = createMockExperiment(eid=11)
+
+        patch_getSubset.return_value = None
+        patch_getExp.return_value = exp
+        
+        fetch_query = {
+                       'experiment': str(exp_id),
+                       'name': 'named subset'
+                       }
+                    
+        request = DummyRequest()
+        request.user = createMockUser()
+        
+        request.body = json.dumps(fetch_query)
+        
+        result = dataset_explorer_view.fetch_subset(request)
+        
+        self.assertEqual('error', result['status'])
+        self.assertEqual(strings.error_message_subset_name_does_not_exist, result['message'])
+
+    @patch('ptmscout.views.dataset.dataset_explorer_view.compute_subset_enrichment')
+    @patch('ptmscout.database.experiment.getExperimentById')
+    @patch('ptmscout.database.annotations.getSubsetByName')
+    def test_fetch_subset_should_return_compute_enrichment_if_subset_exists(self, patch_getSubset, patch_getExp, patch_compute):
+        exp_id = 11
+        exp = createMockExperiment(eid=11)
+        user = createMockUser()
+        subset = createMockSubset(name='named subset', owner_id=user.id, experiment_id=exp_id, foreground='some exp', background='some other exp')
+
+        patch_getSubset.return_value = subset
+        patch_getExp.return_value = exp
+        
+        fetch_query = {
+                       'experiment': str(exp_id),
+                       'name': 'named subset'
+                       }
+                    
+        request = DummyRequest()
+        request.user = user
+        
+        request.body = json.dumps(fetch_query)
+        
+        patch_compute.return_value = {'some': 'enrichment analysis'}
+        
+        result = dataset_explorer_view.fetch_subset(request)
+        
+        self.assertEqual({'id': subset.id, 'some': 'enrichment analysis'}, result)
+        patch_compute.assert_called_once_with(exp, 'named subset', 'some exp', 'some other exp')
+        patch_getExp.assert_called_once_with(exp_id, user)
+        patch_getSubset.assert_called_once_with(exp_id, 'named subset', user)
+
+    @patch('ptmscout.views.dataset.dataset_explorer_view.compute_subset_enrichment')
+    @patch('ptmscout.database.experiment.getExperimentById')
+    @patch('ptmscout.database.annotations.getSubsetById')
+    def test_fetch_subset_should_get_subset_by_id_if_id_given(self, patch_getSubset, patch_getExp, patch_compute):
+        exp_id = 11
+        exp = createMockExperiment(eid=11)
+        user = createMockUser()
+        subset = createMockSubset(name='named subset', owner_id=user.id, experiment_id=exp_id, foreground='some exp', background='some other exp')
+
+        patch_getSubset.return_value = subset
+        patch_getExp.return_value = exp
+        
+        fetch_query = {
+                       'experiment': str(exp_id),
+                       'id': '100000'
+                       }
+                    
+        request = DummyRequest()
+        request.user = user
+        
+        request.body = json.dumps(fetch_query)
+        
+        patch_compute.return_value = {'some': 'enrichment analysis'}
+        
+        result = dataset_explorer_view.fetch_subset(request)
+        
+        self.assertEqual({'id':subset.id, 'some': 'enrichment analysis'}, result)
+        patch_compute.assert_called_once_with(exp, 'named subset', 'some exp', 'some other exp')
+        patch_getExp.assert_called_once_with(exp_id, user)
+        patch_getSubset.assert_called_once_with(100000, exp_id)
+
+        
         
 class IntegrationTestDatasetExplorerView(IntegrationTestCase):
-    def test_view_integration(self):
+    def test_view_enrichment_page(self):
+        result = self.ptmscoutapp.get("/experiments/28/subsets", status=200)
+        result.mustcontain('Effects of HER2 overexpression on cell signaling networks governing proliferation and migration.')
+        
+    
+    def test_subset_fetch_integration(self):
         exp_id = 28
         foreground_query = [
                ['nop', [ 'metadata', 'GO-Biological Process', 'eq', 'GO:0000187: activation of MAPK activity' ]]
@@ -206,7 +381,7 @@ class IntegrationTestDatasetExplorerView(IntegrationTestCase):
                             'background': 'experiment',
                             'foreground': foreground_query}
         
-        result = self.ptmscoutapp.post_json("/webservice/subsets", params=query_expression, status=200)
+        result = self.ptmscoutapp.post_json("/webservice/subsets/query", params=query_expression, status=200)
         result = result.json
         
         self.assertEqual(foreground_query, result['foreground']['query'])
@@ -221,3 +396,26 @@ class IntegrationTestDatasetExplorerView(IntegrationTestCase):
         self.assertEqual('Subset 1', result['name'])
         self.assertEqual(exp_id, result['experiment'])
         
+    def test_subset_save_integration(self):
+        from ptmscout.database import DBSession
+        exp_id = 28
+        foreground_query = [
+               ['nop', [ 'metadata', 'GO-Biological Process', 'eq', 'GO:0000187: activation of MAPK activity' ]]
+            ]
+        background_query = 'experiment'
+        
+        query_expression = {
+                            'experiment': exp_id,
+                            'name': 'new saved subset',
+                            'background': background_query,
+                            'foreground': foreground_query}        
+        
+        result = self.ptmscoutapp.post_json("/webservice/subsets/save", params=query_expression, status=200)
+        result = result.json
+        
+        DBSession.flush()
+        
+        subset = annotations.getSubsetByName(28, 'new saved subset', self.bot.user)
+        
+        self.assertEqual(query_expression['foreground'], subset.foreground_query)
+        self.assertEqual(query_expression['background'], subset.background_query)

@@ -11,6 +11,6 @@ def view_experiment_subset(request):
     
     result = { 'pageTitle': strings.experiment_subset_page_title,
                'experiment': ptm_exp }
-    result.update( dataset_explorer_view.format_explorer_view( experiment_id, ptm_exp.measurements ) )
+    result.update( dataset_explorer_view.format_explorer_view( experiment_id, ptm_exp.measurements, request.user ) )
     
     return result

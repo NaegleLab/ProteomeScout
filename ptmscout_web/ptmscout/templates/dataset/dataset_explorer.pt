@@ -48,6 +48,10 @@
 	    </div>
 
 		<div class="filter-set">
+			<fieldset>
+				<legend>Open Saved Subsets</legend>
+				<div> <span class="condition-title">Subset:</span> <select id="saved-subset-select"> <option/> </select> <button class="longtask" id="open-saved-subset">View Subset</button> </div>
+			</fieldset>
 			<fieldset id="filter-conditions">
 				<legend>Subset Filter Conditions</legend>
 				<div> <span class="condition-title">Background:</span> <select id="background-select"><option value="experiment">Entire Experiment</option></select></div>

@@ -22,3 +22,5 @@ from modifications import *
 from mutations import *
 from gene_expression import *
 from protein import *
+
+from annotations import *

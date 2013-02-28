@@ -14,6 +14,7 @@ from ptmscout.database.gene_expression import ExpressionProbeset,\
 from ptmscout.database.taxonomies import Species, Taxonomy
 from ptmscout.database.upload import Session, SessionColumn
 import datetime
+from ptmscout.database.annotations import Subset
 
 TEST_USER_ID = 2
 
@@ -98,6 +99,21 @@ def createMockCondition(t, value, eid=random.randint(0,100000), experiment_id=No
     mock.value = value
     
     return mock
+
+def createMockSubset(sid=None, owner_id=None, experiment_id=None, name=None, foreground=None, background=None):
+    mock = Mock(spec=Subset)
+    if(sid == None):
+        sid = random.randint(0,100000)
+        
+    mock.id = sid
+    mock.owner_id = owner_id
+    mock.experiment_id = experiment_id
+    mock.name = name
+    mock.foreground_query = foreground
+    mock.background_query = background
+    
+    return mock
+    
 
 def createMockExperiment(eid=random.randint(0,100000), public=0, parent_id=None, status='loaded'):
     mock = Mock(spec=Experiment)
