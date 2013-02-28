@@ -1,8 +1,6 @@
 from pyramid.view import view_config
-import time
-from ptmscout.config import settings, strings
-import os
-from ptmscout.utils import webutils, forms, to_utf8
+from ptmscout.config import strings, settings
+from ptmscout.utils import webutils, forms, uploadutils
 from pyramid.httpexceptions import HTTPFound
 from ptmscout.database import upload
 import logging
@@ -28,30 +26,6 @@ def create_session(request, exp_file):
     
     return session.id
     
-def save_data_file(request):
-    exp_file = "experiment_data" + str(time.time())
-    exp_filename = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, exp_file)
-    exp_filename_tmp = exp_filename + '.tmp'
-
-    input_file = request.POST['data_file'].file
-    output_file = open(exp_filename_tmp, 'wb')
-    
-    input_file.seek(0)
-    while 1:
-        data = input_file.read(2<<16)
-        if not data:
-            break
-        output_file.write(data)
-    output_file.close()
-    
-    os.system("mac2unix -q %s" % (exp_filename_tmp))
-    os.system("dos2unix -q %s" % (exp_filename_tmp))
-    to_utf8.convert_encoding_to_utf8(exp_filename_tmp, exp_filename)
-
-    os.remove(exp_filename_tmp)
-
-    return exp_file
-
 def create_schema(request, users_experiments):
     schema = forms.FormSchema()
     
@@ -76,7 +50,7 @@ def create_schema(request, users_experiments):
 def upload_data_file(request):
     submitted = webutils.post(request, 'submitted', "false") == "true"
     users_experiments = [ p.experiment for p in request.user.permissions if p.access_level=='owner' and p.experiment.status=='loaded' ]
-        
+    
     errors = []
     schema = create_schema(request, users_experiments)
     
@@ -84,7 +58,7 @@ def upload_data_file(request):
         errors = forms.FormValidator(schema).validate()
         
         if len(errors) == 0:
-            output_file = save_data_file(request)
+            output_file = uploadutils.save_data_file(request.POST['data_file'], settings.experiment_files_prefix)
             session_id = create_session(request, output_file)
             return HTTPFound(request.application_url + "/upload/%d/config" % (session_id))
 

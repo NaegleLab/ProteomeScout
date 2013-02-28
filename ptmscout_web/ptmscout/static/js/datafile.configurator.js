@@ -1,5 +1,5 @@
 function setVisibility(value, parent_id){
-	if(value == 'stddev' || value == 'data')
+	if(value == 'stddev' || value == 'data' || value='numeric' || value='nominative' || value='clustering')
 		$('#{0} input.label'.format(parent_id)).show();
 	else if(value == 'hidden'){
 		$('.{0}'.format(parent_id)).children().hide();

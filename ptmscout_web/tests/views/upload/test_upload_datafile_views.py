@@ -2,7 +2,7 @@ from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 from pyramid.testing import DummyRequest
 from ptmscout.config import settings, strings
 import os
-from ptmscout.views.upload.upload_datafile import save_data_file, upload_data_file, create_session
+from ptmscout.views.upload.upload_datafile import upload_data_file, create_session
 from mock import patch, Mock
 import cgi
 from tests.views.mocking import createMockUser, createMockExperiment,\
@@ -38,55 +38,15 @@ class TestUploaddata_fileView(UnitTestCase):
         self.assertEqual(None, gen_session.parent_experiment)
         self.assertEqual('', gen_session.change_description)
         self.assertEqual('config', gen_session.stage)
-        
-    @patch('ptmscout.utils.to_utf8.convert_encoding_to_utf8')
-    def test_save_data_file_should_save_experiment_data_file_and_pass(self, patch_convert):
-        request = DummyRequest()
-        request.POST['data_file'] = cgi.FieldStorage()
-        
-        cwd = settings.ptmscout_path
-        os.chdir(cwd)
-        
-        filename = "datasetLoad_correctDataset.txt"
-        request.POST['data_file'].filename = filename
-        request.POST['data_file'].file = open(os.sep.join(["tests","behave","data",filename]), 'rb')
-        
-        def copy_exp(src, dest):
-            shutil.copy(src, dest)
-        patch_convert.side_effect = copy_exp
-
-        exp_file = save_data_file(request)
-
-        exp_path = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, exp_file)
-        patch_convert.assert_called_once_with(exp_path + '.tmp', exp_path)
-        
-        os.chdir(os.sep.join(["tests", "behave", "data"]))
-        os.system("mac2unix -q -n %s tmp_test.conv" % (filename))
-        os.system("dos2unix -q tmp_test.conv")
-
-        tf = open("tmp_test.conv", 'rb')
-        test_file = tf.read()
-        tf.close()
-        
-        os.remove("tmp_test.conv")
-        os.chdir(cwd)
-        
-        os.chdir(settings.experiment_data_file_path)
-        tf = open(exp_file, 'rb')
-        result_file = tf.read()
-        tf.close()
-        
-        os.remove(exp_file)
-        
-        self.assertEqual(test_file, result_file)
     
     @patch('ptmscout.utils.forms.FormValidator')
     @patch('ptmscout.views.upload.upload_datafile.create_session')
-    @patch('ptmscout.views.upload.upload_datafile.save_data_file')
+    @patch('ptmscout.utils.uploadutils.save_data_file')
     @patch('ptmscout.views.upload.upload_datafile.create_schema')
     def test_view_should_save_data_file_create_session_and_forward_to_configuration(self, patch_create_schema, patch_save, patch_create_session, patch_validator):
         request = DummyRequest()
         request.POST['submitted'] = "true"
+        request.POST['data_file'] = 'some file field'
         request.user = createMockUser()
         
         patch_create_schema.return_value = Mock(spec=forms.FormSchema())
@@ -103,7 +63,7 @@ class TestUploaddata_fileView(UnitTestCase):
         
         validator.validate.assert_called_once_with()
         patch_create_schema.assert_called_once_with(request, [])
-        patch_save.assert_called_once_with(request)
+        patch_save.assert_called_once_with('some file field', settings.experiment_files_prefix)
         patch_create_session.assert_called_once_with(request, 'filename')
     
     @patch('ptmscout.utils.forms.FormValidator')        

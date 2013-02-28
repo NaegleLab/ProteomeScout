@@ -16,7 +16,7 @@
             <div class="data_display">
                 <form action="" method="post">
                     <input type="hidden" name="submitted" value="true" />
-                    <div class="data">
+                    <div class="data" tal:condition="'units' in data_definitions">
                         Experiment data units: <input name='units' type="text" size="22" maxlength="20" tal:attributes="value data_definitions['units']"/>                        
                     </div>
                     <div class="datatable">

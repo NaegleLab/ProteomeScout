@@ -160,6 +160,9 @@ share_experiment_page_title = "Share Experiment"
 upload_page_title = "Upload"
 upload_page_header = "Data Upload"
 
+upload_annotations_page_title = "Upload Annotations"
+upload_configure_annotations_page_title = "Configure Annotation File"
+upload_confirm_annotations_page_title = "Confirm Annotation File Upload"
 
 
 user_invite_page_title = "Invite User"
@@ -250,4 +253,8 @@ The PTMScout administrator has been notified of this error. If problems persist 
 
 error_message_subset_name_exists = "A subset with that name already exists for this experiment, please choose another name"
 error_message_subset_name_does_not_exist = "No subset was found with that name"
+
+
+
+
 

@@ -3,7 +3,7 @@ from ptmscout.utils.uploadutils import ColumnError,\
     check_data_column_assignments, ErrorList, assign_column_defaults,\
     assign_columns_by_name, assign_columns_from_session_history, check_data_rows,\
     ParseError, check_modification_type_matches_peptide,\
-    load_header_and_data_rows
+    load_header_and_data_rows, save_data_file
 from tests.views.mocking import createMockUser, createMockSession,\
     createMockSessionColumn, createMockPTM
 from mock import patch
@@ -11,6 +11,9 @@ from ptmscout.config import strings, settings
 import os
 from tests.PTMScoutTestCase import IntegrationTestCase
 from ptmscout.database import modifications
+from pyramid.testing import DummyRequest
+import cgi
+import shutil
 
 class TestUploadUtilsWithTestDB(IntegrationTestCase):
     def test_find_mod_type(self):
@@ -104,6 +107,46 @@ class TestUploadUtils(unittest.TestCase):
     
     def tearDown(self):
         unittest.TestCase.tearDown(self)
+
+    @patch('ptmscout.utils.to_utf8.convert_encoding_to_utf8')
+    def test_save_data_file_should_save_experiment_data_file_and_pass(self, patch_convert):
+        data_file_field = cgi.FieldStorage()
+        
+        cwd = settings.ptmscout_path
+        os.chdir(cwd)
+        
+        filename = "datasetLoad_correctDataset.txt"
+        data_file_field.filename = filename
+        data_file_field.file = open(os.sep.join(["tests","behave","data",filename]), 'rb')
+        
+        def copy_exp(src, dest):
+            shutil.copy(src, dest)
+        patch_convert.side_effect = copy_exp
+
+        exp_file = save_data_file(data_file_field, "experiment_data")
+
+        exp_path = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, exp_file)
+        patch_convert.assert_called_once_with(exp_path + '.tmp', exp_path)
+        
+        os.chdir(os.sep.join(["tests", "behave", "data"]))
+        os.system("mac2unix -q -n %s tmp_test.conv" % (filename))
+        os.system("dos2unix -q tmp_test.conv")
+
+        tf = open("tmp_test.conv", 'rb')
+        test_file = tf.read()
+        tf.close()
+        
+        os.remove("tmp_test.conv")
+        os.chdir(cwd)
+        
+        os.chdir(settings.experiment_data_file_path)
+        tf = open(exp_file, 'rb')
+        result_file = tf.read()
+        tf.close()
+        
+        os.remove(exp_file)
+        
+        self.assertEqual(test_file, result_file)
 
     @patch('ptmscout.database.modifications.findMatchingPTM')
     def test_check_modification_type_matches_peptide_should_throw_error_when_mismatch_of_number_of_mods(self, patch_findPTM):

@@ -21,7 +21,7 @@ class Session(Base):
     user_id=Column(Integer(10), ForeignKey('users.id'))
     
     data_file=Column(VARCHAR(100))
-    load_type=Column(Enum(['new','reload','append','extension']))
+    load_type=Column(Enum(['new','reload','append','extension','annotations']))
     parent_experiment=Column(Integer(10), ForeignKey('experiment.id'))
     change_description=Column(Text)
     units=Column(VARCHAR(20), default='')

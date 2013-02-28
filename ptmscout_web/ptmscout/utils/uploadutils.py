@@ -4,8 +4,9 @@ import os
 from ptmscout.utils.webutils import call_catch
 import re
 import codecs
-from ptmscout.utils import protein_utils
+from ptmscout.utils import protein_utils, to_utf8
 from ptmscout.database import modifications
+import time
 
 MAX_ROW_CHECK=100
 
@@ -53,7 +54,29 @@ def get_columns_of_type(session, tp):
             cols.append(col)
     return cols
 
+def save_data_file(file_field, prefix):
+    exp_file = prefix + str(time.time())
+    exp_filename = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, exp_file)
+    exp_filename_tmp = exp_filename + '.tmp'
 
+    input_file = file_field.file
+    output_file = open(exp_filename_tmp, 'wb')
+    
+    input_file.seek(0)
+    while 1:
+        data = input_file.read(2<<16)
+        if not data:
+            break
+        output_file.write(data)
+    output_file.close()
+    
+    os.system("mac2unix -q %s" % (exp_filename_tmp))
+    os.system("dos2unix -q %s" % (exp_filename_tmp))
+    to_utf8.convert_encoding_to_utf8(exp_filename_tmp, exp_filename)
+
+    os.remove(exp_filename_tmp)
+
+    return exp_file
 
 def check_unique_column(session, ctype, required=False):
     cols = get_columns_of_type(session, ctype)

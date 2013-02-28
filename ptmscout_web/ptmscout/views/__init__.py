@@ -7,26 +7,31 @@ def add_views(config):
     
     config.add_route('portal','/')
     
-    config.add_route('compute_subset', '/webservice/subsets/query')
-    config.add_route('save_subset', '/webservice/subsets/save')
-    config.add_route('fetch_subset', '/webservice/subsets/fetch')
-#    config.add_route('upload_clusters', '/webservice/clusters')
+    
     
     config.add_route('experiments','/experiments')
     config.add_route('experiment','/experiments/{id}')
+    config.add_route('experiment_browse','/experiments/{id}/browse')
+    
     config.add_route('experiment_GO','/experiments/{id}/GO')
     config.add_route('experiment_pfam','/experiments/{id}/pfam')
     config.add_route('experiment_predictions','/experiments/{id}/predictions')
     config.add_route('experiment_summary','/experiments/{id}/summary')
-    config.add_route('experiment_browse','/experiments/{id}/browse')
     config.add_route('experiment_errors','/experiments/{id}/errors')
+    
+    config.add_route('experiment_annotate', '/experiments/{id}/annotate')
+    config.add_route('configure_annotations', '/experiments/{id}/annotate/{sid}/configure')
     
     config.add_route('experiment_download','/experiments/{id}/download')
     config.add_route('experiment_export','/experiments/{id}/export')
     
     config.add_route('experiment_ambiguity','/experiments/{id}/ambiguity')
     config.add_route('experiment_compare','/experiments/{id}/compare')
+    
     config.add_route('experiment_subset','/experiments/{id}/subsets')
+    config.add_route('compute_subset', '/webservice/subsets/query')
+    config.add_route('save_subset', '/webservice/subsets/save')
+    config.add_route('fetch_subset', '/webservice/subsets/fetch')
     
     config.add_route('upload', '/upload')
     config.add_route('upload_resume', '/upload/{id}')

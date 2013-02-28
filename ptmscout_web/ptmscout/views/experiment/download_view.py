@@ -60,7 +60,7 @@ def annotate_experiment(user, exp, header, rows):
         site_regions = list(set([ region.label for modpep in ms.peptides for region in prot.regions if region.hasSite(modpep.peptide.site_pos) ]))
 
         sep = settings.mod_separator_character + ' '
-
+        
         row.append(sep.join(nearby_modifications))
         row.append(sep.join(nearby_mutations))
         row.append(sep.join(site_domains))
