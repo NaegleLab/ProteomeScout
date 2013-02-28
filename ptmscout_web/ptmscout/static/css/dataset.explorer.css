@@ -88,6 +88,8 @@ tr.notsignificant {
 }
 
 .motifs th, .enrichment-table th {
+	padding-left:5px;
+	padding-right:5px;
 	background:#CCC;
 }
 

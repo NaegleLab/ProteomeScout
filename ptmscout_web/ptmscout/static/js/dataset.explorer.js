@@ -70,7 +70,6 @@ EnrichmentTable.prototype.filter = function(cutoff, correction) {
 			if(cutoff * i / this.numTests >= pval){
 				corrected_cutoff = pval;
 			}
-			
 		}
 	}
 	
@@ -138,6 +137,7 @@ function SubsetTab(tabId, name, selectionEngine) {
 	this.tabId = "tabs-" + tabId;
 	
 	var subsetTab = this;
+	this.subsetId = null;
 	this.selectionEngine = selectionEngine;
 	
 	this.tabElement = $( tabTemplate.format(this.tabId, name) );
@@ -230,12 +230,20 @@ SubsetTab.prototype.formatData = function(measurement_data){
 	});
 }
 
+SubsetTab.prototype.setId = function(subsetId){
+	this.subsetId = subsetId;
+}
+
+SubsetTab.prototype.hasId = function(){
+	return this.subsetId != null;
+}
+
 SubsetTab.prototype.init = function(query_response) {
 	format_query(query_response.foreground.query).appendTo(this.fquery);
 	format_query(query_response.background.query).appendTo(this.bquery);
 	
 	this.response = query_response;
-	
+
 	$("<div>{0} out of {1} proteins selected</div>".format(query_response.foreground.proteins, query_response.background.proteins)).appendTo(this.summary)
 	$("<div>{0} out of {1} peptides selected</div>".format(query_response.foreground.peptides, query_response.background.peptides)).appendTo(this.summary)
 	$("<div>{0} out of {1} sites selected</div>".format(query_response.foreground.sites, query_response.background.sites)).appendTo(this.summary)
@@ -763,6 +771,7 @@ SubsetManager.prototype.addSubset = function(query_result) {
     this.tabs.tabs('option', 'active', numtabs);
     
 	this.tabCounter++;
+	return st;
 };
 
 function SubsetSelection(element, webservice_url) {
@@ -853,7 +862,8 @@ SubsetSelection.prototype.openExistingSubset = function(name) {
 				if(data.status == 'error'){
 					app.displayError(data.message);
 				}else if(data.status == 'success'){
-					app.subsetManager.addSubset(data);
+					var st = app.subsetManager.addSubset(data);
+					st.setId(data.id);
 				}
 			} ,
 			error: function(jqXHR, textStatus, errorThrown) {
@@ -869,7 +879,9 @@ SubsetSelection.prototype.openExistingSubset = function(name) {
 SubsetSelection.prototype.saveSubset = function(tabElement, name, foreground, background){
 	var app = this;
 	
-	if(name == ''){
+	if(tabElement.hasId()){
+		this.displayError("This subset has already been saved");
+	}else if(name == ''){
 		this.displayError("Name cannot be an empty field");
 	}else{
 
@@ -893,6 +905,7 @@ SubsetSelection.prototype.saveSubset = function(tabElement, name, foreground, ba
 				}else if(data.status == 'success'){
 					var label = data.name;
 					tabElement.changeName(label);
+					tabElement.setId(data.id);
 
 					app.field_data.subset_labels.push(label);
 					$('<option />', {'value': label, 'text': label}).appendTo(app.subsetSelection);
