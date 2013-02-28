@@ -77,7 +77,7 @@ def get_experiment_header(exp):
         
         return (r,dt,u,l)
     
-    data_labels = [ ("%s:%s:%s:%s" % (r,dt,u,str(l)) for r,dt,u,l in sorted(list(data_labels), key=lambda item: float_last_term(*item))) ]
+    data_labels = [ "%s:%s:%s:%s" % (r,dt,u,str(l)) for r,dt,u,l in sorted(list(data_labels), key=lambda item: float_last_term(*item)) ]
     header += data_labels
     
     return header, data_labels
@@ -93,7 +93,8 @@ def get_experiment_data(exp, data_labels):
         
         ms_data = {}
         for d in ms.data:
-            ms_data[d.formatted_label] = d.value
+            formatted_label = "%s:%s:%s:%s" % (d.run, d.type, d.units, d.label)
+            ms_data[formatted_label] = d.value
             
         for dl in data_labels:
             row.append( ms_data[dl] )
