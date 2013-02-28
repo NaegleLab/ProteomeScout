@@ -55,7 +55,7 @@ class ExperimentData(Base):
     MS = relationship("MeasuredPeptide")
         
     def __format_name(self):
-        return "%s:%s:%s" % (self.run, self.type, self.label)
+        return "%s:%s:%s:%s" % (self.run, self.type, self.units, self.label)
     
     formatted_label = property(__format_name)
     

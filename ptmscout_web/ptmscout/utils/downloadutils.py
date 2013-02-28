@@ -14,7 +14,7 @@ def insert_errors(errors, rows):
         row[0] = ", ".join(row[0])
 
 
-def annotate_experiment_file(exp, show_errors):
+def annotate_experiment_with_errors(exp, show_errors):
     header, rows = uploadutils.load_header_and_data_rows(exp.dataset, sys.maxint)
     
     if show_errors:

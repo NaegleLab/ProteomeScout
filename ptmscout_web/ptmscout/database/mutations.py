@@ -29,6 +29,9 @@ class Mutation(Base):
         self.date = datetime.datetime.now()
         self.annotation = annotation
 
+    def __repr__(self):
+        return "%s%d%s" % (self.original, self.location, self.mutant)
+
     def equals(self, other):
         type_eq = self.mutationType == other.mutationType
         loc_eq = self.location == other.location

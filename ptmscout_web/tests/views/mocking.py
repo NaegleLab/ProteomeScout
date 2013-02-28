@@ -295,7 +295,7 @@ def createMockDataItem(run, priority, dtype, label, units, value):
     
     mock.type = dtype
     mock.units= units
-    mock.formatted_label = "%s:%s:%s" % (run, dtype, label)
+    mock.formatted_label = "%s:%s:%s:%s" % (run, dtype, units, label)
     mock.run = run
     mock.label = label
     

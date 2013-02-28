@@ -21,7 +21,7 @@
 		<div id="field-data" style="display:none;" tal:content="field_data"></div>
 
 	    <div class="filter-set">
-		    <form method="GET" action="${request.application_url}/experiment/${experiment.id}/export">
+		    <form method="GET" action="${request.application_url}/experiments/${experiment.id}/export" target="_blank">
 		    	<fieldset>
 		    		<legend>Export Experiment for Analysis</legend>
 		    		<div>
@@ -31,7 +31,7 @@
 		    				<option value="yes">Yes</option>
 		    			</select>
 		    		</div>
-		    		<input type="Submit" id="export-experiment" class="longtask" value="Export Experiment" />
+		    		<input type="Submit" id="export-experiment" value="Export Experiment" />
 		    	</fieldset>
 	    	</form>
 	    	<form method="POST" action="${request.application_url}/upload/clustering?redirect=${request.route_path('experiment_subset', id=experiment.id)}">

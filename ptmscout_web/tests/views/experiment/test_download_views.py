@@ -140,3 +140,25 @@ class IntegrationTestExperimentDownloadView(IntegrationTestCase):
         
         self.ptmscoutapp.get("/experiments/28/download", status=200)
         
+    def test_export_view_is_private(self):
+        self.bot.logout()
+        result = self.ptmscoutapp.get("/experiments/28/export", status=200)
+        result.mustcontain("forbidden")
+        
+    def test_export_view_should_annotate_experiment(self):
+        self.bot.login()
+        result = self.ptmscoutapp.get("/experiments/28/export?annotate=yes")
+        
+        exp_header = 'MS_id    query_accession    peptide    mod_sites    aligned_peptides    modification_types    24H_EGF:data:time:0    24H_EGF:data:time:5    24H_EGF:data:time:10    24H_EGF:data:time:30    24H_EGF:stddev:time:0    24H_EGF:stddev:time:10    24H_EGF:stddev:time:30    24H_HRG:data:time:0    24H_HRG:data:time:5    24H_HRG:data:time:10    24H_HRG:data:time:30    24H_HRG:stddev:time:0    24H_HRG:stddev:time:10    24H_HRG:stddev:time:30    P_EGF:data:time:0    P_EGF:data:time:5    P_EGF:data:time:10    P_EGF:data:time:30    P_EGF:stddev:time:0    P_EGF:stddev:time:10    P_EGF:stddev:time:30    P_HRG:data:time:0    P_HRG:data:time:5    P_HRG:data:time:10    P_HRG:data:time:30    P_HRG:stddev:time:0    P_HRG:stddev:time:10    P_HRG:stddev:time:30    nearby_modifications    nearby_mutations    site_domains    site_regions'.replace('    ', '\t')
+        exp_header = exp_header.split("\t")
+        
+        lines = str(result).split("\n")
+        self.assertEqual('Response: 200 OK', lines[0])
+        self.assertEqual('Content-Disposition: attachment; filename="experiment.28.annotated.tsv"', lines[1])
+        self.assertEqual('Content-Type: text/tab-separated-values; charset=UTF-8', lines[2])
+        
+        for line in lines[3:]:
+            row = line.split("\t")
+            self.assertEqual(len(exp_header), len(row))
+            print row
+        
