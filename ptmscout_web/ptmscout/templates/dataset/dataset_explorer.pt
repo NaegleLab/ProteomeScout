@@ -34,11 +34,11 @@
 		    		<input type="Submit" id="export-experiment" value="Export Experiment" />
 		    	</fieldset>
 	    	</form>
-	    	<form method="POST" action="${request.application_url}/upload/clustering?redirect=${request.route_path('experiment_subset', id=experiment.id)}">
+	    	<form method="POST" action="${request.route_url('experiment_annotate', id=experiment.id)}">
 		    	<fieldset>
 		    		<legend>Import Annotation File</legend>
-	   				<input type="file" name="clusterfile" /> <br />
-		        	<input type="Submit" id="upload-clustering" class="longtask" value="Import Clusters" />
+	   				<input type="file" name="annotationfile" /> <br />
+		        	<input type="Submit" id="upload-annotations" class="longtask" value="Import Annotations" />
 		        </fieldset>
 	        </form>
     		<fieldset>
