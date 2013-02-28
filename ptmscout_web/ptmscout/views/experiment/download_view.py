@@ -3,6 +3,7 @@ from ptmscout.utils import webutils
 from ptmscout.database import experiment, modifications
 from pyramid.httpexceptions import HTTPForbidden
 from ptmscout.utils import downloadutils
+from ptmscout.config import settings
 
 @view_config(route_name='experiment_download', renderer='tsv', permission='private')
 def download_experiment(request):
@@ -42,7 +43,7 @@ def annotate_experiment(user, exp, header, rows):
         min_range = ms.peptides[0].peptide.site_pos - 7
         max_range = ms.peptides[-1].peptide.site_pos + 7
         
-        nearby_modifications = []
+        nearby_modifications = set()
         for ms2 in protein_mods[ms.protein_id]:
             for modpep in ms2.peptides:
                 site_type = modpep.peptide.site_type
@@ -50,16 +51,20 @@ def annotate_experiment(user, exp, header, rows):
                 mod_name = modpep.modification.name
                 
                 if min_range <= site_pos and site_pos <= max_range:
-                    nearby_modifications.append("%s%d: %s" % (site_type, site_pos, mod_name))
+                    nearby_modifications.add((site_pos, site_type, mod_name))
+                    
+        nearby_modifications = [ "%s%d: %s" % (site_type, site_pos, mod_name) for site_pos, site_type, mod_name in sorted(list(nearby_modifications)) ]
+        nearby_mutations = [ str(mutation) for mutation in sorted(prot.mutations, key=lambda item: item.location) if min_range < mutation.location and mutation.location < max_range ]
         
-        nearby_mutations = [ str(mutation) for mutation in prot.mutations if min_range < mutation.location and mutation.location < max_range ]
-        site_domains = [ modpep.peptide.protein_domain.label for modpep in ms.peptides if modpep.peptide.protein_domain ]
-        site_regions = [ region.label for modpep in ms.peptides for region in prot.regions if region.hasSite(modpep.peptide.site_pos) ]
+        site_domains = list(set([ modpep.peptide.protein_domain.label for modpep in ms.peptides if modpep.peptide.protein_domain ]))
+        site_regions = list(set([ region.label for modpep in ms.peptides for region in prot.regions if region.hasSite(modpep.peptide.site_pos) ]))
 
-        row.append('; '.join(nearby_modifications))
-        row.append('; '.join(nearby_mutations))
-        row.append('; '.join(site_domains))
-        row.append('; '.join(site_regions))
+        sep = settings.mod_separator_character + ' '
+
+        row.append(sep.join(nearby_modifications))
+        row.append(sep.join(nearby_mutations))
+        row.append(sep.join(site_domains))
+        row.append(sep.join(site_regions))
         
 def get_experiment_header(exp):
     header = ['MS_id', 'query_accession', 'peptide', 'mod_sites', 'aligned_peptides', 'modification_types']

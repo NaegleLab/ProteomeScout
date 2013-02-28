@@ -115,7 +115,7 @@ class TestExperimentDownloadView(UnitTestCase):
         self.assertEqual(exp_headers, result['header'])
         self.assertEqual(exp_data, result['data'])
         self.assertEqual('text/tab-separated-values', request.response.content_type)
-        self.assertEqual('attachment; filename="experiment.20.annotated.tsv"', request.response.content_disposition)
+        self.assertEqual('attachment; filename="experiment.20.tsv"', request.response.content_disposition)
         
         
 class IntegrationTestExperimentDownloadView(IntegrationTestCase):
