@@ -1,6 +1,21 @@
 import time
 import os
 
+def profile(fn):
+    def do_profile(*args, **kwargs):
+        t = time.clock()
+        result = fn(*args, **kwargs)
+
+        elapsed = time.clock() - t
+        fn.profile_calls.append(elapsed)
+        
+        return result
+    
+    fn.profile_calls = []
+    
+    return do_profile
+    
+
 def pushdir(new_dir):
     def wrap(fn):
         def push_stack(*args, **kwargs):
