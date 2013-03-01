@@ -68,7 +68,11 @@ tr.significant {
 	font-weight: bold;
 }
 
-tr.significant td.numeric {
+tr.significant td.peptide {
+	font-weight: normal;
+}
+
+tr.significant td.pvalue {
 	color: red;
 }
 

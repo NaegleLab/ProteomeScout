@@ -2,7 +2,7 @@ from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 from pyramid.testing import DummyRequest
 import json
 from ptmscout.views.dataset import dataset_explorer_view
-from mock import patch, call
+from mock import patch, call, Mock
 from tests.views.mocking import createMockExperiment, createMockMeasurement,\
     createMockUser, createMockPeptide,\
     createMockPeptideModification, createMockPTM, createMockScansite,\
@@ -149,6 +149,7 @@ class TestDatasetExplorerView(UnitTestCase):
         measurements = [createMockMeasurement(2, exp.id),createMockMeasurement(3, exp.id),createMockMeasurement(4, exp.id)]
         exp.measurements = measurements
         
+        
         exp_id = exp.id
         foreground_query = [
                        ['nop', [ 'protein', 'P03367' ]], 
@@ -165,6 +166,8 @@ class TestDatasetExplorerView(UnitTestCase):
         request = DummyRequest()
         request.user = createMockUser()
         request.body = json.dumps(query_expression)
+        request.route_url = Mock()
+        request.route_url.return_value = 'http://example.com/proteins/10'
         
         def comparison_func(ms):
             return True
@@ -325,7 +328,7 @@ class TestDatasetExplorerView(UnitTestCase):
         result = dataset_explorer_view.fetch_subset(request)
         
         self.assertEqual({'id': subset.id, 'some': 'enrichment analysis'}, result)
-        patch_compute.assert_called_once_with(exp, user, 'named subset', 'some exp', 'some other exp')
+        patch_compute.assert_called_once_with(request, exp, user, 'named subset', 'some exp', 'some other exp')
         patch_getExp.assert_called_once_with(exp_id, user)
         patch_getSubset.assert_called_once_with(exp_id, 'named subset', user)
 
@@ -356,7 +359,7 @@ class TestDatasetExplorerView(UnitTestCase):
         result = dataset_explorer_view.fetch_subset(request)
         
         self.assertEqual({'id':subset.id, 'some': 'enrichment analysis'}, result)
-        patch_compute.assert_called_once_with(exp, user, 'named subset', 'some exp', 'some other exp')
+        patch_compute.assert_called_once_with(request, exp, user, 'named subset', 'some exp', 'some other exp')
         patch_getExp.assert_called_once_with(exp_id, user)
         patch_getSubset.assert_called_once_with(100000, exp_id)
 

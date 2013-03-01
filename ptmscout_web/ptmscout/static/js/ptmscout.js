@@ -157,6 +157,10 @@ function done_waiting(){
     $(".waiting-modal").hide();
 }
 
+function getUniqueId(){
+	return "ptmscout{0}".format(window.uniqueId++);
+}
+
 $(function(){
     $(".longtask")
         .on('click', function(e) {
@@ -177,5 +181,5 @@ $(function(){
             }
         });
 
-
+    window.uniqueId = 0;
 });
