@@ -1,3 +1,7 @@
+#!/bin/bash
+
+set -e
+
 defmode='install'
 arg=${1:-$defmode}
 
