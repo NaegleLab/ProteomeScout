@@ -26,7 +26,7 @@ def parse_motif_result(result_file, log_file):
     
     rf.close()
         
-    return int(log_values["NUM_TESTS_FOR_KRISTEN"]), results
+    return int(log_values["NUM_TESTS_FOR_KRISTEN"]), sorted(results, key=lambda item: item[3])
         
     
 def save_peptides(measurements, filename):
