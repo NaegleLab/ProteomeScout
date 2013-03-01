@@ -1,9 +1,9 @@
-function EnrichmentTable(parent_element, table_data){
+
+function PValueCorrectedTable(parentElement, tableBody){
 	var widget = this;
-	this.numTests = table_data.length;
-	this.data = table_data;
+	this.tableBody = tableBody;
 	
-	var div = $('<div />').appendTo(parent_element);
+	var div = $('<div />').appendTo(parentElement);
 	$('<span>Mark as significant with p-value less than: </span>').appendTo(div);
 	
 	var last_val = "0.01";
@@ -17,6 +17,7 @@ function EnrichmentTable(parent_element, table_data){
 			last_val = val;
 		}
 	});
+	
 	this.setOptions = $('<button>Go</button>').appendTo(div);
 	this.setOptions.on('click',function(){
 		var cutoff_val = parseFloat(widget.pvalueCutoff.val());
@@ -31,55 +32,51 @@ function EnrichmentTable(parent_element, table_data){
 		widget.filter(cutoff_val, correction);
 	});
 	
-	div = $('<div />').appendTo(parent_element);
-	this.noCorrectionOption = $('<input />', {'type':"radio", 'name':"test_correction", 'value':"none", 'checked':"checked"}).appendTo(div);
+	var field_name = "{0}-test-correction".format( getUniqueId() );
+	
+	div = $('<div />').appendTo(parentElement);
+	this.noCorrectionOption = $('<input />', {'type':"radio", 'name':field_name, 'value':"none", 'checked':"checked"}).appendTo(div);
 	$('<span />', {'text':"No test correction"}).appendTo(div);
 	
-	div = $('<div />').appendTo(parent_element);
-	this.bonferroniOption = $('<input />', {'type':"radio", 'name':"test_correction", 'value':"bonferoni"}).appendTo(div);
+	div = $('<div />').appendTo(parentElement);
+	this.bonferroniOption = $('<input />', {'type':"radio", 'name':field_name, 'value':"bonferoni"}).appendTo(div);
 	$('<span />', {'text':"Bonferroni correction"}).appendTo(div);
 	
-	div = $('<div />').appendTo(parent_element);
-	this.fdrOption = $('<input />', {'type':"radio", 'name':"test_correction", 'value':"fdr"}).appendTo(div);
+	div = $('<div />').appendTo(parentElement);
+	this.fdrOption = $('<input />', {'type':"radio", 'name':field_name, 'value':"fdr"}).appendTo(div);
 	$('<span />', {'text':"False Discovery Rate correction"}).appendTo(div);
-	
-	this.tableElement = $('<table />', {'class':"enrichment-table"}).appendTo(parent_element);
-	$('<thead><tr><th>Category</th><th>Term</th><th>P-Value</th></tr></thead>').appendTo(this.tableElement);
-	this.tbody = $('<tbody />').appendTo(this.tableElement);
-	
-	for(var i in table_data){
-		var value = table_data[i][2];
-		var formatted_value = parseFloat(value.toPrecision(3)).toExponential()
-		
-		var row = $("<tr />").appendTo(this.tbody);
-		$("<td />",{'text': table_data[i][0]}).appendTo(row);
-		$("<td />",{'text': table_data[i][1]}).appendTo(row);
-		$("<td />",{'value':value, 'text': formatted_value, 'class':"numeric"}).appendTo(row);
-	}
 	
 	this.filter(parseFloat(last_val), 'none');
 };
 
-EnrichmentTable.prototype.filter = function(cutoff, correction) {
-	var widget = this;
-	
-	var corrected_cutoff = cutoff;
-	if(correction == 'fdr'){
-		for(var i = 0; i < this.data.length; i++){
-			var pval = parseFloat( this.data[i][2] );
-			if(cutoff * i / this.numTests >= pval){
-				corrected_cutoff = pval;
-			}
+PValueCorrectedTable.prototype.calculateFDRCutoff = function(cutoff, rows, numTests){
+	var i = 0;
+	rows.each(function(){
+		var pval_td = $(this).find(".pvalue");
+		var pval = pval_td.attr('value');
+		
+		if(cutoff * i / numTests >= pval){
+			cutoff = pval;
 		}
-	}
+		
+		i++;
+	});
 	
-	this.tbody.find('tr').each(function() {
-		var pval_td = $(this).find(".numeric");
+	return cutoff;
+};
+
+PValueCorrectedTable.prototype.applyCorrection = function(correction, corrected_cutoff, cutoff, rows, numTests) {
+	rows.each(function() {
+		var pval_td = $(this).find(".pvalue");
 		var val = pval_td.attr('value');
 		var cval = val;
 		
-		if(correction == 'bonferroni')
-			cval = val * widget.numTests;
+		if(correction == 'bonferroni'){
+			cval = val * numTests;
+			if(cval > 1.0){
+				cval = 1.0;
+			}
+		}
 		
 		pval_td.text(parseFloat(parseFloat(cval).toPrecision(3)).toExponential());
 		
@@ -94,6 +91,85 @@ EnrichmentTable.prototype.filter = function(cutoff, correction) {
 			$(this).removeClass('notsignificant');
 	});
 };
+
+PValueCorrectedTable.prototype.filter = function(cutoff, correction) {
+	var widget = this;
+	
+	var rowClasses = {};
+	
+	this.tableBody.find('tr').each(function() {
+		var clsName = $(this).attr('value');
+		rowClasses[clsName] = 0;
+	});
+	
+	for(var clsName in rowClasses){
+		var rows = this.tableBody.find('tr[value="{0}"]'.format(clsName));
+		
+		var corrected_cutoff = cutoff;
+		if(correction == 'fdr')
+			corrected_cutoff = this.calculateFDRCutoff(cutoff, rows, rows.length);
+		
+		this.applyCorrection(correction, corrected_cutoff, cutoff, rows, rows.length);
+	}
+};
+
+function EnrichmentTable(parentElement, tableData){
+	var widget = this;
+
+	this.tableElement = $('<table />', {'class':"enrichment-table"});
+	$('<thead><tr><th>Category</th><th>Term</th><th>P-Value</th></tr></thead>').appendTo(this.tableElement);
+	this.tbody = $('<tbody />').appendTo(this.tableElement);
+
+	for(var i in tableData){
+		var value = tableData[i][2];
+		var formatted_value = parseFloat(value.toPrecision(3)).toExponential()
+		var row_cls = tableData[i][0];
+		
+		var row = $("<tr />", {'value': row_cls}).appendTo(this.tbody);
+		$("<td />",{'text': tableData[i][0]}).appendTo(row);
+		$("<td />",{'text': tableData[i][1]}).appendTo(row);
+		$("<td />",{'value':value, 'text': formatted_value, 'class':"numeric pvalue"}).appendTo(row);
+	}
+	
+	this.corrector = new PValueCorrectedTable(parentElement, this.tbody, tableData, true);
+	this.tableElement.appendTo(parentElement);
+};
+
+function MotifTable(parentElement, tableData, numTests){
+	var widget = this;
+	this.data = tableData;
+	
+	this.tableElement = $('<table />', {'class':"motif-table"});
+	$('<thead><tr><th>Motif</th><th>In Foreground</th><th>In Background</th><th>P-Value</th></tr></thead>').appendTo(this.tableElement);
+	this.tbody = $('<tbody />').appendTo(this.tableElement);
+	
+	for(var i in tableData){
+		var value = tableData[i][3];
+		var formatted_value = parseFloat(value.toPrecision(3)).toExponential()
+		
+		var ratio_foreground = "{0} / {1}".format( tableData[i][1][0], tableData[i][1][1] )
+		var ratio_background = "{0} / {1}".format( tableData[i][2][0], tableData[i][2][1] )
+		
+		var row = $("<tr />", {'value':"motif"}).appendTo(this.tbody);
+		$("<td />",{'text': tableData[i][0], 'class':"peptide"}).appendTo(row);
+		$("<td />",{'text': ratio_foreground, 'class':"numeric"}).appendTo(row);
+		$("<td />",{'text': ratio_background, 'class':"numeric"}).appendTo(row);
+		$("<td />",{'value':value, 'text': formatted_value, 'class':"numeric pvalue"}).appendTo(row);
+	}
+	
+	for(var i = tableData.length; i < numTests; i++){
+		var row = $("<tr />", {'value':"motif"}).appendTo(this.tbody);
+		$("<td />",{'text': ""}).appendTo(row);
+		$("<td />",{'text': ""}).appendTo(row);
+		$("<td />",{'text': ""}).appendTo(row);
+		$("<td />",{'value': 1000.0, 'class':"pvalue"}).appendTo(row);
+	}
+	
+	this.corrector = new PValueCorrectedTable(parentElement, this.tbody, tableData, false);
+	this.tableElement.appendTo(parentElement);
+};
+
+
 
 function format_op_arg(arg){
 	var oper_values = {'in':"IN", 'nin':"NOT IN", 'eq':"=", 'neq':"\u2260", 'gt':">", 'geq':"\u2265", 'lt':"<", 'leq':"\u2264", 'add':"+", 'sub':"-", 'mul':"x", 'div':"/"};
@@ -162,9 +238,7 @@ function SubsetTab(tabId, name, selectionEngine) {
 	
 	this.frequency = $('<fieldset class="frequency-charts"><legend>Residue Frequency</legend><table><thead><tr><th>Foreground:</th><th>Background:</th></tr></thead><tbody><tr><td class="foreground-seqlogo"></td><td class="background-seqlogo"></td></tr></tbody></table></div>').appendTo(this.contentContainer);
 	this.motif = $('<fieldset class="motifs"><legend>Motif Enrichment</legend></div>').appendTo(this.contentContainer);
-	this.motifTable = $('<table><thead><tr><th>Motif</th><th>In Foreground</th><th>In Background</th><th>P-value</th></tr></thead></table>').appendTo(this.motif);
-	this.motifEntries = $('<tbody></tbody>').appendTo(this.motifTable);
-
+	
 	this.proteins = $('<fieldset><legend>Proteins</legend></fieldset>').appendTo(this.contentContainer);
 	this.proteinTable = $('<table class="protein_list"><thead><tr><th>MS id</th><th>Accession</th><th>Gene</th><th>Peptide</th><th>Site</th><th>Modifications</th></tr></thead></table>').appendTo(this.proteins);
 	this.proteinEntries = $('<tbody></tbody>').appendTo(this.proteinTable);
@@ -188,24 +262,12 @@ SubsetTab.prototype.formatPeptides = function(peptides) {
 		var tableRow = $('<tr />', {"class":rowClass}).appendTo(this.proteinEntries);
 		$('<td>{0}</td>'.format(pepEntry[0])).appendTo(tableRow);
 		$('<td>{0}</td>'.format(pepEntry[1])).appendTo(tableRow);
-		$('<td>{0}</td>'.format(pepEntry[2])).appendTo(tableRow);
-		$('<td class="peptide">{0}</td>'.format(pepEntry[3])).appendTo(tableRow);
-		$('<td class="modsite">{0}</td>'.format(pepEntry[4])).appendTo(tableRow);
+		var ltd = $('<td></td>').appendTo(tableRow);
+		$('<a href="{0}">{1}</a>'.format(pepEntry[3], pepEntry[2])).appendTo(ltd);
+		
+		$('<td class="peptide">{0}</td>'.format(pepEntry[4])).appendTo(tableRow);
 		$('<td class="modsite">{0}</td>'.format(pepEntry[5])).appendTo(tableRow);
-	}
-};
-
-SubsetTab.prototype.formatMotif = function(motif) {
-	for(var i in motif.results){
-		var rowClass = 'odd';
-		if(i % 2 == 0)
-			rowClass = 'even';
-		var tableRow = $('<tr />', {"class":rowClass}).appendTo(this.motifEntries);
-		var pval = parseFloat(motif.results[i][3].toPrecision(3)).toExponential();
-		$('<td />',{ 'class':"peptide", 'text':motif.results[i][0] }).appendTo(tableRow);
-		$('<td />',{ 'class':"numeric", 'text':'{0} / {1}'.format(motif.results[i][1][0], motif.results[i][1][1])}).appendTo(tableRow);
-		$('<td />',{ 'class':"numeric", 'text':'{0} / {1}'.format(motif.results[i][2][0], motif.results[i][2][1])}).appendTo(tableRow);
-		$('<td />',{ 'class':"numeric", 'text': pval}).appendTo(tableRow);
+		$('<td class="modsite">{0}</td>'.format(pepEntry[6])).appendTo(tableRow);
 	}
 };
 
@@ -253,7 +315,7 @@ SubsetTab.prototype.init = function(query_response) {
 	createSeqlogo(d3.select("#{0}".format(this.tabId)).select(".foreground-seqlogo".format(this.tabId)), query_response.foreground.seqlogo, 500, 400);
 	createSeqlogo(d3.select("#{0}".format(this.tabId)).select(".background-seqlogo".format(this.tabId)), query_response.background.seqlogo, 500, 400);
 	
-	this.formatMotif(query_response.motif);
+	this.motifTable = new MotifTable(this.motif, query_response.motif.results, query_response.motif.tests)
 	this.formatPeptides(query_response.peptides);
 	this.formatData(query_response.measurements);
 };
@@ -264,7 +326,7 @@ function QuantitativeSelector(parent_element, field_values) {
 
 	this.field_values = field_values;
 	this.compare_values = {'eq':"=", 'neq':"\u2260", 'gt':">", 'geq':"\u2265", 'lt':"<", 'leq':"\u2264"};
-	this.oper_values = {'add':"+", 'sub':"-", 'mul':"x", 'div':"/"}
+	this.oper_values = {'add':"+", 'sub':"-", 'mul':"x", 'div':"/"};
 	
 	this.selectors = [];
 	this.oper_state = 'LHS';
@@ -281,11 +343,11 @@ QuantitativeSelector.prototype.build_query = function(){
 	expression.push("quantitative");
 	
 	for(var i in this.selectors){
-		if(this.selectors[i].hasClass['operator']){
+		if(this.selectors[i].hasClass('operator')) {
 			var v = this.selectors[i].val();
 			expression.push(v);
 		}
-		if(this.selectors[i].hasClass['variable']){
+		if(this.selectors[i].hasClass('variable')) {
 			var v = this.selectors[i].find('select').val();
 			var n = this.selectors[i].find('input').val();
 			
@@ -316,6 +378,7 @@ QuantitativeSelector.prototype.build_query = function(){
 		throw new Error("Empty Expression");
 	}
 
+	console.log(expression);
 	return expression;
 };
 
@@ -391,7 +454,7 @@ QuantitativeSelector.prototype.addOperator = function() {
 	
 	var i = this.selectors.length;
 
-	var oper_select = $("<select />", {class:"operator"});
+	var oper_select = $("<select />", {'class':"operator"});
 	oper_select.on('change', function(){
 		var val = $(this).val();
 		
@@ -431,7 +494,7 @@ QuantitativeSelector.prototype.addVariable = function() {
 	
 	var i = this.selectors.length;
 	
-	var container = $("<span />", {class:"variable"}); 
+	var container = $("<span />", {'class':"variable"}); 
 	var variable_select = $("<select />").appendTo(container);
 	var numeric_input = $('<input type="text" style="display:none;"/>').appendTo(container);
 	var last_val = "";
@@ -968,8 +1031,12 @@ SubsetSelection.prototype.submitQuery = function() {
 		data: JSON.stringify(subset_query),
 		dataType:'json',
 		success: function(data) {
-			app.subsetManager.addSubset(data);
 			done_waiting();
+			if(data.status == 'error'){
+				app.displayError(data.message);
+			}else if(data.status == 'success'){
+				app.subsetManager.addSubset(data);
+			}
 		} ,
 		error: function(jqXHR, textStatus, errorThrown) {
 			app.displayError("Error in server response, please try again.");
