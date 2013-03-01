@@ -168,7 +168,6 @@ def calculate_hypergeometric_enrichment(foreground, background, decision_func):
             
     evalue = stats.fisher(a,b,c,d)
     pvalue = stats.fisher_pvalue(evalue, a, b, c, d)
-    
     return pvalue 
 
 
@@ -298,6 +297,8 @@ def calculate_Region_enrichment(foreground, background):
 
 def calculate_feature_enrichment(foreground, background):
     enrichment_table = []
+
+    stats.fisher_init(len(foreground) + len(background))
 
     p_foreground = get_proteins(foreground)
     p_background = get_proteins(background)
@@ -587,17 +588,20 @@ def parse_query_expression(expression, experiment_id, user):
         
     return disjunction( [ parse_dnf_clause(op, experiment_id, user) for op in dnf_clauses ] )
 
-def format_peptide_data(measurements):
+def format_peptide_data(request, experiment_id, measurements):
     formatted_peptide_data = []
     for ms in measurements:
         gene_name = ms.protein.getGeneName()
+        protein_id = ms.protein.id
+        protein_link = request.route_url('protein_main', id=protein_id) + "?experiment_id=%d" % (experiment_id)
         
         for modpep in ms.peptides:
             pep_aligned = modpep.peptide.pep_aligned
             site_name = modpep.peptide.getName()
             mod_name = modpep.modification.name
             
-            formatted_peptide_data.append( (ms.id, ms.query_accession, gene_name, pep_aligned, site_name, mod_name) )
+            
+            formatted_peptide_data.append( (ms.id, ms.query_accession, gene_name, protein_link, pep_aligned, site_name, mod_name) )
     
     return formatted_peptide_data
 
@@ -622,12 +626,16 @@ def format_measurement_data(measurements):
     return experiment_data
 
 
-def compute_subset_enrichment(exp, user, subset_name, foreground_exp, background_exp):
+def compute_subset_enrichment(request, exp, user, subset_name, foreground_exp, background_exp):
     foreground_decision_func = parse_query_expression(foreground_exp, exp.id, user)
     background_decision_func = parse_query_expression(background_exp, exp.id, user)
     
     background = [ms for ms in exp.measurements if background_decision_func(ms)]
     foreground = [ms for ms in background if foreground_decision_func(ms)]
+    
+    if len(foreground) == 0:
+        return {'status':"error",
+                'message':strings.error_message_subset_empty}
     
     enrichment = calculate_feature_enrichment(foreground, background)
     
@@ -644,7 +652,7 @@ def compute_subset_enrichment(exp, user, subset_name, foreground_exp, background
     foreground_peptide_cnt = len( foreground )
     
     measurement_data = format_measurement_data(foreground)
-    peptide_data = format_peptide_data(foreground)
+    peptide_data = format_peptide_data(request, exp.id, foreground)
     
     return {'status':'success',
             'experiment': exp.id,
@@ -672,7 +680,7 @@ def compute_subset_enrichment(exp, user, subset_name, foreground_exp, background
                       }
             }
 
-@view_config(route_name='compute_subset', renderer='json', permission='private')
+@view_config(route_name='compute_subset', request_method='POST', renderer='json', permission='private')
 def perform_subset_enrichment(request):
     query_expression = json.loads(request.body, encoding=request.charset)
     exp_id = int(query_expression['experiment'])
@@ -682,10 +690,10 @@ def perform_subset_enrichment(request):
     foreground_exp = query_expression['foreground']
     background_exp = query_expression['background']
     
-    return compute_subset_enrichment(exp, request.user, subset_name, foreground_exp, background_exp)
+    return compute_subset_enrichment(request, exp, request.user, subset_name, foreground_exp, background_exp)
     
 
-@view_config(route_name='save_subset', renderer='json', permission='private')
+@view_config(route_name='save_subset', request_method='POST', renderer='json', permission='private')
 def save_subset(request):
     query_expression = json.loads(request.body, encoding=request.charset)
     exp_id = int(query_expression['experiment'])
@@ -714,7 +722,7 @@ def save_subset(request):
             'name': subset.name,
             'status':'success'}
 
-@view_config(route_name='fetch_subset', renderer='json', permission='private')
+@view_config(route_name='fetch_subset', request_method='POST', renderer='json', permission='private')
 def fetch_subset(request):
     query_expression = json.loads(request.body, encoding=request.charset)
     exp_id = int(query_expression['experiment'])
@@ -731,6 +739,6 @@ def fetch_subset(request):
                 'message':strings.error_message_subset_name_does_not_exist}
     
     
-    result = compute_subset_enrichment(exp, request.user, subset.name, subset.foreground_query, subset.background_query)
+    result = compute_subset_enrichment(request, exp, request.user, subset.name, subset.foreground_query, subset.background_query)
     result['id'] = subset.id
     return result
