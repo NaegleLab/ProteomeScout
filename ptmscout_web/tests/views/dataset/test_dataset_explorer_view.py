@@ -370,23 +370,36 @@ class IntegrationTestDatasetExplorerView(IntegrationTestCase):
         result = self.ptmscoutapp.get("/experiments/28/subsets", status=200)
         result.mustcontain('Effects of HER2 overexpression on cell signaling networks governing proliferation and migration.')
         
-    
-    def test_subset_fetch_integration(self):
-        exp_id = 28
-        foreground_query = [
-               ['nop', [ 'metadata', 'GO-Biological Process', 'eq', 'GO:0000187: activation of MAPK activity' ]]
-            ]
-        
+    def perform_subset_fetch_test(self, exp_id, foreground_query, background_query = 'experiment'):
         query_expression = {
                             'experiment': exp_id,
                             'name': 'Subset 1',
-                            'background': 'experiment',
+                            'background': background_query,
                             'foreground': foreground_query
                            }
         
         result = self.ptmscoutapp.post_json("/webservice/subsets/query", params=query_expression, status=200)
-        result = result.json
+        return result.json
+
+    def test_subset_fetch_with_pfam(self):
+        foreground_query = [
+                            ['nop', ['metadata', 'Pfam-Site', 'eq', 'Pkinase']]
+                            ['and', ['metadata', 'Pfam-Domain', 'eq', 'Pkinase']]
+                            ]
         
+        result = self.perform_subset_fetch_test(28, foreground_query)
+        
+        self.assertEqual(8, result['foreground']['peptides'])      
+        self.assertEqual(7, result['foreground']['proteins'])      
+        self.assertEqual(8, result['foreground']['sites'])
+        
+    def test_subset_fetch_integration(self):
+        foreground_query = [
+               ['nop', [ 'metadata', 'GO-Biological Process', 'eq', 'GO:0000187: activation of MAPK activity' ]]
+            ]
+        
+        result = self.perform_subset_fetch_test(28, foreground_query)
+                
         self.assertEqual(foreground_query, result['foreground']['query'])
         self.assertEqual(4, result['foreground']['proteins'])
         self.assertEqual(7, result['foreground']['peptides'])
@@ -398,7 +411,7 @@ class IntegrationTestDatasetExplorerView(IntegrationTestCase):
         self.assertEqual(70, result['background']['sites'])
         
         self.assertEqual('Subset 1', result['name'])
-        self.assertEqual(exp_id, result['experiment'])
+        self.assertEqual(28, result['experiment'])
         
     def test_subset_save_integration(self):
         from ptmscout.database import DBSession

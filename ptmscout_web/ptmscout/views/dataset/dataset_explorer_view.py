@@ -2,7 +2,7 @@ from pyramid.view import view_config
 import json
 import base64
 from ptmscout.database import experiment, annotations
-from ptmscout.utils import protein_utils, motif, stats
+from ptmscout.utils import protein_utils, motif, fisher
 from ptmscout.config import strings
 
 def get_pfam_metadata(measurements, metadata_fields):
@@ -165,9 +165,8 @@ def calculate_hypergeometric_enrichment(foreground, background, decision_func):
             c+=1
         else:
             d+=1
-            
-    evalue = stats.fisher(a,b,c,d)
-    pvalue = stats.fisher_pvalue(evalue, a, b, c, d)
+        
+    pvalue = fisher.FishersExactTest([[a,b],[c,d]]).two_tail_p()
     return pvalue 
 
 
@@ -298,8 +297,6 @@ def calculate_Region_enrichment(foreground, background):
 def calculate_feature_enrichment(foreground, background):
     enrichment_table = []
 
-    stats.fisher_init(len(foreground) + len(background))
-
     p_foreground = get_proteins(foreground)
     p_background = get_proteins(background)
     
@@ -348,7 +345,7 @@ def create_metadata_filter(field, op, value):
     
     @op_apply_wrapper
     def pfam_site_filter(ms):
-        return [ None != modpep.peptide.protein_domain.lower() and modpep.peptide.protein_domain.label.lower() == value.lower() for modpep in ms.peptides ]
+        return [ None != modpep.peptide.protein_domain and modpep.peptide.protein_domain.label.lower() == value.lower() for modpep in ms.peptides ]
     
     @op_apply_wrapper
     def region_filter(ms):
