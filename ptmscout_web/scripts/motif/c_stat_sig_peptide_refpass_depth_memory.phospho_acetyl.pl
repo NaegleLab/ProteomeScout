@@ -75,35 +75,58 @@ my $succeed = 0;
 
 # I need to recurse the fg and bg to eliminate failed matches.
 my %checked_pat;
-if (! defined $pattern){ 
-    push @for_singles, ".......y.......";
-    &init_refhash(".......y.......", \@foreground, \%fg_by_pattern);
-    &init_refhash(".......y.......", \@background, \%bg_by_pattern);
-    push @for_singles, ".......s.......";
-    &init_refhash(".......s.......", \@foreground, \%fg_by_pattern);
-    &init_refhash(".......s.......", \@background, \%bg_by_pattern);
-    push @for_singles, ".......t.......";
-    &init_refhash(".......t.......", \@foreground, \%fg_by_pattern);
-    &init_refhash(".......t.......", \@background, \%bg_by_pattern);
-    push @for_singles, ".......x.......";
-    &init_refhash(".......x.......", \@foreground, \%fg_by_pattern);
-    &init_refhash(".......x.......", \@background, \%bg_by_pattern);
-    push @for_singles, ".......k.......";
-    &init_refhash(".......k.......", \@foreground, \%fg_by_pattern);
-    &init_refhash(".......k.......", \@background, \%bg_by_pattern);
-    push @for_doubles, ".......y.......";
-    push @for_doubles, ".......s.......";
-    push @for_doubles, ".......t.......";
-    push @for_doubles, ".......x.......";
-    push @for_doubles, ".......k.......";
-}
-else {
-    push @for_singles, $pattern;
-    push @for_doubles, $pattern;
-    &init_refhash($pattern, \@foreground, \%fg_by_pattern);
-    &init_refhash($pattern, \@background, \%bg_by_pattern);
+# KMN Changes 3/1/2013 -- Parsing the foreground and initiating the pattern based on the presence of any amino acid in the central position occuring more than twice
+my %patHash;
+foreach my $pep (@foreground){
+    my $centralResidue = substr($pep, 7, 1);
+    if(not defined $patHash{$centralResidue}){
+	$patHash{$centralResidue} = 0;
+    }
+    $patHash{$centralResidue} += 1;
 
 }
+foreach my $res (keys %patHash){
+    if($patHash{$res} >= 2){
+	my $str = ".......".$res.".......";
+	print "DEBUG: adding pattern in $str\n";
+	push @for_singles, $str;
+    push @for_doubles, $str;
+    &init_refhash($str, \@foreground, \%fg_by_pattern);
+    &init_refhash($str, \@background, \%bg_by_pattern);
+	
+    }
+}
+
+
+# if (! defined $pattern){ 
+#     push @for_singles, ".......y.......";
+#     &init_refhash(".......y.......", \@foreground, \%fg_by_pattern);
+#     &init_refhash(".......y.......", \@background, \%bg_by_pattern);
+#     push @for_singles, ".......s.......";
+#     &init_refhash(".......s.......", \@foreground, \%fg_by_pattern);
+#     &init_refhash(".......s.......", \@background, \%bg_by_pattern);
+#     push @for_singles, ".......t.......";
+#     &init_refhash(".......t.......", \@foreground, \%fg_by_pattern);
+#     &init_refhash(".......t.......", \@background, \%bg_by_pattern);
+#     push @for_singles, ".......x.......";
+#     &init_refhash(".......x.......", \@foreground, \%fg_by_pattern);
+#     &init_refhash(".......x.......", \@background, \%bg_by_pattern);
+#     push @for_singles, ".......k.......";
+#     &init_refhash(".......k.......", \@foreground, \%fg_by_pattern);
+#     &init_refhash(".......k.......", \@background, \%bg_by_pattern);
+#     push @for_doubles, ".......y.......";
+#     push @for_doubles, ".......s.......";
+#     push @for_doubles, ".......t.......";
+#     push @for_doubles, ".......x.......";
+#     push @for_doubles, ".......k.......";
+# }
+# else {
+#     push @for_singles, $pattern;
+#     push @for_doubles, $pattern;
+#     &init_refhash($pattern, \@foreground, \%fg_by_pattern);
+#     &init_refhash($pattern, \@background, \%bg_by_pattern);
+
+# }
 
 undef @foreground;  undef @background;
 
