@@ -66,3 +66,4 @@ def start_import(exp_id, session_id, user_email, application_url):
     except Exception, exc:
         notify_tasks.finalize_experiment_error_state.apply_async((exc, traceback.format_exc(), exp_id, user_email, application_url))
         raise
+

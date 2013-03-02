@@ -18,3 +18,13 @@ def annotate_experiment(exp_id):
         exp.modifications.append(ptm)
 
     exp.saveExperiment()
+
+
+
+
+
+@celery.task
+@upload_helpers.dynamic_transaction_task
+def start_annotation_import():
+    pass
+

@@ -113,6 +113,12 @@ experiment_upload_started_page_title = "Upload Started"
 experiment_upload_started_message = \
 """Experiment upload process successfully started. An e-mail will be sent to you when the experiment upload is complete. Additionally, you may check the status of the upload by visiting <a href=\"%s\">this page</a>"""
 
+annotation_upload_confirm_page_title = "Confirm Submission"
+annotation_upload_confirm_message = "Required annotation information is now complete. Are you sure you wish to proceed with the upload? Please review and accept the terms of use below. Pressing cancel will remove this upload session, you may start a new one later."
+annotation_upload_started_page_title = "Upload Started"
+annotation_upload_started_message = \
+"""Annotation upload process successfully started. An e-mail will be sent to you when the annotation upload is complete. Additionally, you may check the status of the upload by visiting <a href=\"%s\">this page</a>"""
+
 
 forgotten_password_page_title = "Forgotten Password Retrieval"
 forgotten_password_success_header = "Password Reset Success"
@@ -256,4 +262,3 @@ The PTMScout administrator has been notified of this error. If problems persist 
 error_message_subset_name_exists = "A subset with that name already exists for this experiment, please choose another name"
 error_message_subset_name_does_not_exist = "No subset was found with that name"
 error_message_subset_empty = "Subset foreground selection was empty, please try another query"
-
