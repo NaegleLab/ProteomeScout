@@ -1,25 +1,26 @@
 from ptmscout.database import Base, DBSession
 from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.types import Integer, VARCHAR, PickleType
+from sqlalchemy.types import Integer, VARCHAR, PickleType, Enum
 
+class AnnotationSet(Base):
+    __tablename__ = 'annotations'
+    id = Column(Integer(10), primary_key=True, autoincrement=True)
+    
+    owner_id = Column(Integer(10), ForeignKey('user.id'))
+    experiment_id = Column(Integer(10), ForeignKey('experiment.id'))
+    
+    type = Column(Enum(['cluster', 'numeric', 'nominative']))
+    name = Column(VARCHAR(100), index=True)
+    
+class Annotation(Base):
+    __tablename__ = 'ms_annotations'
 
-#class ClusterLabel(Base):
-#    __tablename__ = 'ms_cluster'
-#
-#    id = Column(Integer(10), primary_key=True, autoincrement=True)
-#    cluster_id = Column(Integer(10), ForeignKey('clusters.id'))
-#    ms_id = Column(Integer(10), ForeignKey('ms.id'))
-#    
-#    label = Column(VARCHAR(10), index=True)
-#
-#class Cluster(Base):
-#    __tablename__ = 'cluster'
-#    
-#    id = Column(Integer(10), primary_key=True, autoincrement=True)
-#    owner_id = Column(Integer(10), ForeignKey('user.id'))
-#    experiment_id = Column(Integer(10), ForeignKey('experiment.id'))
-#
-#    name = Column(VARCHAR(100))
+    id = Column(Integer(10), primary_key=True, autoincrement=True)
+    
+    set_id = Column(Integer(10), ForeignKey('annotations.id'))
+    ms_id = Column(Integer(10), ForeignKey('ms.id'))
+    
+    value = Column(VARCHAR(30))
 
 class Subset(Base):
     __tablename__ = 'experiment_subsets'

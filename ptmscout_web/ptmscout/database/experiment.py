@@ -102,7 +102,7 @@ class Experiment(Base):
     
     public = Column(Integer(1), default=0)
     
-    status = Column(Enum('configuration', 'in queue','loading','loaded', 'error'), default='configuration')
+    status = Column(Enum('configuration', 'in queue', 'loading', 'loaded', 'error'), default='configuration')
     submitter_id = Column(Integer(10), ForeignKey('users.id'))
 
     loading_stage = Column(Enum('query', 'proteins', 'GO terms', 'peptides', 'scansite'), default='query')
