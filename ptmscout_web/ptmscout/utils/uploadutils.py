@@ -318,7 +318,7 @@ def assign_column_defaults(session):
     return columns
 
 
-def load_header_and_data_rows(data_file, N=-1):
+def load_header_and_data_rows(data_file, N=-1, truncate=0):
     ifile = csv.reader(codecs.open(os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, data_file), 'rb', encoding='utf-8'), delimiter='\t')
     i = 0
     
@@ -340,6 +340,8 @@ def load_header_and_data_rows(data_file, N=-1):
         if i >= N:
             break
         row = row[start_index:width]
+        if(truncate > 0):
+            row = [ (col[0:truncate] + "..." if len(col) > truncate else col) for col in row ]
         rows.append(row)
         i+=1
 

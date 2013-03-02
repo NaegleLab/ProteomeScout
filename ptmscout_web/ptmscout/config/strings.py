@@ -74,11 +74,13 @@ experiment_upload_error_reasons_column_title = "Error Information"
 experiment_upload_error_standard_deviation_label_does_not_match_any_data_column = "Standard deviation column number %d with label '%s' does not match any column label in data columns"
 experiment_upload_error_limit_one_column_of_type = "Error: At most one column of type '%s' can exist in your data"
 experiment_upload_error_column_type_not_defined = "Error: Column type for column number %d was not defined"
-experiment_upload_error_data_column_empty_label = "Error: Label required for data or stddev column number %d"
+experiment_upload_error_data_column_empty_label = "Error: Label required for column number %d"
 experiment_upload_error_data_column_label_duplicated = "Error: Label for data or stddev column %d is duplicated across multiple columns"
 experiment_upload_error_multi_column_assignment = "Error: Found multiple column assignments for '%s'"
 experiment_upload_error_no_column_assignment = "Error: Column assignment for '%s' not found"
+experiment_upload_error_no_annotations = "You must specify at least one column containing annotation data"
 
+experiment_upload_warning_columns_values_should_be = "Expected column value to be of type '%s'"
 experiment_upload_warning_missing_column = "Warning: Row missing expected columns"
 experiment_upload_warning_data_missing = "Warning: Data fields were not set for this run"
 experiment_upload_warning_accession_not_found = "Warning: Protein accession '%s' was not found in any external databases queried by PTMScout"
@@ -254,5 +256,4 @@ The PTMScout administrator has been notified of this error. If problems persist 
 error_message_subset_name_exists = "A subset with that name already exists for this experiment, please choose another name"
 error_message_subset_name_does_not_exist = "No subset was found with that name"
 error_message_subset_empty = "Subset foreground selection was empty, please try another query"
-
 

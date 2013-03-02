@@ -21,6 +21,7 @@ def add_views(config):
     
     config.add_route('experiment_annotate', '/experiments/{id}/annotate')
     config.add_route('configure_annotations', '/experiments/{id}/annotate/{sid}/configure')
+    config.add_route('confirm_annotations', '/experiments/{id}/annotate/{sid}/confirm')
     
     config.add_route('experiment_download','/experiments/{id}/download')
     config.add_route('experiment_export','/experiments/{id}/export')

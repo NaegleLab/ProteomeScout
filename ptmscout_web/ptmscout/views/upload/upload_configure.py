@@ -107,6 +107,5 @@ def upload_config(request):
             'error': errors,
             'data_definitions':column_defs,
             'session_id': session_id,
-            'column_values':upload.SessionColumn.column_values,
-            'pageTitle': strings.experiment_upload_configure_page_title,
-            'instruction': strings.experiment_upload_configure_message}
+            'column_values': ['none','hidden','data','stddev','accession','peptide','species','modification','run'],
+            'pageTitle': strings.experiment_upload_configure_page_title}

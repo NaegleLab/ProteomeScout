@@ -6,8 +6,13 @@
         <script type="text/javascript" src="${request.static_url('ptmscout:static/js/base64.js')}"></script>
         <script type="text/javascript" src="${request.static_url('ptmscout:static/js/datafile.configurator.js')}"></script>
     </div>
+    
     <div metal:fill-slot="content">
+		<?python from ptmscout.config import strings; ?>
+       	${strings.experiment_upload_configure_message}
+       	
         <div class="configurator_app">
+        	
             <div class="error_display" tal:condition="len(error) > 0">
                 <ul>
                     <li tal:repeat="msg error" tal:content="msg"></li>
