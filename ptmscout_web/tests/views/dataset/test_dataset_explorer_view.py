@@ -383,7 +383,7 @@ class IntegrationTestDatasetExplorerView(IntegrationTestCase):
 
     def test_subset_fetch_with_pfam(self):
         foreground_query = [
-                            ['nop', ['metadata', 'Pfam-Site', 'eq', 'Pkinase']]
+                            ['nop', ['metadata', 'Pfam-Site', 'eq', 'Pkinase']],
                             ['and', ['metadata', 'Pfam-Domain', 'eq', 'Pkinase']]
                             ]
         

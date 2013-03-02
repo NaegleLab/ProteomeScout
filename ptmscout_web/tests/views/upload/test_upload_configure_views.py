@@ -189,7 +189,6 @@ class TestUploadConfigureView(UnitTestCase):
         self.assertEqual(17, len(result['data_rows']))
         
         self.assertEqual(strings.experiment_upload_configure_page_title, result['pageTitle'])
-        self.assertEqual(strings.experiment_upload_configure_message, result['instruction'])
 
 
     @patch('ptmscout.views.upload.upload_configure.parse_user_input')
@@ -230,7 +229,6 @@ class TestUploadConfigureView(UnitTestCase):
         self.assertEqual(17, len(result['data_rows']))
         
         self.assertEqual(strings.experiment_upload_configure_page_title, result['pageTitle'])
-        self.assertEqual(strings.experiment_upload_configure_message, result['instruction'])
 
     
     @patch('ptmscout.views.upload.upload_configure.parse_user_input')
@@ -271,7 +269,6 @@ class TestUploadConfigureView(UnitTestCase):
         self.assertEqual(17, len(result['data_rows']))
         
         self.assertEqual(strings.experiment_upload_configure_page_title, result['pageTitle'])
-        self.assertEqual(strings.experiment_upload_configure_message, result['instruction'])
 
     @patch('ptmscout.views.upload.upload_configure.parse_user_input')
     @patch('ptmscout.utils.uploadutils.check_data_column_assignments')
@@ -365,9 +362,8 @@ class TestUploadConfigureView(UnitTestCase):
         self.assertEqual(17, len(result['data_rows']))
         
         self.assertEqual(strings.experiment_upload_configure_page_title, result['pageTitle'])
-        self.assertEqual(strings.experiment_upload_configure_message, result['instruction'])
         
-        self.assertEqual(upload.SessionColumn.column_values, result['column_values'])
+        self.assertEqual(['none','hidden','data','stddev','accession','peptide','species','modification','run'], result['column_values'])
 
 class IntegrationTestUploadConfigureView(IntegrationTestCase):
     def test_view_integration(self):
@@ -397,6 +393,4 @@ class IntegrationTestUploadConfigureView(IntegrationTestCase):
         form.set('load_type', "new")
         
         result = form.submit(status=302)
-        result = result.follow()
-
-        result.showbrowser()
+        result = result.follow(status=200)
