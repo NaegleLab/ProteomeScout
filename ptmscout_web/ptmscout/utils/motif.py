@@ -2,6 +2,7 @@ from ptmscout.config import settings
 import os
 import time
 from ptmscout.utils import decorators
+import random
 
 def parse_motif_result(result_file, log_file):
     
@@ -37,25 +38,31 @@ def save_peptides(measurements, filename):
     ff.close()
 
 def run_motif_result(foreground_file, background_file, result_file):
-    os.system('./run_motif_enrichment.sh %s %s %s' % (foreground_file, background_file, result_file))
+    os.system('%s %s %s %s' % (os.path.join(settings.ptmscout_path, 'scripts', 'motif', 'run_motif_enrichment.sh'), foreground_file, background_file, result_file))
 
 
-@decorators.pushdir( os.path.join(settings.ptmscout_path, settings.motif_script_path) )
+#@decorators.pushdir( os.path.join(settings.ptmscout_path, settings.motif_script_path) )
 def calculate_motif_enrichment(foreground, background):
     postfix = str(time.time())
-    foreground_file = "foreground%s" % (postfix)
-    background_file = "background%s" % (postfix)
-    result_file = "result%s" % (postfix)
-    result_log = "result%s.log" % (postfix)
+    random_postfix = random.randint(0,1000000)
     
-    save_peptides(foreground, foreground_file)
-    save_peptides(background, background_file)
+    scripts_dir = os.path.join(settings.ptmscout_path, 'scripts', 'motif')
+    
+    foreground_file = "foreground%s.%d" % (postfix, random_postfix)
+    foreground_path = os.path.join(scripts_dir, foreground_file)
+    background_file = "background%s.%d" % (postfix, random_postfix)
+    background_path = os.path.join(scripts_dir, background_file)
+    result_file = os.path.join(scripts_dir, "result%s.%d" % (postfix, random_postfix))
+    result_log = os.path.join(scripts_dir, "result%s.%d.log" % (postfix, random_postfix))
+    
+    save_peptides(foreground, foreground_path)
+    save_peptides(background, background_path)
     
     run_motif_result(foreground_file, background_file, result_file)
     test_cnt, results = parse_motif_result(result_file, result_log)
     
-    os.remove(foreground_file)
-    os.remove(background_file)
+    os.remove(foreground_path)
+    os.remove(background_path)
     os.remove(result_file)
     os.remove(result_log)
     
