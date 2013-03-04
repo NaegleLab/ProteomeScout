@@ -19,7 +19,8 @@ class Job(Base):
     resume_url = Column(VARCHAR(250), nullable=True)
     result_url = Column(VARCHAR(250), nullable=True)
     
-    job_name = Column(VARCHAR(250))
+    name = Column(VARCHAR(250))
+    type = Column(Enum(['load_experiment','load_annotations','load_dataset']))
     
     user_id = Column(Integer(10), ForeignKey('users.id'))
     user = relationship("User")

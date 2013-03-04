@@ -9,16 +9,16 @@ class Annotation(Base):
 
     id = Column(Integer(10), primary_key=True, autoincrement=True)
     
-    MS_id = Column(Integer(10), ForeignKey('ms.id'))
+    MS_id = Column(Integer(10), ForeignKey('MS.id'))
     set_id = Column(Integer(10), ForeignKey('annotations.id'))
     
-    value = Column(VARCHAR(100))
+    value = Column(VARCHAR(100), nullable=True)
 
 class AnnotationSet(Base):
     __tablename__ = 'annotations'
     id = Column(Integer(10), primary_key=True, autoincrement=True)
     
-    owner_id = Column(Integer(10), ForeignKey('user.id'))
+    owner_id = Column(Integer(10), ForeignKey('users.id'))
     experiment_id = Column(Integer(10), ForeignKey('experiment.id'))
     
     type = Column(Enum(['cluster', 'numeric', 'nominative']))
