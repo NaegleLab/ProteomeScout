@@ -7,6 +7,7 @@ from ptmscout.utils import uploadutils
 from ptmscout.config import strings
 from ptmworker import notify_tasks
 import traceback
+import sys
 log = logging.getLogger('ptmscout')
 
 @celery.task
@@ -33,14 +34,14 @@ def parseAnnotationColumns(session_columns):
             ms_col = col
         elif col.type in set(['numeric','nominative','cluster']):
             annotation_cols.append(col)
-            
+    
     return ms_col, annotation_cols
 
 
 def create_annotation(valid_msIds, ms_col, annotation_col, data_rows):
     ms_annotations = []
     errors = []
-    
+
     for i, row in enumerate(data_rows):
         try:
             ms_id = int(row[ms_col.column_number].strip())
@@ -50,13 +51,12 @@ def create_annotation(valid_msIds, ms_col, annotation_col, data_rows):
                 raise uploadutils.ParseError(i+1, None, "Invalid MS_id specified: %d" % (ms_id)) 
             
             if value == '':
-                continue
-            
-            if annotation_col.type == 'numeric':
+                value = None
+            elif annotation_col.type == 'numeric':
                 try:
                     value = float(value)
                 except ValueError:
-                    continue
+                    value = None
             
             annotation = annotations.Annotation()
             annotation.MS_id = ms_id
@@ -82,6 +82,10 @@ def get_valid_msids(job, session):
         ms_set.add(ms.id)
     return ms_set
 
+def name_in_use(experiment_id, user, label):
+    user_annotations = annotations.getUserAnnotations(experiment_id, user)
+    return reduce(bool.__or__, [ label == annotation.name for annotation in user_annotations ], False) 
+
 @celery.task
 @upload_helpers.dynamic_transaction_task
 @upload_helpers.notify_job_failed
@@ -91,7 +95,7 @@ def start_annotation_import(job_id, session_id):
     job = jobs.getJobById(job_id)
     session = upload.getSessionById(session_id, job.user)
     
-    _, data_rows = uploadutils.load_header_and_data_rows(session.data_file)
+    _, data_rows = uploadutils.load_header_and_data_rows(session.data_file, sys.maxint)
     ms_col, annotation_cols = parseAnnotationColumns(session.columns)
     valid_msIds = get_valid_msids(job, session)
     
@@ -101,13 +105,15 @@ def start_annotation_import(job_id, session_id):
     i = 0
     total_annotations = 0
     for col in annotation_cols:
+        if name_in_use(session.experiment_id, job.user, col.label):
+            raise Exception("Annotation column label '%s' is already in use" % (col.label))
         annotation_set = annotations.AnnotationSet()
         annotation_set.name = col.label
         annotation_set.owner_id = job.user.id
         annotation_set.experiment_id = session.experiment_id
         annotation_set.type = col.type
         
-        ms_annotations, annot_errors = create_annotation(valid_msIds, ms_col, col, annotation_set, data_rows)
+        ms_annotations, annot_errors = create_annotation(valid_msIds, ms_col, col, data_rows)
         errors.extend( annot_errors )
         
         annotation_set.annotations = ms_annotations
