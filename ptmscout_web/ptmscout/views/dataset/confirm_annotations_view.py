@@ -16,7 +16,8 @@ def upload_already_started_view(request):
 
 def create_annotate_job(session, request):
     job = jobs.Job()
-    job.job_name = 'Load Annotations for Experiment %d' % (session.experiment_id)
+    job.name = 'Load Annotations for Experiment %d' % (session.experiment_id)
+    job.type = 'load_annotations'
     
     job.status = 'in queue'
     job.status_url = request.route_url('my_experiments')

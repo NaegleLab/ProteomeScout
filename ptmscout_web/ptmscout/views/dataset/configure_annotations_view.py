@@ -50,6 +50,8 @@ def parse_column_assignments(request, session, headers):
     found_annotation = False
     label_required = set(['numeric', 'nominative', 'cluster'])
     
+    session.columns = []
+    
     for c in column_settings:
         col_type = column_settings[c]['type']
         col_label = column_settings[c]['label']
