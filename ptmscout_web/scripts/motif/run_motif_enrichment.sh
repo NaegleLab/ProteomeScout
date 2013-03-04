@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+cd "$DIR"
+
 foreground_file=$1
 background_file=$2
 output_file=$3
