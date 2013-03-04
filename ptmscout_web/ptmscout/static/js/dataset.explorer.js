@@ -827,6 +827,13 @@ SubsetManager.prototype.addSubset = function(query_result) {
 	
 	var numtabs = this.tabs.find( ".ui-tabs-nav > li" ).length;
 	this.tabs.find( ".ui-tabs-nav" ).append( st.tabElement );
+	this.tabs.find( ".ui-tabs-nav" ).sortable({
+	      axis: "x",
+	      stop: function() {
+	        tabs.tabs( "refresh" );
+	      }
+	    });
+	
     this.tabs.append( st.contentContainer );
     this.tabs.tabs( "refresh" );
     
@@ -869,6 +876,18 @@ function SubsetSelection(element, webservice_url) {
 		selector.openExistingSubset(selector.subsetSelection.val());
 	})
 	
+	
+	this.clusterSelection = $("#cluster-set");
+	
+	$('<option />').appendTo(this.clusterSelection);
+	for(var i in this.field_data.clustering_sets){
+		var label = this.field_data.clustering_sets[i];
+		$('<option />', {'value': label, 'text': label}).appendTo(this.clusterSelection);
+	}
+	
+	this.clusterOpen = $("#show-clusters").on('click', function(){
+		selector.openClusters(selector.clusterSelection.val());
+	});
 	
 	this.conditions = [];
 	this.condition_list = $("#filter-conditions");
@@ -985,6 +1004,60 @@ SubsetSelection.prototype.saveSubset = function(tabElement, name, foreground, ba
 			}
 		});
 		
+	}
+};
+
+SubsetSelection.prototype.openClusters = function(cluster_set) {
+	var app = this;
+	var query_url = this.webservice_url + '/subsets/query';
+	var error_state = false;
+	var returned = 0;
+	
+	if(cluster_set == ''){
+		this.displayError("You must select a cluster set.");
+	}else{
+		var num_tabs = this.field_data.clustering_labels[cluster_set].length;
+		for(var i in this.field_data.clustering_labels[cluster_set]){
+			var label = this.field_data.clustering_labels[cluster_set][i];
+			
+			var expression = [
+			                  ['nop',['cluster', cluster_set, 'eq', label]]
+			                 ];
+			
+			var subset_query = {
+					'experiment': this.experiment_id,
+					'type': 'create',
+					'name': '{0}:{1}'.format(cluster_set, label),
+					'background': 'experiment',
+					'foreground': expression
+			};
+			
+			$.ajax({
+				url: query_url,
+				type: 'POST',
+				contentType:'application/json',
+				data: JSON.stringify(subset_query),
+				dataType:'json',
+				success: function(data) {
+					returned += 1;
+					
+					if(data.status == 'error'){
+						app.displayError(data.message);
+					}else if(data.status == 'success'){
+						app.subsetManager.addSubset(data);
+					}
+					
+					if(returned == num_tabs){
+						done_waiting();
+					}
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					app.displayError("Error in server response, please try again.");
+					console.log(textStatus);
+					console.log(errorThrown);
+				}
+			});
+		}
 	}
 };
 
