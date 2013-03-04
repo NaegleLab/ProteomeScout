@@ -16,6 +16,7 @@ class Bot(object):
         self.fullname = "User %s" % (self.ext)
         self.email = "user%s@institute.edu" % (self.ext)
         self.institution = "The Institute of Turtles"
+        self.numqueries = 0
 
     def register_and_login(self):
         self.register()
@@ -91,6 +92,23 @@ class Bot(object):
         form.set('change_description', change_description)
         return form.submit()
     
+    def query_dataset_explorer(self, exp_id, fq, bq = 'experiment'):
+        self.numqueries+=1
+        query_expression = {
+                            'experiment': exp_id,
+                            'name': 'Subset %d' % (self.numqueries),
+                            'background': bq,
+                            'foreground': fq}
+        
+        result = self.app.post_json("http://localhost/webservice/subsets/query", params=query_expression, status=200)
+        return result.json
+    
+
+def set_file_form_contents(field, filename, form):
+    f = open(filename, 'rb')
+    filecontents = f.read()
+    
+    form.set(field, (filename, filecontents))
 
 def set_metadata_form_defaults(form):
     form.set('pmid', '')
