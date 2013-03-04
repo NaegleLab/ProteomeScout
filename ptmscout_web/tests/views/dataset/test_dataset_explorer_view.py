@@ -182,7 +182,7 @@ class TestDatasetExplorerView(UnitTestCase):
         result = dataset_explorer_view.perform_subset_enrichment(request)
         
         patch_getExp.assert_called_once_with(exp_id, request.user)
-        patch_calc.assert_called_once_with(measurements, measurements)
+        patch_calc.assert_called_once_with(measurements, measurements, {"some": "Annotations"})
         
         self.assertIn(call('experiment', exp_id, request.user, {"some": "Annotations"}), patch_parse.call_args_list)
         self.assertIn(call(foreground_query, exp_id, request.user, {"some": "Annotations"}), patch_parse.call_args_list)

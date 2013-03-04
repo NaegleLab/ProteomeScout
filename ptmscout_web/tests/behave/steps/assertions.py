@@ -23,6 +23,11 @@ def assertIn(needle, haystack):
     if needle not in haystack:
         assert False, "'%s' not found in '%s'" % (str(needle), str(haystack))
 
+def assertAlmostEqual(expected, value, tolerance=0.001):
+    test = (expected - tolerance <= value and value <= expected + tolerance)
+    if not test:
+        assert False, "%f != %f +- %f" % (value, expected, tolerance)
+
 def synchronous_assert_called(mock, limit=1):
     slept_time = 0.0
     while not mock.called and slept_time < limit:

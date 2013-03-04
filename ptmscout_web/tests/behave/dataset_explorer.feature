@@ -9,5 +9,6 @@ Feature: Dataset Explorer
             | 201         | 3        |
           And the user should be able to see their annotations in the dataset explorer
           And the user should be able to view the clusterings
-          And the user should be able to filter by numerical data
           And the user should be able to filter by nominative data
+          And the user should be able to filter by numerical data
+          And the user should be able to view nominative features in the enrichment data

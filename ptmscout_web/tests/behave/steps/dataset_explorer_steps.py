@@ -2,7 +2,8 @@ from behave import *
 import bot
 from ptmscout.config import settings, strings
 from mock import patch
-from tests.behave.steps.assertions import assertContains, assertEqual, assertIn
+from tests.behave.steps.assertions import assertContains, assertEqual, assertIn,\
+    assertAlmostEqual
 import os
 import base64
 import json
@@ -80,19 +81,35 @@ def user_should_be_able_to_query_clusters(context):
 def filter_ms_with_greater_than_annotated_value(context):
     fq = [
           ['nop', ['quantitative', 'Interestingness', 'gt', '0.5']]
-          ]
+         ]
     
-    result = context.active_user.query_dataset_explorer(28, fq)
+    result = context.active_user.query_dataset_explorer( 28, fq )
     assertEqual( 26, result['foreground']['peptides'] )
+    
+    context.result = result
     
 @then(u'the user should be able to filter by nominative data')
 def filter_nominative_fun(context):
-    for i in xrange(1, 7):
-        fq = [ 
-              ['nop', ['metadata', 'Fun', 'eq', 'fun']], 
-             ]
-        result = context.active_user.query_dataset_explorer(28, fq)
-        assertEqual(6, result['foreground']['peptides'])
+    fq = [ 
+          ['nop', ['metadata', 'Fun', 'eq', 'fun']], 
+         ]
+    result = context.active_user.query_dataset_explorer(28, fq)
+    assertEqual(6, result['foreground']['peptides'])
 
     
+@then(u'the user should be able to view nominative features in the enrichment data')
+def view_nominative_enrichment(context):
+    enrichment_labels = set( [ row[0] for row in context.result['enrichment'] ] )
+    enrichment_values = set( [ row[1] for row in context.result['enrichment'] ] )
     
+    fun_p_values = {}
+    for row in context.result['enrichment']:
+        if row[0] == "Annotation: Fun":
+            fun_p_values[row[1]] = row[2]
+    
+    assertIn('Annotation: Fun', enrichment_labels)
+    assertIn('fun', enrichment_values)
+    assertIn('not fun', enrichment_values)
+    
+    assertAlmostEqual(0.23759270964480667, fun_p_values['not fun'])
+    assertAlmostEqual(0.3949453933540862, fun_p_values['fun'])

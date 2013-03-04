@@ -311,7 +311,26 @@ def calculate_Region_enrichment(foreground, background):
     return enrichment
 
 
-def calculate_feature_enrichment(foreground, background):
+def calculate_annotation_enrichment(name, foreground, background):
+    enrichment = []
+    valid_labels = set()
+    for ms in foreground:
+        if name in ms.annotations and ms.annotations[name] != None:
+            valid_labels.add(ms.annotations[name])
+    
+    def create_has_annotation(label):
+        def has_annotation(ms):
+            return name in ms.annotations and ms.annotations[name] == label
+        return has_annotation
+    
+    for label in valid_labels:
+        p_value = calculate_hypergeometric_enrichment(foreground, background, create_has_annotation(label))
+        enrichment.append( ( "Annotation: %s" % (name), label, p_value ) )
+    
+    return enrichment
+
+
+def calculate_feature_enrichment(foreground, background, annotation_types):
     enrichment_table = []
 
     p_foreground = get_proteins(foreground)
@@ -324,7 +343,11 @@ def calculate_feature_enrichment(foreground, background):
     enrichment_table += calculate_Scansite_enrichment(foreground, background)
     enrichment_table += calculate_Region_enrichment(foreground, background)
     
-    return sorted(enrichment_table, key=lambda item: item[2])
+    for aset in annotation_types:
+        if annotation_types[aset] == 'nominative':
+            enrichment_table += calculate_annotation_enrichment(aset, foreground, background)
+    
+    return sorted(enrichment_table, key=lambda item: (item[2], item[0], item[1]) )
 
 def create_protein_filter(filter_value):
     def protein_filter(ms):
@@ -696,7 +719,7 @@ def compute_subset_enrichment(request, exp, user, subset_name, foreground_exp, b
         return {'status':"error",
                 'message':strings.error_message_subset_empty}
     
-    enrichment = calculate_feature_enrichment(foreground, background)
+    enrichment = calculate_feature_enrichment(foreground, background, annotation_types)
     
     motif_tests, motif_results = motif.calculate_motif_enrichment(foreground, background)
     
