@@ -98,6 +98,22 @@ def get_valid_subset_labels(experiment_id, user):
 def get_valid_clusterings(experiment_id, user):
     return {}
 
+
+def get_user_annotations(exp_id, user, metadata_fields, quantitative_fields, clustering_labels):
+    for annotation_set in annotations.getUserAnnotations(exp_id, user):
+        values = set()
+        for annotation in annotation_set.annotations:
+            if annotation.value:
+                values.add(annotation.value)
+        values = sorted( list(values) ) 
+        
+        if annotation_set.type == 'cluster':
+            clustering_labels[annotation_set.name] = values
+        if annotation_set.type == 'nominative':
+            metadata_fields[annotation_set.name] = values
+        if annotation_set.type == 'numeric':
+            quantitative_fields.add(annotation_set.name)
+
 def format_explorer_view(experiment_id, measurements, user):
     quantitative_fields = set()
     
@@ -124,6 +140,7 @@ def format_explorer_view(experiment_id, measurements, user):
     for field in metadata_fields.keys():
         metadata_fields[field] = sorted( list(metadata_fields[field]) )
     
+    get_user_annotations(experiment_id, user, metadata_fields, quantitative_fields, cluster_labels)
     
     field_data = {'experiment_id': experiment_id,
                   'quantitative_fields': sorted( list(quantitative_fields) ),
@@ -318,7 +335,9 @@ def create_protein_filter(filter_value):
     return protein_filter
 
 
-def create_metadata_filter(field, op, value):
+def create_metadata_filter(field, op, value, annotation_types):
+    value = value.strip()
+    
     def op_apply_wrapper(filter_func):
         def op_apply(ms):
             result = reduce(bool.__or__, filter_func(ms), False)
@@ -351,19 +370,30 @@ def create_metadata_filter(field, op, value):
     def region_filter(ms):
         return [ region.label.lower() == value.lower() and region.hasSite(modpep.peptide.site_pos) for region in ms.protein.regions for modpep in ms.peptides ]
                 
+    def create_custom_annotation_filter(field):
+        def custom_filter(ms):
+            if (field not in ms.annotation_types) or (None == ms.annotations[field]):
+                return []
+            if ms.annotations[field].lower() == value.lower():
+                return [ True ]
+            
+        return custom_filter
+    
     if field == 'Modification Type':
         return modtype_filter
-    if field == 'Modified Residue':
+    elif field == 'Modified Residue':
         return modsite_filter
-    if field.find('GO-') == 0:
+    elif field.find('GO-') == 0:
         return GO_filter
-    if field == 'Pfam-Domain':
+    elif field == 'Pfam-Domain':
         return pfam_domain_filter
-    if field == 'Pfam-Site':
+    elif field == 'Pfam-Site':
         return pfam_site_filter
-    if field == 'Region':
+    elif field == 'Region':
         return region_filter
-    
+    elif field in annotation_types and annotation_types[field] in set(['cluster','nominative']):
+        return create_custom_annotation_filter(field)
+
     raise QueryError("Unrecognized metadata filter field '%s'" % (field))
 
 def create_scansite_filter(field, op, value, stringency):
@@ -414,11 +444,11 @@ def readable_expression(expression):
 class MissingMeasurementError(Exception):
     pass
 
-def parse_value(value):
+def parse_value(value, annotation_types):
     try:
         num = float(value)
         def get_data(ms):
-                return num
+            return num
         return get_data
     except:
         def get_data(ms):
@@ -427,18 +457,28 @@ def parse_value(value):
                     if d.value == None:
                         raise MissingMeasurementError()
                     return d.value
+                
+            for aset in ms.annotation_types:
+                if aset == value and ms.annotation_types[aset] == 'numeric':
+                    avalue = ms.annotations[aset]
+                    if avalue == None:
+                        raise MissingMeasurementError()
+                    return float(avalue)
             
-            raise QueryError("No such data label: '%s'" % (value))
+            if not (value in annotation_types and annotation_types[value] == 'numeric'):
+                raise QueryError("No such data label: '%s'" % (value))
+            
+            raise MissingMeasurementError()
+
         return get_data
 
-
-def parse_arthmetic_expression(expression):
+def parse_arthmetic_expression(expression, annotation_types):
     if len(expression) == 1:
-        return parse_value(expression[0])
+        return parse_value(expression[0], annotation_types)
     elif len(expression) == 3:
-        v1 = parse_value(expression[0])
+        v1 = parse_value(expression[0], annotation_types)
         op = expression[1]
-        v2 = parse_value(expression[2])
+        v2 = parse_value(expression[2], annotation_types)
         
         def adder(ms):
             return v1(ms) + v2(ms)
@@ -461,7 +501,7 @@ def parse_arthmetic_expression(expression):
         raise QueryError("Invalid operator type: '%s'" % (op))
         
 
-def create_quantitative_filter(expression):
+def create_quantitative_filter(expression, annotation_types):
     comparison_operators = set([ 'eq', 'neq', 'gt', 'lt', 'geq', 'leq' ])
     
     comp_index = find_in(expression, comparison_operators)
@@ -472,8 +512,8 @@ def create_quantitative_filter(expression):
     LHS = expression[:comp_index]
     RHS = expression[comp_index+1:]
     
-    LHS_func = parse_arthmetic_expression(LHS)
-    RHS_func = parse_arthmetic_expression(RHS)
+    LHS_func = parse_arthmetic_expression(LHS, annotation_types)
+    RHS_func = parse_arthmetic_expression(RHS, annotation_types)
     
     def catch_wrapper(func):
         def catcher(ms):
@@ -523,31 +563,33 @@ def create_quantitative_filter(expression):
     raise QueryError("Invalid comparison operator '%s'" % ( expression[comp_index] ))
 
 
-def create_subset_filter(op, subset_label, experiment_id=None, user=None):
+def create_subset_filter(op, subset_label, annotation_types, experiment_id=None, user=None):
     subset = annotations.getSubsetByName(experiment_id, subset_label, user)
     if subset == None:
         raise QueryError("No such subset '%s'" % (subset_label))
     
-    return parse_query_expression(subset.foreground_query, experiment_id, user)
+    return parse_query_expression(subset.foreground_query, experiment_id, user, annotation_types)
   
 
-def parse_condition(condition, experiment_id, user):
+def parse_condition(condition, experiment_id, user, annotation_types):
     if condition[0] == 'protein':
         return create_protein_filter(condition[1])
     if condition[0] == 'metadata':
-        return create_metadata_filter(*tuple(condition[1:]))
+        return create_metadata_filter(*tuple(condition[1:] + [ annotation_types ]))
     if condition[0] == 'scansite':
         return create_scansite_filter(*tuple(condition[1:]))
     if condition[0] == 'sequence':
         return create_sequence_filter(condition[1])
     if condition[0] == 'quantitative':
-        return create_quantitative_filter(condition[1:])
+        return create_quantitative_filter(condition[1:], annotation_types)
     if condition[0] == 'subset':
-        return create_subset_filter(*tuple(condition[1:]), user=user, experiment_id=experiment_id)
+        return create_subset_filter(*tuple(condition[1:] + [ annotation_types ]), user=user, experiment_id=experiment_id)
+    if condition[0] == 'cluster':
+        return create_metadata_filter(*tuple(condition[1:] + [ annotation_types ]))
 
     raise QueryError("No filter type found for '%s'" % (condition[0]))
 
-def parse_dnf_clause(conditions, experiment_id, user):
+def parse_dnf_clause(conditions, experiment_id, user, annotation_types):
     def conjunction(operands):
         def apply_conjunction(ms):
             for op in operands:
@@ -557,9 +599,9 @@ def parse_dnf_clause(conditions, experiment_id, user):
         
         return apply_conjunction
     
-    return conjunction( [ parse_condition(cond, experiment_id, user) for cond in conditions] )
+    return conjunction( [ parse_condition(cond, experiment_id, user, annotation_types) for cond in conditions] )
 
-def parse_query_expression(expression, experiment_id, user):
+def parse_query_expression(expression, experiment_id, user, annotation_types):
     def passthrough(ms):
         return True
     
@@ -583,7 +625,7 @@ def parse_query_expression(expression, experiment_id, user):
         
         dnf_clauses[-1].append(condition)
         
-    return disjunction( [ parse_dnf_clause(op, experiment_id, user) for op in dnf_clauses ] )
+    return disjunction( [ parse_dnf_clause(op, experiment_id, user, annotation_types) for op in dnf_clauses ] )
 
 def format_peptide_data(request, experiment_id, measurements):
     formatted_peptide_data = []
@@ -622,12 +664,32 @@ def format_measurement_data(measurements):
         
     return experiment_data
 
+def compute_annotations(exp, user, measurements):
+    annotation_sets = annotations.getUserAnnotations(exp.id, user)
+    annotation_types = {}
+    ms_map = {}
+    for ms in measurements:
+        ms_map[ms.id] = ms
+        ms.annotations = {}
+        ms.annotation_types = {}
+    
+    for aset in annotation_sets:
+        annotation_types[aset.name] = aset.type
+        for annotation in aset.annotations:
+            ms = ms_map[annotation.MS_id]
+            ms.annotations[aset.name] = annotation.value
+            ms.annotation_types[aset.name] = aset.type
+            
+    return annotation_types
 
 def compute_subset_enrichment(request, exp, user, subset_name, foreground_exp, background_exp):
-    foreground_decision_func = parse_query_expression(foreground_exp, exp.id, user)
-    background_decision_func = parse_query_expression(background_exp, exp.id, user)
+    measurements = exp.measurements
+    annotation_types = compute_annotations(exp, user, measurements)
     
-    background = [ms for ms in exp.measurements if background_decision_func(ms)]
+    foreground_decision_func = parse_query_expression(foreground_exp, exp.id, user, annotation_types)
+    background_decision_func = parse_query_expression(background_exp, exp.id, user, annotation_types)
+    
+    background = [ms for ms in measurements if background_decision_func(ms)]
     foreground = [ms for ms in background if foreground_decision_func(ms)]
     
     if len(foreground) == 0:
@@ -694,14 +756,15 @@ def perform_subset_enrichment(request):
 def save_subset(request):
     query_expression = json.loads(request.body, encoding=request.charset)
     exp_id = int(query_expression['experiment'])
-    experiment.getExperimentById(exp_id, request.user)
+    exp = experiment.getExperimentById(exp_id, request.user)
     
     subset_name = query_expression['name']
     foreground_exp = query_expression['foreground']
     background_exp = query_expression['background']
     
-    parse_query_expression(foreground_exp, exp_id, request.user)
-    parse_query_expression(background_exp, exp_id, request.user)
+    annotation_types = compute_annotations(exp, request.user, exp.measurements)
+    parse_query_expression(foreground_exp, exp_id, request.user, annotation_types)
+    parse_query_expression(background_exp, exp_id, request.user, annotation_types)
     
     if(None != annotations.getSubsetByName(exp_id, subset_name, request.user)):
         return {'status':"error",

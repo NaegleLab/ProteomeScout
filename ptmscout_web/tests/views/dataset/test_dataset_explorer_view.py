@@ -20,7 +20,7 @@ class TestDatasetExplorerView(UnitTestCase):
                ['and', [ 'scansite', 'Scansite-Kinase', 'eq', 'PDGFRB_Y_kin', '0.2' ]]
             ]
         
-        selector = dataset_explorer_view.parse_query_expression(foreground_query, None, None)
+        selector = dataset_explorer_view.parse_query_expression(foreground_query, None, None, {})
 
         d1 = createMockDataItem('run1', 1, 'data', '0', 'time(sec)', 0.4)
         d2 = createMockDataItem('run1', 2, 'data', '1', 'time(sec)', 0.1)
@@ -141,10 +141,11 @@ class TestDatasetExplorerView(UnitTestCase):
         
     
     @patch('ptmscout.views.dataset.dataset_explorer_view.calculate_feature_enrichment')
+    @patch('ptmscout.views.dataset.dataset_explorer_view.compute_annotations')
     @patch('ptmscout.utils.protein_utils.create_sequence_profile')
     @patch('ptmscout.views.dataset.dataset_explorer_view.parse_query_expression')
     @patch('ptmscout.database.experiment.getExperimentById')
-    def test_subset_query_create_subset(self, patch_getExp, patch_parse, patch_seqlogo, patch_calc):
+    def test_subset_query_create_subset(self, patch_getExp, patch_parse, patch_seqlogo, patch_annotate, patch_calc):
         exp = createMockExperiment()
         measurements = [createMockMeasurement(2, exp.id),createMockMeasurement(3, exp.id),createMockMeasurement(4, exp.id)]
         exp.measurements = measurements
@@ -172,6 +173,7 @@ class TestDatasetExplorerView(UnitTestCase):
         def comparison_func(ms):
             return True
         
+        patch_annotate.return_value = {"some": "Annotations"}
         patch_getExp.return_value = exp
         patch_parse.return_value = comparison_func
         patch_seqlogo.return_value = "a seqlogo"
@@ -182,8 +184,8 @@ class TestDatasetExplorerView(UnitTestCase):
         patch_getExp.assert_called_once_with(exp_id, request.user)
         patch_calc.assert_called_once_with(measurements, measurements)
         
-        self.assertIn(call('experiment', exp_id, request.user), patch_parse.call_args_list)
-        self.assertIn(call(foreground_query, exp_id, request.user), patch_parse.call_args_list)
+        self.assertIn(call('experiment', exp_id, request.user, {"some": "Annotations"}), patch_parse.call_args_list)
+        self.assertIn(call(foreground_query, exp_id, request.user, {"some": "Annotations"}), patch_parse.call_args_list)
         
         self.assertEqual('success', result['status'])
         self.assertEqual("Some feature enrichment", result['enrichment'])
@@ -196,9 +198,10 @@ class TestDatasetExplorerView(UnitTestCase):
         self.assertEqual("Subset 1", result['name'])
         
 
+    @patch('ptmscout.views.dataset.dataset_explorer_view.compute_annotations')
     @patch('ptmscout.database.experiment.getExperimentById')
     @patch('ptmscout.database.annotations.getSubsetByName')
-    def test_save_subset_should_report_error_if_element_exists(self, patch_getSubset, patch_getExp):
+    def test_save_subset_should_report_error_if_element_exists(self, patch_getSubset, patch_getExp, patch_getAnnotations):
         exp_id = 11
         exp = createMockExperiment(eid=exp_id)
 
@@ -222,6 +225,7 @@ class TestDatasetExplorerView(UnitTestCase):
         request.user = createMockUser()
         
         request.body = json.dumps(save_query)
+        patch_getAnnotations.return_value = {}
         
         result = dataset_explorer_view.save_subset(request)
         
@@ -231,11 +235,11 @@ class TestDatasetExplorerView(UnitTestCase):
         self.assertEqual('error', result['status'])
         self.assertEqual(strings.error_message_subset_name_exists, result['message'])
         
-    
+    @patch('ptmscout.views.dataset.dataset_explorer_view.compute_annotations')
     @patch('ptmscout.database.experiment.getExperimentById')
     @patch('ptmscout.database.annotations.getSubsetByName')
     @patch('ptmscout.database.annotations.Subset')    
-    def test_save_subset_should_create_new_subset_element_and_save(self, patch_subset, patch_getSubset, patch_getExp):
+    def test_save_subset_should_create_new_subset_element_and_save(self, patch_subset, patch_getSubset, patch_getExp, patch_getAnnotations):
         exp_id = 11
         exp = createMockExperiment(eid=11)
 
@@ -261,6 +265,7 @@ class TestDatasetExplorerView(UnitTestCase):
         
         request.body = json.dumps(save_query)
             
+        patch_getAnnotations.return_value = {}
         subset = patch_subset.return_value
         
         result = dataset_explorer_view.save_subset(request)
