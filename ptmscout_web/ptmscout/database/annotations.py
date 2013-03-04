@@ -1,6 +1,18 @@
 from ptmscout.database import Base, DBSession
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, VARCHAR, PickleType, Enum
+from sqlalchemy.orm import relationship
+
+    
+class Annotation(Base):
+    __tablename__ = 'MS_annotations'
+
+    id = Column(Integer(10), primary_key=True, autoincrement=True)
+    
+    MS_id = Column(Integer(10), ForeignKey('ms.id'))
+    set_id = Column(Integer(10), ForeignKey('annotations.id'))
+    
+    value = Column(VARCHAR(100))
 
 class AnnotationSet(Base):
     __tablename__ = 'annotations'
@@ -12,16 +24,21 @@ class AnnotationSet(Base):
     type = Column(Enum(['cluster', 'numeric', 'nominative']))
     name = Column(VARCHAR(100), index=True)
     
-class Annotation(Base):
-    __tablename__ = 'ms_annotations'
-
-    id = Column(Integer(10), primary_key=True, autoincrement=True)
+    annotations = relationship(Annotation)
     
-    set_id = Column(Integer(10), ForeignKey('annotations.id'))
-    ms_id = Column(Integer(10), ForeignKey('ms.id'))
-    
-    value = Column(VARCHAR(30))
+    def save(self):
+        DBSession.add(self)
+        DBSession.flush()
+        
+    def delete(self):
+        DBSession.delete(self)
 
+def getUserAnnotations(exp_id, user):
+    return DBSession.query(AnnotationSet).filter_by(experiment_id=exp_id, owner_id=user.id).all()
+
+def getAnnotationValues(annotation_set_id):
+    return DBSession.query(Annotation.value).filter_by(set_id=annotation_set_id).distinct()
+    
 class Subset(Base):
     __tablename__ = 'experiment_subsets'
     

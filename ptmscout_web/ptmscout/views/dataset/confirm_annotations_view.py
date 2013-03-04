@@ -1,5 +1,5 @@
 from pyramid.view import view_config
-from ptmscout.database import experiment, upload
+from ptmscout.database import experiment, upload, jobs
 from ptmscout.config import strings
 from ptmscout.utils import webutils
 from ptmworker import annotate_tasks
@@ -14,8 +14,18 @@ def upload_already_started_view(request):
             'message': strings.annotation_upload_started_message % (request.application_url + "/account/experiments")}
 
 
-def create_annotate_job(session, ptmscoutdev):
-    pass
+def create_annotate_job(session, request):
+    job = jobs.Job()
+    job.job_name = 'Load Annotations for Experiment %d' % (session.experiment_id)
+    
+    job.status = 'in queue'
+    job.status_url = request.route_url('my_experiments')
+    job.result_url = request.route_url('experiment_subset', id=session.experiment_id)
+    job.user_id = request.user.id
+    
+    job.save()
+    
+    annotate_tasks.start_annotation_import.apply_async((job.id, session.id))
 
 @view_config(route_name='confirm_annotations', renderer='ptmscout:/templates/upload/upload_confirm.pt', permission='private')
 def upload_confirm_view(request):
@@ -38,8 +48,8 @@ def upload_confirm_view(request):
     reason = None
     
     if confirm and terms_of_use_accepted:
-        job_id = create_annotate_job(session, request.user)
-        annotate_tasks.start_annotation_import.apply_async((job_id,))
+        create_annotate_job(session, request)
+        
     
         return {'pageTitle': strings.annotation_upload_started_page_title,
                 'message': strings.annotation_upload_started_message % (request.application_url + "/account/experiments"),

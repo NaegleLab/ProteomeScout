@@ -262,3 +262,37 @@ The PTMScout administrator has been notified of this error. If problems persist 
 error_message_subset_name_exists = "A subset with that name already exists for this experiment, please choose another name"
 error_message_subset_name_does_not_exist = "No subset was found with that name"
 error_message_subset_empty = "Subset foreground selection was empty, please try another query"
+
+annotation_upload_finished_subject = "PTMScout annotation upload finished"
+annotation_upload_finished_message = \
+"""
+PTMScout has finished processing your job '%s'.
+
+Annotations Loaded: %d
+Errors Encountered: %d
+
+You may now use this annotation data by visiting the <a href="%s">dataset explorer</a>.
+
+A listing of error reasons is provided below.
+
+Thanks for using PTMScout,
+-The PTMScout Team
+
+Upload Errors:
+--------------
+"""
+
+job_failed_subject = "PTMScout job failed"
+job_failed_message = """
+Processing of your job '%s' failure during '%s' with the following error message:
+
+    %s
+    
+You may retry your job at any time. 
+
+The PTMScout administrator has been notified of this error. If problems persist please contribute a bug report at our <a href="http://bitbucket.org/knaegle/ptmscout_dev">issue tracker</a>.
+
+-The PTMScout Team
+"""
+
+

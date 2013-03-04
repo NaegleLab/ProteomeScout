@@ -76,8 +76,19 @@ class ProteinRecord(object):
 
         return pr
 
-
-
+def notify_job_failed(fn):
+    from ptmworker import notify_tasks
+    def ttask(*args):
+        try:
+            result = fn(*args)
+            return result
+        except Exception, e:
+            job_id = args[0]
+            notify_tasks.notify_job_failed(job_id, str(e), traceback.format_exc())
+            raise
+    ttask.__name__ = fn.__name__
+    return ttask
+        
 def transaction_task(fn):
     def ttask(*args):
         log.debug("Running task: %s", fn.__name__)

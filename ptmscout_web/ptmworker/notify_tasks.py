@@ -1,6 +1,6 @@
 import celery
 from ptmworker.helpers import upload_helpers
-from ptmscout.database import experiment, modifications
+from ptmscout.database import experiment, modifications, jobs
 from ptmscout.config import strings, settings
 from ptmscout.utils import mail
 import traceback
@@ -48,6 +48,7 @@ def finalize_experiment_error_state_callback(uuid, exp_id, user_email, applicati
 
     finalize_experiment_error_state(exc, str(result.traceback), exp_id, user_email, application_url)
 
+
 @celery.task
 @upload_helpers.transaction_task
 def finalize_import(exp_id, user_email, application_url):
@@ -66,6 +67,58 @@ def finalize_import(exp_id, user_email, application_url):
     
     mail.celery_send_mail([user_email], subject, message)
 
+@celery.task
+@upload_helpers.transaction_task
+def finalize_annotation_upload_job(job_id, total, errors):
+    job = jobs.getJobById(job_id)
+    job.finish()
+    job.save()
+    
+    subject = strings.annotation_upload_finished_subject
+    message = strings.annotation_upload_finished_message % (job.name, total, len(errors), job.result_url)
+    
+    for err in errors:
+        message += "%s\n" % ( err.message ) 
+    
+    mail.celery_send_mail([job.user.email], subject, message)
+    
+
+@celery.task
+@upload_helpers.transaction_task
+def notify_job_failed(job_id, exc, stack_trace):
+    job = jobs.getJobById(job_id)
+    job.fail(stack_trace)
+    job.save()
+    
+    subject = strings.job_failed_subject
+    message = strings.job_failed_message % (job.name, job.stage, "Exception: " + str(exc))
+    
+    mail.celery_send_mail([job.user.email, settings.adminEmail], subject, message)
+    
+    
+
+@celery.task
+@upload_helpers.transaction_task
+def set_job_status(job_id, status):
+    job = jobs.getJobById(job_id)
+    job.status = status
+    job.save()
+
+@celery.task
+@upload_helpers.transaction_task
+def set_job_stage(job_id, stage, max_value):
+    job = jobs.getJobById(job_id)
+    job.stage = stage
+    job.max_progress = max_value
+    job.save()
+
+@celery.task
+@upload_helpers.transaction_task
+def set_job_progress(job_id, value, max_value):
+    job = jobs.getJobById(job_id)
+    job.progress = value
+    job.max_progress = max_value
+    job.save()
 
 def handle_errors(exp_id_arg):
     def decorate(fn):
@@ -80,3 +133,5 @@ def handle_errors(exp_id_arg):
         ttask.__name__ = fn.__name__
         return ttask
     return decorate
+
+

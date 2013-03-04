@@ -30,6 +30,8 @@ def send_automail_message(request, recipients, subject, message):
    
 
 def celery_send_mail(recipients, subject, message):
+    message = message.replace("\n","<br />\n")
+    
     mailer = celery.utils.mail.Mailer()
     message = CeleryHTMLMessage(to=recipients, sender=settings.automailerEmail, subject=subject, body=message)
     mailer.send(message)
