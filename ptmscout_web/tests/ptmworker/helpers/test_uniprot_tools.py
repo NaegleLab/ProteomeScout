@@ -1,11 +1,13 @@
 from tests.PTMScoutTestCase import IntegrationTestCase
 from ptmworker.helpers import uniprot_tools
+from ptmscout.config import settings
+import os
 
 class TestUniprotQuery(IntegrationTestCase):
 #'annotations', 'dbxrefs', 'description', 'features', 'format', 'id', 'letter_annotations', 'lower', 'name', 'reverse_complement', 'seq', 'upper'
 
     def test_uniprot_handle_result(self):
-        result_xml = open('uniprot_result.xml', 'r')
+        result_xml = open(os.path.join(settings.ptmscout_path, 'tests','ptmworker','helpers','uniprot_result.xml'), 'r')
         rval = uniprot_tools.handle_result(result_xml)
 
         pr = rval['Q91ZU6']
