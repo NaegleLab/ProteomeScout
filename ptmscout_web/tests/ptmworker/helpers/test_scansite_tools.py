@@ -9,6 +9,7 @@ class IntegrationTestScansiteQuery(IntegrationTestCase):
     <predictedSite>
         <motifName>p85 SH2</motifName>
         <motifNickName>p85_SH2</motifNickName>
+        <percentile>0.03709684112385226</percentile>
         <score>0.6751</score>
         <site>Y8</site>
         <siteSequence>LKKVVALyDYMPMNA</siteSequence>
@@ -16,6 +17,7 @@ class IntegrationTestScansiteQuery(IntegrationTestCase):
     <predictedSite>
         <motifName>Shc SH2</motifName>
         <motifNickName>Shc_SH2</motifNickName>
+        <percentile>0.04914600435151965</percentile>
         <score>0.5591</score>
         <site>Y8</site>
         <siteSequence>LKKVVALyDYMPMNA</siteSequence>
@@ -23,6 +25,7 @@ class IntegrationTestScansiteQuery(IntegrationTestCase):
     <predictedSite>
         <motifName>Insulin Receptor Kinase</motifName>
         <motifNickName>InsR_Kin</motifNickName>
+        <percentile>0.011053898116672393</percentile>
         <score>0.6306</score>
         <site>Y10</site>
         <siteSequence>KVVALYDyMPMNA**</siteSequence>
@@ -37,16 +40,19 @@ class IntegrationTestScansiteQuery(IntegrationTestCase):
         self.assertEqual("p85 SH2", parser.sites[0].name)
         self.assertEqual("p85_SH2", parser.sites[0].nickname)
         self.assertEqual(0.6751, parser.sites[0].score)
+        self.assertAlmostEqual(3.709684112385226, parser.sites[0].percentile)
         self.assertEqual("LKKVVALyDYMPMNA", parser.sites[0].sequence)
         
         self.assertEqual("Shc SH2", parser.sites[1].name)
         self.assertEqual("Shc_SH2", parser.sites[1].nickname)
         self.assertEqual(0.5591, parser.sites[1].score)
+        self.assertAlmostEqual(4.914600435151965, parser.sites[1].percentile)
         self.assertEqual("LKKVVALyDYMPMNA", parser.sites[1].sequence)
         
         self.assertEqual("Insulin Receptor Kinase", parser.sites[2].name)
         self.assertEqual("InsR_Kin", parser.sites[2].nickname)
         self.assertEqual(0.6306, parser.sites[2].score)
+        self.assertAlmostEqual(1.1053898116672393, parser.sites[2].percentile)
         self.assertEqual("KVVALYDyMPMNA**", parser.sites[2].sequence)
        
     def test_get_scansite_motif_with_whole_protein_should_get_everythin(self):
@@ -69,9 +75,11 @@ class IntegrationTestScansiteQuery(IntegrationTestCase):
         self.assertEqual("p85 SH2", sites[0].name)
         self.assertEqual("p85_SH2", sites[0].nickname)
         self.assertEqual(0.6751, sites[0].score)
+        self.assertAlmostEqual(3.709684112385226, sites[0].percentile)
         self.assertEqual("LKKVVALyDYMPMNA", sites[0].sequence)
         
         self.assertEqual("Shc SH2", sites[1].name)
         self.assertEqual("Shc_SH2", sites[1].nickname)
         self.assertEqual(0.5591, sites[1].score)
+        self.assertAlmostEqual(4.914600435151965, sites[1].percentile)
         self.assertEqual("LKKVVALyDYMPMNA", sites[1].sequence)

@@ -396,10 +396,10 @@ def query_peptide_predictions(pep_seq, motif_class):
     for scansite in scansite_predictions:
         pred = modifications.ScansitePrediction()
         pred.score = scansite.score
+        pred.percentile = scansite.percentile
         pred.value = scansite.nickname
         pred.source = scansite.parse_source()
         db_predictions.append(pred)
-#        log.info("%f %s %s", scansite.score, scansite.nickname, scansite.parse_source())
         
     return db_predictions
 

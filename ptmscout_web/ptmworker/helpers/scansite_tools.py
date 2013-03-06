@@ -6,13 +6,14 @@ from ptmscout.utils.decorators import rate_limit
 import logging
 
 log = logging.getLogger('ptmscout')
-scansite_url = "http://scansite3.mit.edu/Scansite3Webservice/proteinScan/proteinName=PTMSCOUT_QUERY/sequence=%s/motifClass=%s/motifNicknames=/stringencyValue=LOW"
+scansite_url = "http://scansite3.mit.edu/ws/proteinScan/proteinName=PTMSCOUT_QUERY/sequence=%s/motifClass=%s/motifNicknames=/stringencyValue=LOW"
 
 class MotifNode(object):
     def __init__(self, siteNode):
         self.name       = self.__get_node_text(siteNode.getElementsByTagName('motifName')[0])
         self.nickname   = self.__get_node_text(siteNode.getElementsByTagName('motifNickName')[0])
         self.score      = float(self.__get_node_text(siteNode.getElementsByTagName('score')[0]))
+        self.percentile = 100.0 * float(self.__get_node_text(siteNode.getElementsByTagName('percentile')[0]))
         self.sequence   = self.__get_node_text(siteNode.getElementsByTagName('siteSequence')[0])
         self.site       = self.__get_node_text(siteNode.getElementsByTagName('site')[0])
 

@@ -20,7 +20,7 @@ def format_scansite_predictions(prot, mod_sites):
             scansite_predictions.append({ \
                     'source': ss.source,
                     'value': ss.value,
-                    'score': ss.score
+                    'score': ss.percentile
                 })
         formatted_scansite[site] = scansite_predictions
 

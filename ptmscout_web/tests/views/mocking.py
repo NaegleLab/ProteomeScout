@@ -373,6 +373,7 @@ def createMockScansite(pep_id):
     mock.source = "somesource" + str(mock.id)
     mock.value = "Some_Value" + str(mock.id)
     mock.score = random.random()
+    mock.percentile = random.random()
     mock.phophopep_id = pep_id
     
     return mock

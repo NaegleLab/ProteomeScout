@@ -5,7 +5,7 @@ import base64
 import json
 
 def filter_predictions(predictions, threshold = 1.0):
-    return [ p for p in predictions if p.score <= threshold ]
+    return [ p for p in predictions if p.percentile <= threshold ]
 
 def format_predictions(measurements):
     formatted_predictions = {}

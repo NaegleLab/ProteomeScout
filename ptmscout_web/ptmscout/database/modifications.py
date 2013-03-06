@@ -78,6 +78,7 @@ class ScansitePrediction(Base):
     source = Column(VARCHAR(40), default='scansite')
     value = Column(VARCHAR(20))
     score = Column(Float)
+    percentile = Column(Float)
     peptide_id = Column(Integer(10), ForeignKey('peptide.id'))
     
     UniqueConstraint('source', 'value', 'peptide_id', name="UNIQUE_pepId_source_value")
@@ -204,7 +205,7 @@ def getMeasuredPeptide(exp_id, pep_seq, protein_id, filter_mods=None):
 def getMeasuredPeptideById(ms_id):
     return DBSession.query(MeasuredPeptide).filter_by(id=ms_id).first()
 
-def getMeasuredPeptidesByProtein(pid, user):
+def getMeasuredPeptidesByProtein(pid, user=None):
     modifications = DBSession.query(MeasuredPeptide).filter_by(protein_id=pid).all()
     return [ mod for mod in modifications if mod.experiment.checkPermissions(user) and mod.experiment.ready() ]
 

@@ -73,7 +73,7 @@ class TestDatasetExplorerView(UnitTestCase):
         scansite = createMockScansite(pep.id)
         scansite.value = 'PDGFRB_Y_kin'
         scansite.source = 'scansite_bind'
-        scansite.score = 0.01
+        scansite.percentile = 0.01
         pep.predictions = [scansite]
         createMockPeptideModification(ms3, pep, ptm2)
         ms3.data = passing_series
@@ -90,7 +90,7 @@ class TestDatasetExplorerView(UnitTestCase):
         scansite = createMockScansite(pep.id)
         scansite.value = 'PDGFRB_Y_kin'
         scansite.source = 'scansite_kinase'
-        scansite.score = 0.01
+        scansite.percentile = 0.01
         pep.predictions = [scansite]
         createMockPeptideModification(ms5, pep, ptm3)
         ms5.data = passing_series
@@ -102,7 +102,7 @@ class TestDatasetExplorerView(UnitTestCase):
         scansite = createMockScansite(pep.id)
         scansite.value = 'PDGFRB_Y_kin'
         scansite.source = 'scansite_kinase'
-        scansite.score = 0.01
+        scansite.percentile = 0.01
         pep.predictions = [scansite]
         createMockPeptideModification(ms6, pep, ptm1)
         ms6.data = failing_series
@@ -118,7 +118,7 @@ class TestDatasetExplorerView(UnitTestCase):
         scansite = createMockScansite(pep.id)
         scansite.value = 'PDGFRB_Y_kin'
         scansite.source = 'scansite_kinase'
-        scansite.score = 1.0
+        scansite.percentile = 1.0
         pep.predictions = [scansite]
         createMockPeptideModification(ms8, pep, ptm2)
         ms8.data = passing_series
@@ -130,7 +130,7 @@ class TestDatasetExplorerView(UnitTestCase):
         scansite = createMockScansite(pep.id)
         scansite.value = 'PDGFRB_Y_kin'
         scansite.source = 'scansite_kinase'
-        scansite.score = 0.01
+        scansite.percentile = 0.01
         pep.predictions = [scansite]
         createMockPeptideModification(ms9, pep, ptm1)
         ms9.data = missing_values_series

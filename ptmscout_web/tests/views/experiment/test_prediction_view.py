@@ -22,8 +22,8 @@ class TestPredictionViews(UnitTestCase):
         pred1 = createMockScansite(1)
         pred2 = createMockScansite(1)
         
-        pred1.score = 3
-        pred2.score = 0.2
+        pred1.percentile = 3
+        pred2.percentile = 0.2
         
         result = filter_predictions([pred1,pred2])
         

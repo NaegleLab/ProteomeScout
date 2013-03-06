@@ -434,12 +434,12 @@ def create_scansite_filter(field, op, value, stringency):
     
     @op_apply_wrapper
     def kinase_filter(ms):
-        return [prediction.source == 'scansite_kinase' and prediction.value == value and prediction.score < stringency 
+        return [prediction.source == 'scansite_kinase' and prediction.value == value and prediction.percentile < stringency 
                  for modpep in ms.peptides for prediction in modpep.peptide.predictions]
     
     @op_apply_wrapper
     def bind_filter(ms):
-        return [prediction.source == 'scansite_bind' and prediction.value == value and prediction.score < stringency 
+        return [prediction.source == 'scansite_bind' and prediction.value == value and prediction.percentile < stringency 
                  for modpep in ms.peptides for prediction in modpep.peptide.predictions]
 
     
