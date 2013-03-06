@@ -6,5 +6,5 @@ Feature: Dataset Peptide Ambiguity UI
           When the user submits the extension experiment for loading
           Then the user should be sent an email with a link to the extension experiment which contains:
             | peptides | proteins | rejected | errors |
-            | 61       | 45       | 7        | 28     |
+            | 68       | 52       | 0        | 0     |
 

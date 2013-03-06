@@ -201,6 +201,8 @@ def getMeasuredPeptide(exp_id, pep_seq, protein_id, filter_mods=None):
     if len(everything) > 0:
         return everything[0]
 
+def getMeasuredPeptideById(ms_id):
+    return DBSession.query(MeasuredPeptide).filter_by(id=ms_id).first()
 
 def getMeasuredPeptidesByProtein(pid, user):
     modifications = DBSession.query(MeasuredPeptide).filter_by(protein_id=pid).all()

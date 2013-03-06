@@ -3,7 +3,7 @@ from ptmscout.config import strings
 from ptmscout.database import experiment, modifications, protein, upload
 from ptmscout.utils import forms, webutils, downloadutils, uploadutils
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
-
+import re
 
 def create_session(exp, user, exp_file, name_prefix, columns, units):
     session = upload.Session()
@@ -38,7 +38,13 @@ def create_session(exp, user, exp_file, name_prefix, columns, units):
     return session.id
 
 def prepopulate_upload_session(exp, user, schema, was_defaults):
-    headers, exp_filename = downloadutils.experiment_to_tsv(exp)
+    ms_map = {}
+    for field in schema.field_names:
+        m = re.match("ms([0-9]+)", field)
+        ms_id = int(m.group(1))
+        ms_map[ms_id] = schema.get_form_value(field)
+
+    headers, exp_filename = downloadutils.experiment_to_tsv(exp, ms_map)
     assignments = uploadutils.assign_columns_by_name(headers)
 
     if was_defaults:

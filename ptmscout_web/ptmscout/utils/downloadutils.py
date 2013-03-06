@@ -25,7 +25,7 @@ def annotate_experiment_with_errors(exp, show_errors):
 
     return header, rows
 
-def format_experiment_data(exp):
+def format_experiment_data(exp, ms_map = {}):
     has_runs = False
     data_headers = set()
     rows = []
@@ -42,7 +42,12 @@ def format_experiment_data(exp):
             runs[d.run] = exp_data
 
         modstr = '; '.join([pep.modification.name for pep in ms.peptides])
-        row_template = [ms.query_accession, ms.peptide, modstr]
+
+        query_accession = ms.query_accession
+        if ms.id in ms_map:
+            query_accession = ms_map[ms.id]
+
+        row_template = [query_accession, ms.peptide, modstr]
 
         if len(runs) == 0:
             rows.append(row_template)
@@ -64,8 +69,8 @@ def format_experiment_data(exp):
 
     return final_headers, rows
 
-def experiment_to_tsv(exp):
-    headers, rows = format_experiment_data(exp)
+def experiment_to_tsv(exp, ms_map = {}):
+    headers, rows = format_experiment_data(exp, ms_map)
 
     exp_filename = "experiment_data" + str(time.time())
     exp_path = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, exp_filename)
