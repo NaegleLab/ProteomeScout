@@ -16,7 +16,9 @@ def create_session(exp, user, exp_file, name_prefix, columns, units):
     
     new_exp = experiment.Experiment()
     new_exp.copyData(exp)
-    new_exp.name = name_prefix + new_exp.name
+    new_exp.name = name_prefix + exp.name
+    new_exp.public = 0
+    new_exp.grantPermission(user, 'owner')
     new_exp.saveExperiment()
 
     session.experiment_id = new_exp.id
@@ -145,7 +147,7 @@ def experiment_ambiguity_view(request):
 
         if errors == []:
             session_id = prepopulate_upload_session(exp, request.user, form_schema, defaults)
-            raise HTTPFound('%s/upload/%d' % (request.application_url, session_id))
+            return HTTPFound('%s/upload/%d' % (request.application_url, session_id))
 
     return {'errors': errors,
             'experiment':exp,

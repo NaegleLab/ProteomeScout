@@ -3,7 +3,7 @@ from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 from mock import patch, Mock
 from tests.views.mocking import createMockExperiment, createMockMeasurement,\
         createMockAmbiguity, createMockProtein, createMockPeptide,\
-        createMockPeptideModification, createMockPTM
+        createMockPeptideModification, createMockPTM, createMockUser
 from ptmscout.views.experiment import ambiguity_view
 from ptmscout.config import strings
 from ptmscout.utils import forms
@@ -22,6 +22,43 @@ class ExperimentAmbiguityViewIntegrationTests(IntegrationTestCase):
         result.mustcontain("[Default Assignments] Time-resolved mass spectrometry of tyrosine phosphorylation sites in the epidermal growth factor receptor signaling network reveals dynamic modules.")
 
 class ExperimentAmbiguityViewTests(UnitTestCase):
+
+    @patch('ptmscout.database.upload.Session')
+    @patch('ptmscout.database.experiment.Experiment')
+    def test_create_session(self, patch_exp, patch_session):
+        exp = createMockExperiment()
+        exp.public = 1
+
+        new_session = patch_session.return_value
+        new_exp = patch_exp.return_value
+
+        new_session.id = 100
+        new_exp.id = 1300
+
+        exp_file = 'filename.tmp'
+        name_prefix = '[default]'
+        columns = [{'type':'accession','label':''},{'type':'peptide','label':''}]
+        units = 'time(min)'
+        user = createMockUser()
+
+        session_id = ambiguity_view.create_session(exp, user, exp_file, name_prefix, columns, units)
+
+        new_exp.copyData.assert_called_once_with(exp)
+        self.assertEqual(0, new_exp.public)
+        self.assertEqual(name_prefix + exp.name, new_exp.name)
+        new_exp.grantPermission.assert_called_once_with(user, 'owner')
+        new_exp.saveExperiment.assert_called_once_with()
+
+        self.assertEqual(new_session.id, session_id)
+        self.assertEqual(exp_file, new_session.data_file)
+        self.assertEqual('extension', new_session.load_type)
+        self.assertEqual('metadata', new_session.stage)
+        self.assertEqual('accession', new_session.columns[0].type)
+        self.assertEqual('', new_session.columns[0].label)
+        self.assertEqual('peptide', new_session.columns[1].type)
+        self.assertEqual('', new_session.columns[1].label)
+
+        new_session.save.assert_called_once_with()
 
     def test_create_ambiguity_schema(self):
         request = DummyRequest()
@@ -105,12 +142,8 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
         patch_createSession.return_value = session_id
         validator.validate.return_value = []
 
-        try:
-            ambiguity_view.experiment_ambiguity_view(request)
-        except HTTPFound, f:
-            self.assertEqual("%s/upload/%d" % (request.application_url, session_id), f.location)
-        else:
-            self.fail("Expected HTTPFound")
+        f = ambiguity_view.experiment_ambiguity_view(request)
+        self.assertEqual("%s/upload/%d" % (request.application_url, session_id), f.location)
 
         patch_createSession.assert_called_once_with(exp, request.user, schema, False)
         patch_getExperiment.assert_called_once_with(1323, user=request.user)
@@ -193,6 +226,8 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
         request.matchdict['id'] = '1323'
         request.user = None
    
+        schema = forms.FormSchema()
+        pep_list = "Some peptide list"
         exp = createMockExperiment(1323)
         exp.ambiguity = 0
 
