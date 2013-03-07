@@ -27,4 +27,5 @@ python
 python-dev
 python-virtualenv
 libmysqlclient-dev
-
+rabbitmq-server
+sendmail
