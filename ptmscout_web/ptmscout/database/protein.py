@@ -187,6 +187,26 @@ class Protein(Base):
         compare = [region == r2 for r2 in self.regions]
         return compare != [] and reduce(bool.__or__, compare)
 
+    def get_kmer(self, site_pos, k=7):
+        prot_seq = self.sequence
+        site_pos = site_pos - 1
+        low_bound = max([site_pos-k, 0])
+        high_bound = min([len(prot_seq), site_pos+k+1])
+
+        pep_aligned = prot_seq[low_bound:site_pos] + prot_seq[site_pos].lower() + prot_seq[site_pos+1:high_bound]
+        
+        if site_pos-k < 0:
+            pep_aligned = (" " * (k - site_pos)) + pep_aligned
+        if site_pos+k+1 > len(prot_seq):
+            pep_aligned = pep_aligned + (" " * (site_pos + k+1 - len(prot_seq)))
+
+        return pep_aligned
+
+    def get_domain(self, site_pos):
+        for d in self.domains:
+            if d.start <= site_pos and site_pos < d.stop:
+                return d
+
 class NoSuchProtein(Exception):
     def __init__(self, prot):
         self.prot = prot
@@ -260,8 +280,8 @@ def getProteinsByExperiment(exp_id, page=None):
 
     return result_size, DBSession.query(Protein).join(sq, Protein.id == sq.c.id).all()
 
-def getProteinDomain(prot_id, pep_site):
-    return DBSession.query(ProteinDomain).filter(and_(ProteinDomain.protein_id==prot_id, ProteinDomain.start <= pep_site, pep_site <= ProteinDomain.stop)).first()    
+def getProteinDomain(prot_id, site_pos):
+    return DBSession.query(ProteinDomain).filter(and_(ProteinDomain.protein_id==prot_id, ProteinDomain.start <= site_pos, site_pos <= ProteinDomain.stop)).first()    
 
 
 def getProteinBySequence(seq, species):

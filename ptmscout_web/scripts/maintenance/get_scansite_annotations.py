@@ -1,13 +1,16 @@
 from scripts.DB_init import DatabaseInitialization
-from ptmscout.database import DBSession, modifications
+from ptmscout.database import DBSession, modifications, protein
 from ptmworker.helpers import upload_helpers, scansite_tools
+from ptmscout.utils import decorators
 from ptmworker import peptide_tasks
 from collections import defaultdict
 import os
 import traceback
 import datetime
 
-def getMotifClass(taxonomy):
+FLUSH_EVERY = 10
+
+def get_motif_class(taxonomy):
     motif_class = None
     if 'mammalia' in taxonomy:
         motif_class="MAMMALIAN"
@@ -18,22 +21,68 @@ def getMotifClass(taxonomy):
 
     return motif_class
 
-FLUSH_EVERY=10
-
-def copyScansitePredictions(pep, scansite_predictions):
+def copy_predictions(pep, scansite_predictions):
     db_predictions = []
 
     for scansite in scansite_predictions:
-        pred = modifications.ScansitePrediction()
-        pred.score = scansite.score
-        pred.percentile = scansite.percentile
-        pred.value = scansite.nickname
-        pred.source = scansite.parse_source()
-        db_predictions.append(pred)
+        if pep.pep_aligned == scansite.sequence:
+            pred = modifications.ScansitePrediction()
+            pred.score = scansite.score
+            pred.percentile = scansite.percentile
+            pred.value = scansite.nickname
+            pred.source = scansite.parse_source()
+            db_predictions.append(pred)
 
     pep.predictions = db_predictions
     pep.scansite_date = datetime.datetime.now()
 
+def create_missing_peptides(prot, pep_map, scansite_predictions):
+    created = 0
+    for scansite in scansite_predictions:
+        site_pos = int(scansite.site[1:])
+        site_type = scansite.site[0]
+        if not any( k == site_pos for k in pep_map ):
+            created += 1
+            npep = modifications.Peptide()
+            npep.site_pos = site_pos
+            npep.site_type = site_type
+            npep.pep_aligned = prot.get_kmer(site_pos, k=7)
+            npep.protein_domain = prot.get_domain(site_pos)
+            npep.protein_id = prot.id
+            pep_map[site_pos] = npep
+    return created
+
+@decorators.page_query()
+def page_proteins(limit, offset):
+    sq = DBSession.query(protein.Protein.id).order_by(protein.Protein.id).limit(limit).offset(offset).subquery()
+    return DBSession.query(protein.Protein).join(sq, protein.Protein.id == sq.c.id)
+
+def get_peptides_for_protein(protein_id):
+    pep_map = {}
+    for pep in DBSession.query(modifications.Peptide).filter(modifications.Peptide.protein_id==protein_id):
+        pep_map[pep.site_pos] = pep
+    return pep_map
+
+def assign_scansite_to_peptides(pep_map, scansite_predictions):
+    k = 0
+    for site in pep_map:
+        pep = pep_map[site]
+        copy_predictions(pep, scansite_predictions)
+        DBSession.add(pep)
+        k += 1
+    return k
+
+def is_annotated(pep_map):
+    return any( len(pep_map[site_pos].predictions) > 0 for site_pos in pep_map )
+
+
+def iterate( iterable, process_func, report_func, report_interval=1000 ):
+    i = 0
+    for obj in iterable:
+        process_func(obj)
+        i += 1
+        if i % report_interval == 0:
+            report_func(i)
 
 if __name__ == "__main__":
     try:
@@ -43,58 +92,32 @@ if __name__ == "__main__":
         dbinit = DatabaseInitialization()
         dbinit.setUp()
 
-        print "Getting peptide data..."
-        unprocessed_peptides = [ pep for pep in DBSession.query(modifications.Peptide).filter(modifications.Peptide.scansite_date==None) ]
-        peptide_queries = defaultdict(set)
-        sequence_to_peptides = {'MAMMALIAN':defaultdict(set), 'YEAST':defaultdict(set)}
-        pep_map = {}
+        total_proteins = DBSession.query(protein.Protein).count()
 
-        def map_sum(m):
-            i = 0
-            for k in m:
-                i += len(m[k])
-            return i
-
-        i=0
         j=0
-        print "Checking for unqueried peptides..."
-        for pep in unprocessed_peptides:
-            pep_map[pep.id] = pep
-            species = pep.protein.species.name
-            taxonomy = upload_helpers.get_taxonomic_lineage(species)
-            motif_class = getMotifClass(taxonomy)
-
-            if motif_class != None:
-                peptide_queries[motif_class].add(pep.pep_aligned)
-                sequence_to_peptides[motif_class][pep.pep_aligned].add(pep.id)
-
-            i+=1
-            if i % FLUSH_EVERY == 0:
-                print "Processed %d / %d found %d unqueried unique peptide sequences" % (i, len(unprocessed_peptides), map_sum(peptide_queries))
-
-        total_peptides = len(peptide_queries['MAMMALIAN']) + len(peptide_queries['YEAST'])
-        i = 0
-        j = 0
-        k = 0
+        k=0
+        created = 0
         print "Getting scansite annotations..."
-        for motif_class in peptide_queries:
-            for pep_seq in peptide_queries[motif_class]:
-                scansite_predictions = scansite_tools.get_scansite_motif(pep_seq, motif_class)
-                j += len(scansite_predictions)
 
-                for pep_id in sequence_to_peptides[motif_class][pep_seq]:
-                    copyScansitePredictions(pep_map[pep_id], scansite_predictions)
-                    DBSession.add(pep_map[pep_id])
-                    k += 1
+        def process_protein(prot):
+            global j, k, created
+            motif_class = get_motif_class( upload_helpers.get_taxonomic_lineage( prot.species.name ) )
 
-                i+=1
-                if i % FLUSH_EVERY == 0:
-                    print "Got %d annotations, assigned %d / %d peptides, processed %d / %d peptide sequences" % (j, k, len(unprocessed_peptides), i, total_peptides)
-                    DBSession.flush()
-                    dbinit.commit()
-                    dbinit.new_transaction()
-            
-            print "Loaded %d scansite predictions" % (j)
+            if motif_class:
+                pep_map = get_peptides_for_protein(prot.id)
+                if not is_annotated(pep_map):
+                    scansite_predictions = scansite_tools.get_scansite_protein_motifs(prot.sequence, motif_class)
+                    j += len(scansite_predictions)
+                    created += create_missing_peptides(prot, pep_map, scansite_predictions)
+                    k += assign_scansite_to_peptides(pep_map, scansite_predictions)
+
+        def report_progress(i):
+            print "Got %d annotations, assigned %d peptides, created %d peptides, processed %d / %d protein sequences" % (j, k, created, i, total_proteins)
+            DBSession.flush()
+            dbinit.commit()
+            dbinit.new_transaction()
+
+        iterate( page_proteins, process_protein, report_progress, report_interval=FLUSH_EVERY )
 
         DBSession.flush()
     except Exception, e:

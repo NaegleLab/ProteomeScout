@@ -4,6 +4,7 @@ import xml.dom.minidom as xml
 from ptmscout.config import settings
 from ptmscout.utils.decorators import rate_limit
 import logging
+from collections import defaultdict
 
 log = logging.getLogger('ptmscout')
 scansite_url = "http://scansite3.mit.edu/ws/proteinScan/proteinName=PTMSCOUT_QUERY/sequence=%s/motifClass=%s/motifNicknames=/stringencyValue=LOW"
@@ -50,7 +51,6 @@ def get_scansite_motif(pep_seq, motif_class, filter_exact=True):
     if settings.DISABLE_SCANSITE:
         return []
 
-
     i = 0
     while i < RETRY_COUNT:
         i+=1
@@ -72,3 +72,27 @@ def get_scansite_motif(pep_seq, motif_class, filter_exact=True):
             log.warning("Got bad status line from Scansite3, retrying (%d / %d)", i, RETRY_COUNT)
 
     raise ScansiteError()
+
+def chop_overlapping(seq, size, overlap):
+    query_sequences = []
+    offset = 0
+    while( len(seq) > 0 ):
+        query_sequences.append( (offset, seq[0:size]) )
+
+        offset += size - overlap
+        seq = seq[(size - overlap):]
+
+    return query_sequences
+
+def get_scansite_protein_motifs(prot_seq, motif_class):
+    scansite_results = defaultdict(dict)
+    for offset, pep_seq in chop_overlapping(prot_seq, 1000, 50):
+        predictions = get_scansite_motif(pep_seq, motif_class, filter_exact=False)
+
+        for p in predictions:
+            site_type = p.site[0]
+            site_pos = int(p.site[1:]) + offset
+            p.site = "%s%d" % (site_type, site_pos)
+            scansite_results[site_pos][p.nickname] = p
+
+    return [ scansite_results[site][name] for site in sorted(scansite_results.keys()) for name in scansite_results[site] ]

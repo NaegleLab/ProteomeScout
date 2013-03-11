@@ -1,6 +1,22 @@
 import time
 import os
 
+def page_query(start=0, yield_per=1000):
+    """
+        Decorator to page queries
+    """
+    def wrapper(query_generator):
+        offset = start
+        while True:
+            r = False
+            for elem in query_generator(yield_per, offset):
+                r = True
+                yield elem
+            offset += yield_per
+
+            if not r: break
+    return wrapper
+
 def profile(fn):
     def do_profile(*args, **kwargs):
         t = time.clock()
