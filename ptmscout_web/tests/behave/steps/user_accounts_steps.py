@@ -1,3 +1,4 @@
+from behave import *
 from bot import Bot
 from mock import patch
 import re
