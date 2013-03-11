@@ -9,9 +9,12 @@ import os
 settings = appconfig('config:/' + os.path.join('data','ptmscout','ptmscout_web', 'test.ini'))
 
 class DBTestCase(unittest.TestCase):
+    engine=None
+
     @classmethod
     def setUpClass(cls):
-        cls.engine = engine_from_config(settings, prefix='sqlalchemy.')
+        if cls.engine == None:
+            cls.engine = engine_from_config(settings, prefix='sqlalchemy.')
 
     def setUp(self):
         connection = self.engine.connect()

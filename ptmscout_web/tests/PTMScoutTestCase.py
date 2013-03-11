@@ -9,8 +9,6 @@ import logging
 
 class IntegrationTestCase(unittest.TestCase):
     def setUp(self, sql_echo=False):
-
-        
         settings = appconfig('config:/' + os.path.join('data','ptmscout','ptmscout_web', 'test.ini'))
         settings['sqlalchemy.echo'] = sql_echo
         settings['sqlalchemy.echo_pool'] = sql_echo

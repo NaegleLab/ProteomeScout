@@ -15,6 +15,8 @@ from pyramid.exceptions import Forbidden
 from ptmscout.database.user import getUsernameByRequest
 from ptmscout import webservice
 
+engine = None
+
 class RootFactory(object):
     __acl__ = [ (Allow, Authenticated, 'private') ]
     def __init__(self, request):
@@ -24,12 +26,15 @@ def includeme(config):
     views.add_views(config)
 
 def main(global_config, **settings):
+    global engine
     """ This function returns a Pyramid WSGI application.
     """
     config = Configurator(settings=settings,
                           root_factory='ptmscout.RootFactory')
-    engine = engine_from_config(settings, 'sqlalchemy.')
-    DBSession.configure(bind=engine)
+
+    if engine == None:
+        engine = engine_from_config(settings, 'sqlalchemy.')
+        DBSession.configure(bind=engine)
     
     authn_policy = AuthTktAuthenticationPolicy('$up3r$3cr3t')
     authz_policy = ACLAuthorizationPolicy()
