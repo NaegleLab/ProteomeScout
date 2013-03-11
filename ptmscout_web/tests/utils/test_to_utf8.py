@@ -15,6 +15,3 @@ class UTF8TestCase(unittest.TestCase):
             for _line in f: pass
 
         os.remove(dest)
-
-if __name__ == '__main__':
-    unittest.main()

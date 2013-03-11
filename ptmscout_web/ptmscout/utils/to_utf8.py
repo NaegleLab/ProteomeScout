@@ -12,7 +12,7 @@ def recode(infilename, outfilename, source_encoding, target_encoding):
                     break
                 targetFile.write(contents)
 
-def test_file_encoding(filename, encoding):
+def check_file_encoding(filename, encoding):
     try:
         with codecs.open(filename, 'r', encoding) as f:
             for _line in f: pass
@@ -31,7 +31,7 @@ def convert_encoding_to_utf8(infilename, outfilename):
     else:
         i = 0
         alternate_encodings = ['utf8','cp1252','utf16','utf32']
-        while not test_file_encoding(infilename, alternate_encodings[i]):
+        while not check_file_encoding(infilename, alternate_encodings[i]):
             i+=1
 
         if alternate_encodings[i] == 'utf8':
