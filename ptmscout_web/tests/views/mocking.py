@@ -13,10 +13,46 @@ from ptmscout.database.gene_expression import ExpressionProbeset,\
     ExpressionSample, ExpressionCollection, ExpressionTissue
 from ptmscout.database.taxonomies import Species, Taxonomy
 from ptmscout.database.upload import Session, SessionColumn
+from ptmscout.database.jobs import Job
 import datetime
 from ptmscout.database.annotations import Subset
 
 TEST_USER_ID = 2
+
+def createMockJob(jid=None, status='configuration', failure_reason="", stage='', progress=0, max_progress=0, status_url=None, resume_url=None, result_url=None,name='',type='load_experiment', user_id=None, user=None, created=datetime.datetime.now(), restarted=None, finished=None, active=True, old=False):
+    mock = Mock(spec=Job)
+
+    if jid == None:
+        jid = random.randint(0,100000)
+    mock.id = jid
+
+    mock.status = status
+    mock.failure_reason = failure_reason
+
+    mock.stage = stage
+    mock.progress = progress
+    mock.max_progress = max_progress
+
+    mock.status_url = status_url
+    mock.resume_url = resume_url
+    mock.result_url = result_url
+
+    mock.name = name
+    mock.type = type
+
+    mock.user_id = user_id
+    mock.user = user
+
+    mock.created = created
+    mock.restarted = restarted
+    mock.finished = finished
+
+
+    mock.is_active.return_value = active
+    mock.is_old.return_value = old
+
+    return mock
+
 
 def createMockUser(username=None, email=None, password=None, active=1):
     global TEST_USER_ID

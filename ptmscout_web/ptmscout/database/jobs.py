@@ -23,7 +23,7 @@ class Job(Base):
     type = Column(Enum(['load_experiment','load_annotations','load_dataset']))
     
     user_id = Column(Integer(10), ForeignKey('users.id'))
-    user = relationship("User")
+    user = relationship("User", backref='jobs')
     
     created = Column(DateTime)
     restarted = Column(DateTime, nullable=True)
@@ -41,7 +41,15 @@ class Job(Base):
         self.failure_reason = stack_trace
         self.status = 'error'
         self.finished = datetime.datetime.now()
-        
+
+    def is_active(self):
+        return self.status not in ['error', 'finished']
+    
+    def is_old(self):
+        JOB_AGE_LIMIT = 2 * 86400
+        delta = now - session.date
+        return delta > JOB_AGE_LIMIT
+
     def finish(self):
         self.failure_reason = ''
         self.status = 'finished'

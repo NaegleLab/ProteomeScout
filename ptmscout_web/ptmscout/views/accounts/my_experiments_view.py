@@ -167,7 +167,8 @@ def manage_experiments(request):
     in_process = [ exp for exp in users_experiments if exp.status == 'configuration' ]
     available_experiments = [ exp for exp in users_experiments if exp.status != 'configuration' ]
     error_state = [ exp for exp in users_experiments if exp.status == 'error' ]
-    
+
+    users_active_jobs = [ job for job in request.user.jobs if job.is_active() or not job.is_old() ]
     sessions = get_sessions(in_process + error_state)
     
     for exp in available_experiments:
@@ -186,4 +187,5 @@ def manage_experiments(request):
             'in_process': in_process,
             'sessions': sessions,
             'experiments': available_experiments,
+            'jobs': users_active_jobs,
             'peptide_counts': pep_counts}

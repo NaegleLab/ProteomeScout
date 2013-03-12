@@ -7,7 +7,7 @@ from ptmscout.views.accounts.my_experiments_view import confirm_invite_user, \
 from pyramid.httpexceptions import HTTPFound
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockUser, createMockExperiment, \
-    createMockPermission, createMockSession
+    createMockPermission, createMockSession, createMockJob
 from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 from ptmscout.database import upload
 
@@ -46,6 +46,7 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         session.experiment_id = exp3.id
         session.user_id = self.bot.user.id
         session.data_file = ''
+        session.change_name = ''
         session.change_description = ''
         session.load_type = ''
         session.stage = 'confirm'
@@ -55,6 +56,7 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         session2.experiment_id = exp4.id
         session2.user_id = self.bot.user.id
         session2.data_file = ''
+        session2.change_name = ''
         session2.change_description = ''
         session2.load_type = ''
         session2.stage = 'confirm'
@@ -440,6 +442,7 @@ class MyExperimentsViewTests(UnitTestCase):
         request = DummyRequest()
         ptm_user = createMockUser("username", "email", "password", 1)
         request.user = ptm_user
+        request.user.jobs = [ createMockJob(), createMockJob(), createMockJob() ]
 
         exp1 = createMockExperiment(1, 0)
         exp2 = createMockExperiment(2, 0)
