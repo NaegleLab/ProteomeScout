@@ -263,7 +263,7 @@ SubsetTab.prototype.formatPeptides = function(peptides) {
 		$('<td>{0}</td>'.format(pepEntry[0])).appendTo(tableRow);
 		$('<td>{0}</td>'.format(pepEntry[1])).appendTo(tableRow);
 		var ltd = $('<td></td>').appendTo(tableRow);
-		$('<a href="{0}">{1}</a>'.format(pepEntry[3], pepEntry[2])).appendTo(ltd);
+		$('<a href="{0}" target="_blank">{1}</a>'.format(pepEntry[3], pepEntry[2])).appendTo(ltd);
 		
 		$('<td class="peptide">{0}</td>'.format(pepEntry[4])).appendTo(tableRow);
 		$('<td class="modsite">{0}</td>'.format(pepEntry[5])).appendTo(tableRow);

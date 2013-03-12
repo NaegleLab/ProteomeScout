@@ -17,7 +17,7 @@
 			<tbody>
 				<tr valign="top" tal:repeat="(r, protein) enumerate(proteins)" tal:attributes="class 'row ' + 'even' if r % 2 == 0 else 'odd';" >
 					<td>
-						<a tal:attributes="href request.application_url + '/proteins/' + str(protein.id) + ('/data?experiment_id=%d' % experiment.id if experiment != None else '')" tal:content="protein.name"></a>
+						<a target="_blank" tal:attributes="href request.application_url + '/proteins/' + str(protein.id) + ('/data?experiment_id=%d' % experiment.id if experiment != None else '')" tal:content="protein.name"></a>
                     </td>
                     <td tal:content="protein.acc_gene"></td>
                     <td tal:content="protein.species.name"></td>
