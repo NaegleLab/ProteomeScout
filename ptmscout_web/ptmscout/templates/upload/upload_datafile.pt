@@ -32,7 +32,7 @@
                             ${formrenderer.render('parent_experiment', id_='expselect', class_='stretch')}
                         </td>
                     </tr>
-                    <tr id="change_desc">
+                    <tr id="change_name">
                         <td class="fieldname">Extension Title:</td>
                         <td>
                             ${formrenderer.render('change_name')}

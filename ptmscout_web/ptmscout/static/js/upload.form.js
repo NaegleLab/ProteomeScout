@@ -11,7 +11,13 @@ $(document).ready(function(){
 			return "table-row"
 		return "none"
 	});
-	
+
+	$('#change_name').css('display', function(){
+		if(e_checked)
+			return "table-row"
+		return "none"
+	});
+
 	$('#change_desc').css('display', function(){
 		if(e_checked)
 			return "table-row"
@@ -35,24 +41,28 @@ $(document).ready(function(){
 		.click(function(){
 			$('#expselect option[value=""]').attr('selected','true')
 			$('#parent_exp').css('display', "none");
+			$('#change_name').css('display', "none");
 			$('#change_desc').css('display', "none");
 		});
 	
 	$('#append_dataset')
 		.click(function(){
 			$('#parent_exp').css('display', "table-row");
+			$('#change_name').css('display', "none");
 			$('#change_desc').css('display', "none");
 		});
 	
 	$('#reload_dataset')
 		.click(function(){
 			$('#parent_exp').css('display', "table-row");
+			$('#change_name').css('display', "none");
 			$('#change_desc').css('display', "none");
 		});
 	
 	$('#extend_dataset')
 		.click(function(){
 			$('#parent_exp').css('display', "table-row");
+			$('#change_name').css('display', "table-row");
 			$('#change_desc').css('display', "table-row");
 		});
 	
