@@ -14,12 +14,14 @@ def create_session(request, exp_file):
     session.load_type = request.POST['load_type'].strip()
     session.parent_experiment = None
     session.stage = 'config'
+    session.change_name = ''
     session.change_description = ''
     
     if session.load_type != 'new':
         session.parent_experiment = int(request.POST['parent_experiment'])
     
     if session.load_type == 'extension':
+        session.change_name = request.POST['change_name']
         session.change_description = request.POST['change_description']
     
     session.save()
@@ -33,9 +35,11 @@ def create_schema(request, users_experiments):
     
     schema.add_radio_field('load_type', "Load Type", [('new',"New"),('append',"Append"),('reload',"Reload"),('extension',"Extension")])
     schema.add_select_field('parent_experiment', 'Parent Experiment', parent_experiment_options)
-    schema.add_textarea_field('change_description', "Change Description", 43, 5)
+    schema.add_text_field('change_name', "Extension Title", width=55)
+    schema.add_textarea_field('change_description', "Description of Extension", 43, 5)
     schema.add_file_upload_field('data_file', 'Input Data File')
     
+    schema.set_field_required_condition('change_name', 'load_type', lambda pval: pval == "extension")
     schema.set_field_required_condition('change_description', 'load_type', lambda pval: pval == "extension")
     schema.set_field_required_condition('parent_experiment', 'load_type', lambda pval: pval != "new")
     schema.set_required_field('load_type')

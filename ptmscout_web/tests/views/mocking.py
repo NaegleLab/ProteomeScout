@@ -66,13 +66,14 @@ def createMockTaxonomy(tid=None):
     mock.strain = ''
     return mock
 
-def createMockSession(user, sid=random.randint(0,100000), data_file='some_file', load_type='new', parent_experiment=None, stage = 'config', experiment_id=None, change_description='blah'):
+def createMockSession(user, sid=random.randint(0,100000), data_file='some_file', load_type='new', parent_experiment=None, stage = 'config', experiment_id=None, change_name='change', change_description='blah'):
     mock = Mock(spec=Session)
     mock.id=sid
     mock.user_id=user.id
     mock.data_file = data_file
     mock.load_type = load_type
     mock.parent_experiment = parent_experiment
+    mock.change_name = change_name
     mock.change_description = change_description
     mock.stage = stage
     mock.units = 'time'

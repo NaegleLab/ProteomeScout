@@ -14,6 +14,34 @@ import shutil
 class TestUploaddata_fileView(UnitTestCase):
     
     @patch('ptmscout.database.upload.Session')
+    def test_create_session_should_create_new_session_and_return_session_id_when_extending(self, patch_session):
+        request = DummyRequest()
+        
+        request.user = createMockUser()
+        request.POST['load_type'] = 'extension'
+        request.POST['parent_experiment'] = '24'
+        request.POST['change_name'] = "Something Changed"
+        request.POST['change_description'] = "some stuff"
+        
+        gen_session = patch_session.return_value
+        gen_session.id = 10
+        
+        rval = create_session(request, 'exp_filename')
+        
+        gen_session.save.assert_called_once_with()
+        
+        self.assertEqual(gen_session.id, rval)
+        
+        self.assertEqual(request.user.id, gen_session.user_id)
+        
+        self.assertEqual('exp_filename', gen_session.data_file)
+        self.assertEqual('extension', gen_session.load_type)
+        self.assertEqual(24, gen_session.parent_experiment)
+        self.assertEqual('Something Changed', gen_session.change_name)
+        self.assertEqual('some stuff', gen_session.change_description)
+        self.assertEqual('config', gen_session.stage)
+
+    @patch('ptmscout.database.upload.Session')
     def test_create_session_should_create_new_session_and_return_session_id(self, patch_session):
         request = DummyRequest()
         
@@ -36,6 +64,7 @@ class TestUploaddata_fileView(UnitTestCase):
         self.assertEqual('exp_filename', gen_session.data_file)
         self.assertEqual('new', gen_session.load_type)
         self.assertEqual(None, gen_session.parent_experiment)
+        self.assertEqual('', gen_session.change_name)
         self.assertEqual('', gen_session.change_description)
         self.assertEqual('config', gen_session.stage)
     
@@ -143,6 +172,7 @@ class IntegrationTestUploadView(IntegrationTestCase):
         form.set('data_file', (filename, filecontents))
         form.set('load_type', "append")
         form.set('parent_experiment', "26")
+        form.set('change_name', "")
         form.set('change_description', "")
         
         form.submit(status=302)
@@ -160,6 +190,7 @@ class IntegrationTestUploadView(IntegrationTestCase):
         form.set('data_file', (filename, filecontents))
         form.set('load_type', "extension")
         form.set('parent_experiment', "26")
+        form.set('change_name', "Changed")
         form.set('change_description', "This is a change")
         
         form.submit(status=302)

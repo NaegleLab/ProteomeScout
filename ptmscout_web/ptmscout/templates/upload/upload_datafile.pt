@@ -33,7 +33,13 @@
                         </td>
                     </tr>
                     <tr id="change_desc">
-                        <td class="fieldname">Change description:</td>
+                        <td class="fieldname">Extension Title:</td>
+                        <td>
+                            ${formrenderer.render('change_name')}
+                        </td>
+                    </tr>
+                    <tr id="change_desc">
+                        <td class="fieldname">Description of Extension:</td>
                         <td>
                             ${formrenderer.render('change_description')}
                         </td>
