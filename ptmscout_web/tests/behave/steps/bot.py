@@ -126,7 +126,6 @@ def set_metadata_form_defaults(form):
     form.set('page_end', "123")
     
     form.set('ambiguous', "yes")
-    form.set('notes', "none")
 
 
 def upload_file(context, filename, force=False):

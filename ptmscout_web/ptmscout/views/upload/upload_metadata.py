@@ -91,8 +91,6 @@ def create_schema(request):
     schema.add_text_field('page_end', 'Page End', maxlen=10, width=11)
     
     schema.add_select_field('ambiguous', 'Ambiguous', [('no',"No"), ('yes',"Yes")])
-    schema.add_textarea_field('notes', "Notes", 42, 5)
-    
     
     schema.set_required_field('description')
     schema.set_required_field('experiment_name')
@@ -134,8 +132,7 @@ def populate_schema_from_experiment(schema, session, user):
                      'volume': exp.volume,
                      'description': exp.description,
                      'experiment_name':exp.name,
-                     'URL': exp.URL,
-                     'notes':""
+                     'URL': exp.URL
                   }
         schema.parse_fields_dict(field_dict)
 

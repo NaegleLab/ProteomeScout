@@ -85,12 +85,6 @@
                             ${formrenderer.render('ambiguous')} 
                         </td>
                     </tr>
-                    <tr>
-                        <td class="fieldname">Notes:*</td>
-                        <td>
-                            ${formrenderer.render('notes')}
-                        </td>
-                    </tr>
                 </table>
                 
                 <div class="formsubmission">
