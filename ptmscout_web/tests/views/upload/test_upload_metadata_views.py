@@ -1,7 +1,8 @@
 from tests.PTMScoutTestCase import UnitTestCase, IntegrationTestCase
 from pyramid.testing import DummyRequest
 from ptmscout.views.upload.upload_metadata import upload_metadata,\
-    write_experiment_properties, create_schema, get_experiment_ref, mark_status
+    write_experiment_properties, create_schema, get_experiment_ref,\
+    mark_status, populate_schema_from_experiment
 from ptmscout.config import strings
 from tests.views.mocking import createMockUser, createMockExperiment,\
     createMockSession
@@ -104,7 +105,7 @@ class TestUploadView(UnitTestCase):
         schema = create_schema(request)
         
         current_user = createMockUser()
-        session = createMockSession(current_user, data_file="tmpfile1002344.tmp", load_type='extension', parent_experiment=20, change_description='some description', stage='metadata')
+        session = createMockSession(current_user, data_file="tmpfile1002344.tmp", load_type='extension', parent_experiment=20, change_name='some change', change_description='some description', stage='metadata')
         experiment_instance = createMockExperiment()
         write_experiment_properties(experiment_instance, session, schema, current_user)
         
@@ -203,7 +204,147 @@ class TestUploadView(UnitTestCase):
         self.assertEqual(schema, result['formrenderer'].schema)
         
         validator.validate.assert_called_once_with()
-    
+
+    @patch('ptmscout.database.experiment.getExperimentById')
+    def test_populate_schema_from_experiment_should_get_experiment_and_populate_skip_append_if_experiment_exists(self, patch_getExp):
+        request = DummyRequest()
+        schema = create_schema(request)
+
+        user = createMockUser()
+        session = createMockSession(user)
+        session.load_type = 'extension'
+        session.experiment_id = 100
+        exp = createMockExperiment()
+        exp.PMID=10000
+        exp.publication_month='december'
+        exp.publication_year = '2009'
+        exp.published = 1
+        exp.ambiguity = 1
+        exp.contact = 'author@email.com'
+        exp.page_start = '24'
+        exp.page_end = '27'
+        exp.author = 'author 1, author 2 and author 3'
+        exp.journal = 'Journal of Serendipitous Results'
+        exp.volume = 'The last one'
+        exp.description = 'Something amazing happened'
+        exp.name="An amazing experiment"
+        exp.URL = 'http://amazing.com'
+
+        patch_getExp.return_value = exp
+
+        populate_schema_from_experiment(schema, session, user)
+
+        patch_getExp.assert_called_once_with(session.experiment_id, user, False)
+
+        self.assertEqual(str(exp.PMID), schema.get_form_value('pmid'))
+        self.assertEqual(exp.publication_year, schema.get_form_value('publication_year'))
+        self.assertEqual(exp.publication_month, schema.get_form_value('publication_month'))
+        self.assertEqual('yes', schema.get_form_value('published'))
+        self.assertEqual('yes', schema.get_form_value('ambiguous'))
+        self.assertEqual(exp.contact, schema.get_form_value('author_contact'))
+        self.assertEqual(exp.page_start, schema.get_form_value('page_start'))
+        self.assertEqual(exp.page_end, schema.get_form_value('page_end'))
+        self.assertEqual(exp.author, schema.get_form_value('authors'))
+        self.assertEqual(exp.journal, schema.get_form_value('journal'))
+        self.assertEqual(exp.volume, schema.get_form_value('volume'))
+        self.assertEqual(exp.description, schema.get_form_value('description'))
+        self.assertEqual(exp.name, schema.get_form_value('experiment_name'))
+        self.assertEqual(exp.URL, schema.get_form_value('URL'))
+
+    @patch('ptmscout.database.experiment.getExperimentById')
+    def test_populate_schema_from_experiment_should_get_experiment_and_populate(self, patch_getExp):
+        request = DummyRequest()
+        schema = create_schema(request)
+
+        user = createMockUser()
+        session = createMockSession(user)
+        session.load_type = 'reload'
+        session.parent_experiment = 100
+        exp = createMockExperiment()
+        exp.PMID=10000
+        exp.publication_month='december'
+        exp.publication_year = '2009'
+        exp.published = 1
+        exp.ambiguity = 1
+        exp.contact = 'author@email.com'
+        exp.page_start = '24'
+        exp.page_end = '27'
+        exp.author = 'author 1, author 2 and author 3'
+        exp.journal = 'Journal of Serendipitous Results'
+        exp.volume = 'The last one'
+        exp.description = 'Something amazing happened'
+        exp.name="An amazing experiment"
+        exp.URL = 'http://amazing.com'
+
+        patch_getExp.return_value = exp
+
+        populate_schema_from_experiment(schema, session, user)
+
+        patch_getExp.assert_called_once_with(session.parent_experiment, user, False)
+
+        self.assertEqual(str(exp.PMID), schema.get_form_value('pmid'))
+        self.assertEqual(exp.publication_year, schema.get_form_value('publication_year'))
+        self.assertEqual(exp.publication_month, schema.get_form_value('publication_month'))
+        self.assertEqual('yes', schema.get_form_value('published'))
+        self.assertEqual('yes', schema.get_form_value('ambiguous'))
+        self.assertEqual(exp.contact, schema.get_form_value('author_contact'))
+        self.assertEqual(exp.page_start, schema.get_form_value('page_start'))
+        self.assertEqual(exp.page_end, schema.get_form_value('page_end'))
+        self.assertEqual(exp.author, schema.get_form_value('authors'))
+        self.assertEqual(exp.journal, schema.get_form_value('journal'))
+        self.assertEqual(exp.volume, schema.get_form_value('volume'))
+        self.assertEqual(exp.description, schema.get_form_value('description'))
+        self.assertEqual(exp.name, schema.get_form_value('experiment_name'))
+        self.assertEqual(exp.URL, schema.get_form_value('URL'))
+
+    @patch('ptmscout.database.experiment.getExperimentById')
+    def test_populate_schema_from_experiment_should_append_change_fields_if_extension_session(self, patch_getExp):
+        request = DummyRequest()
+        schema = create_schema(request)
+
+        user = createMockUser()
+        session = createMockSession(user, change_name='Some change', change_description = 'Something changed, now nothing is amazin')
+        session.load_type = 'extension'
+        session.parent_experiment = 100
+        exp = createMockExperiment()
+        exp.PMID=10000
+        exp.publication_month='december'
+        exp.publication_year = '2009'
+        exp.published = 1
+        exp.ambiguity = 1
+        exp.contact = 'author@email.com'
+        exp.page_start = '24'
+        exp.page_end = '27'
+        exp.author = 'author 1, author 2 and author 3'
+        exp.journal = 'Journal of Serendipitous Results'
+        exp.volume = 'The last one'
+        exp.description = 'Something amazing happened'
+        exp.name="An amazing experiment"
+        exp.URL = 'http://amazing.com'
+
+        patch_getExp.return_value = exp
+
+        populate_schema_from_experiment(schema, session, user)
+
+        patch_getExp.assert_called_once_with(session.parent_experiment, user, False)
+
+        self.assertEqual(str(exp.PMID), schema.get_form_value('pmid'))
+        self.assertEqual(exp.publication_year, schema.get_form_value('publication_year'))
+        self.assertEqual(exp.publication_month, schema.get_form_value('publication_month'))
+        self.assertEqual('yes', schema.get_form_value('published'))
+        self.assertEqual('yes', schema.get_form_value('ambiguous'))
+        self.assertEqual(exp.contact, schema.get_form_value('author_contact'))
+        self.assertEqual(exp.page_start, schema.get_form_value('page_start'))
+        self.assertEqual(exp.page_end, schema.get_form_value('page_end'))
+        self.assertEqual(exp.author, schema.get_form_value('authors'))
+        self.assertEqual(exp.journal, schema.get_form_value('journal'))
+        self.assertEqual(exp.volume, schema.get_form_value('volume'))
+        self.assertEqual( "%s -- %s" % ( exp.description, session.change_description ), schema.get_form_value('description'))
+        self.assertEqual("[%s] %s" % (session.change_name, exp.name), schema.get_form_value('experiment_name'))
+        self.assertEqual(exp.URL, schema.get_form_value('URL'))
+
+
+
     @patch('ptmscout.views.upload.upload_metadata.create_schema')
     @patch('ptmscout.views.upload.upload_metadata.populate_schema_from_experiment')
     @patch('ptmscout.database.upload.getSessionById')
@@ -235,6 +376,7 @@ class IntegrationTestUploadMetadataView(IntegrationTestCase):
         
         session = upload.Session()
         session.data_file = 'some_filename'
+        session.change_name = ''
         session.change_description = ''
         session.experiment_id = None
         session.load_type = 'new'

@@ -111,13 +111,9 @@ def create_schema(request):
     return schema
     
 def populate_schema_from_experiment(schema, session, user):
-    exp = None
+    field_dict = None
     if session.experiment_id != None:
         exp = experiment.getExperimentById(session.experiment_id, user, False)
-    elif session.parent_experiment != None:
-        exp = experiment.getExperimentById(session.parent_experiment, user, False)
-        
-    if exp != None:
         field_dict = {
                      'pmid':exp.PMID,
                      'publication_year': exp.publication_year,
@@ -134,6 +130,34 @@ def populate_schema_from_experiment(schema, session, user):
                      'experiment_name':exp.name,
                      'URL': exp.URL
                   }
+    elif session.parent_experiment != None:
+        exp = experiment.getExperimentById(session.parent_experiment, user, False)
+        name = exp.name
+        description = exp.description
+
+        if 'extension' == session.load_type:
+            name = "[%s] %s" % (session.change_name, exp.name)
+            description = "%s -- %s" % (exp.description, session.change_description)
+
+        field_dict = {
+                     'pmid':exp.PMID,
+                     'publication_year': exp.publication_year,
+                     'publication_month': exp.publication_month,
+                     'published': 'yes' if exp.published == 1 else 'no',
+                     'ambiguous': 'yes' if exp.ambiguity == 1 else 'no',
+                     'author_contact' : exp.contact,
+                     'page_start': exp.page_start,
+                     'page_end': exp.page_end,
+                     'authors': exp.author,
+                     'journal': exp.journal,
+                     'volume': exp.volume,
+                     'description': description,
+                     'experiment_name': name,
+                     'URL': exp.URL
+                  }
+
+        
+    if field_dict != None:
         schema.parse_fields_dict(field_dict)
 
 @view_config(route_name='upload_metadata', renderer='ptmscout:templates/upload/upload_metadata.pt', permission='private')
