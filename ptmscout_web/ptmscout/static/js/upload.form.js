@@ -107,6 +107,7 @@ $(document).ready(function(){
 					  $('input[name="page_end"]').val(pages[1]);
 					  
 					  pmiderror.hide();
+                      done_waiting();
 					}, 'json')
 					.error(function() { 
 							pmiderror.text("Pubmed query failed!")
