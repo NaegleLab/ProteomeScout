@@ -66,8 +66,9 @@ table {
 #portal .menusplash {
     width:600px;
     height:600px;
-    margin-left:100px;
-    margin-right:100px;
+    margin-left:55px;
+    margin-right:auto;
+    padding-top:20px;
 }
 
 #portal .menuitem {
