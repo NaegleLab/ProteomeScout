@@ -6,6 +6,7 @@ class IntegrationTestConfigureAnnotationUploadView(IntegrationTestCase):
     def test_view_should_show_errors_when_missing_columns(self):
         session = upload.Session()
         session.user_id = self.bot.user.id
+        session.change_name=''
         session.change_description = ""
         session.data_file = 'test/experiment.28.test.annotations.tsv'
         session.load_type = 'annotations'
@@ -25,6 +26,7 @@ class IntegrationTestConfigureAnnotationUploadView(IntegrationTestCase):
     def test_view_should_fail_on_bad_value_redirect_on_override(self):
         session = upload.Session()
         session.user_id = self.bot.user.id
+        session.change_name=''
         session.change_description = ""
         session.data_file = 'test/experiment.28.test.annotations.tsv'
         session.load_type = 'annotations'

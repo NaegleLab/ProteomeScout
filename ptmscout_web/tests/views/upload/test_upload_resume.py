@@ -172,6 +172,7 @@ class IntegrationTestUploadResumeView(IntegrationTestCase):
         session = upload.Session()
         session.experiment_id = 26
         session.data_file = ''
+        session.change_name = ''
         session.change_description = ''
         session.load_type = 'new'
         session.stage = 'confirm'
@@ -188,6 +189,7 @@ class IntegrationTestUploadResumeView(IntegrationTestCase):
         session = upload.Session()
         session.experiment_id = 26
         session.data_file = ''
+        session.change_name = ''
         session.change_description = ''
         session.load_type = 'new'
         session.stage = 'confirm'

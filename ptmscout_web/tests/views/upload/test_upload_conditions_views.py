@@ -269,6 +269,7 @@ class IntegrationTestUploadConditionsView(IntegrationTestCase):
         session.load_type='new'
         session.data_file='exp_file'
         session.parent_experiment=None
+        session.change_name=''
         session.change_description=''
         session.stage='conditions'
         session.save()
@@ -299,6 +300,7 @@ class IntegrationTestUploadConditionsView(IntegrationTestCase):
         session.load_type='new'
         session.data_file='exp_file'
         session.parent_experiment=28
+        session.change_name=''
         session.change_description=''
         session.stage='conditions'
         session.save()

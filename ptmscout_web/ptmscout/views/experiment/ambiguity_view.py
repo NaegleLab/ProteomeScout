@@ -12,6 +12,7 @@ def create_session(exp, user, exp_file, name_prefix, columns, units):
     session.data_file = exp_file
     session.load_type = 'extension'
     session.stage = 'metadata'
+    session.change_name = ''
     session.change_description = ''
     
     new_exp = experiment.Experiment()

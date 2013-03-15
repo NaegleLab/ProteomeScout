@@ -374,6 +374,7 @@ class IntegrationTestUploadConfigureView(IntegrationTestCase):
         session.data_file='test/test_dataset_formatted.txt'
         session.stage='config'
         session.user_id=self.bot.user.id
+        session.change_name=''
         session.change_description=''
         session.save()
         

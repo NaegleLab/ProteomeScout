@@ -12,6 +12,7 @@ def create_session(experiment_id, annotation_filename, user):
     session.load_type = 'annotations'
     session.stage = 'config'
     session.user_id = user.id
+    session.change_name=''
     session.change_description = ""
     
     session.save()

@@ -38,7 +38,7 @@ class EntrezQueryTestCase(IntegrationTestCase):
 
         pr = result[0]['118734']
 
-        self.assertEqual('Early E2A DNA-binding protein', pr.name)
+        self.assertEqual('DNA-binding protein; Short=DBP; AltName: Full=Early 2A protein', pr.name)
 
 
     def test_get_record_with_pipe_format_accessions(self):

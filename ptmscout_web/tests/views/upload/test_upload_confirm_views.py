@@ -257,6 +257,7 @@ class IntegrationTestUploadStatusView(IntegrationTestCase):
         session.load_type='new'
         session.data_file='exp_file'
         session.parent_experiment=None
+        session.change_name=''
         session.change_description=''
         session.stage='complete'
         session.save()
@@ -279,6 +280,7 @@ class IntegrationTestUploadStatusView(IntegrationTestCase):
         session.load_type='new'
         session.data_file='exp_file'
         session.parent_experiment=None
+        session.change_name=''
         session.change_description=''
         session.stage='confirm'
         session.save()
