@@ -11,7 +11,7 @@
 	</div>
 	<div metal:fill-slot="content">
 		<div metal:use-macro="experiment_header">
-			<div id="experimentMenu" metal:fill-slot="menu">
+			<div id="experimentSummaryMenu" metal:fill-slot="menu">
 				<a href="${request.application_url}/experiments/${experiment.id}/summary">Summary</a>
 				| <a href="${request.application_url}/experiments/${experiment.id}/GO">GO Terms</a>
 				| <a href="${request.application_url}/experiments/${experiment.id}/pfam">Protein Families</a>
