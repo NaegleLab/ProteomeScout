@@ -34,7 +34,7 @@
 		    		<input type="Submit" id="export-experiment" value="Export Experiment" />
 		    	</fieldset>
 	    	</form>
-	    	<form method="POST" action="${request.route_url('experiment_annotate', id=experiment.id)}">
+	    	<form method="POST" action="${request.route_url('experiment_annotate', id=experiment.id)}" enctype="multipart/form-data" >
 		    	<fieldset>
 		    		<legend>Import Annotation File</legend>
 	   				<input type="file" name="annotationfile" /> <br />
