@@ -29,6 +29,7 @@ def annotate_experiment(exp_id):
 def parseAnnotationColumns(session_columns):
     ms_col = None
     annotation_cols = []
+
     for col in session_columns:
         if col.type == 'MS_id':
             ms_col = col
@@ -41,12 +42,11 @@ def parseAnnotationColumns(session_columns):
 def create_annotation(valid_msIds, ms_col, annotation_col, data_rows):
     ms_annotations = []
     errors = []
-
     for i, row in enumerate(data_rows):
         try:
             ms_id = int(row[ms_col.column_number].strip())
             value = row[annotation_col.column_number].strip()
-            
+           
             if ms_id not in valid_msIds:
                 raise uploadutils.ParseError(i+1, None, "Invalid MS_id specified: %d" % (ms_id)) 
             
@@ -87,7 +87,7 @@ def name_in_use(experiment_id, user, label):
     return reduce(bool.__or__, [ label == annotation.name for annotation in user_annotations ], False) 
 
 @celery.task
-@upload_helpers.dynamic_transaction_task
+@upload_helpers.transaction_task
 @upload_helpers.notify_job_failed
 def start_annotation_import(job_id, session_id):
     notify_tasks.set_job_status.apply_async((job_id, 'running'))
