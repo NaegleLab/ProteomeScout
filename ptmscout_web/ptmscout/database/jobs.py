@@ -46,9 +46,11 @@ class Job(Base):
         return self.status not in ['error', 'finished']
     
     def is_old(self):
+        if self.finished == None:
+            return False
         JOB_AGE_LIMIT = 2 * 86400
-        delta = now - session.date
-        return delta > JOB_AGE_LIMIT
+        delta = datetime.datetime.now() - self.finished
+        return delta.total_seconds() > JOB_AGE_LIMIT
 
     def finish(self):
         self.failure_reason = ''
