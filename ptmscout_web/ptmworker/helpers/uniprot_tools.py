@@ -255,7 +255,7 @@ def map_isoform_results(result_map, isoform_map):
 def map_combine(r1, r2):
     return dict(r1.items() + r2.items())
 
-MAX_RETRIES = 3
+MAX_RETRIES = 5
 
 @rate_limit(rate=3)
 def get_uniprot_records(accs):
