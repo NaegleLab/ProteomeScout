@@ -27,8 +27,10 @@
 			<br /> 
 			<h2>License, Disclaimer	and Terms of Use</h2>
 			<h3>
-				<a href="http://creativecommons.org/licenses/by/3.0/legalcode">Licensed
-					under Creative Commons Attribution 3.0</a>
+				
+				
+				<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode">Licensed
+					under Creative Commons Noncommercial, Share-Alike, Attribution 3.0 Unported</a>
 			</h3>
 
 			<h3>Disclaimer</h3>
@@ -37,7 +39,7 @@
 				collaborative project that represents a voluntary association of
 				individuals and groups working to develop a common, educational
 				resource. Use of the site is completely voluntary; and anyone may
-				access the data presented on the Site and/or upload data to the
+				access the data presented on the Site and/or those with user accounts may upload data to the
 				Site. The Site's content is not uniformly peer reviewed, and,
 				therefore, all of the Site's information is provided without
 				representations or warranties of any kind, express or implied,
@@ -47,7 +49,7 @@
 				Site is responsible for the appearance of any inaccurate or
 				libelous information, your use of the information contained on this
 				Site, or modifications made to Site content. The Site's database is
-				stored on a server in the Commonwealth of Massachusetts in the
+				stored on a server in the State of Missouri  in the
 				United States of America, and is therefore maintained in reference
 				to the protections afforded under local and federal law. Laws in
 				your country or jurisdiction may not protect or allow the same
@@ -58,7 +60,7 @@
 				herein. <br /> <br /> The Site's information is furnished
 				freely, and you are specifically granted a limited license to copy
 				anything from this Site pursuant to a <a
-					href="http://creativecommons.org/licenses/by/3.0/legalcode">"Creative
+					href="http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode">"Creative
 					Commons License"</a>. Notwithstanding the benefits provided by this
 				limited license, no agreement or contract is created between you
 				and the Site\'s owners or users; the owners of the servers on which
@@ -66,7 +68,7 @@
 				administrators, system operators; or anyone else connected (in any
 				manner) to this project or sister projects subject to your claims
 				directly. Furthermore, this license neither creates nor implies any
-				contractual relationship or liability on the part of M.I.T., its
+				contractual relationship or liability on the part of Washington University in St. Louis, its
 				trustees, directors, officers, employees, agents, or associates.
 				Any trademarks, service marks, collective marks, design rights or
 				similar rights that are mentioned, used, or cited on the Site
@@ -79,7 +81,7 @@
 				administrators of any errors discovered on the Site.
 			</p> 
 			<h3>
-				<a href="http://ptmscout.mit.edu/cgi-bin/terms.cgi">Terms of Use</a>
+				<a href="http://ptmscout.wustl.edu/cgi-bin/terms.cgi">Terms of Use</a>
 			</h3>
 
 			<hr size=10 color="blue">
@@ -87,11 +89,13 @@
 			<h2>
 				<font color="#0000A0">Developers</font> 
 			</h2>
-			
+			<h3> <ul> <li> Matthew Matlock </li> </ul> </h3> 
+			<h3 style="text-indent:20px">
+				PTMScout Version 1:
+			</h3>
 			<ul>
 				<li>Kristen Naegle</li>
 				<li>Melissa Gymrek</li>
-				<li>Matthew Matlock</li>
 			</ul>
 			<br />
 			<h2>
@@ -112,7 +116,7 @@
 					<a href="${adminEmail}">${adminEmail}</a>.
 					The software is distributed under the 
 					<a href="http://creativecommons.org/licenses/by-nc-sa/3.0">Creative
-					Commons Attribution Noncommercial license.</a>
+					Commons Attribution Noncommercial ShareAlike license.</a>
 				</li>
 			</ul>
 
@@ -125,13 +129,6 @@
 			</ul>
 
 			<br /> 
-			<h2>Support</h2>
-			This work was supported by:
-			<ul>
-				<li>NIH-U54-CA112967</li>
-				<li>NIH-RO1-CA096504</li>
-			</ul>
-			<br />
 			<h2>Privacy</h2>
 			<ul>
 				<li>Cookies are used on this site only for the collection of
@@ -139,6 +136,9 @@
 					the developers of PTMScout of the usefulness of the tools provided
 					and to aid in the pursuit of funding for maintenance and further
 					development of PTMScout.
+				</li>
+				<li>Data uploaded under private accounts and kept private cannot be seen in any form by users other than those ones with which the data is shared. 
+				
 				</li>
 			</ul>
 		</div>
