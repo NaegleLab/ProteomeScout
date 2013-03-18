@@ -25,14 +25,15 @@ def download_experiment(request):
     return { 'header': header, 'data': rows }
 
 def annotate_experiment(user, exp, header, rows):
-    header += ['nearby_modifications', 'nearby_mutations', 'site_domains', 'site_regions']
+    header += [ 'scansite_bind', 'scansite_kinase', 'nearby_modifications', 'nearby_mutations', 'site_domains', 'site_regions',\
+                    'protein_domains', 'protein_GO_BP', 'protein_GO_CC', 'protein_GO_MF' ]
     protein_mods = {}
     
     for ms in exp.measurements:
         if ms.protein_id not in protein_mods:
             protein_mods[ms.protein_id] = modifications.getMeasuredPeptidesByProtein(ms.protein_id, user)
     
-    ms_map = {}    
+    ms_map = {}
     for ms in exp.measurements:
         ms_map[ms.id] = ms
         
@@ -61,10 +62,36 @@ def annotate_experiment(user, exp, header, rows):
 
         sep = settings.mod_separator_character + ' '
         
+        scansite_kinase = []
+        scansite_bind = []
+        for modpep in ms.peptides:
+            for pp in modpep.peptide.predictions:
+                if pp.source=='scansite_kinase':
+                    scansite_kinase.append( "%s (%.2f)" % ( pp.value, pp.percentile ))
+                if pp.source=='scansite_bind':
+                    scansite_bind.append( "%s (%.2f)" % ( pp.value, pp.percentile ))
+
+        protein_domains = []
+        protein_GO = { 'P':set(), 'F':set(), 'C':set() }
+
+        for d in prot.domains:
+            protein_domains.append( "%s (%d-%d)" % ( d.label, d.start, d.stop ) )
+        for ge in prot.GO_terms:
+            term = ge.GO_term
+            protein_GO[term.aspect].add(term.GO)
+
+        row.append(sep.join(scansite_bind))
+        row.append(sep.join(scansite_kinase))
+
         row.append(sep.join(nearby_modifications))
         row.append(sep.join(nearby_mutations))
         row.append(sep.join(site_domains))
         row.append(sep.join(site_regions))
+
+        row.append(sep.join(protein_domains))
+        row.append(sep.join(list(protein_GO['P'])))
+        row.append(sep.join(list(protein_GO['C'])))
+        row.append(sep.join(list(protein_GO['F'])))
         
 def get_experiment_header(exp):
     header = ['MS_id', 'query_accession', 'gene', 'locus', 'protein_name', 'species', 'peptide', 'mod_sites', 'aligned_peptides', 'modification_types']
