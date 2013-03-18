@@ -21,19 +21,23 @@ def get_motif_class(taxonomy):
 
     return motif_class
 
-def copy_predictions(pep, scansite_predictions):
-    db_predictions = []
+def contains_prediction(scansite, pep):
+    for pp in pep.predictions:
+        if pp.value == scansite.nickname and pp.source == scansite.parse_source():
+            return True
+    return False
 
+def copy_predictions(pep, scansite_predictions):
+    pep.predictions = []
     for scansite in scansite_predictions:
-        if pep.pep_aligned == scansite.sequence:
+        if pep.pep_aligned == scansite.sequence and not contains_prediction(scansite, pep):
             pred = modifications.ScansitePrediction()
             pred.score = scansite.score
             pred.percentile = scansite.percentile
             pred.value = scansite.nickname
             pred.source = scansite.parse_source()
-            db_predictions.append(pred)
+            pep.predictions.append(pred)
 
-    pep.predictions = db_predictions
     pep.scansite_date = datetime.datetime.now()
 
 def create_missing_peptides(prot, pep_map, scansite_predictions):
