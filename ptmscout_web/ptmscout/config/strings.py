@@ -125,16 +125,16 @@ forgotten_password_success_header = "Password Reset Success"
 forgotten_password_success_message = "Your username and a temporary password have been sent to your e-mail address"
 forgotten_password_email_subject = "PTMScout password reset"
 forgotten_password_email_message = \
-"""%s,<br>
-<br>
-Your password in PTMScout has been reset, your new login credentials are:<br>
-Username: %s<br>
-Password: %s<br>
-<br>
-Please visit <a href="%s">PTMScout</a> to login.<br>
-After logging in, your can change your password <a href="%s">here</a>.<br>
-<br>
--PTMScout Administrator<br>
+"""%s,
+
+Your password in PTMScout has been reset, your new login credentials are:
+Username: %s
+Password: %s
+
+Please visit <a href="%s">PTMScout</a> to login.
+After logging in, your can change your password <a href="%s">here</a>.
+
+-PTMScout Administrator
 """
 
 login_page_title = "Login"
@@ -179,14 +179,14 @@ user_invite_email_required = "Email address is required"
 user_invited = "An invitation to view your dataset has been sent to %s."
 user_invite_email_subject = "PTMScout user %s has invited you to share a dataset"
 user_invite_email_message = """
-%s,<br>
-<br>
-User %s has invited you to view their dataset '%s', available through PTMScout.<br>
-<br>
-Please <a href=\"%s\">visit</a> to access and view this data.<br>
-<br>
-Thanks,<br>
--The PTMScout Team<br>
+%s,
+
+User %s has invited you to view their dataset '%s', available through PTMScout.
+
+Please <a href=\"%s\">visit</a> to access and view this data.
+
+Thanks,
+-The PTMScout Team
 """
 
 
@@ -196,13 +196,13 @@ user_registration_success_message = "A confirmation e-mail has been sent to the 
 
 user_registration_email_subject = "PTMScout Account Activiation Details"
 user_registration_email_message = """
-%s,<br>
-<br>
-Thank you for choosing PTMScout for your research.<br>
-<br>
-You can activate your new account by visiting <a href=\"%s/activate_account?username=%s&token=%s\">this link</a>.<br>
-<br>
-Thanks,<br>
+%s,
+
+Thank you for choosing PTMScout for your research.
+
+You can activate your new account by visiting <a href=\"%s/activate_account?username=%s&token=%s\">this link</a>.
+
+Thanks,
 -The PTMScout Team<br>
 """
 

@@ -24,7 +24,7 @@ def send_automail_message(request, recipients, subject, message):
     mailer = get_mailer(request)
 
     message = Message(subject=subject, sender=settings.automailerEmail,
-            recipients=recipients, html=message)
+            recipients=recipients, html=message.replace("\n","<br />\n"))
 
     mailer.send_immediately(message)
    
