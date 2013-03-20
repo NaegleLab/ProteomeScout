@@ -37,6 +37,19 @@ class Job(Base):
         self.stage = 'initializing'
         self.status = 'configuration'
         
+    def started(self):
+        if self.restarted == None:
+            return self.created
+        return self.restarted
+    
+    def finished_time(self):
+        if self.finished == None:
+            return "-"
+        return self.finished
+    
+    def restart(self):
+        self.restarted = datetime.datetime.now()
+    
     def fail(self, stack_trace):
         self.failure_reason = stack_trace
         self.status = 'error'

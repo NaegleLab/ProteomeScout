@@ -98,7 +98,6 @@ class ExperimentTestCase(DBTestCase):
 
         self.assertEqual(exp.public, nexp.public)
 
-        self.assertEqual(exp.status, nexp.status)
         self.assertEqual(exp.submitter_id, nexp.submitter_id)
 
         self.assertEqual([], nexp.errors)
@@ -117,7 +116,7 @@ class ExperimentTestCase(DBTestCase):
         try:
             exp = dbexperiment.getExperimentById(1, None)
             exp.public = 0
-            exp.status = 'loading'
+            exp.job.status = 'loading'
             exp.saveExperiment()
             
             ptmuser = user.getUserById(1)
@@ -168,7 +167,7 @@ class ExperimentTestCase(DBTestCase):
         exp.saveExperiment()
         
         exp2 = dbexperiment.getExperimentById(26, None)
-        exp2.status = 'preload'
+        exp2.job.status = 'configuration'
         exp2.saveExperiment()
         
         experiments = dbexperiment.getAllExperiments(None)

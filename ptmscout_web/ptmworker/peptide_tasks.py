@@ -100,8 +100,9 @@ def load_peptide_modification(exp_id, load_ambiguities, protein_accession, prote
 UPDATE_EVERY=30
 
 @celery.task
+@upload_helpers.notify_job_failed
 @upload_helpers.transaction_task
-def run_peptide_import(prot_map, exp_id, peptides, mod_map, data_runs, headers, units, load_ambiguities):
+def run_peptide_import(prot_map, peptides, mod_map, data_runs, headers, units, load_ambiguities, exp_id, job_id):
     accessions = set( prot_map.keys() ) & set( peptides.keys() )
 
     total_peptides = 0
@@ -109,7 +110,7 @@ def run_peptide_import(prot_map, exp_id, peptides, mod_map, data_runs, headers, 
         total_peptides += len(peptides[acc])
 
     upload_helpers.store_stage_input(exp_id, 'peptides', prot_map)
-    notify_tasks.set_loading_stage.apply_async((exp_id, 'peptides', total_peptides))
+    notify_tasks.set_job_stage.apply_async((job_id, 'peptides', total_peptides))
 
     i = 0
     for acc in accessions:
@@ -127,6 +128,6 @@ def run_peptide_import(prot_map, exp_id, peptides, mod_map, data_runs, headers, 
 
                 i+=1
                 if i % UPDATE_EVERY == 0:
-                    notify_tasks.set_progress.apply_async((exp_id, i, total_peptides))
+                    notify_tasks.set_job_progress.apply_async((job_id, i, total_peptides))
 
-    notify_tasks.set_progress.apply_async((exp_id, i, total_peptides))
+    notify_tasks.set_job_progress.apply_async((job_id, i, total_peptides))

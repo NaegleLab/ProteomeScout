@@ -259,10 +259,6 @@ class IntegrationTestUploadConditionsView(IntegrationTestCase):
         from ptmscout.database import experiment
         self.bot.login()
         
-        exp = experiment.getExperimentById(1, 0, False)
-        exp.status = 'preload'
-        exp.saveExperiment()
-        
         session = upload.Session()
         session.experiment_id = 1
         session.user_id = self.bot.user.id
@@ -289,10 +285,6 @@ class IntegrationTestUploadConditionsView(IntegrationTestCase):
     def test_view_integration_should_load_conditions_from_experiment_parent(self):
         from ptmscout.database import experiment
         self.bot.login()
-
-        exp = experiment.getExperimentById(26, 0, False)
-        exp.status = 'preload'
-        exp.saveExperiment()
 
         session = upload.Session()
         session.experiment_id = 26

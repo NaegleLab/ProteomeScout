@@ -56,7 +56,7 @@ class TestUploadResumeView(UnitTestCase):
         patch_getSession.assert_called_once_with(102, request.user)
         patch_getExperiment.assert_called_once_with(26, request.user, False)
 
-        patch_startUpload.assert_called_once_with((exp.id, session.id, request.user.email, request.application_url))
+        patch_startUpload.assert_called_once_with((exp.id, session.id, exp.job.id))
         
         exp_dict = webutils.object_to_dict(exp)
         exp_dict['url'] = "url"

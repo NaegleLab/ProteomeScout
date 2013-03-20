@@ -9,7 +9,6 @@ def write_experiment_properties(nexp, session, schema, current_user):
     nexp.description = schema.get_form_value('description')
     
     nexp.dataset = session.data_file
-    nexp.status='configuration'
     
     nexp.published = 1 if schema.get_form_value('published') == "yes" else 0
     nexp.ambiguity = 1 if schema.get_form_value('ambiguous') == "yes" else 0

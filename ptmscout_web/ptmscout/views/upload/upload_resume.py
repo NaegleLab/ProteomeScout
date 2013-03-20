@@ -6,7 +6,6 @@ from ptmscout.utils import webutils
 from ptmworker import data_import
 from ptmscout.config import strings
 
-
 @view_config(route_name='upload_resume', permission='private')
 def resume_upload_session(request):
     session_id = int(request.matchdict['id'])
@@ -24,7 +23,9 @@ def resume_upload_session(request):
 
 def prepare_experiment(session, exp):
     exp.export = 1
-    exp.status='in queue'
+    exp.job.status='in queue'
+    exp.job.restart()
+    exp.job.save()
     exp.saveExperiment()
 
 
@@ -42,7 +43,7 @@ def retry_failed_upload(request):
     exp_dict['url'] = exp.getUrl()
     
     prepare_experiment(session, exp)
-    data_import.start_import.apply_async((exp.id, session_id, request.user.email, request.application_url))
+    data_import.start_import.apply_async((exp.id, session_id, exp.job.id))
 
     return {'pageTitle': strings.experiment_upload_started_page_title,
             'message': strings.experiment_upload_started_message % (request.application_url + "/account/experiments"),

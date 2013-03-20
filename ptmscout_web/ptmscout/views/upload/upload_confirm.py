@@ -1,5 +1,5 @@
 from pyramid.view import view_config
-from ptmscout.database import experiment, upload, modifications
+from ptmscout.database import experiment, upload, modifications, jobs
 from ptmscout.config import strings
 from ptmscout.utils import webutils
 from ptmworker import data_import
@@ -29,7 +29,6 @@ def prepare_experiment(session, exp, user):
         modifications.deleteExperimentData(parent_exp.id)
     
     exp_target.export = 1
-    exp_target.status='in queue'
     exp_target.saveExperiment()
     
     session.stage = 'complete'
@@ -39,6 +38,23 @@ def prepare_experiment(session, exp, user):
         exp.delete()
         
     return exp_target
+
+def create_job(request, exp, session, user):
+    job = jobs.Job()
+    job.name = "Load experiment '%s'" % (exp.name)
+    job.type = 'load_experiment'
+    job.user_id = user.id
+    job.status_url = request.route_url('my_experiments')
+    job.resume_url = request.route_url('upload_resume', id=session.id)
+    job.result_url = request.route_url('experiment', id=exp.id)
+    job.status = 'in queue'
+    job.stage = 'query'
+    job.save()
+    
+    exp.job_id = job.id
+    exp.saveExperiment()
+    
+    return job.id
 
 @view_config(route_name='upload_confirm', renderer='ptmscout:/templates/upload/upload_confirm.pt', permission='private')
 def upload_confirm_view(request):
@@ -59,10 +75,9 @@ def upload_confirm_view(request):
     exp_dict['url'] = exp.getUrl()
     
     if confirm and terms_of_use_accepted:
-        
         target_exp = prepare_experiment(session, exp, request.user)
-
-        data_import.start_import.apply_async((target_exp.id, session.id, request.user.email, request.application_url))
+        job_id = create_job(request, target_exp, session, request.user)
+        data_import.start_import.apply_async((target_exp.id, session.id, job_id))
         
         return {'pageTitle': strings.experiment_upload_started_page_title,
                 'message': strings.experiment_upload_started_message % (request.application_url + "/account/experiments"),

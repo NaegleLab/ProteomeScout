@@ -14,6 +14,8 @@ Base = declarative_base()
 from uniprot import *
 from taxonomies import *
 
+from jobs import *
+
 from experiment import *
 from permissions import *
 from user import *

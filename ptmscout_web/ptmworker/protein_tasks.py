@@ -77,7 +77,7 @@ def report_protein_error(acc, protein_map, accessions, line_mappings, exp_id, me
             experiment.createExperimentError(exp_id, line, accession, peptide, message)
 
 UPDATE_EVERY = 30
-def create_missing_proteins(protein_map, missing_proteins, accessions, exp_id, line_mappings):
+def create_missing_proteins(protein_map, missing_proteins, accessions, line_mappings, exp_id, job_id):
 
     i = 0
     #create entries for the missing proteins
@@ -103,15 +103,16 @@ def create_missing_proteins(protein_map, missing_proteins, accessions, exp_id, l
 
         i+=1
         if i % UPDATE_EVERY == 0:
-            notify_tasks.set_progress.apply_async((exp_id, i, len(missing_proteins)))
+            notify_tasks.set_job_progress.apply_async((job_id, i, len(missing_proteins)))
 
-    notify_tasks.set_progress.apply_async((exp_id, i, len(missing_proteins)))
+    notify_tasks.set_job_progress.apply_async((job_id, i, len(missing_proteins)))
     return protein_map, protein_id_map
 
 
 @celery.task
+@upload_helpers.notify_job_failed
 @upload_helpers.transaction_task
-def query_protein_metadata(external_db_result, accessions, exp_id, line_mapping):
+def query_protein_metadata(external_db_result, accessions, line_mapping, exp_id, job_id):
     #list the missing proteins
     missing_proteins = set()
     for acc in external_db_result:
@@ -120,20 +121,21 @@ def query_protein_metadata(external_db_result, accessions, exp_id, line_mapping)
             missing_proteins.add(acc)
 
     upload_helpers.store_stage_input(exp_id, 'proteins', external_db_result)
-    notify_tasks.set_loading_stage.apply_async((exp_id, 'proteins', len(missing_proteins)))
+    notify_tasks.set_job_stage.apply_async((job_id, 'proteins', len(missing_proteins)))
 
-    return create_missing_proteins(external_db_result, missing_proteins, accessions, exp_id, line_mapping)
+    return create_missing_proteins(external_db_result, missing_proteins, accessions, line_mapping, exp_id, job_id)
 
 @celery.task
+@upload_helpers.notify_job_failed
 @upload_helpers.transaction_task
-def get_proteins_from_external_databases(ignored, accessions, exp_id, line_mapping):
+def get_proteins_from_external_databases(ignored, accessions, line_mapping, exp_id, job_id):
     uniprot_ids, other_ids = upload_helpers.extract_uniprot_accessions(accessions.keys())
 
     uniprot_tasks = upload_helpers.create_chunked_tasks_preserve_groups(sorted(uniprot_ids), MAX_UNIPROT_BATCH_SIZE)
     ncbi_tasks = upload_helpers.create_chunked_tasks(sorted(other_ids), MAX_NCBI_BATCH_SIZE)
     total_task_cnt = len(uniprot_tasks) + len(ncbi_tasks)
 
-    notify_tasks.set_loading_stage.apply_async((exp_id, 'query', total_task_cnt))
+    notify_tasks.set_job_stage.apply_async((job_id, 'query', total_task_cnt))
 
     i = 0
     protein_map = {}
@@ -145,7 +147,7 @@ def get_proteins_from_external_databases(ignored, accessions, exp_id, line_mappi
         log_errors(errors, exp_id, accessions, line_mapping)
 
         i+=1
-        notify_tasks.set_progress.apply_async((exp_id, i, total_task_cnt))
+        notify_tasks.set_job_progress.apply_async((job_id, i, total_task_cnt))
 
     for uniprot_accessions in uniprot_tasks:
         result, errors = get_uniprot_proteins(uniprot_accessions)
@@ -154,6 +156,6 @@ def get_proteins_from_external_databases(ignored, accessions, exp_id, line_mappi
         log_errors(errors, exp_id, accessions, line_mapping)
 
         i+=1
-        notify_tasks.set_progress.apply_async((exp_id, i, total_task_cnt))
+        notify_tasks.set_job_progress.apply_async((job_id, i, total_task_cnt))
 
     return protein_map

@@ -28,7 +28,6 @@ class ExperimentError(Base):
     
     message = Column(Text)
     
-    
 class ExperimentCondition(Base):
     __tablename__ = 'experiment_condition'
     
@@ -62,15 +61,6 @@ class ExperimentData(Base):
     def save(self):
         DBSession.add(self)
     
-
-
-class ExperimentProgress(Base):
-    __tablename__ = 'experiment_progress'
-    experiment_id = Column(Integer(10), primary_key=True)
-    value = Column(Integer(10))
-    max_value = Column(Integer(10))
- 
-
 class Experiment(Base):
     __tablename__ = 'experiment'
     
@@ -102,14 +92,20 @@ class Experiment(Base):
     
     public = Column(Integer(1), default=0)
     
-    status = Column(Enum('configuration', 'in queue', 'loading', 'loaded', 'error'), default='configuration')
+    job_id = Column(Integer(10), ForeignKey('jobs.id'))
     submitter_id = Column(Integer(10), ForeignKey('users.id'))
 
-    loading_stage = Column(Enum('query', 'proteins', 'GO terms', 'peptides', 'scansite'), default='query')
-
-    failure_reason = Column(Text, default="")
-
     modified_residues = Column(VARCHAR(40), default="")
+    
+    def __get_job(self):
+        from ptmscout.database import jobs
+        
+        if not hasattr(self, '__job_obj'):
+            self.__job_obj = jobs.getJobById(self.job_id)
+        
+        return self.__job_obj
+        
+    job = property(__get_job)
     
     errors = relationship("ExperimentError", cascade="all,delete-orphan")
     conditions = relationship("ExperimentCondition", cascade="all,delete-orphan")
@@ -154,13 +150,8 @@ class Experiment(Base):
         
         self.public = exp.public
         
-        self.status = exp.status
         self.submitter_id = exp.submitter_id
-        
-        self.loading_stage = 'query'
-        self.progress = 0
-        self.max_progress = 0
-        self.failure_reason = ''
+        self.job_id = None
         
         self.conditions = []
         for c in exp.conditions:
@@ -254,8 +245,23 @@ class Experiment(Base):
             p.access_level = level
             self.permissions.append(p)
     
+    def __get_status(self):
+        if self.job == None:
+            return 'configuration'
+        return self.job.status
+    
+    def __get_stage(self):
+        if self.job == None:
+            return ''
+        return self.job.stage
+    
+    status = property(__get_status)
+    loading_stage = property(__get_stage)
+    
     def ready(self):
-        return self.status == 'loaded'
+        if self.job != None:
+            return self.job.status == 'finished'  
+        return False
         
     def makePublic(self):
         self.public = 1
@@ -361,17 +367,6 @@ def createExperimentError(exp_id, line, accession, peptide, message):
     err.message = message
     
     DBSession.add(err)
-   
-def setExperimentProgress(exp_id, value, max_value):
-    entry = DBSession.query(ExperimentProgress).filter_by(experiment_id=exp_id).first()
-    if entry == None:
-        entry = ExperimentProgress()
-        entry.experiment_id = exp_id
-
-    entry.value = value
-    entry.max_value = max_value
-
-    DBSession.add(entry)
 
 def getExperimentProgress(exp_id):
     entry = DBSession.query(ExperimentProgress).filter_by(experiment_id=exp_id).first()

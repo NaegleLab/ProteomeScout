@@ -24,7 +24,7 @@ class GOTasksTest(IntegrationTestCase):
         patch_commit.side_effect = save_db
         protein_result = protein_map, new_protein_ids
 
-        result = GO_tasks.import_go_terms.apply_async((protein_result, 26))
+        result = GO_tasks.import_go_terms.apply_async((protein_result, 26, 7))
 
         value = result.get(propagate=False)
         if isinstance(value, Exception):
@@ -43,7 +43,7 @@ class GOTasksTest(IntegrationTestCase):
 
 
         exp = experiment.getExperimentById(26, None, False, False)
-        self.assertEqual('GO terms', exp.loading_stage)
+        self.assertEqual('GO terms', exp.job.stage)
 
         self.assertTrue(patch_commit.called)
 

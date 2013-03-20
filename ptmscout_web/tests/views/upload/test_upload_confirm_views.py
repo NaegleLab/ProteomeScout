@@ -41,7 +41,6 @@ class TestUploadStatusView(UnitTestCase):
         
         exp.saveExperiment.assert_called_once_with()
         
-        self.assertEqual('in queue', exp.status)
         self.assertEqual(1, exp.export)
         self.assertEqual(exp, rval)
         
@@ -63,7 +62,6 @@ class TestUploadStatusView(UnitTestCase):
         
         exp.saveExperiment.assert_called_once_with()
         
-        self.assertEqual('in queue', exp.status)
         self.assertEqual(1, exp.export)
         self.assertEqual(exp, rval)
         
@@ -94,7 +92,6 @@ class TestUploadStatusView(UnitTestCase):
         target_exp.saveExperiment.assert_called_once_with()
         exp.delete.assert_called_once_with()
         
-        self.assertEqual('in queue', target_exp.status)
         self.assertEqual(0, exp.export)
         self.assertEqual(1, target_exp.export)
         self.assertEqual(target_exp, rval)
@@ -128,7 +125,6 @@ class TestUploadStatusView(UnitTestCase):
         
         target_exp.saveExperiment.assert_called_once_with()
 
-        self.assertEqual('in queue', target_exp.status)
         self.assertEqual(0, exp.export)
         self.assertEqual(1, target_exp.export)
         self.assertEqual(target_exp, rval)     
@@ -138,10 +134,11 @@ class TestUploadStatusView(UnitTestCase):
         session.save.assert_called_once_with()   
 
     @patch('ptmworker.data_import.start_import.apply_async')        
+    @patch('ptmscout.views.upload.upload_confirm.create_job')
     @patch('ptmscout.views.upload.upload_confirm.prepare_experiment')
     @patch('ptmscout.database.experiment.getExperimentById')
     @patch('ptmscout.database.upload.getSessionById')
-    def test_start_upload_view_should_start_job_and_display_confirmation(self, patch_getSession, patch_getExperiment, patch_prepare, patch_startUpload):
+    def test_start_upload_view_should_start_job_and_display_confirmation(self, patch_getSession, patch_getExperiment, patch_prepare, patch_createJob, patch_startUpload):
         request = DummyRequest()
         request.POST['confirm'] = "true"
         request.POST['terms_of_use'] = "yes"
@@ -158,13 +155,14 @@ class TestUploadStatusView(UnitTestCase):
         exp.getLongCitationString.return_value = "citation"
         
         patch_prepare.return_value = target_exp
+        patch_createJob.return_value = 702
         
         result = upload_confirm_view(request)
         
         patch_getSession.assert_called_once_with(102, request.user)
         patch_getExperiment.assert_called_once_with(26, request.user, False)
-
-        patch_startUpload.assert_called_once_with((target_exp.id, session.id, request.user.email, request.application_url))
+        patch_createJob.assert_called_once_with(request, target_exp, session, request.user)
+        patch_startUpload.assert_called_once_with((target_exp.id, session.id, 702))
         
         exp_dict = webutils.object_to_dict(exp)
         exp_dict['url'] = "url"
@@ -248,7 +246,7 @@ class IntegrationTestUploadStatusView(IntegrationTestCase):
         self.bot.login()
         
         exp = experiment.getExperimentById(1, 0, False)
-        exp.status = 'loading'
+        exp.job.status = 'running'
         exp.saveExperiment()
         
         session = upload.Session()
@@ -271,7 +269,7 @@ class IntegrationTestUploadStatusView(IntegrationTestCase):
         self.bot.login()
         
         exp = experiment.getExperimentById(1, 0, False)
-        exp.status = 'configuration'
+        exp.job.status = 'configuration'
         exp.saveExperiment()
         
         session = upload.Session()

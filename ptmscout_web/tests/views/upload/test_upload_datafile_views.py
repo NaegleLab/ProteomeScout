@@ -4,12 +4,10 @@ from ptmscout.config import settings, strings
 import os
 from ptmscout.views.upload.upload_datafile import upload_data_file, create_session
 from mock import patch, Mock
-import cgi
 from tests.views.mocking import createMockUser, createMockExperiment,\
     createMockPermission
 from pyramid.httpexceptions import HTTPFound
 from ptmscout.utils import forms
-import shutil
 
 class TestUploaddata_fileView(UnitTestCase):
     
@@ -122,11 +120,11 @@ class TestUploaddata_fileView(UnitTestCase):
         
         request.user = createMockUser()
         e1 = createMockExperiment(2, 0, 0)
-        e1.status='loaded'
+        e1.ready.return_value = True
         e2 = createMockExperiment(3, 0, 0)
-        e2.status='loaded'
+        e2.ready.return_value = True
         e3 = createMockExperiment(4, 0, 0)
-        e3.status='error'
+        e3.ready.return_value = False
         p1 = createMockPermission(request.user, e1, 'owner')
         p2 = createMockPermission(request.user, e2, 'view')
         p3 = createMockPermission(request.user, e3, 'owner')

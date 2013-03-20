@@ -53,7 +53,7 @@ def create_schema(request, users_experiments):
 @view_config(route_name='upload', renderer='ptmscout:/templates/upload/upload_datafile.pt', permission='private')
 def upload_data_file(request):
     submitted = webutils.post(request, 'submitted', "false") == "true"
-    users_experiments = [ p.experiment for p in request.user.permissions if p.access_level=='owner' and p.experiment.status=='loaded' ]
+    users_experiments = [ p.experiment for p in request.user.permissions if p.access_level=='owner' and p.experiment.ready() ]
     
     errors = []
     schema = create_schema(request, users_experiments)

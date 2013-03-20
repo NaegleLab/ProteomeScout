@@ -83,7 +83,7 @@ def notify_job_failed(fn):
             result = fn(*args)
             return result
         except Exception, e:
-            job_id = args[0]
+            job_id = args[-1]
             notify_tasks.notify_job_failed(job_id, str(e), traceback.format_exc())
             raise
     ttask.__name__ = fn.__name__

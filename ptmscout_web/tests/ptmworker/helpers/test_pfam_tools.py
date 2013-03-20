@@ -149,10 +149,10 @@ class IntegrationTestPFamQuery(IntegrationTestCase):
         self.assertEqual(2, len(domains))
         
         d = domains[0]
-        self.assertEqual(('ABC_tran', 565, 685), (d.label, d.start, d.stop))
+        self.assertEqual(('ABC_tran', 541, 685), (d.label, d.start, d.stop))
 
         d = domains[1]
-        self.assertEqual(('ABC_tran', 1396, 1516), (d.label, d.start, d.stop))
+        self.assertEqual(('ABC_tran', 1372, 1516), (d.label, d.start, d.stop))
 
     @patch('ptmworker.helpers.pfam_tools.get_computed_pfam_domains')
     def test_parse_or_query_domains_should_query_if_domains_empty(self, patch_query):

@@ -5,8 +5,8 @@
 	</div>
     <div metal:fill-slot="content">
     	<table class = "experimenttable">
-    		<tbody>
-		   		<tr>
+    		<thead>
+    	  		<tr>
 		   			<th>Experiment</th>
 		   			<th>Description</th>
 		   			<th>Author</th>
@@ -14,6 +14,9 @@
 		   			<th>Status</th>
 		   			<th class="accesscontrol">Access Control</th>
 		   		</tr>
+    		</thead>
+    		<tbody>
+
 		   		<tal:experiments tal:repeat="(i, experiment) enumerate(experiments)">
 					<tr tal:attributes="class 'experiment' + (' even' if i % 2 == 0 else ' odd');" >
 						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.name"></td>
@@ -22,11 +25,10 @@
 						<td class="citation" tal:content="experiment.getCitationString()"></td>
 						<td>
                             <div class="status">
-                                <div tal:condition="experiment.status == 'loading'" tal:content="experiment.status + ': ' + experiment.loading_stage"></div>
-                                <div tal:condition="experiment.status != 'loading'" tal:content="experiment.status"></div>
+                                <div tal:condition="experiment.status == 'running'" tal:content="'loading: see jobs below'"></div>
+                                <div tal:condition="experiment.status != 'running'" tal:content="experiment.status"></div>
                                 <a tal:condition="experiment.status == 'error'" tal:attributes="href '%s/upload/%d/retry' % (request.application_url, sessions[experiment.id])">retry</a>
                             </div>
-                            <div class="progress" tal:condition="experiment.status == 'loading'" tal:content="str(experiment.progress) +  ' / ' + str(experiment.max_progress)"></div>
 						</td>
 						<td class="accesscontrol" tal:condition="experiment.public == 0">
 							<table>
@@ -71,6 +73,40 @@
 				</tal:empty>
 			</tbody>
 		</table>
-		    	
+
+		<tal:empty tal:condition = "len(jobs) > 0">
+			<table class = "experimenttable">
+	    		<thead>
+	    			<tr>
+	    				<th colspan="5">Status of recent and currently active jobs:</th>
+	    			</tr>
+	    	  		<tr>
+			   			<th>Job Name</th>
+			   			<th>Created</th>
+			   			<th>Started</th>
+			   			<th>Finished</th>
+			   			<th>Status</th>
+			   		</tr>
+	    		</thead>
+				<tbody>
+
+					<tal:experiments tal:repeat="(i, job) enumerate(jobs)">
+						<tr tal:attributes="class 'experiment' + (' even' if i % 2 == 0 else ' odd');" >
+							<td tal:content="job.name"></td>
+							<td tal:content="job.created"></td>
+							<td tal:content="job.started()"></td>
+							<td tal:content="job.finished_time()"></td>
+							<td>
+	                            <div class="status">
+	                                <div tal:condition="job.status == 'running'" tal:content="'processing: ' + job.stage"></div>
+	                                <div tal:condition="job.status != 'running'" tal:content="job.status"></div>
+	                            </div>
+	                            <div class="progress" tal:condition="job.status == 'running'" tal:content="'%d / %d' % (job.progress, job.max_progress)"></div>
+	   						</td>
+						</tr>
+					</tal:experiments>
+				</tbody>
+			</table>
+		</tal:empty>
     </div>
 </div>

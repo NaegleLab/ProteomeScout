@@ -171,21 +171,8 @@ def manage_experiments(request):
     users_active_jobs = [ job for job in request.user.jobs if job.is_active() or not job.is_old() ]
     sessions = get_sessions(in_process + error_state)
     
-    for exp in available_experiments:
-        if exp.status == 'loading':
-            progress, max_progress = experiment.getExperimentProgress(exp.id)
-
-            exp.progress = progress
-            exp.max_progress = max_progress
-
-    pep_counts = {}
-    for exp in users_experiments:
-        if exp.status == 'loading':
-            pep_counts[exp.id] = modifications.countMeasuredPeptidesForExperiment(exp.id)
-
     return {'pageTitle':strings.my_experiments_page_title,
             'in_process': in_process,
             'sessions': sessions,
             'experiments': available_experiments,
-            'jobs': users_active_jobs,
-            'peptide_counts': pep_counts}
+            'jobs': users_active_jobs}

@@ -3,13 +3,15 @@ import logging
 from ptmworker.helpers import upload_helpers
 from ptmworker import notify_tasks, protein_tasks, GO_tasks, peptide_tasks, annotate_tasks
 from ptmscout.database import upload, experiment
-import traceback
 log = logging.getLogger('ptmscout')
 
-
-def do_start_import(exp_id, session_id, user_email, application_url):
+@celery.task
+@upload_helpers.notify_job_failed
+@upload_helpers.dynamic_transaction_task
+def start_import(exp_id, session_id, job_id):
     exp = experiment.getExperimentById(exp_id, check_ready=False, secure=False)
-
+    job = exp.job
+    
     log.info("Loading session info...")
     session = upload.getSessionById(session_id, secure=False)
     
@@ -24,22 +26,23 @@ def do_start_import(exp_id, session_id, user_email, application_url):
 
     if len(accessions) == 0:
         log.info("Nothing to do: all proteins were rejected!")
-        return notify_tasks.finalize_import, (exp_id, user_email, application_url), None
+        return notify_tasks.finalize_experiment_import, (exp_id,), None
     else:
         headers = upload_helpers.get_series_headers(session)
 
-        exp.status = 'loading'
-        experiment.setExperimentProgress(exp_id, 0, 0)
-        exp.saveExperiment()
+        job.status = 'running'
+        job.progress = 0
+        job.max_progress = 0
+        job.save()
 
         load_ambiguities = exp.ambiguity == 1
 
-        query_task = protein_tasks.get_proteins_from_external_databases.s(accessions, exp_id, line_mapping)
-        proteins_task = protein_tasks.query_protein_metadata.s(accessions, exp_id, line_mapping)
-        GO_task = GO_tasks.import_go_terms.s(exp_id)
-        peptide_task = peptide_tasks.run_peptide_import.s(exp_id, peptides, mod_map, data_runs, headers, session.units, load_ambiguities)
-        annotate_task = annotate_tasks.annotate_experiment.si(exp_id)
-        finalize_task = notify_tasks.finalize_import.si(exp_id, user_email, application_url)
+        query_task = protein_tasks.get_proteins_from_external_databases.s(accessions, line_mapping, exp_id, job_id)
+        proteins_task = protein_tasks.query_protein_metadata.s(accessions, line_mapping, exp_id, job_id)
+        GO_task = GO_tasks.import_go_terms.s(exp_id, job_id)
+        peptide_task = peptide_tasks.run_peptide_import.s(peptides, mod_map, data_runs, headers, session.units, load_ambiguities, exp_id, job_id)
+        annotate_task = annotate_tasks.annotate_experiment.si(exp_id, job_id)
+        finalize_task = notify_tasks.finalize_experiment_import.si(exp_id)
 
         last_stage_arg = upload_helpers.get_stage_input(exp.id, exp.loading_stage)
 
@@ -52,18 +55,6 @@ def do_start_import(exp_id, session_id, user_email, application_url):
         elif exp.loading_stage == 'peptides':
             load_task = ( peptide_task | annotate_task | finalize_task )
 
-        callback_task = notify_tasks.finalize_experiment_error_state_callback.s(exp_id, user_email, application_url)
-
         log.info("Tasks created... now we wait")
 
-        return load_task, (last_stage_arg,), callback_task
-
-@celery.task
-@upload_helpers.dynamic_transaction_task
-def start_import(exp_id, session_id, user_email, application_url):
-    try:
-        return do_start_import(exp_id, session_id, user_email, application_url)
-    except Exception, exc:
-        notify_tasks.finalize_experiment_error_state.apply_async((exc, traceback.format_exc(), exp_id, user_email, application_url))
-        raise
-
+        return load_task, (last_stage_arg,), None

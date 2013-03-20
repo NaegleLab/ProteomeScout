@@ -8,6 +8,7 @@ from ptmscout.database.modifications import Peptide, MeasuredPeptide,\
     countMeasuredPeptidesForExperiment, getModificationById, \
     getMeasuredPeptide, countProteinsForExperiment
 from ptmscout.database.user import User, getUserById
+from ptmscout.database import jobs
 
 
 class TestModifications(DBTestCase):
@@ -53,6 +54,17 @@ class TestModifications(DBTestCase):
         self.assertEqual(ms1,ms2)
         self.assertEqual(None, ms3)
 
+    def create_job(self, status):
+        job = jobs.Job()
+        job.status = status
+        job.name = "Experiment load"
+        job.progress = 0
+        job.max_progress = 0
+        job.user_id = 1
+        job.type = 'load_experiment'
+        job.save()
+        return job.id
+
     def test_get_modifications_should_return_mods_allowed_by_user_credentials(self):
         u = User("username", "name", "email", "institution")
         u.createUser("password")
@@ -73,7 +85,7 @@ class TestModifications(DBTestCase):
         exp.experiment_id=None
         exp.public = 0
         exp.author = ""
-        exp.status = 'loaded'
+        exp.job_id = self.create_job('finished')
         exp.published = 0
         exp.ambiguity = 0
         exp.export = 0
@@ -88,7 +100,7 @@ class TestModifications(DBTestCase):
         exp2.experiment_id=None
         exp2.public = 0
         exp2.author = ""
-        exp2.status = 'loaded'
+        exp2.job_id = self.create_job('finished')
         exp2.published = 0
         exp2.ambiguity = 0
         exp2.export = 0
@@ -105,7 +117,7 @@ class TestModifications(DBTestCase):
         exp3.public = 0
         exp3.author = ""
         exp3.published = 0
-        exp3.status = 'loading'
+        exp3.job_id = self.create_job('running')
         exp3.ambiguity = 0
         exp3.export = 0
         exp3.dataset = ""

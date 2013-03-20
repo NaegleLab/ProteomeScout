@@ -176,7 +176,7 @@ def check_experiment_loaded(context, exp_title, patch_mail):
     result = context.ptmscoutapp.get(my_experiments_page)
     
     result.mustcontain(exp_title)
-    result.mustcontain("loaded")
+    result.mustcontain("finished")
 
     m = re.search('http://localhost/experiments/([0-9]+)', str(result))
     if m == None:

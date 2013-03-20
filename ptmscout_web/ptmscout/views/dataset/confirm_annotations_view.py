@@ -26,7 +26,7 @@ def create_annotate_job(session, request):
     
     job.save()
     
-    annotate_tasks.start_annotation_import.apply_async((job.id, session.id))
+    annotate_tasks.start_annotation_import.apply_async((session.id, job.id))
 
 @view_config(route_name='confirm_annotations', renderer='ptmscout:/templates/upload/upload_confirm.pt', permission='private')
 def upload_confirm_view(request):

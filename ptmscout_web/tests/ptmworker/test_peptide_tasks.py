@@ -5,16 +5,18 @@ from mock import patch, call
 class PeptideTasksTest(IntegrationTestCase):
     @patch('transaction.commit')
     @patch('ptmworker.helpers.upload_helpers.store_stage_input')
-    @patch('ptmworker.notify_tasks.set_progress')
-    @patch('ptmworker.notify_tasks.set_loading_stage')
+    @patch('ptmworker.notify_tasks.set_job_progress')
+    @patch('ptmworker.notify_tasks.set_job_stage')
     @patch('ptmworker.peptide_tasks.load_peptide_modification')
     def test_run_peptide_import_should_invoke_load_mod(self, patch_load_peptide, patch_set_stage, patch_set_progress, patch_store_input, patch_commit):
         def save_db():
             from ptmscout.database import DBSession
             DBSession.flush()
+        
         prot_map = {"Q9NQG7": 9, "Q9WTS6": 11, "P49848":24, "O88384":105}
         peptides = {"P00533": ["GENETICS"], "Q9NQG7": ["AABDEF", "MEEVFG"], "Q9WTS6": ["GGGTTTCCC"], "P49848": ["LKLKLKLKLK"]}
         exp_id=2600
+        job_id=20
         mod_map = { ("P00533", "GENETICS"): ["METHYLATION"],
                     ("Q9NQG7", "AABDEF"): ["DIMETHYLATION"],
                     ("Q9NQG7", "MEEVFG"): ["PHOS"],
@@ -33,12 +35,12 @@ class PeptideTasksTest(IntegrationTestCase):
         load_ambiguities = True
 
 
-        peptide_tasks.run_peptide_import(prot_map, exp_id, peptides, mod_map, data_runs, headers, units, load_ambiguities)
+        peptide_tasks.run_peptide_import(prot_map, peptides, mod_map, data_runs, headers, units, load_ambiguities, exp_id, job_id)
 
         patch_store_input.assert_called_once_with(exp_id, 'peptides', prot_map)
-        patch_set_stage.apply_async.assert_called_once_with((exp_id, 'peptides', 4))
+        patch_set_stage.apply_async.assert_called_once_with((job_id, 'peptides', 4))
         patch_commit.assert_called_once_with()
-        patch_set_progress.apply_async.assert_called_once_with((exp_id, 4, 4))
+        patch_set_progress.apply_async.assert_called_once_with((job_id, 4, 4))
 
         self.assertIn(call(2600, True, 'Q9WTS6', 11, 'GGGTTTCCC', 'PHOSPHORYLATION', 'time(none)', ['some', 'sequence', 'of', 'headers'], [(1, 'average', [1, 2, 3])]), patch_load_peptide.call_args_list)
         self.assertIn(call(2600, True, 'Q9NQG7', 9, 'AABDEF', 'DIMETHYLATION', 'time(none)', ['some', 'sequence', 'of', 'headers'], [(1, 'average', [1, 2, 3])]), patch_load_peptide.call_args_list)

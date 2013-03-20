@@ -11,8 +11,9 @@ import sys
 log = logging.getLogger('ptmscout')
 
 @celery.task
+@upload_helpers.notify_job_failed
 @upload_helpers.transaction_task
-def annotate_experiment(exp_id):
+def annotate_experiment(exp_id, job_id):
     exp = experiment.getExperimentById(exp_id, check_ready=False, secure=False)
     exp.modifications = []
 
@@ -89,7 +90,7 @@ def name_in_use(experiment_id, user, label):
 @celery.task
 @upload_helpers.transaction_task
 @upload_helpers.notify_job_failed
-def start_annotation_import(job_id, session_id):
+def start_annotation_import(session_id, job_id):
     notify_tasks.set_job_status.apply_async((job_id, 'running'))
     
     job = jobs.getJobById(job_id)

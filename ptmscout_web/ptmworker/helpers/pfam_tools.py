@@ -15,6 +15,13 @@ PFAM_DEFAULT_CUTOFF = 0.00001
 
 pfam_family_type_map = None
 
+
+class PFamError(Exception):
+    def __init__(self, msg):
+        self.msg = msg
+    def __repr__(self):
+        return self.msg
+
 def get_pfam_class(family_id):
     global pfam_family_type_map
     if pfam_family_type_map == None:
@@ -44,7 +51,10 @@ class PFamParser(object):
         dom = xml.parseString(pfam_xml)
         
         results = dom.getElementsByTagName('results')
-        if len(results) > 0:
+        errors = dom.getElementsByTagName('error')
+        if len(errors) > 0:
+            raise PFamError("Protein record not found")
+        elif len(results) > 0:
             self.parseResults(results[0])
         else:
             db_release = dom.getElementsByTagName('pfam')[0].getAttribute('release')
@@ -121,11 +131,6 @@ class PFamParser(object):
 INTER_QUERY_INTERVAL=1
 TIMEOUT=10
 
-class PFamError(Exception):
-    def __init__(self, msg):
-        self.msg = msg
-    def __repr__(self):
-        return self.msg
 
 
 def filter_domains(domains):

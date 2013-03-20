@@ -27,7 +27,7 @@ class IntegrationTestUploadStatusView(IntegrationTestCase):
         self.bot.login()
         
         exp = experiment.getExperimentById(1, 0, False)
-        exp.status = 'configuration'
+        exp.job.status = 'configuration'
         exp.saveExperiment()
         
         session = upload.Session()
