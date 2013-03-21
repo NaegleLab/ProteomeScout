@@ -22,7 +22,7 @@
                 </p>
 				<p>
 					<label for="species">Species:</label> <br />
-                    ${formrenderer.render('species')}
+                    ${formrenderer.render('species', class_='autocomplete')}
 				</p>
 				<input type="submit" value="Search" class="longtask" />
 			</fieldset>

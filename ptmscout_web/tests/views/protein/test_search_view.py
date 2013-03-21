@@ -109,7 +109,7 @@ class TestProteinSearchViews(UnitTestCase):
         request.GET['acc_search'] = "ACK1"
         request.GET['pep_search'] = ""
         request.GET['stringency'] = "2"
-        request.GET['species'] = "homo sapiens"
+        request.GET['species'] = "Homo sapiens"
         
         self.run_test_of_search(request, patch_getProteins, patch_getSpecies, patch_getMods)
 
@@ -123,6 +123,6 @@ class TestProteinSearchViews(UnitTestCase):
         request.GET['acc_search'] = ""
         request.GET['pep_search'] = "ASDFKJEC"
         request.GET['stringency'] = "2"
-        request.GET['species'] = "homo sapiens"
+        request.GET['species'] = "Homo sapiens"
         
         self.run_test_of_search(request, patch_getProteins, patch_getSpecies, patch_getMods)

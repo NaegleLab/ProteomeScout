@@ -13,9 +13,9 @@ def build_schema(request, valid_species):
     form_schema.add_text_field('pep_search', 'Peptide', default='')
     form_schema.add_text_field('submitted', '', default='false')
 
-    formatted_species = [('all','All')]
-    formatted_species += [ (sp, sp.capitalize()) for sp in valid_species ]
-    form_schema.add_select_field('species', "Species", formatted_species, default='all')
+    formatted_species = ['all'] + [ sp.capitalize() for sp in valid_species ]
+    form_schema.add_autocomplete_field('species', "Species", formatted_species,
+            width=100, maxlen=300)
     form_schema.parse_fields(request)
 
     return submitted, form_schema
@@ -39,7 +39,7 @@ def perform_query(form_schema, pager, exp_id=None):
     pep_search = form_schema.get_form_value('pep_search')
     selected_species = form_schema.get_form_value('species')
 
-    if selected_species == 'all':
+    if selected_species == 'all' or selected_species == '':
         selected_species=None
 
     limit, offset = pager.get_pager_limits()

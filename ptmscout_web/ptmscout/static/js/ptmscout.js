@@ -182,4 +182,9 @@ $(function(){
         });
 
     window.uniqueId = 0;
+
+    $(".autocomplete").each(function(){
+        var values = $(this).attr('data-values').split(',');
+        $(this).autocomplete({ source: values });
+    });
 });

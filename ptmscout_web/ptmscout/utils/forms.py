@@ -23,7 +23,8 @@ class FormSchema(object):
     RADIO=5
     PASSWORD=6
     FILE=7
-    
+    AUTOCOMPLETE=8
+
     def __init__(self):
         self.form_values = {}
         
@@ -134,6 +135,15 @@ class FormSchema(object):
         self.field_defaults[ref] = ''
         self.field_types[ref] = FormSchema.FILE
 
+    def add_autocomplete_field(self, ref, name, fvalues=[], default=None, maxlen=None, width=None ):
+        self.field_names[ref] = name
+        fvalues = [ (fv, fv) for fv in fvalues ]
+        self.enum_values[ref] = fvalues
+        self.enum_fields.add(ref)
+        self.field_defaults[ref] = default
+        self.field_opts[ref] = (maxlen, width,)
+        self.field_types[ref] = FormSchema.AUTOCOMPLETE
+
 
 class FormRenderer(object):
     def __init__(self, schema):
@@ -162,7 +172,22 @@ class FormRenderer(object):
             return self.__render_password(ref, id_str, cls_str)
         if field_type == FormSchema.FILE:
             return self.__render_file(ref, id_str, cls_str)
+        if field_type == FormSchema.AUTOCOMPLETE:
+            return self.__render_autocomplete(ref, id_str, cls_str)
     
+    def __render_autocomplete(self, ref, id_str, cls_str):
+        value = self.schema.get_form_value(ref)
+        value_str = '' if value == None else 'value="%s"' % (cgi.escape(value),)
+        
+        maxlen, size = self.schema.field_opts[ref]
+        
+        size_str = '' if size == None else 'size="%d"' % (size)
+        maxlen_str = '' if maxlen == None else 'maxlength="%d"' % (maxlen)
+
+        data = ','.join([ k for k, _ in self.schema.enum_values[ref] ])
+        input_html = '<input type="text" data-values="%s" %s %s %s %s name="%s" %s />' % (data, id_str, cls_str, size_str, maxlen_str, ref, value_str)
+        return FormLiteral(input_html)
+ 
     def __render_select(self, ref, id_str, cls_str):
         items = []
         items.append('<select %s %s name="%s">' % (id_str, cls_str, ref))
