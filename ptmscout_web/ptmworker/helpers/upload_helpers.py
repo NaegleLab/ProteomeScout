@@ -3,6 +3,7 @@ from ptmscout.utils import uploadutils
 from ptmscout.config import strings, settings
 from ptmscout.database.modifications import NoSuchPeptide
 from ptmworker.helpers import scansite_tools
+from functools import wraps
 import logging
 import pickle
 import re
@@ -78,18 +79,21 @@ class ProteinRecord(object):
 
 def notify_job_failed(fn):
     from ptmworker import notify_tasks
+
+    @wraps(fn)
     def ttask(*args):
         try:
             result = fn(*args)
             return result
         except Exception, e:
             job_id = args[-1]
-            notify_tasks.notify_job_failed(job_id, str(e), traceback.format_exc())
+            notify_tasks.notify_job_failed.apply_async((job_id, str(e), traceback.format_exc()))
             raise
-    ttask.__name__ = fn.__name__
     return ttask
         
 def transaction_task(fn):
+
+    @wraps(fn)
     def ttask(*args):
         log.debug("Running task: %s", fn.__name__)
         try:
@@ -100,11 +104,12 @@ def transaction_task(fn):
             log.error(traceback.format_exc())
             transaction.abort()
             raise
-    ttask.__name__ = fn.__name__
     return ttask
 
 
 def dynamic_transaction_task(fn):
+
+    @wraps(fn)
     def ttask(*args):
         log.debug("Running task: %s", fn.__name__)
         try:
@@ -118,7 +123,6 @@ def dynamic_transaction_task(fn):
             log.error(traceback.format_exc())
             transaction.abort()
             raise
-    ttask.__name__ = fn.__name__
     return ttask
 
 def summarize_experiment_load(measurements):
