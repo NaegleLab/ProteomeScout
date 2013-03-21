@@ -46,11 +46,11 @@
 						<td tal:content="user.name"></td>
 						<td tal:content="user.email"></td>
 						<td>
-							<form method="link" action="${request.application_url}/account/experiments/${experiment.id}/share/">
-							<input type="hidden" name="submitted" value="1" />
-	        				<input type="hidden" name="mode" value="remove" />
-	        				<input type="hidden" name="uid" tal:attributes="value str(user.id)" />
-							<input type="submit" value="Remove" />
+							<form method="POST" action="${request.application_url}/account/experiments/${experiment.id}/share">
+                                <input type="hidden" name="submitted" value="1" />
+                                <input type="hidden" name="mode" value="remove" />
+                                <input type="hidden" name="uid" tal:attributes="value str(user.id)" />
+                                <input type="submit" value="Remove" />
 							</form>
 						</td>
 					</tr>

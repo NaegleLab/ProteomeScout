@@ -244,7 +244,15 @@ class Experiment(Base):
             p.user = user
             p.access_level = level
             self.permissions.append(p)
-    
+
+    def revokePermission(self, user):
+        perm = None
+        for p in self.permissions:
+            if p.user_id == user.id:
+                perm = p
+        if perm != None:
+            self.permissions.remove(perm)
+
     def __get_status(self):
         if self.job == None:
             return 'configuration'

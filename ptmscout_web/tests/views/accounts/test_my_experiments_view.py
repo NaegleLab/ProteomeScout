@@ -3,7 +3,7 @@ from ptmscout.config import strings
 from ptmscout.database.user import NoSuchUser
 from ptmscout.views.accounts.my_experiments_view import confirm_invite_user, \
     privatize_experiment, publish_experiment, manage_experiment_permissions, \
-    manage_experiments, get_sessions
+    manage_experiments, get_sessions, remove_user_permission
 from pyramid.httpexceptions import HTTPFound
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockUser, createMockExperiment, \
@@ -325,7 +325,54 @@ class MyExperimentsViewTests(UnitTestCase):
         self.assertEqual(strings.publish_experiment_success_message, info['message'])
         self.assertEqual(exp1, info['experiment'])
         self.assertEqual(request.application_url + "/account/experiments", info['redirect'])
-    
+   
+    def test_remove_user_permission_should_delete_correct_user(self):
+        u1 = createMockUser()
+        u2 = createMockUser()
+        u3 = createMockUser()
+
+        request = DummyRequest()
+        request.POST['submitted'] = "1"
+        request.POST['mode'] = 'add'
+        request.POST['uid'] = str(u2.id)
+
+        users = [u1,u2,u3]
+        exp = createMockExperiment()
+
+        remove_user_permission(request, users, exp)
+
+        exp.revokePermission.assert_called_once_with(u2)
+        exp.saveExperiment.assert_called_once_with()
+        self.assertEqual([u1,u3], users)
+
+    @patch('ptmscout.views.accounts.my_experiments_view.remove_user_permission')
+    @patch('ptmscout.database.experiment.getExperimentById')
+    def test_manage_experiment_permissions_should_call_remove_on_remove_user(self, patch_getExperiment, patch_remove):
+        request = DummyRequest()
+        ptm_user = createMockUser("username", "email", "password", 1)
+        request.user = ptm_user
+
+        exp1 = createMockExperiment(1, 0)
+        ptm_user.permissions.append(createMockPermission(ptm_user, exp1, 'owner'))
+        request.matchdict['id'] = "%d" % (exp1.id)
+        patch_getExperiment.return_value = exp1
+        user1 = createMockUser("other", "email", "password", 1)
+        exp1.permissions = [createMockPermission(ptm_user, exp1, 'owner'),
+                            createMockPermission(user1, exp1, 'view')]
+        
+        request.POST['submitted'] = "1"
+        request.POST['mode'] = 'remove'
+        request.POST['email'] = "100"
+
+        patch_remove.return_value = None
+
+        result = manage_experiment_permissions(request)
+
+        self.assertEqual(None, result['reason'])
+        self.assertEqual(exp1, result['experiment'])
+        self.assertEqual([user1], result['users'])
+        self.assertEqual(strings.share_experiment_page_title, result['pageTitle'])
+
     @patch('ptmscout.database.user.getUserByEmail')
     @patch('ptmscout.database.experiment.getExperimentById')
     def test_manage_experiment_redirects_to_invite_if_no_such_user(self, patch_getExperiment, patch_getUser):
@@ -345,6 +392,7 @@ class MyExperimentsViewTests(UnitTestCase):
                             createMockPermission(user1, exp1, 'view')]
         
         request.POST['submitted'] = "1"
+        request.POST['mode'] = 'add'
         request.POST['email'] = "emailaddr"
         
         patch_getUser.side_effect = NoSuchUser()
@@ -380,6 +428,7 @@ class MyExperimentsViewTests(UnitTestCase):
         
         
         request.POST['submitted'] = "1"
+        request.POST['mode'] = 'add'
         request.POST['email'] = "emailaddr"
         new_user = createMockUser("other2", "emailaddr", "password", 1)
         patch_getUser.return_value = new_user

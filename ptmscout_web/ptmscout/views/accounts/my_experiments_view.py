@@ -120,11 +120,45 @@ def confirm_invite_user(request):
             'redirect': redirect,
             'pageTitle': strings.user_invite_page_title}
 
+
+def add_user_permission(request, users, exp):
+
+    email = webutils.post(request, 'email', "").strip()
+    if email == "":
+        return strings.failure_reason_form_fields_cannot_be_empty
+    else:
+        try:
+            new_user = user.getUserByEmail(email)
+            users.append(new_user)
+            
+            mail.send_automail_message(request, [email], strings.user_invite_email_subject % (request.user.name), strings.user_invite_email_message % (new_user.name, request.user.name, exp.name, request.application_url + "/login"))
+            
+            exp.grantPermission(new_user, 'view')
+            exp.saveExperiment()
+        except NoSuchUser:
+            raise HTTPFound(request.application_url + "/account/experiments/" + str(exp.id) + "/invite?email=" + email)
+    return None
+
+def remove_user_permission(request, users, exp):
+    uid = webutils.post(request, 'uid', None)
+    try:
+        uid = int(uid)
+        removed_user = None
+        for u in users:
+            if u.id == uid:
+                removed_user = u
+                break
+        users.remove(removed_user)
+        exp.revokePermission(removed_user)
+        exp.saveExperiment()
+    except:
+        pass
+
 @view_config(route_name='share_experiment', renderer='ptmscout:templates/accounts/share.pt', permission='private')
 def manage_experiment_permissions(request):
     reason = None
     submitted = webutils.post(request, 'submitted', "0")
-    email = webutils.post(request, 'email', "").strip()
+    mode = webutils.post(request, 'mode', "").strip()
     
     expid = int(request.matchdict['id'])
     exp = experiment.getExperimentById(expid, request.user)
@@ -132,20 +166,11 @@ def manage_experiment_permissions(request):
     users = [ p.user for p in exp.permissions if p.user.id != request.user.id ]
     
     if(submitted == "1"):
-        if email == "":
-            reason = strings.failure_reason_form_fields_cannot_be_empty
-        else:
-            try:
-                new_user = user.getUserByEmail(email)
-                users.append(new_user)
-                
-                mail.send_automail_message(request, [email], strings.user_invite_email_subject % (request.user.name), strings.user_invite_email_message % (new_user.name, request.user.name, exp.name, request.application_url + "/login"))
-                
-                exp.grantPermission(new_user, 'view')
-                exp.saveExperiment()
-            except NoSuchUser:
-                raise HTTPFound(request.application_url + "/account/experiments/" + str(expid) + "/invite?email=" + email)
-        
+        if mode == 'add':
+            reason = add_user_permission(request, users, exp)
+        elif mode == 'remove':
+            reason = remove_user_permission(request, users, exp)
+
     return {'pageTitle':strings.share_experiment_page_title,
             'users':users,
             'experiment':exp,
