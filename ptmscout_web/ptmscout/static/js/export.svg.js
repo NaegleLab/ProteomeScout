@@ -40,6 +40,7 @@ function addExport(parent, container) {
 		.style('text-align', "right")
 		.append('div')
 			.attr('class', 'absolute-lr')
+            .style('z-index', "999")
 			.append('button')
 				.text("Export SVG")
 				.on('click', function() { exportSVG(parent) });
