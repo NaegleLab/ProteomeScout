@@ -34,6 +34,7 @@ DISABLE_QUICKGO = False
 DISABLE_PICR = False
 DISABLE_UNIPROT_QUERY = False
 
+JOB_AGE_LIMIT = 7 * 86400
 # rate limits in queries per second
 SCANSITE_RATE_LIMIT = 3
 

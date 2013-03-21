@@ -3,6 +3,7 @@ from sqlalchemy.types import VARCHAR, Integer, Enum, Text, DateTime
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.orm import relationship
 import datetime
+from ptmscout.config import settings
 
 class Job(Base):
     __tablename__ = 'jobs'
@@ -61,9 +62,8 @@ class Job(Base):
     def is_old(self):
         if self.finished == None:
             return False
-        JOB_AGE_LIMIT = 2 * 86400
         delta = datetime.datetime.now() - self.finished
-        return delta.total_seconds() > JOB_AGE_LIMIT
+        return delta.total_seconds() > settings.JOB_AGE_LIMIT
 
     def finish(self):
         self.failure_reason = ''
