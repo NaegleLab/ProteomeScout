@@ -332,7 +332,7 @@ def load_header_and_data_rows(data_file, N=-1, truncate=0):
     
     start_index = 0
 
-    if header[0] == strings.experiment_upload_error_reasons_column_title:
+    if header[0].strip().lower() == strings.experiment_upload_error_reasons_column_title.strip().lower():
         start_index = 1
 
     header = header[start_index:width]
