@@ -361,8 +361,8 @@ class TestUploadUtils(unittest.TestCase):
     def test_assign_columns_by_name_should_generate_correct_columns(self):
         headers = ['Acc', 'pep', 'other', 'gene(name)', \
                    'run', 'moD_type', 'modification', \
-                   'data', 'data:time(min):20', \
-                   'data:stddev(sec):10', 'stddev', 'stddev:time(min):20']
+                   'data', 'data:time(min):20K', \
+                   'data:stddev(sec):10K', 'stddev', 'stddev:time(min):20k']
         
         defs = assign_columns_by_name(headers)
         
@@ -375,10 +375,10 @@ class TestUploadUtils(unittest.TestCase):
                                      5:{'type':'modification','label':''},
                                      6:{'type':'modification','label':''},
                                      7:{'type':'data','label':''},
-                                     8:{'type':'data','label':'20'},
-                                     9:{'type':'stddev','label':'10'},
+                                     8:{'type':'data','label':'20K'},
+                                     9:{'type':'stddev','label':'10K'},
                                      10:{'type':'stddev','label':''},
-                                     11:{'type':'stddev','label':'20'},
+                                     11:{'type':'stddev','label':'20k'},
                                      },
                           'units':'time(min)'
                           }, defs)

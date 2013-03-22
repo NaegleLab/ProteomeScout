@@ -236,24 +236,26 @@ def check_data_column_assignments(session):
 
 def get_column_from_header(header):
     for h in header:
-        h = h.lower()
+        hl = h.lower()
         col = {'type':'','label':''}
         
-        m = re.match('^(data|stddev):(.+):(.+)$', h)
+        m = re.match('^(data|stddev):(.+):(.+)$', h, re.IGNORECASE)
         if m:
-            col['type'] = 'stddev' if m.group(1) == 'stddev' or m.group(2).find('stddev') == 0 else 'data' 
+            tp = m.group(1).lower()
+            unit = m.group(2).lower()
+            col['type'] = 'stddev' if tp == 'stddev' or unit.find('stddev') == 0 else 'data'
             col['label'] = m.group(3)
-        elif h.find('data') == 0:
+        elif hl.find('data') == 0:
             col['type'] = 'data'
-        elif h.find('stddev') == 0:
+        elif hl.find('stddev') == 0:
             col['type'] = 'stddev'
-        elif h.find('acc') == 0:
+        elif hl.find('acc') == 0:
             col['type'] = 'accession'
-        elif h.find('mod') == 0:
+        elif hl.find('mod') == 0:
             col['type'] = 'modification'
-        elif h.find('pep') == 0:
+        elif hl.find('pep') == 0:
             col['type'] = 'peptide'
-        elif h == 'run':
+        elif hl == 'run':
             col['type'] = 'run'
         else:
             col['type'] = 'none'
