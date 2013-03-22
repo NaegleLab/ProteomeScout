@@ -319,7 +319,7 @@ $(function(){
     $('.mods input.modtoggle').change(
         function(){
             mode = $(this).is(':checked');
-            ptm = $(this).attr('id');
+            ptm = $(this).attr('id').replace("_"," ");
             window.structure_viewer.toggle_ptm(ptm, mode);
         });
 
