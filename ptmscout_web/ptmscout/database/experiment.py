@@ -172,7 +172,7 @@ class Experiment(Base):
             if self.publication_year != None:
                 string += str(self.publication_year)
                 if self.publication_month != None:
-                    string += "-" + self.publication_month
+                    string += "-" + self.publication_month.capitalize()
                 string += ". "
             if self.volume != "" and self.volume != None:
                 string += "Vol " + str(self.volume) + ". "
@@ -204,7 +204,7 @@ class Experiment(Base):
             if self.publication_year != None:
                 cite_string += str(self.publication_year)
                 if self.publication_month != None:
-                    cite_string += "-" + self.publication_month
+                    cite_string += "-" + self.publication_month.capitalize()
                 cite_string += ". "
             if self.volume != None:
                 cite_string += "Vol " +str(self.volume)+". "

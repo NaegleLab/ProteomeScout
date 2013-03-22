@@ -30,17 +30,17 @@ class ExperimentTestCase(DBTestCase):
         exp.page_start = "571"
 
         exp.page_end = "571"
-        exp_cite = self.format_multiline("""Mol Cell Proteomics. 2005-september. Vol 4. 571.""")
+        exp_cite = self.format_multiline("""Mol Cell Proteomics. 2005-September. Vol 4. 571.""")
 
         self.assertEqual(exp_cite, exp.getCitationString())
 
         exp.page_end = None
-        exp_cite = self.format_multiline("""Mol Cell Proteomics. 2005-september. Vol 4. 571.""")
+        exp_cite = self.format_multiline("""Mol Cell Proteomics. 2005-September. Vol 4. 571.""")
 
         self.assertEqual(exp_cite, exp.getCitationString())
 
         exp.page_end = "5712"
-        exp_cite = self.format_multiline("""Mol Cell Proteomics. 2005-september. Vol 4. 571-5712.""")
+        exp_cite = self.format_multiline("""Mol Cell Proteomics. 2005-September. Vol 4. 571-5712.""")
 
         self.assertEqual(exp_cite, exp.getCitationString())
 
@@ -50,19 +50,19 @@ class ExperimentTestCase(DBTestCase):
 
         exp.page_end = "571"
         exp_cite = self.format_multiline("""Yi Zhang, Alejandro Wolf-Yadlin, Phillip L Ross, Darryl J Pappin, John Rush,
-        Douglas A Lauffenburger, Forest M White. <b>Mol Cell Proteomics</b>. 2005-september. Vol 4. 571.""")
+        Douglas A Lauffenburger, Forest M White. <b>Mol Cell Proteomics</b>. 2005-September. Vol 4. 571.""")
 
         self.assertEqual(exp_cite, exp.getLongCitationString())
 
         exp.page_end = None
         exp_cite = self.format_multiline("""Yi Zhang, Alejandro Wolf-Yadlin, Phillip L Ross, Darryl J Pappin, John Rush,
-        Douglas A Lauffenburger, Forest M White. <b>Mol Cell Proteomics</b>. 2005-september. Vol 4. 571.""")
+        Douglas A Lauffenburger, Forest M White. <b>Mol Cell Proteomics</b>. 2005-September. Vol 4. 571.""")
 
         self.assertEqual(exp_cite, exp.getLongCitationString())
 
         exp.page_end = "5712"
         exp_cite = self.format_multiline("""Yi Zhang, Alejandro Wolf-Yadlin, Phillip L Ross, Darryl J Pappin, John Rush,
-        Douglas A Lauffenburger, Forest M White. <b>Mol Cell Proteomics</b>. 2005-september. Vol 4. 571-5712.""")
+        Douglas A Lauffenburger, Forest M White. <b>Mol Cell Proteomics</b>. 2005-September. Vol 4. 571-5712.""")
 
         self.assertEqual(exp_cite, exp.getLongCitationString())
 
