@@ -94,7 +94,7 @@ def annotate_experiment(user, exp, header, rows):
         row.append(sep.join(list(protein_GO['F'])))
         
 def get_experiment_header(exp):
-    header = ['MS_id', 'query_accession', 'gene', 'locus', 'protein_name', 'species', 'peptide', 'mod_sites', 'aligned_peptides', 'modification_types']
+    header = ['MS_id', 'query_accession', 'gene', 'locus', 'protein_name', 'species', 'peptide', 'mod_sites', 'gene_site', 'aligned_peptides', 'modification_types']
     
     data_labels = set()
     for ms in exp.measurements:
@@ -121,7 +121,8 @@ def get_experiment_data(exp, data_labels):
         aligned_peptides = '; '.join([modpep.peptide.pep_aligned for modpep in ms.peptides])
         modification_types = '; '.join([modpep.modification.name for modpep in ms.peptides])
         
-        row = [ms.id, ms.query_accession, ms.protein.acc_gene, ms.protein.locus, ms.protein.name, ms.protein.species.name, ms.peptide, mod_sites, aligned_peptides, modification_types]
+        gene_sites = [ms.protein.getGeneName()] + [modpep.peptide.getName() for modpep in ms.peptides]
+        row = [ms.id, ms.query_accession, ms.protein.acc_gene, ms.protein.locus, ms.protein.name, ms.protein.species.name, ms.peptide, mod_sites, '_'.join(gene_sites), aligned_peptides, modification_types]
         
         ms_data = {}
         for d in ms.data:
