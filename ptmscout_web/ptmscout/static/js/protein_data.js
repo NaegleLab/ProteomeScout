@@ -28,18 +28,22 @@ function processDataPoint(dp, points, stddev) {
 	}
 }
 
+function isNumber(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 function processRun(run, experiment_data, run_map) {
 	var name = d3.select(run).select(".name").text();
 	
 	var points = [];
 	var stddev = [];
 	
-	var peptides = 
+	var peptides =
 		d3.select(run)
 			.select(".peptides")
 			.text();
 	
-	var units = 
+	var units =
 		d3.select(run)
 			.select(".units")
 			.text();
@@ -47,8 +51,11 @@ function processRun(run, experiment_data, run_map) {
 	d3.select(run)
 		.selectAll(".datapoint")
 		.each(function() { processDataPoint(this, points, stddev); });
-	
-	var isTime = (units.indexOf("time") >= 0)
+
+    var isTime = true;
+    for(var i in points){
+        isTime = isTime && isNumber( points[i].label );
+    }
 	
 	if (! (name in run_map)){
 		run_map[name] = {'name':name, 'series':[], 'isTime': isTime, 'axis': units};
@@ -193,22 +200,22 @@ function createBarGraph(experiment_data, run) {
 	var legendEntries = [];
 	
 	var xticks = []
-	for(i = 0; i < run.series.length; i++){
+	for(var i = 0; i < run.series.length; i++){
 		var pts = [];
 		var stddev = [];
 		
-		for(j = 0; j < run.series[i].points.length; j++){
+		for(var j = 0; j < run.series[i].points.length; j++){
 			var pt = run.series[i].points[j];
 			xticks.push( parseFloat(pt.label) );
 			pts.push( { 'x':pt.label, 'y':parseFloat(pt.y) } );
 		}
 		
-		for(j = 0; j < run.series[i].stddev.length; j++){
-			var pt = run.series[i].stddev[j]
-			stddev.push( {'x':pt.label, 'y': parseFloat(pt.y), 's': parseFloat(pt.dev)} )
+		for(var j = 0; j < run.series[i].stddev.length; j++){
+			var pt = run.series[i].stddev[j];
+			stddev.push( {'x':pt.label, 'y': parseFloat(pt.y), 's': parseFloat(pt.dev)} );
 		}
 		var name = run.series[i].peps
-		
+
 		addBarSeries(graph, name, pts, xaxis, yaxis, colors(i), i, run.series.length);
 		addErrorBars(graph, name, stddev, xaxis, yaxis, "#000", i, run.series.length);
 		

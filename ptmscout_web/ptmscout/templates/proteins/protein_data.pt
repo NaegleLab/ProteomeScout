@@ -2,9 +2,7 @@
 	<metal:slot metal:fill-slot="header">
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/proteins.css')}" />
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/graphs.css')}" />
-		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/utils.js')}" ></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/graph.js')}" ></script>
-		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/base64.js')}" ></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/export.svg.js')}" ></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/protein_data.js')}" ></script>
 	</metal:slot>

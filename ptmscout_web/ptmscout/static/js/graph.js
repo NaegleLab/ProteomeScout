@@ -81,10 +81,6 @@ function addTimeSeries(graph, name, pts, xaxis, yaxis, color) {
     if(crun.length > 0)
         consecutive_runs.push(crun);
 
-//    console.log(pts);
-//    console.log(consecutive_runs);
-//    console.log(non_null);
-
     var clsname = name.replace(":","").replace(",","");
 	graph.selectAll('circle.'+clsname)
 		.data(non_null)
@@ -110,9 +106,9 @@ function addBarSeries(graph, name, pts, xaxis, yaxis, color, i, num) {
 		num = 1;
 
     var non_null = [];
-    for(var i in pts){
-        if(!isNaN(pts[i].y)){
-            non_null.push(pts[i]);
+    for(var p in pts){
+        if(!isNaN(pts[p].y)){
+            non_null.push(pts[p]);
         }
     }
 	
@@ -120,7 +116,7 @@ function addBarSeries(graph, name, pts, xaxis, yaxis, color, i, num) {
 	var barw = xsize / (2 * xaxis.domain().length) - 5;
 	
 	var offset = i * 2 * barw / num;
-	
+
 	var clsname = name.replace(":","").replace(",","");
 	graph.selectAll('rect.'+clsname)
 			.data(non_null)
