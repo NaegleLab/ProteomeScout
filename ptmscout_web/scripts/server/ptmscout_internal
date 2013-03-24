@@ -1,0 +1,15 @@
+# Use only 1 Python sub-interpreter.  Multiple sub-interpreters
+# play badly with C extensions.
+WSGIApplicationGroup %{GLOBAL}
+WSGIPassAuthorization On
+WSGIDaemonProcess pyramid user=www-data group=naeglelab threads=8 \
+   python-path=/data/pyramid/lib/python2.7/site-packages
+WSGIScriptAlias /maintenance /data/pyramid/pyramid.wsgi
+
+<Directory /data/pyramid >
+  WSGIProcessGroup pyramid
+  Order deny,allow
+  Deny from all
+  Allow from 172.0.0.0/24
+  Allow from 127.0.0.1/32
+</Directory>

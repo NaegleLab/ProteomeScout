@@ -1,0 +1,20 @@
+<VirtualHost *:80>
+	ServerAdmin ptmscout@seas.wustl.edu
+
+	DocumentRoot /data/ptmscout/maintenance
+	<Directory />
+		Options FollowSymLinks
+		AllowOverride None
+	</Directory>
+	<Directory /data/ptmscout/maintenance/>
+		Options Indexes FollowSymLinks MultiViews
+		AllowOverride None
+		Order allow,deny
+		allow from all
+	</Directory>
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	LogLevel warn
+</VirtualHost>
