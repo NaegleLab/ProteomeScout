@@ -1,0 +1,4 @@
+a2dissite ptmscout_maintenance
+a2dissite ptmscout_internal
+a2ensite ptmscout
+apache2ctl restart
