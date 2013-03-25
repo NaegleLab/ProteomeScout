@@ -43,6 +43,10 @@
     list-style: none;
 }
 
+.track-label {
+    fill:#999;
+}
+
 .viewer .strand {
     stroke:black;
     stroke-width:2px;

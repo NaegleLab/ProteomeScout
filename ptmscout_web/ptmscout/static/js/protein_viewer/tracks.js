@@ -43,6 +43,7 @@ function init_track(track, name, track_viewer, protein_data) {
     track.g = track_viewer.append('g')
                             .attr('id', track.id)
                             .attr('class', name);
+
 };
 
 function PTMTrack(name, track_viewer, protein_data) {
@@ -63,6 +64,13 @@ function PTMTrack(name, track_viewer, protein_data) {
     }
 
     this.yaxis = d3.scale.linear().domain([0, max_mods]).range([this.height, this.height-this.barheight]);
+
+    this.g.append('text')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('text-anchor', 'left')
+        .attr('class', 'track-label')
+        .text(name);
 };
 
 function scrollBottom(element){
@@ -381,6 +389,15 @@ function DomainTrack(name, track_viewer, protein_data) {
     // configurables
     this.height = 40;
     this.domain_height = 20;
+
+    this.g.append('text')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('dy', '-0.1em')
+        .attr('text-anchor', 'left')
+        .attr('class', 'track-label')
+        .text(name);
+
 };
 
 DomainTrack.prototype.create = function(axis, viewer_width, domain_colors) {
@@ -455,6 +472,7 @@ function RegionTrack(name, track_viewer, protein_data) {
     // configurables
     this.height = 40;
     this.region_height = 20;
+
 };
 
 RegionTrack.prototype.create = function(axis, viewer_width, region_colors) {
@@ -509,7 +527,7 @@ function MutationTrack(name, track_viewer, protein_data){
     init_track(this, name, track_viewer, protein_data);
 
     // configurables
-    this.height = 40;
+    this.height = 45;
     this.min_mutation_size = 5;
 
     var max_mutations = 0;
@@ -522,6 +540,15 @@ function MutationTrack(name, track_viewer, protein_data){
     }
 
     this.raxis = d3.scale.linear().domain([0, max_mutations]).range([5, 10]);
+
+    this.g.append('text')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('dy', '0.5em')
+        .attr('text-anchor', 'left')
+        .attr('class', 'track-label')
+        .text(name);
+
 }
 
 function get_mutation_tooltip(d){

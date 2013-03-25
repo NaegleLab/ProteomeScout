@@ -207,7 +207,7 @@ StructureViewer.prototype.create_domain_track = function(track_viewer) {
 };
 
 StructureViewer.prototype.create_empty_track = function(track_viewer) {
-    empty_track = new DomainTrack('None', track_viewer.viewer, this.protein_data);
+    empty_track = new EmptyTrack('None', track_viewer.viewer, this.protein_data);
     track_viewer.add_track(empty_track);
 };
 
