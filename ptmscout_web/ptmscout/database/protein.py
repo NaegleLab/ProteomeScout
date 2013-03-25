@@ -235,13 +235,18 @@ def getProteinsByGene(gene_name, species=None):
     
     return q.all()
 
-def searchProteins(search=None, species=None, sequence=None, page=None, exp_id=None):
+def searchProteins(search=None, species=None, sequence=None, page=None, exp_id=None, includeNames=False):
     search = ( "%" + search + "%" ) if search else "%"
 
     q = DBSession.query(Protein.id).join(Protein.accessions).join(Protein.species)
-    clause = or_(Protein.acc_gene.like(search),
-            ProteinAccession.value.like(search),
-            Protein.name.like(search))
+
+    if includeNames:
+        clause = or_(Protein.acc_gene.like(search),
+                ProteinAccession.value.like(search),
+                Protein.name.like(search))
+    else:
+        clause = or_(Protein.acc_gene.like(search),
+                ProteinAccession.value.like(search))
 
     if sequence:
         seq_search = ( "%" + sequence + "%" ) if sequence else "%"

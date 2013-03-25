@@ -13,15 +13,15 @@ class TestProteinSearchViewIntegration(IntegrationTestCase):
 #        IntegrationTestCase.setUp(self, sql_echo=True)
 
     def test_integration(self):
-        result = self.ptmscoutapp.get('/proteins', {'acc_search':"ACK1", 'submitted':"true", 'species':"all"}, status=200)
+        result = self.ptmscoutapp.get('/proteins', {'acc_search':"ACK1", 'include_name':'on', 'submitted':"true", 'species':"all"}, status=200)
         result.mustcontain("Showing 1 - 4 of 4 results")
 
     def test_integration_pep_search(self):
-        result = self.ptmscoutapp.get('/proteins', {'pep_search':"RGR", 'submitted':"true", 'species':"all", 'page':'4'}, status=200)
+        result = self.ptmscoutapp.get('/proteins', {'pep_search':"RGR", 'include_name':'on', 'submitted':"true", 'species':"all", 'page':'4'}, status=200)
         result.mustcontain("Showing 151 - 200 of 3585 results")
 
     def test_integration_none_search(self):
-        result = self.ptmscoutapp.get('/proteins', {'pep_search':"", 'acc_search':"", 'submitted':"true", 'species':"all"}, status=200)
+        result = self.ptmscoutapp.get('/proteins', {'pep_search':"", 'include_name':'on', 'acc_search':"", 'submitted':"true", 'species':"all"}, status=200)
 
         result.mustcontain("At least one of Protein, Peptide are required")
         result.mustcontain("Showing 0 - 0 of 0 results")
@@ -93,7 +93,7 @@ class TestProteinSearchViews(UnitTestCase):
         patch_getMods.assert_called_with(p1.id, ptm_user)
         patch_getProteins.assert_called_with(exp_id=None, search=request.GET['acc_search'],
             species=request.GET['species'], sequence=request.GET['pep_search']
-        , page=(50,0))
+        , page=(50,0), includeNames=('include_name' in request.GET))
         patch_getSpecies.assert_called_with()
         self.assertEqual(strings.protein_search_page_title, result['pageTitle'])
         
@@ -121,6 +121,7 @@ class TestProteinSearchViews(UnitTestCase):
         request = DummyRequest()
         request.GET['submitted'] = "true"
         request.GET['acc_search'] = ""
+        request.GET['include_name'] = "on"
         request.GET['pep_search'] = "ASDFKJEC"
         request.GET['stringency'] = "2"
         request.GET['species'] = "Homo sapiens"

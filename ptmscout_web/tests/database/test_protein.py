@@ -121,7 +121,7 @@ class ProteinTest(DBTestCase):
         self.assertEqual(expected_ids, sorted( [p.id for p in prots] ))
 
     def test_searchProteins_by_name(self):
-        cnt, prots = protein.searchProteins("ubiquitin-protein ligase", "homo sapiens")
+        cnt, prots = protein.searchProteins("ubiquitin-protein ligase", "homo sapiens", includeNames=True)
         self.assertEqual(88, cnt)
         self.assertEqual(88, len(prots))
 

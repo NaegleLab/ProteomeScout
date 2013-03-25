@@ -18,6 +18,7 @@
                 <p>
                     <label for="acc_search">Protein:</label>
                     ${form.render('acc_search')}
+                    ${form.render('include_name')}
                 <p>
                     <label for="pep_search">Peptide:</label>
                     ${form.render('pep_search')}

@@ -10,6 +10,7 @@ def build_schema(request, valid_species):
     form_schema = forms.FormSchema()
 
     form_schema.add_text_field('acc_search', 'Protein', default='')
+    form_schema.add_checkbox_field('include_name', 'Search Protein Names')
     form_schema.add_text_field('pep_search', 'Peptide', default='')
     form_schema.add_text_field('submitted', '', default='false')
 
@@ -36,6 +37,7 @@ def build_validator(form_schema):
 
 def perform_query(form_schema, pager, exp_id=None):
     acc_search = form_schema.get_form_value('acc_search')
+    include_name = form_schema.get_form_value('include_name') != None
     pep_search = form_schema.get_form_value('pep_search')
     selected_species = form_schema.get_form_value('species')
 
@@ -43,7 +45,7 @@ def perform_query(form_schema, pager, exp_id=None):
         selected_species=None
 
     limit, offset = pager.get_pager_limits()
-    protein_cnt, proteins = protein.searchProteins(search=acc_search, species=selected_species, sequence=pep_search, page=(limit, offset), exp_id=exp_id)
+    protein_cnt, proteins = protein.searchProteins(search=acc_search, species=selected_species, sequence=pep_search, page=(limit, offset), exp_id=exp_id, includeNames=include_name)
 
     pager.set_result_size(protein_cnt)
 

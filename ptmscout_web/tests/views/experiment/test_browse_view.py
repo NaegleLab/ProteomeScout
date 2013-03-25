@@ -105,7 +105,7 @@ class ExperimentBrowseViewTests(unittest.TestCase):
         
         result = browse_experiment(request)
         
-        patch_getProteins.assert_called_once_with(exp_id=1, search='ACK1', page=(50, 0), species=None, sequence='')
+        patch_getProteins.assert_called_once_with(exp_id=1, search='ACK1', page=(50, 0), species=None, sequence='', includeNames=False)
         patch_getExperiment.assert_called_once_with(1, request.user)
         self.assertIn(call(p1.id, request.user), patch_getMods.call_args_list)
         self.assertIn(call(p2.id, request.user), patch_getMods.call_args_list)
