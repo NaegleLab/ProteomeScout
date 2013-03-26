@@ -16,3 +16,4 @@ pfam.map
 .*.pydevproject
 .includepath
 .coverage
+._*
