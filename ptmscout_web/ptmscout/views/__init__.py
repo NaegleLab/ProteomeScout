@@ -68,6 +68,7 @@ def add_views(config):
     config.add_route('share_experiment', '/account/experiments/{id}/share')
     config.add_route('publish_experiment', '/account/experiments/{id}/publish')
     config.add_route('privatize_experiment', '/account/experiments/{id}/unpublish')
+    config.add_route('review_account', '/account/experiments/{id}/add_reviewer')
     
     config.add_route('change_password', '/change_password')
     config.add_route('change_password_success', '/change_password_success')

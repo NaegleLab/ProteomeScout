@@ -33,7 +33,7 @@ create_reviewer_account_page_title = "Create Reviewer Account"
 create_reviewer_account_confirm_message = "Are you sure you wish to create an anonymous reviewer account for this experiment? Experiment data will be accessible only to authorized users and holders of a valid review token."
 create_reviewer_account_confirm_header = "Create Reviewer Account?"
 create_reviewer_account_created_header = "Reviewer account created"
-create_reviewer_account_confirm_message = "A reviewer account was created.  Anonymous reviewers may login to view your data by visiting the following address in their browser: %s"
+create_reviewer_account_created_message = "A reviewer account was created.  Anonymous reviewers may login to view your data by visiting the following address in their browser: %s"
 
 experiment_ambiguity_page_title = "Ambiguous Peptide Assignment Tool"
 experiment_ambiguity_error_no_change = "No peptide assignments were changed from the current assignments"
