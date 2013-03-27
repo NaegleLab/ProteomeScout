@@ -80,6 +80,10 @@ def createMockUser(username=None, email=None, password=None, active=1):
     mock.activation_token = crypto.generateActivationToken()
     mock.active = active
     mock.permissions = []
+    
+    mock.isExpired.return_value = False
+    mock.access_level = 'researcher'
+    
     return mock
 
 

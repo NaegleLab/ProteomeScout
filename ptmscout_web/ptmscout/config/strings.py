@@ -309,4 +309,4 @@ The PTMScout administrator has been notified of this error. If problems persist 
 -The PTMScout Team
 """
 
-
+failure_reason_account_expired = "This account has expired"

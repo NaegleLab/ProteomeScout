@@ -55,7 +55,9 @@ def user_logout(request):
             'header': strings.logout_page_header,
             'message': strings.logout_page_message,
             'redirect': request.application_url}
-    
+
+class ExpiredException(Exception):
+    pass
     
 def __process_login(request):
     username = webutils.post(request, 'username', "")
@@ -69,11 +71,13 @@ def __process_login(request):
     
     try:
         ptm_user = user.getUserByUsername(username)
-        
         _, salted_password = crypto.saltedPassword(password, ptm_user.salt)
         
         if salted_password != ptm_user.salted_password:
             raise NoSuchUser()
+        
+        if ptm_user.isExpired():
+            raise ExpiredException()
         
         if not ptm_user.active:
             resp_dict['reason'] = strings.failure_reason_inactive_account
@@ -85,5 +89,8 @@ def __process_login(request):
     except NoSuchUser:
         resp_dict['reason'] = strings.failure_reason_incorrect_credentials
         return resp_dict
-    
+    except ExpiredException:
+        resp_dict['reason'] = strings.failure_reason_account_expired
+        return resp_dict
+        
     return True

@@ -8,6 +8,7 @@ from tests.views.mocking import createMockUser
 import urllib
 from ptmscout.database import user
 from tests.PTMScoutTestCase import UnitTestCase, IntegrationTestCase
+import datetime
 
 class UserLoginViewIntegration(IntegrationTestCase):
     def test_login_with_redirect(self):
@@ -24,6 +25,18 @@ class UserLoginViewIntegration(IntegrationTestCase):
         result = result.form.submit()
         result.mustcontain('<meta http-equiv="refresh" content="3; url=http://localhost/experiments/26" />')
 
+    def test_login_expired_account(self):
+        self.bot.user.expiration = datetime.datetime.now()
+        self.bot.user.saveUser()
+        self.bot.logout()
+        
+        result = self.ptmscoutapp.get('/login?redirect=%2Fexperiments%2F26')
+        result.form.set( 'username', self.bot.username )
+        result.form.set( 'password', self.bot.password )
+        
+        result = result.form.submit().follow()
+        
+        result.mustcontain(strings.failure_reason_account_expired)
 
 class UserLoginViewTests(UnitTestCase):
     def test_login_should_display_login_page(self):

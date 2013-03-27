@@ -39,6 +39,13 @@ class User(Base):
         self.access_level = access_level
         self.permissions = []
         
+    def isExpired(self):
+        if self.expiration != None:
+            now = datetime.datetime.now()
+            if self.expiration < now:
+                return True
+        return False    
+        
     def setExpiration(self, delta):
         n = datetime.datetime.now()
         d = datetime.timedelta(delta)
