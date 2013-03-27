@@ -7,6 +7,7 @@ from ptmscout.database import protein
 log = logging.getLogger('ptmscout')
 
 MAX_QUICKGO_BATCH_SIZE = 500
+DISCARD_GO_TERMS = set(['molecular_function','cellular_component','biological_process'])
 
 def create_hierarchies(created_entries):
     links = 0
@@ -34,6 +35,9 @@ def get_go_annotation(goId, created_entries):
         go_term = protein.GeneOntology()
         version, entry = quickgo_tools.get_GO_term(goId)
 
+        if entry.goName.lower() in DISCARD_GO_TERMS:
+            return None
+
         created_entries[goId] = entry
 
         go_term.GO = entry.goId
@@ -60,6 +64,9 @@ def query_missing_GO_terms(created_entries):
 
         go_term = protein.GeneOntology()
         version, entry = quickgo_tools.get_GO_term(goId)
+
+        if entry.goName in DISCARD_GO_TERMS:
+            continue
 
         go_term.GO = entry.goId
         go_term.term = entry.goName
@@ -102,14 +109,16 @@ def annotate_proteins(acc, annotations, protein_ids, protein_map, created_entrie
         terms.add(goId)
 
         go_term = get_go_annotation(goId, created_entries)
-        dateAdded = annotations[goId]
 
-        unassigned_proteins = [ protein_map[pid] for pid in protein_ids if not protein_map[pid].hasGoTerm(goId) ]
-        assigned_proteins = [ protein_map[pid] for pid in protein_ids if protein_map[pid].hasGoTerm(goId) ]
-        for prot in unassigned_proteins:
-            prot.addGoTerm(go_term, dateAdded)
-            assigned += 1
-        duplicates += len(assigned_proteins)
+        if go_term != None:
+            dateAdded = annotations[goId]
+
+            unassigned_proteins = [ protein_map[pid] for pid in protein_ids if not protein_map[pid].hasGoTerm(goId) ]
+            assigned_proteins = [ protein_map[pid] for pid in protein_ids if protein_map[pid].hasGoTerm(goId) ]
+            for prot in unassigned_proteins:
+                prot.addGoTerm(go_term, dateAdded)
+                assigned += 1
+            duplicates += len(assigned_proteins)
 
     log.info( "Assigned %d new annotations to accession '%s' (%d proteins) from %d terms. Did not add %d duplicate annotations.", assigned, acc, len(protein_ids), len(terms), duplicates )
 
