@@ -20,8 +20,9 @@ function processDataPoint(dp, points, stddev) {
 		}
 		if(ypos == -1 && console != undefined)
 			console.log("Warning: data point for sigma at {0} not found".format(x));
-	    if(ypos != -1)	
-    		stddev.push({'label':x, 'y':ypos, 'dev':y})
+	    if(ypos != -1 && y != "None"){
+    		stddev.push({'label':x, 'y':ypos, 'dev':y});
+        }
 
 	} else {
 		points.push({'label':x,'y':y})
