@@ -91,12 +91,12 @@ def publish_experiment_26(context):
     context.owner_user.login()
     context.result = context.ptmscoutapp.get('/account/experiments', status=200)
     
-    forms = context.result.forms__get()
-    context.result = context.ptmscoutapp.get(forms['publish26'].action, status=200)
+    form = context.result.forms['publish26']
+    context.result = context.ptmscoutapp.get(form.action, status=200)
     context.result.mustcontain(strings.publish_experiment_confirm_message)
     
-    forms = context.result.forms__get()
-    context.result = forms['confirm'].submit()
+    form = context.result.forms['confirm']
+    context.result = form.submit()
     context.result.mustcontain(strings.publish_experiment_success_message)
     
     context.owner_user.logout()
