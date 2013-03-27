@@ -4,6 +4,8 @@ import ptmscout.utils.crypto as crypto
 from pyramid import security
 from sqlalchemy.orm import relationship
 from ptmscout.database import permissions
+from sqlalchemy.types import Enum, DateTime
+import datetime
 
 class User(Base):
     __tablename__ = 'users'
@@ -23,15 +25,24 @@ class User(Base):
     # activation data
     active = Column(Integer(1), default=0)
     activation_token = Column(VARCHAR(50))
+    
+    access_level = Column(Enum(['reviewer','researcher']), default='researcher')
+    expiration = Column(DateTime)
 
     permissions = relationship("Permission", backref="user")
     
-    def __init__(self, username="", name="", email="", institution=""):
+    def __init__(self, username="", name="", email="", institution="", access_level='researcher'):
         self.username = username
         self.name = name
         self.email = email
         self.institution = institution
+        self.access_level = access_level
         self.permissions = []
+        
+    def setExpiration(self, delta):
+        n = datetime.datetime.now()
+        d = datetime.timedelta(delta)
+        self.expiration = n + d
         
     def saveUser(self):
         DBSession.add(self)
