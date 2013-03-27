@@ -330,6 +330,38 @@ $(function(){
             window.structure_viewer.toggle_exp( parseInt(exp), mode );
         });
 
+    $('.mods button.all').click(
+        function(){
+            $(".mods input.modtoggle").each(
+                function(){
+                    if(! $(this).is(':checked')) $(this).click();
+                });
+        });
+
+    $('.mods button.none').click(
+        function(){
+            $(".mods input.modtoggle").each(
+                function(){
+                    if($(this).is(':checked')) $(this).click();
+                });
+        });
+
+    $('.exps button.all').click(
+        function(){
+            $(".exps input.exptoggle").each(
+                function(){
+                    if(! $(this).is(':checked')) $(this).click();
+                });
+        });
+
+    $('.exps button.none').click(
+        function(){
+            $(".exps input.exptoggle").each(
+                function(){
+                    if($(this).is(':checked')) $(this).click();
+                });
+        });
+
     $('.protein_viewer').each( function() {
         data = Base64.decode( $(this).find('.data').text() );
         json_data = JSON.parse( data );

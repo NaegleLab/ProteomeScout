@@ -31,6 +31,8 @@
                             <tal:empty tal:content="mod_type"></tal:empty>
                         </li>
                     </ul>
+                    <button class="all">Show All</button>
+                    <button class="none">Hide All</button>
                 </div>
                 <div title="Experiments" class="exps">
                     <ul>
@@ -39,6 +41,8 @@
                             <tal:empty tal:content="experiments[exp_id]"></tal:empty>
                         </li>
                     </ul>
+                    <button class="all">Show All</button>
+                    <button class="none">Hide All</button>
                 </div>
                 <div title="Protein Features" class="tracks">
                     <ul>
