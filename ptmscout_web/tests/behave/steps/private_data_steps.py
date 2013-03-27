@@ -54,7 +54,7 @@ def user_search_for_ack1_and_homo_sapiens(context):
     form = context.result.form
     
     form.set('acc_search', "ACK1")
-    form.set('species',"homo sapiens")
+    form.set('species',"Homo sapiens")
     
     context.result = form.submit()
 
@@ -169,3 +169,42 @@ def step_1(context):
 def step_2(context):
     context.result = context.ptmscoutapp.get('/experiments/26')
     context.result.mustcontain("Time-resolved mass spectrometry of tyrosine phosphorylation sites")
+
+
+def parse_username_and_password(result):
+    import re
+    
+    str_result = str(result)
+    m1 = re.search(r'username: (reviewer_[a-zA-Z0-9]*)', str_result)
+    m2 = re.search(r'password: ([a-zA-Z0-9]*)', str_result)
+    m3 = re.search(r'address in their browser: (.*)<br />', str_result)
+    
+    return m1.group(1), m2.group(1), m3.group(1)
+
+@when(u'I choose to add a reviewer account')
+def add_reviewer_account(context):
+    context.owner_user.login()
+    result = context.ptmscoutapp.get('/account/experiments/26/share')
+    result.mustcontain("Create a Temporary Reviewer Account")
+    
+    result = context.ptmscoutapp.get('/account/experiments/26/add_reviewer')
+    result.mustcontain("Are you sure you wish to create an anonymous reviewer account for this experiment?")
+    
+    result = result.forms[0].submit()
+    
+    username, password, login_link = parse_username_and_password(result)
+    
+    context.review_username = username
+    context.review_password = password
+    context.review_login = login_link
+
+@then(u'a reviewer account is created which has access to my private experiment')
+def login_with_reviewer_account(context):
+    context.owner_user.logout()
+    result = context.ptmscoutapp.get(context.review_login)
+    
+    result.form.set('username', context.review_username)
+    result.form.set('password', context.review_password)
+    
+    result = result.form.submit()
+    result.mustcontain('<meta http-equiv="refresh" content="3; url=http://localhost/experiments/26" />')

@@ -46,3 +46,8 @@ Feature: Private Data
 		Given I have loaded a dataset and marked it private
 		When other users lookup proteins that have data in my dataset
 		Then my experimental data should not appear in the protein summary
+	
+	Scenario: Experiment owners can create reviewer accounts
+		Given I have loaded a dataset and marked it private
+		When I choose to add a reviewer account
+		Then a reviewer account is created which has access to my private experiment
