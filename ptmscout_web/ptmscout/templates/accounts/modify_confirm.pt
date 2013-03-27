@@ -37,7 +37,7 @@
     	</div>
     	<div class = "infobox" tal:condition="confirm">
     		<div class = "infoheader">${header}</div>
-    		<p class = "infotext">${message}</p>
+    		<p class = "infotext">${structure:message}</p>
     	</div>
     </div>
 </div>
