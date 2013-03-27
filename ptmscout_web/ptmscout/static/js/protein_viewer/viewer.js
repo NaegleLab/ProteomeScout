@@ -147,7 +147,7 @@ function StructureViewer(protein_data) {
 
     this.domain_colors = d3.scale.category20();
     this.region_colors = d3.scale.category20b();
-    this.residue_colors = d3.scale.category20c();
+    this.residue_colors = create_amino_acid_colors();
 
     var macro_residues = this.protein_data.seq.length <= this.show_residues_size_limit;
     this.macro_viewer = new TrackViewer(this, this.svg_container, this.macro_viewer_position, 'macro_track_viewer', macro_residues);

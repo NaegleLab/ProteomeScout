@@ -22,7 +22,7 @@ function createSeqlogo(node, data, w, h){
 	cw = w / total_columns;
 	ch = (h - 20) / 12;
 	
-	colors = d3.scale.category20();
+	colors = create_amino_acid_colors();
 	
 	columns = 
 		chart.selectAll("g.column")
