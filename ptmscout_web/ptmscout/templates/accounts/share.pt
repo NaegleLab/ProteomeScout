@@ -31,6 +31,7 @@
 	        		</tr>
 	        	</table>
 	        </form>
+	        <a href="${ request.route_url( 'review_account', id=experiment.id ) }">Create a Temporary Reviewer Account</a>
        	</div>
        	<table class="usertable">
        		<tbody>

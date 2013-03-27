@@ -7,7 +7,23 @@ from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockUser
 import urllib
 from ptmscout.database import user
-from tests.PTMScoutTestCase import UnitTestCase
+from tests.PTMScoutTestCase import UnitTestCase, IntegrationTestCase
+
+class UserLoginViewIntegration(IntegrationTestCase):
+    def test_login_with_redirect(self):
+        self.bot.logout()
+        
+        result = self.ptmscoutapp.get('/login?redirect=%2Fexperiments%2F26')
+        result.form.set( 'username', self.bot.username )
+        result.form.set( 'password', 'nottherightpassword' )
+        
+        result = result.form.submit().follow()
+        result.form.set( 'username', self.bot.username )
+        result.form.set( 'password', self.bot.password )
+        
+        result = result.form.submit()
+        result.mustcontain('<meta http-equiv="refresh" content="3; url=http://localhost/experiments/26" />')
+
 
 class UserLoginViewTests(UnitTestCase):
     def test_login_should_display_login_page(self):

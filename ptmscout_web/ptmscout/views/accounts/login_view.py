@@ -13,23 +13,36 @@ import urllib
 def user_login(request):
     username = webutils.get(request, 'username', "")
     reason = webutils.get(request, 'reason', None)
+    redirect = webutils.get(request, 'redirect', None)
     
     return {
             'username': username,
             'reason':reason,
-            'pageTitle': strings.login_page_title}
+            'pageTitle': strings.login_page_title,
+            'origin': redirect
+            }
 
 
 @view_config(route_name='process_login', renderer='ptmscout:templates/info/information.pt')
 def user_login_success(request):
+    redirect = webutils.post(request, 'origin', None)
+    
     result = __process_login(request)
     if result == True:
+        if redirect == None:
+            redirect = request.application_url
+        else:
+            redirect = request.application_url + redirect
+        
         return {
                 'pageTitle': strings.login_page_title,
                 'header': strings.login_page_success_header,
                 'message': strings.login_page_success_message,
-                'redirect': request.application_url}
+                'redirect': redirect
+                }
     else:
+        if redirect != None:
+            result['redirect'] = redirect
         raise HTTPFound(request.application_url+"/login?"+urllib.urlencode(result))
 
 @view_config(route_name='logout', renderer='ptmscout:templates/info/information.pt')

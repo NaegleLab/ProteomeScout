@@ -6,6 +6,7 @@
     	<div class="loginform">
     		<div tal:condition="reason != None" class="errorbox">Error: ${reason}</div>
 	        <form method="POST" action="${request.application_url}/process_login">
+	        	<input tal:condition="origin != None" type="hidden" name="origin" value="${origin}" />
 	      		<div class="formcategory">Enter Credentials:</div>
 	        	<table>
 	        		<tr>
