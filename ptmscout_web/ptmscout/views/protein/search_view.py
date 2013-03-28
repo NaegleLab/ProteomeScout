@@ -17,6 +17,12 @@ def build_schema(request, valid_species):
     formatted_species = ['all'] + [ sp.capitalize() for sp in valid_species ]
     form_schema.add_autocomplete_field('species', "Species", formatted_species,
             width=100, maxlen=300)
+
+    form_schema.add_tooltip('acc_search', "Enter an accession gene or protein name (e.g. 'P00533', 'EGFR', or 'epidermal growth factor')")
+    form_schema.add_tooltip('include_name', "Use this option if you entered a protein name at the left (e.g. 'epidermal growth factor')")
+    form_schema.add_tooltip('pep_search', "Enter a peptide sequence")
+    form_schema.add_tooltip('species', "Enter a scientific species name with capitalized genus (e.g. 'Homo sapiens', 'Bos taurus', or 'Escherichia coli')")
+
     form_schema.parse_fields(request)
 
     return submitted, form_schema
