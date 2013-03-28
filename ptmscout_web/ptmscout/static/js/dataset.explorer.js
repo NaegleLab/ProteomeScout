@@ -240,7 +240,7 @@ function SubsetTab(tabId, name, selectionEngine) {
 	this.motif = $('<fieldset class="motifs"><legend>Motif Enrichment</legend></div>').appendTo(this.contentContainer);
 	
 	this.proteins = $('<fieldset><legend>Proteins</legend></fieldset>').appendTo(this.contentContainer);
-	this.proteinTable = $('<table class="protein_list"><thead><tr><th>MS id</th><th>Accession</th><th>Gene</th><th>Peptide</th><th>Site</th><th>Modifications</th></tr></thead></table>').appendTo(this.proteins);
+	this.proteinTable = $('<table class="protein_list"><thead><tr><th>MS id</th><th>Accession</th><th>Gene</th><th>Peptide</th><th>Site</th><th>Modifications</th><th>Annotations</th></tr></thead></table>').appendTo(this.proteins);
 	this.proteinEntries = $('<tbody></tbody>').appendTo(this.proteinTable);
 	
 	this.dataContainer = $('<fieldset><legend>Experiment Data</legend></fieldset>').appendTo(this.contentContainer);
@@ -251,6 +251,19 @@ SubsetTab.prototype.changeName = function(name) {
 	this.tabElement.find('a').text(name);
 	this.subsetName.val(name);
 };
+
+function add_annotations(pepEntry, annotation_td){
+    images_url = 'http://ptmscout.wustl.edu/static/images/{0}';
+    d = pepEntry[7]
+    if(d.mutant)
+        $('<img />', {'title': 'This residue has recorded natural variants', 'src': images_url.format('red_flag.jpg')}).appendTo(annotation_td);
+    if(d.kinase)
+        $('<img />', {'title': 'This residue is in a Pfam kinase domain', 'src': images_url.format('kinase.jpg')}).appendTo(annotation_td);
+    if(d.loop == 'K')
+        $('<img />', {'title': 'This residue is in a predicted kinase activation loop', 'src': images_url.format('active.jpg')}).appendTo(annotation_td);
+    if(d.loop == '?')
+        $('<img />', {'title': 'This residue is in a possible kinase activation loop', 'src': images_url.format('question.jpg')}).appendTo(annotation_td);
+}
 
 SubsetTab.prototype.formatPeptides = function(peptides) {
 	for(var i in peptides){
@@ -268,6 +281,8 @@ SubsetTab.prototype.formatPeptides = function(peptides) {
 		$('<td class="peptide">{0}</td>'.format(pepEntry[4])).appendTo(tableRow);
 		$('<td class="modsite">{0}</td>'.format(pepEntry[5])).appendTo(tableRow);
 		$('<td class="modsite">{0}</td>'.format(pepEntry[6])).appendTo(tableRow);
+		annotation_td = $('<td></td>').appendTo(tableRow);
+        add_annotations(pepEntry, annotation_td);
 	}
 };
 

@@ -198,6 +198,10 @@ function getUniqueId(){
 }
 
 $(function(){
+    $( document ).tooltip({
+                track: true
+            });
+
     $(".longtask")
         .on('click', function(e) {
             $(".waiting-modal").show();

@@ -87,6 +87,16 @@ function scrollBottom(element){
 
 };
 
+function is_kinase(k, protein_data){
+    for(var i in protein_data.domains){
+        if(protein_data.domains[i].start <= k && k <= protein_data.domains[i].stop){
+            if(protein_data.domains[i].label.indexOf('Pkinase') >= 0)
+                return true;
+        }
+    }
+    return false;
+}
+
 function is_kinase_loop(k, protein_data){
     for(var i in protein_data.regions){
         if(protein_data.regions[i].start <= k && k <= protein_data.regions[i].stop){
@@ -109,6 +119,7 @@ function build_ptm_table(k, mods, protein_data) {
             ms.mod_type = m;
             ms.peptide = mods.peptide;
             ms.is_mutated = (k in protein_data.mutations);
+            ms.kinase = is_kinase(k, protein_data);
             ms.kinase_loop = is_kinase_loop(k, protein_data);
 
             ms_entries.push(ms);
@@ -165,10 +176,14 @@ function build_ptm_table(k, mods, protein_data) {
                         annotation_td.append('img')
                                 .attr('title', 'This residue has recorded natural variants')
                                 .attr('src', images_url.format('red_flag.jpg'));
+                    if(d.kinase)
+                        annotation_td.append('img')
+                                .attr('title', 'This residue is in a Pfam kinase domain')
+                                .attr('src', images_url.format('kinase.jpg'));
                     if(d.kinase_loop == 'K')
                         annotation_td.append('img')
                                 .attr('title', 'This residue is in a predicted kinase activation loop')
-                                .attr('src', images_url.format('kinase.jpg'));
+                                .attr('src', images_url.format('active.jpg'));
                     if(d.kinase_loop == '?')
                         annotation_td.append('img')
                                 .attr('title', 'This residue is in a possible kinase activation loop')

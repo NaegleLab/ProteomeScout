@@ -126,7 +126,7 @@ function StructureViewer(protein_data) {
     this.default_height = 340;
     this.macro_viewer_position = 0;
     this.zoom_viewer_position = 340;
-    this.zoom_window_height = 640;
+    this.zoom_window_height = 650;
 
     this.transition_duration = 250;
 
@@ -278,10 +278,6 @@ StructureViewer.prototype.toggle_track = function(track_name, mode){
 }
 
 $(function(){
-    $( document ).tooltip({
-                    track: true
-                });
-
     $('.zoomin-tool').button({ icons: { primary: 'ui-icon-zoomin' }, text:false })
                      .click(function(){
                          window.structure_viewer.zoom_on();

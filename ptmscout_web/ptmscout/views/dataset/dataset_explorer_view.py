@@ -650,6 +650,25 @@ def parse_query_expression(expression, experiment_id, user, annotation_types):
         
     return disjunction( [ parse_dnf_clause(op, experiment_id, user, annotation_types) for op in dnf_clauses ] )
 
+def get_peptide_annotations(peptide, protein):
+    domains = [ d for d in protein.domains if d.start <= peptide.site_pos and peptide.site_pos <= d.stop ]
+    regions = [ r for r in protein.regions if r.start <= peptide.site_pos and peptide.site_pos <= r.stop ]
+    mutations = [ m for m in protein.mutations if m.location == peptide.site_pos ]
+
+    annotations = {'kinase':False, 'loop':None, 'mutant':False}
+
+    if len(domains) > 0:
+        annotations['kinase'] = domains[0].label.find('Pkinase') >= 0
+    if len(regions) > 0:
+        if regions[0].label == 'Kinase Activation Loop':
+            annotations['loop'] = 'K'
+        elif regions[0].label == 'Possible Kinase Activation Loop':
+            annotations['loop'] = '?'
+    if len(mutations) > 0:
+        annotations['mutant'] = True
+
+    return annotations
+
 def format_peptide_data(request, experiment_id, measurements):
     formatted_peptide_data = []
     for ms in measurements:
@@ -662,8 +681,8 @@ def format_peptide_data(request, experiment_id, measurements):
             site_name = modpep.peptide.getName()
             mod_name = modpep.modification.name
             
-            
-            formatted_peptide_data.append( (ms.id, ms.query_accession, gene_name, protein_link, pep_aligned, site_name, mod_name) )
+            annotations = get_peptide_annotations(modpep.peptide, ms.protein)
+            formatted_peptide_data.append( (ms.id, ms.query_accession, gene_name, protein_link, pep_aligned, site_name, mod_name, annotations) )
     
     return formatted_peptide_data
 

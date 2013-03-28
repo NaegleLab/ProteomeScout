@@ -417,6 +417,19 @@ class IntegrationTestDatasetExplorerView(IntegrationTestCase):
         
         self.assertEqual('Subset 1', result['name'])
         self.assertEqual(28, result['experiment'])
+
+        exp_peptides = [
+                        [399228, u'NP_002737', u'MAPK3', u'http://localhost/proteins/35329?experiment_id=28', u'HTGFLTEyVATRWYR', u'Y204', u'Phosphotyrosine', {u'kinase': True, u'loop': u'K', 'mutant':False}], 
+                        [399229, u'NP_002736', u'MAPK1', u'http://localhost/proteins/35548?experiment_id=28', u'HTGFLTEyVATRWYR', u'Y187', u'Phosphotyrosine', {u'kinase': True, u'loop': u'K', 'mutant':False}], 
+                        [399230, u'NP_002736', u'MAPK1', u'http://localhost/proteins/35548?experiment_id=28', u'HDHTGFLtEYVATRW', u'T185', u'Phosphothreonine', {u'kinase': True, u'loop': u'K', 'mutant':False}], 
+                        [399230, u'NP_002736', u'MAPK1', u'http://localhost/proteins/35548?experiment_id=28', u'HTGFLTEyVATRWYR', u'Y187', u'Phosphotyrosine', {u'kinase': True, u'loop': u'K', 'mutant':False}], 
+                        [399247, u'Q16539', u'MAPK14', u'http://localhost/proteins/13914?experiment_id=28', u'TDDEMTGyVATRWYR', u'Y182', u'Phosphotyrosine', {u'kinase': True, u'loop': u'K', 'mutant':False}], 
+                        [399263, u'NP_003020', u'SHC1', u'http://localhost/proteins/35338?experiment_id=28', u'EEPPDHQyYNDFPGK', u'Y239', u'Phosphotyrosine', {u'kinase': False, u'loop': None, 'mutant':False}], 
+                        [399264, u'NP_003020', u'SHC1', u'http://localhost/proteins/35338?experiment_id=28', u'ELFDDPSyVNVQNLD', u'Y318', u'Phosphotyrosine', {u'kinase': False, u'loop': None, 'mutant':False}], 
+                        [399265, u'NP_003020', u'SHC1', u'http://localhost/proteins/35338?experiment_id=28', u'EEPPDHQyYNDFPGK', u'Y239', u'Phosphotyrosine', {u'kinase': False, u'loop': None, 'mutant':False}], 
+                        [399265, u'NP_003020', u'SHC1', u'http://localhost/proteins/35338?experiment_id=28', u'EPPDHQYyNDFPGKE', u'Y240', u'Phosphotyrosine', {u'kinase': False, u'loop': None, 'mutant':False}]
+                    ]
+        self.assertEqual(exp_peptides, result['peptides'])
         
     def test_subset_save_integration(self):
         from ptmscout.database import DBSession
