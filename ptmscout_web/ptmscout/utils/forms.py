@@ -40,6 +40,8 @@ class FormSchema(object):
         self.required_fields = set()
         self.conditional_fields = {}
 
+        self.tooltips = {}
+
     def set_field(self, ref, value):
         self.form_values[ref] = value
 
@@ -144,6 +146,9 @@ class FormSchema(object):
         self.field_opts[ref] = (maxlen, width,)
         self.field_types[ref] = FormSchema.AUTOCOMPLETE
 
+    def add_tooltip(self, ref, tooltip):
+        assert ref in self.field_names
+        self.tooltips[ref] = tooltip
 
 class FormRenderer(object):
     def __init__(self, schema):
@@ -157,25 +162,26 @@ class FormRenderer(object):
         field_type = self.schema.field_types[ref]
         id_str = '' if id_ == None else 'id="%s"' % (id_)
         cls_str = '' if class_ == None else 'class="%s"' % (class_)
-        
+        title_str = '' if ref not in self.schema.tooltips else 'title="%s"' % (self.schema.tooltips[ref])
+
         if field_type == FormSchema.TEXT:
-            return self.__render_text(ref, id_str, cls_str)
+            return self.__render_text(ref, id_str, cls_str, title_str)
         if field_type == FormSchema.TEXTAREA:
-            return self.__render_textarea(ref, id_str, cls_str)
+            return self.__render_textarea(ref, id_str, cls_str, title_str)
         if field_type == FormSchema.SELECT:
-            return self.__render_select(ref, id_str, cls_str)
+            return self.__render_select(ref, id_str, cls_str, title_str)
         if field_type == FormSchema.CHECKBOX:
-            return self.__render_checkbox(ref, id_str, cls_str)
+            return self.__render_checkbox(ref, id_str, cls_str, title_str)
         if field_type == FormSchema.RADIO:
-            return self.__render_radio(ref, id_str, cls_str)
+            return self.__render_radio(ref, id_str, cls_str, title_str)
         if field_type == FormSchema.PASSWORD:
-            return self.__render_password(ref, id_str, cls_str)
+            return self.__render_password(ref, id_str, cls_str, title_str)
         if field_type == FormSchema.FILE:
-            return self.__render_file(ref, id_str, cls_str)
+            return self.__render_file(ref, id_str, cls_str, title_str)
         if field_type == FormSchema.AUTOCOMPLETE:
-            return self.__render_autocomplete(ref, id_str, cls_str)
+            return self.__render_autocomplete(ref, id_str, cls_str, title_str)
     
-    def __render_autocomplete(self, ref, id_str, cls_str):
+    def __render_autocomplete(self, ref, id_str, cls_str, title_str):
         value = self.schema.get_form_value(ref)
         value_str = '' if value == None else 'value="%s"' % (cgi.escape(value),)
         
@@ -185,12 +191,12 @@ class FormRenderer(object):
         maxlen_str = '' if maxlen == None else 'maxlength="%d"' % (maxlen)
 
         data = ','.join([ k for k, _ in self.schema.enum_values[ref] ])
-        input_html = '<input type="text" data-values="%s" %s %s %s %s name="%s" %s />' % (data, id_str, cls_str, size_str, maxlen_str, ref, value_str)
+        input_html = '<input type="text" data-values="%s" %s %s %s %s %s name="%s" %s />' % (data, id_str, cls_str, title_str, size_str, maxlen_str, ref, value_str)
         return FormLiteral(input_html)
  
-    def __render_select(self, ref, id_str, cls_str):
+    def __render_select(self, ref, id_str, cls_str, title_str):
         items = []
-        items.append('<select %s %s name="%s">' % (id_str, cls_str, ref))
+        items.append('<select %s %s %s name="%s">' % (id_str, cls_str, title_str, ref))
         
         cur_value = self.schema.get_form_value(ref)
         if cur_value == None:
@@ -208,13 +214,13 @@ class FormRenderer(object):
         
         return FormLiteral("\n".join(items))
     
-    def __render_checkbox(self, ref, id_str, cls_str):
+    def __render_checkbox(self, ref, id_str, cls_str, title_str):
         checked = 'checked' if self.schema.form_values[ref] != None else '' 
         proper_name = self.schema.field_names[ref]
         
-        return FormLiteral('<input type="checkbox" %s %s name="%s" %s /> %s' % (id_str, cls_str, ref, checked, proper_name))
+        return FormLiteral('<input type="checkbox" %s %s %s name="%s" %s /> %s' % (id_str, cls_str, title_str, ref, checked, proper_name))
     
-    def __render_radio(self, ref, id_str, cls_str):
+    def __render_radio(self, ref, id_str, cls_str, title_str):
         if ref not in self.radio_indexes:
             self.radio_indexes[ref] = 0
         
@@ -225,11 +231,11 @@ class FormRenderer(object):
             (value, proper_name) = self.schema.enum_values[ref][index]
             selected = 'checked' if cur_value == value else ''
             self.radio_indexes[ref] = index+1
-            return FormLiteral('<input type="radio" %s %s name="%s" value="%s" %s /> %s' % (id_str, cls_str, ref, value, selected, proper_name))
+            return FormLiteral('<input type="radio" %s %s %s name="%s" value="%s" %s /> %s' % (id_str, cls_str, title_str, ref, value, selected, proper_name))
         
         return FormLiteral('')
     
-    def __render_text(self, ref, id_str, cls_str):
+    def __render_text(self, ref, id_str, cls_str, title_str):
         value = self.schema.get_form_value(ref)
         value_str = '' if value == None else 'value="%s"' % (cgi.escape(value),)
         
@@ -238,30 +244,30 @@ class FormRenderer(object):
         size_str = '' if size == None else 'size="%d"' % (size)
         maxlen_str = '' if maxlen == None else 'maxlength="%d"' % (maxlen)
         
-        html = '<input type="text" %s %s %s %s name="%s" %s />' % (id_str, cls_str, size_str, maxlen_str, ref, value_str)
+        html = '<input type="text" %s %s %s %s %s name="%s" %s />' % (id_str, cls_str, title_str, size_str, maxlen_str, ref, value_str)
         return FormLiteral(html)
     
-    def __render_textarea(self, ref, id_str, cls_str):
+    def __render_textarea(self, ref, id_str, cls_str, title_str):
         value = self.schema.get_form_value(ref)
         if value == None:
             value = ''
             
         width, height = self.schema.field_opts[ref]
         
-        html = '<textarea cols="%d" rows="%d" name="%s">%s</textarea>' % (width, height, ref, cgi.escape(value))
+        html = '<textarea %s %s %s cols="%d" rows="%d" name="%s">%s</textarea>' % (id_str, cls_str, title_str, width, height, ref, cgi.escape(value))
         return FormLiteral(html)
     
-    def __render_password(self, ref, id_str, cls_str):
+    def __render_password(self, ref, id_str, cls_str, title_str):
         maxlen, size = self.schema.field_opts[ref]
         
         size_str = '' if size == None else 'size="%d"' % (size)
         maxlen_str = '' if maxlen == None else 'maxlength="%d"' % (maxlen)
         
-        html = '<input type="password" %s %s %s %s name="%s" />' % (id_str, cls_str, size_str, maxlen_str, ref)
+        html = '<input type="password" %s %s %s %s %s name="%s" />' % (id_str, cls_str, title_str, size_str, maxlen_str, ref)
         return FormLiteral(html)
     
-    def __render_file(self, ref, id_str, cls_str):
-        html='<input %s %s type="file" name="%s" />' % (id_str, cls_str, ref)
+    def __render_file(self, ref, id_str, cls_str, title_str):
+        html='<input %s %s %s type="file" name="%s" />' % (id_str, cls_str, title_str, ref)
         return FormLiteral(html)
 
 
