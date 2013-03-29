@@ -8,9 +8,11 @@
     </div>
     
     <div metal:fill-slot="content">
-		<?python from ptmscout.config import strings; ?>
-       	${strings.experiment_upload_configure_message}
-       	
+        <?python from ptmscout.config import strings; ?>
+        <fieldset class="configurator-instructions">
+            <legend>Instructions:</legend>
+            ${structure:strings.experiment_upload_configure_message}
+        </fieldset>
         <div class="configurator_app">
         	
             <div class="error_display" tal:condition="len(error) > 0">

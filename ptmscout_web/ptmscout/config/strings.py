@@ -74,7 +74,23 @@ You may view the error log for this upload at %s.
 Thanks for using PTMScout,
 -The PTMScout Team"""
 experiment_upload_configure_page_title = "Configure Experiment Data"
-experiment_upload_configure_message = "Please verify and assign designations for the column types present in your dataset. Some column types may have been automatically inferred from your headers."
+experiment_upload_configure_message = """
+<span>Please verify and assign designations for the column types present in your dataset.</span><br />
+<span>Some column types may have been automatically inferred from your headers.</span><br />
+<span>You are required to specify the following columns:</span><br />
+<ul>
+    <li>Accession</li>
+    <li>Modification</li>
+    <li>Peptide or Site</li>
+</ul>
+<span>You may optionally have columns from the following categories:</span><br />
+<ul>
+    <li>Run</li>
+    <li>Data</li>
+    <li>Stddev</li>
+</ul>
+
+"""
 
 cancel_upload_successful_page_title = "Experiment Upload"
 cancel_upload_successful_header = "Experiment Upload Cancelled"
