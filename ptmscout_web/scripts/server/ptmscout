@@ -1,13 +1,15 @@
-# Use only 1 Python sub-interpreter.  Multiple sub-interpreters
-# play badly with C extensions.
-WSGIApplicationGroup %{GLOBAL}
-WSGIPassAuthorization On
-WSGIDaemonProcess pyramid user=www-data group=development threads=8 \
-   python-path=/data/pyramid/lib/python2.7/site-packages
-WSGIScriptAlias / /data/pyramid/pyramid.wsgi
+<VirtualHost *:80>
+    # Use only 1 Python sub-interpreter.  Multiple sub-interpreters
+    # play badly with C extensions.
+    WSGIApplicationGroup %{GLOBAL}
+    WSGIPassAuthorization On
+    WSGIDaemonProcess pyramid user=www-data group=naeglelab threads=8 \
+       python-path=/data/pyramid/lib/python2.7/site-packages
+    WSGIScriptAlias / /data/pyramid/pyramid.wsgi
 
-<Directory /data/pyramid >
-  WSGIProcessGroup pyramid
-  Order allow,deny
-  Allow from all
-</Directory>
+    <Directory /data/pyramid >
+      WSGIProcessGroup pyramid
+      Order allow,deny
+      Allow from all
+    </Directory>
+</VirtualHost>

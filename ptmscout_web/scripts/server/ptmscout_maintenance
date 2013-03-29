@@ -2,9 +2,7 @@
 	ServerAdmin ptmscout@seas.wustl.edu
 
 	DocumentRoot /data/ptmscout/maintenance
-	<Directory />
-		AllowOverride All
-	</Directory>
+
 	<Directory /data/ptmscout/maintenance/>
 		Options MultiViews
 		AllowOverride All

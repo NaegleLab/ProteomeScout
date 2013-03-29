@@ -10,6 +10,6 @@ WSGIScriptAlias /maintenance /data/pyramid/pyramid.wsgi
   WSGIProcessGroup pyramid
   Order deny,allow
   Deny from all
-  Allow from 172.0.0.0/24
+  Allow from 172.16.0.0/16
   Allow from 127.0.0.1/32
 </Directory>
