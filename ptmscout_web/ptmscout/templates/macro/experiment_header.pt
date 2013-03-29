@@ -10,7 +10,7 @@
 			</tal:empty>
 	   	</tal:empty>
 	</div>
-	<div metal:define-slot="menu"></div>
+	<div id="experimentSummaryMenu" metal:define-slot="menu"></div>
 	<div id="experimentInfo" >
 	   	<fieldset class="object-info">
 	   		<legend>Experiment</legend>

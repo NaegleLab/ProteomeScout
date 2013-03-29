@@ -11,13 +11,7 @@
 	</div>
 	<div metal:fill-slot="content">
 		<div metal:use-macro="experiment_header">
-			<div id="experimentSummaryMenu" metal:fill-slot="menu">
-				<a href="${request.application_url}/experiments/${experiment.id}/summary">Summary</a>
-				| <a href="${request.application_url}/experiments/${experiment.id}/GO">GO Terms</a>
-				| <a href="${request.application_url}/experiments/${experiment.id}/pfam">Protein Families</a>
-				| <a href="${request.application_url}/experiments/${experiment.id}/predictions">Scansite Predictions</a>
-				<tal:empty tal:condition="user_owner">| <a href="${request.application_url}/experiments/${experiment.id}/errors">Error Log</a></tal:empty>
-			</div>
+		  <div metal:use-macro="experiment_summary_menu" metal:fill-slot="menu"></div>  	  
 		</div>
 
 		<div class="section_group">
