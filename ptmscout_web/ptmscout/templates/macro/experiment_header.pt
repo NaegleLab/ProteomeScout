@@ -1,14 +1,17 @@
 <div metal:define-macro="experiment_header">
 	<div id="experimentMenu">
-		<a href="${request.application_url}/experiments/${experiment.id}/summary">Experiment Summary</a>  
-		<tal:empty tal:condition="experiment.export != 0">
-			| <a href="${request.application_url}/experiments/${experiment.id}/browse">Browse Dataset</a>
-			| <a href="${request.application_url}/experiments/${experiment.id}/subsets">Evaluate Subsets</a>
-			| <a href="${request.application_url}/experiments/${experiment.id}/compare">Compare Datasets</a>
-			<tal:empty tal:condition="experiment.ambiguity == 1">
-				| <a href="${request.application_url}/experiments/${experiment.id}/ambiguity">Report Ambiguity</a>
-			</tal:empty>
+	  <ul class='link_menu'>
+	    <li><a href="${request.application_url}/experiments/${experiment.id}/summary">Experiment Summary</a></li>
+		  <tal:empty tal:condition="experiment.export != 0">
+			  <li><a href="${request.application_url}/experiments/${experiment.id}/browse">Browse Dataset</a></li>
+			  <li><a href="${request.application_url}/experiments/${experiment.id}/subsets">Evaluate Subsets</a></li>
+			  <li><a href="${request.application_url}/experiments/${experiment.id}/compare">Compare Datasets</a></li>
+			  
+			  <tal:empty tal:condition="experiment.ambiguity == 1">
+				  <li><a href="${request.application_url}/experiments/${experiment.id}/ambiguity">Report Ambiguity</a></li>
+			  </tal:empty>
 	   	</tal:empty>
+	   </ul>
 	</div>
 	<div id="experimentSummaryMenu" metal:define-slot="menu"></div>
 	<div id="experimentInfo" >

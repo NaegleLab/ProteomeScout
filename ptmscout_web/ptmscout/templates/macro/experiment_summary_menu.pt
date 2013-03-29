@@ -1,0 +1,13 @@
+<div metal:define-macro="experiment_summary_menu">
+  <div id="experimentSummaryMenu">
+    <ul class="link_menu">
+    	<li><a href="${request.application_url}/experiments/${experiment.id}/summary">Summary</a></li>
+    	<li><a href="${request.application_url}/experiments/${experiment.id}/GO">GO Terms</a></li>
+    	<li><a href="${request.application_url}/experiments/${experiment.id}/pfam">Protein Families</a></li>
+    	<li><a href="${request.application_url}/experiments/${experiment.id}/predictions">Scansite Predictions</a></li>
+    	<tal:empty tal:condition="user_owner">
+    	  <li><a href="${request.application_url}/experiments/${experiment.id}/errors">Error Log</a></li>
+    	</tal:empty>
+    </ul>
+  </div>
+</div>

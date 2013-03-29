@@ -1,12 +1,28 @@
-body {
-  margin: 0px;
-  padding: 0px;
-  margin-left: 5em;
-  margin-right: 5em;
-  background-color: white;
-  font-family:sans-serif;
-  font-size:small;
+
+* {
+	margin: 0;
 }
+html, body {
+	height: 100%;
+}
+
+body {
+  font-size:12pt;
+  font-family: helvetica,arial,verdana;
+  height: auto;
+}
+
+
+#wrapper {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -80px; /* the bottom margin is the negative value of the footer's height */
+}
+#footer, #push {
+	height: 80px; /* .push must be the same height as .footer */
+}
+
 
 table {
     font-size: small;
@@ -28,9 +44,21 @@ table {
 #page {
   margin-left: auto;
   margin-right: auto;
-  background-color: white;
+  background-color: #ccc;
   border: 1px solid gray;
 }
+
+#content {
+  
+}
+#content .container_12,
+#breadcrumb .container_12,
+#header .container_12,
+#footer .container_12
+{
+  background-color: white;
+}
+
 
 #menu {
   background-color: white;
@@ -44,6 +72,55 @@ table {
   color: blue;
   text-decoration:none;
 }
+
+#breadcrumb {
+}
+#breadcrumb .container_12 {
+  text-indent: 0.2em;
+  border-top: 2px solid #333399;
+  border-bottom: 2px solid #333399;
+}
+
+#content { }
+#content .container_12 {
+  bottom: 0;	
+  text-indent: 0.2em;  
+}
+
+
+#experimentMenu {
+  height: 24px;
+  text-indent: 0.2em;
+  border-bottom: 2px solid #333399;
+}
+#experimentSummaryMenu {
+  height: 24px;
+}
+
+#footer {
+}
+#footer .container_12 {
+  height: 80px;
+  font-size: 10pt;
+  background-color:#33CFDB;
+  color: black;
+}
+
+ul.link_menu
+{
+  display: block;
+  margin-bottom: 0;
+}
+ul.link_menu li
+{
+  margin-left: 1em;
+  float: left;
+  list-style: none outside none;
+}
+ul.link_menu li:first-child {
+  margin-left: 0;
+}
+
 
 .split {
     width:100%;
@@ -157,15 +234,6 @@ dd {
   margin-bottom: 1em;
 }
 
-#breadcrumb {
-  text-indent: 0.2em;
-  border-top: 2px solid #333399;
-  border-bottom: 2px solid #333399;
-}
-#experimentMenu {
-  text-indent: 0.2em;
-  border-bottom: 2px solid #333399;
-}
 #experimentInfo {
   margin-top: 1em;
   margin-bottom: 1em;
@@ -175,20 +243,7 @@ dd {
 
   text-align: center;
 }
-#content {
-  bottom: 0;	
-  text-indent: 0.2em;  
-}
 
-#footer {
-  margin-top: 1em;
-  clear: both;
-  width: 100%;
-  text-align: center;
-  font-size: 10pt;
-  background-color:#33CFDB;
-  color: black;
-}
 
 hr { border: 0 }
 
