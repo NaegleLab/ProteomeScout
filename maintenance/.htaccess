@@ -1,5 +1,5 @@
 Options +FollowSymLinks
-RewriteEngine One
+RewriteEngine On
 RewriteBase /
 RewriteCond %{REMOTE_ADDR} !^00\.00\.00\.00
 RewriteCond %{REQUEST_URI} !^/index.php [NC]
