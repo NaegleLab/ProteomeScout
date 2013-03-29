@@ -20,10 +20,10 @@
                     <tr>
                         <td class="fieldname">Upload type:</td>
                         <td>
-                            ${formrenderer.render('load_type', id_='new_dataset')}
-                            ${formrenderer.render('load_type', id_='append_dataset')}
-                            ${formrenderer.render('load_type', id_='reload_dataset')}
-                            ${formrenderer.render('load_type', id_='extend_dataset')}
+                            ${formrenderer.render('load_type', id_='new_dataset', tooltip='Create a new experiment')}
+                            ${formrenderer.render('load_type', id_='append_dataset', tooltip='Append data to an existing experiment')}
+                            ${formrenderer.render('load_type', id_='reload_dataset', tooltip='Replace an existing experiment with new data')}
+                            ${formrenderer.render('load_type', id_='extend_dataset', tooltip='Create a new experiment using modified data from an existing experiment')}
                         </td>
                     </tr>
                     <tr id="parent_exp">

@@ -34,6 +34,7 @@ def create_schema(request, users_experiments):
     parent_experiment_options = [(str(e.id), e.name) for e in users_experiments]
     
     schema.add_radio_field('load_type', "Load Type", [('new',"New"),('append',"Append"),('reload',"Reload"),('extension',"Extension")])
+
     schema.add_select_field('parent_experiment', 'Parent Experiment', parent_experiment_options)
     schema.add_text_field('change_name', "Extension Title", width=55)
     schema.add_textarea_field('change_description', "Description of Extension", 43, 5)

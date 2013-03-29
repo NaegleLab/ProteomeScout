@@ -155,7 +155,7 @@ class FormRenderer(object):
         self.schema = schema
         self.radio_indexes = {}
     
-    def render(self, ref, id_=None, class_=None):
+    def render(self, ref, id_=None, class_=None, tooltip=None):
         if ref not in self.schema.field_names:
             raise Exception("No such form field: %s" % ref)
         
@@ -163,6 +163,7 @@ class FormRenderer(object):
         id_str = '' if id_ == None else 'id="%s"' % (id_)
         cls_str = '' if class_ == None else 'class="%s"' % (class_)
         title_str = '' if ref not in self.schema.tooltips else 'title="%s"' % (self.schema.tooltips[ref])
+        title_str = title_str if tooltip == None else 'title="%s"' % (tooltip)
 
         if field_type == FormSchema.TEXT:
             return self.__render_text(ref, id_str, cls_str, title_str)
