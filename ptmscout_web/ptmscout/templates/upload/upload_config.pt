@@ -19,6 +19,7 @@
                 <ul>
                     <li tal:repeat="msg error" tal:content="msg"></li>
                 </ul>
+                Warning: Data rows with warnings will not be loaded!
             </div>
             <div class="data_display">
                 <form action="" method="post">
@@ -53,7 +54,7 @@
                         </table>
                     </div>
                     <div class="right">
-                        <span tal:condition="allowoverride">Ignore warnings and continue? <input type="checkbox" name="override"/></span> 
+                        <span tal:condition="allowoverride">Ignore warnings and continue? <input type="checkbox" name="override" /></span> 
                         <input type="submit" value="Continue" class="longtask" />
                         <a tal:attributes="href '%s/upload/%d/cancel' % (request.application_url, session_id)">Cancel</a>
                     </div>
