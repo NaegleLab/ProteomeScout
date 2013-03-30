@@ -24,86 +24,92 @@
   </head>
   <body>
   <div id="wrapper">
-  	<div id="menu">
-  	  <div class="container_12">
-    	  <div class="grid_10" style="text-align:left">
-    	    <ul class="link_menu">
-    	      <li><a href="${request.application_url}">Portal</a></li>
-    	      <li><a href="${request.application_url}/experiments">Browse Experiments</a></li>
-            <li><a href='${request.application_url}/proteins'>Browse Proteins</a></li>
-    	      <li tal:condition="request.user != None">
-    <!--            <a href="${request.application_url}/annotate">Annotate Datasets</a> | -->
-                <a href='${request.application_url}/upload'>Upload Data</a>
-            </li>            
-    	      <li><a target='_blank' href="${documentationUrl}title=Main_Page">Documentation</a></li>
-    	      <li><a href='${request.application_url}/about'>About</a></li>
-    	  </div>
-    	  <div class="grid_2" style="text-align:right">
-    	    <span tal:condition="request.user == None">
-    	    	<a href='${request.application_url}/login'>Login</a>
-    	    </span>
-    	    <span tal:condition="request.user != None">
-    	    	<a href='${request.application_url}/account'>Account: ${request.username}</a> |
-    	    	<a href='${request.application_url}/account/experiments'>My Experiments</a> |
-    		    <a href='${request.application_url}/logout'>Logout</a>
-    	    </span>
-        </div>
-      </div>
-  	</div>
-
-  	<div id="page">
-	
-  	  <div id="header">
-  	    <div class="container_12">
-    	    <a href="${request.application_url}/">
-    	      <img alt="PTMScout logo" src="${request.static_url('ptmscout:static/images/ptmscout_logo.png')}" title="Home" />
-    	    </a>
-    	  </div>
-  	  </div>
-	
-  	  <div id="breadcrumb">
-  	    <div class="container_12">
-    	  	<tal:none tal:condition="parent_link != None">
-    	  		<a tal:attributes="href parent_link" tal:content="parent_page"></a>&gt;
-    	  	</tal:none>
-    	  	${pageTitle}
-    	  </div>
-  	  </div>
-	
-  	  <div id="content">
-  	    <div class="container_12">
-  	       <div metal:define-slot="content"></div>
-  	    </div>
-  	  </div>
-	
-  	  <div id="footer">
-  	    <div class="container_12">
-  	      <div class="grid_10">
-      	    Questions or comments? <br/>Email ${adminEmail}
+    <div id="wrapper_container">
+    	<div id="menu">
+    	  <div class="container_12">
+      	  <div class="grid_10" style="text-align:left">
+      	    <ul class="link_menu">
+      	      <li><a href="${request.application_url}">Portal</a></li>
+      	      <li><a href="${request.application_url}/experiments">Browse Experiments</a></li>
+              <li><a href='${request.application_url}/proteins'>Browse Proteins</a></li>
+      	      <li tal:condition="request.user != None">
+      <!--            <a href="${request.application_url}/annotate">Annotate Datasets</a> | -->
+                  <a href='${request.application_url}/upload'>Upload Data</a>
+              </li>            
+      	      <li><a target='_blank' href="${documentationUrl}title=Main_Page">Documentation</a></li>
+      	      <li><a href='${request.application_url}/about'>About</a></li>
       	  </div>
       	  <div class="grid_2" style="text-align:right">
-            <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">
-                <img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" />
-            </a>
-            <br />
-    	    </div>
-    	    <div class="grid_10">
-            <span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">PTMScout</span>
-            is licensed under a
-            <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.
+      	    <span tal:condition="request.user == None">
+      	    	<a href='${request.application_url}/login'>Login</a>
+      	    </span>
+      	    <span tal:condition="request.user != None">
+      	    	<a href='${request.application_url}/account'>Account: ${request.username}</a> |
+      	    	<a href='${request.application_url}/account/experiments'>My Experiments</a> |
+      		    <a href='${request.application_url}/logout'>Logout</a>
+      	    </span>
           </div>
-          <div class="grid_2"  style="text-align:right">
-    		    <a rel="terms" href="${request.application_url}/terms">Terms of Use</a>
-  	      </div>
-    	  </div>
-      </div>
-  	</div>
-  </div>
+        </div>
+    	</div>
+
+    	<div id="page">
 	
+    	  <div id="header">
+    	    <div class="container_12">
+      	    <a href="${request.application_url}/">
+      	      <img alt="PTMScout logo" src="${request.static_url('ptmscout:static/images/ptmscout_logo.png')}" title="Home" />
+      	    </a>
+      	  </div>
+    	  </div>
+	
+    	  <div id="breadcrumb">
+    	    <div class="container_12">
+      	  	<tal:none tal:condition="parent_link != None">
+      	  		<a tal:attributes="href parent_link" tal:content="parent_page"></a>&gt;
+      	  	</tal:none>
+      	  	${pageTitle}
+      	  </div>
+    	  </div>
+	
+    	  <div id="content">
+    	    <div class="container_12">
+    	       <div metal:define-slot="content"></div>
+    	    </div>
+    	  </div>
+	
+    	</div>
+
       <div id="webservice_url" style="display:none;">${request.application_url}/webservice</div>
       <div style="display:none" id="graph_css_export_url">${request.static_url('ptmscout:static/css/graphs.css')}</div>
       <div class="waiting-modal"><!-- Place at bottom of page -->
           <img style="position:fixed; top:50%; left:50%;" src="${request.static_url('ptmscout:static/images/ajax-loader.gif')}" />
       </div>
+      <div id="push">
+      </div>
+    </div>
+  </div>
+  
+  <div id="footer">
+    <div class="container_12">
+      <div class="grid_10">
+  	    Questions or comments? <br/>Email ${adminEmail}
+  	  </div>
+  	  <div class="grid_2" style="text-align:right">
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">
+            <img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" />
+        </a>
+        <br />
+	    </div>
+	    <div class="grid_10">
+        <span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">PTMScout</span>
+        is licensed under a
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.
+      </div>
+      <div class="grid_2"  style="text-align:right">
+		    <a rel="terms" href="${request.application_url}/terms">Terms of Use</a>
+      </div>
+	  </div>
+  </div>
+	
   </body>
 </html>
