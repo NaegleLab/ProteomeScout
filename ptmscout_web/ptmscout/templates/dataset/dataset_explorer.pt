@@ -19,6 +19,7 @@
 		</ul>
 	
 		<div id="field-data" style="display:none;" tal:content="field_data"></div>
+		<div id="initial-query" style="display:none;" tal:content="initial_query"></div>
 
 	    <div class="filter-set">
 		    <form method="GET" action="${request.application_url}/experiments/${experiment.id}/export" target="_blank">

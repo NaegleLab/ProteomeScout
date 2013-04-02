@@ -1109,8 +1109,50 @@ SubsetSelection.prototype.submitQuery = function() {
 			'background': background,
 			'foreground': expression
 	};
+    console.log(subset_query);
 	
 	var query_url = this.webservice_url + '/subsets/query';
+	
+	$.ajax({
+		url: query_url,
+		type: 'POST',
+		contentType:'application/json',
+		data: JSON.stringify(subset_query),
+		dataType:'json',
+		success: function(data) {
+			done_waiting();
+			if(data.status == 'error'){
+				app.displayError(data.message);
+			}else if(data.status == 'success'){
+				app.subsetManager.addSubset(data);
+			}
+		} ,
+		error: function(jqXHR, textStatus, errorThrown) {
+			app.displayError("Error in server response, please try again.");
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
+
+SubsetSelection.prototype.submitQueryFromString = function(qstring) {
+	var app = this;
+	this.query_num += 1;
+
+    var foreground = JSON.parse( Base64.decode(qstring) );
+    var background = 'experiment';
+
+ 	var subset_query = {
+			'experiment': this.experiment_id,
+			'type': 'create',
+			'name': 'Subset {0}'.format(this.query_num),
+			'background': background,
+			'foreground': foreground
+	};
+	
+	var query_url = this.webservice_url + '/subsets/query';
+
+    console.log(subset_query);
 	
 	$.ajax({
 		url: query_url,
@@ -1155,5 +1197,11 @@ SubsetSelection.prototype.clearConditions = function() {
 };
 
 $(function(){
-	new SubsetSelection($("#subset-select"), $("#webservice_url").text());
+	ss = new SubsetSelection($("#subset-select"), $("#webservice_url").text());
+
+    var querytext = $("#initial-query").text();
+    if(querytext != ''){
+        $(".waiting-modal").show();
+        ss.submitQueryFromString(querytext)
+    }
 });
