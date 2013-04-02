@@ -28,12 +28,15 @@
 		<div class="GO_table">
 			<div class="table_title">Molecular Functions</div>
 			<table>
-				<tr>
+                <tr>
+                    <th></th>
 					<th class="number_col">GO</th>
 					<th>Term</th>
 					<th class="value">Proteins</th>
 				</tr>
-				<tr tal:repeat="entry go_tables.molecular_function">
+                <tr tal:repeat="entry go_tables.molecular_function">
+                    <td tal:condition="entry[0] != 'None'" ><a target="_blank" href="${request.route_url('experiment_subset', id=experiment.id, _query=generate_GO_MF('%s: %s' % (entry[0], entry[1])) )}"><img height="20" src="${request.static_url('ptmscout:static/images/glass.png')}" /></a></td>
+                    <td tal:condition="entry[0] == 'None'" ></td>
 					<td class="number_col">
 						<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + entry[0]"
 										target="_blank" tal:content="entry[0]"></a>
@@ -47,11 +50,14 @@
 			<div class="table_title">Cellular Components</div>
 			<table>
 				<tr>
+                    <th></th>
 					<th class="number_col">GO</th>
 					<th>Term</th>
 					<th class="value">Proteins</th>
 				</tr>
 				<tr tal:repeat="entry go_tables.cellular_component">
+                    <td tal:condition="entry[0] != 'None'" ><a target="_blank" href="${request.route_url('experiment_subset', id=experiment.id, _query=generate_GO_CC('%s: %s' % (entry[0], entry[1])) )}"><img height="20" src="${request.static_url('ptmscout:static/images/glass.png')}" /></a></td>
+                    <td tal:condition="entry[0] == 'None'" ></td>
 					<td class="number_col">
 						<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + entry[0]"
 										target="_blank" tal:content="entry[0]"></a>
@@ -65,11 +71,14 @@
 			<div class="table_title">Biological Processes</div>
 			<table>
 				<tr>
+                    <th></th>
 					<th class="number_col">GO</th>
 					<th>Term</th>
 					<th class="value">Proteins</th>
 				</tr>
 				<tr tal:repeat="entry go_tables.biological_process">
+                    <td tal:condition="entry[0] != 'None'" ><a target="_blank" href="${request.route_url('experiment_subset', id=experiment.id, _query=generate_GO_BP('%s: %s' % (entry[0], entry[1])) )}"><img height="20" src="${request.static_url('ptmscout:static/images/glass.png')}" /></a></td>
+                    <td tal:condition="entry[0] == 'None'" ></td>
 					<td class="number_col">
 						<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + entry[0]"
 										target="_blank" tal:content="entry[0]"></a>

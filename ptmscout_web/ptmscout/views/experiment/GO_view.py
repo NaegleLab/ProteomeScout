@@ -85,6 +85,14 @@ def format_go_terms(measurements):
               'cellular_component':GO_terms['C'],
               'biological_process':GO_terms['P']}
 
+def create_query_generator(field):
+    from ptmscout.utils.query_generator import generate_metadata_query
+
+    def query_generator(value):
+        return {'query': generate_metadata_query(field, value)}
+
+    return query_generator
+
 @view_config(route_name='experiment_GO', renderer='ptmscout:/templates/experiments/experiment_GO.pt')
 def show_experiment_go_terms(request):
     exp_id = int(request.matchdict['id'])
@@ -99,4 +107,8 @@ def show_experiment_go_terms(request):
             'experiment': exp,
             'go_tables': formatted_go_terms,
             'go_tree': go_tree,
-            'user_owner': user_owner }
+            'user_owner': user_owner,
+            'generate_GO_BP': create_query_generator('GO-Biological Process'),
+            'generate_GO_MF': create_query_generator('GO-Molecular Function'),
+            'generate_GO_CC': create_query_generator('GO-Cellular Component')
+            }
