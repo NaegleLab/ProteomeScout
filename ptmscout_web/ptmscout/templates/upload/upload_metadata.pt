@@ -29,7 +29,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="fieldname">URL:*</td>
+                        <td class="fieldname">URL<sup>opt</sup>:</td>
                         <td>${formrenderer.render('URL')}</td>
                     </tr>
                     <tr>
@@ -37,7 +37,7 @@
                         <td>${formrenderer.render('description')}</td>
                     </tr>
                     <tr class="pubinfo">
-                        <td class="fieldname">PubMed ID:*</td>
+                        <td class="fieldname">PubMed ID<sup>opt</sup>:</td>
                         <td>
                             ${formrenderer.render('pmid')}
                             <input type="button" id="load_pubmed" value="Load Pubmed Citation" class="longtask" />
@@ -92,7 +92,7 @@
                     <a tal:attributes="href '%s/upload/%d/cancel' % (request.application_url, session_id)">Cancel</a>
                 </div>
                 <div class="clear"></div>               
-                <div class="formfooter">* denotes an optional field, all other fields are required</div>
+                <div class="formfooter"><sup>opt</sup> denotes an optional field, all other fields are required</div>
             </div>
         </form>
     </div>
