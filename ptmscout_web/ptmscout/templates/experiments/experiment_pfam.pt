@@ -27,11 +27,14 @@
 			<div class="body">
 				<div class="data_table">
 					<table>
-						<tr>
+                        <tr>
+                            <th></th>
 							<th>Site</th>
 							<th class="value">Peptides</th>
 						</tr>
 						<tr tal:repeat="entry sites.table">
+                            <td tal:condition="entry[0] != 'None'" ><a target="_blank" href="${request.route_url('experiment_subset', id=experiment.id, _query=pfam_site_query(entry[0]) )}"><img height="20" src="${request.static_url('ptmscout:static/images/glass.png')}" /></a></td>
+                            <td tal:condition="entry[0] == 'None'" ></td>
 							<td tal:content="entry[0]"></td>
 							<td class="value" tal:content="entry[1]"></td>
 						</tr>
@@ -51,10 +54,13 @@
 				<div class="data_table">
 					<table>
 						<tr>
+                            <th></th>
 							<th>Domain</th>
 							<th class="value">Proteins</th>
 						</tr>
 						<tr tal:repeat="entry domains.table">
+                            <td tal:condition="entry[0] != 'None'" ><a target="_blank" href="${request.route_url('experiment_subset', id=experiment.id, _query=pfam_domain_query(entry[0]) )}"><img height="20" src="${request.static_url('ptmscout:static/images/glass.png')}" /></a></td>
+                            <td tal:condition="entry[0] == 'None'" ></td>
 							<td tal:content="entry[0]"></td>
 							<td class="value" tal:content="entry[1]"></td>
 						</tr>

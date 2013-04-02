@@ -53,6 +53,14 @@ def format_pfam_sites(measurements):
     
     return {'table':site_list, 'json':jsondata}
 
+def create_query_generator(field):
+    from ptmscout.utils.query_generator import generate_metadata_query
+
+    def query_generator(value):
+        return {'query': generate_metadata_query(field, value)}
+
+    return query_generator
+
 @view_config(route_name='experiment_pfam', renderer="ptmscout:templates/experiments/experiment_pfam.pt")
 def show_pfam_view(request):
     expid = int(request.matchdict['id'])
@@ -68,4 +76,6 @@ def show_pfam_view(request):
             'experiment':exp,
             'sites':formatted_sites,
             'domains':formatted_domains,
-            'user_owner': user_owner}
+            'user_owner': user_owner,
+            'pfam_site_query': create_query_generator('Pfam-Site'),
+            'pfam_domain_query': create_query_generator('Pfam-Domain')}
