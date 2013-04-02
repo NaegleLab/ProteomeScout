@@ -26,11 +26,18 @@
 			<div class="body">
 				<div class="data_table">
 					<table>
-						<tr>
+                        <tr>
+                            <th></th>
 							<th>Prediction</th>
 							<th class="value">Peptides</th>
 						</tr>
-						<tr tal:repeat="entry data.table">
+                        <tr tal:repeat="entry data.table">
+                            <td tal:condition="entry[0] != 'None'" >
+                                <a target="_blank" href="${request.route_url('experiment_subset', id=experiment.id, _query=query_generators[source](entry[0]) )}">
+                                    <img height="20" src="${request.static_url('ptmscout:static/images/glass.png')}" />
+                                </a>
+                            </td>
+                            <td tal:condition="entry[0] == 'None'"></td>
 							<td tal:content="entry[0]"></td>
 							<td class="value" tal:content="entry[1]"></td>
 						</tr>

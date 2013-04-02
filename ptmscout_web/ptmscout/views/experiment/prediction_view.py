@@ -60,6 +60,13 @@ def format_predictions(measurements):
         
     return formatted_predictions
 
+def create_query_generator(field):
+    from ptmscout.utils.query_generator import generate_scansite_query
+    def query_generator(value):
+        return {'query': generate_scansite_query(field, value)}
+
+    return query_generator
+
 @view_config(route_name='experiment_predictions', renderer='ptmscout:templates/experiments/experiment_predictions.pt')
 def prediction_view(request):
     expid = request.matchdict['id']
@@ -73,4 +80,6 @@ def prediction_view(request):
     return {'experiment': exp,
             'pageTitle': strings.experiment_prediction_page_title % (exp.name),
             'predictions': formatted_predictions,
-            'user_owner': user_owner}
+            'user_owner': user_owner,
+            'query_generators': {'Scansite Bind': create_query_generator('Scansite-Bind'), 'Scansite Kinase': create_query_generator('Scansite-Kinase')}
+            }
