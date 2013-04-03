@@ -8,6 +8,20 @@
         <script type="text/javascript" src="${request.static_url('ptmscout:static/js/upload.condition.js')}"></script>
     </div>
     <div metal:fill-slot="content">
+        <fieldset class="conditions-instructions">
+            <legend>Instructions:</legend>
+            <span>Use this form to enter information about the conditions used in this experiment.</span><br />
+            <span>Suggestions will be made automatically as you type. Please use existing suggestions if they closely matches your experiment.</span><br />
+            <span>Examples:</span>
+            <ul>
+                <li><span class="condition-name">Drug</span>: dasatinib</li>
+                <li><span class="condition-name">Stimulus</span>: EGF</li>
+                <li><span class="condition-name">Stimulus</span>: insulin</li>
+                <li><span class="condition-name">Cell Line</span>: HEK293</li>
+                <li><span class="condition-name">Environmental</span>: Hypoxia</li>
+                <li><span class="condition-name">Environmental</span>: Heat Shock</li>
+            </ul>
+        </fieldset>            
         <div class="conditions_form">
             <div class="formtitle">
                 Configure Experimental Conditions
