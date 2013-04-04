@@ -3,6 +3,14 @@
 	text-align:center;
 }
 
+.experiment-group .group-title {
+    margin-top:20px;
+    width:90%;
+	margin-left:auto;
+	margin-right:auto;
+    font-size:medium;
+}
+
 .experimenttable {
 	border-collapse: collapse;
 	width:90%;
@@ -11,6 +19,10 @@
 	border:solid;
 	border-width:1px;
 	border-color:black;
+}
+
+.experimenttable .expander {
+    width:30px;
 }
 
 .experimenttable th {

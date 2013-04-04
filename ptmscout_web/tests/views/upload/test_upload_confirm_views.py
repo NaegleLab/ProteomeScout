@@ -34,14 +34,12 @@ class TestUploadStatusView(UnitTestCase):
         session.load_type = 'new'
         
         exp = createMockExperiment()
-        exp.export = 0
         session.experiment_id = exp.id
         
         rval = prepare_experiment(session, exp, user)
         
         exp.saveExperiment.assert_called_once_with()
         
-        self.assertEqual(1, exp.export)
         self.assertEqual(exp, rval)
         
         self.assertEqual(exp.id, session.experiment_id)
@@ -55,14 +53,12 @@ class TestUploadStatusView(UnitTestCase):
         session.load_type = 'extension'
         
         exp = createMockExperiment()
-        exp.export = 0
         session.experiment_id = exp.id
         
         rval = prepare_experiment(session, exp, user)
         
         exp.saveExperiment.assert_called_once_with()
         
-        self.assertEqual(1, exp.export)
         self.assertEqual(exp, rval)
         
         self.assertEqual(exp.id, session.experiment_id)
@@ -77,11 +73,9 @@ class TestUploadStatusView(UnitTestCase):
         session.load_type = 'append'
         
         exp = createMockExperiment()
-        exp.export = 0
         session.experiment_id = exp.id
         
         target_exp = createMockExperiment()
-        target_exp.export = 0
         session.parent_experiment = target_exp.id
         
         patch_getExperiment.return_value = target_exp
@@ -92,8 +86,6 @@ class TestUploadStatusView(UnitTestCase):
         target_exp.saveExperiment.assert_called_once_with()
         exp.delete.assert_called_once_with()
         
-        self.assertEqual(0, exp.export)
-        self.assertEqual(1, target_exp.export)
         self.assertEqual(target_exp, rval)
         
         self.assertEqual(target_exp.id, session.experiment_id)
@@ -109,11 +101,9 @@ class TestUploadStatusView(UnitTestCase):
         session.load_type = 'reload'
         
         exp = createMockExperiment()
-        exp.export = 0
         session.experiment_id = exp.id
         
         target_exp = createMockExperiment()
-        target_exp.export = 0
         session.parent_experiment = target_exp.id
         
         patch_getExperiment.return_value = target_exp
@@ -125,8 +115,6 @@ class TestUploadStatusView(UnitTestCase):
         
         target_exp.saveExperiment.assert_called_once_with()
 
-        self.assertEqual(0, exp.export)
-        self.assertEqual(1, target_exp.export)
         self.assertEqual(target_exp, rval)     
         
         self.assertEqual(target_exp.id, session.experiment_id)

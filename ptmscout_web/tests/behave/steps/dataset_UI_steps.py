@@ -25,7 +25,7 @@ def setup_pre_existing_experiment_and_session(context):
     exp.published = 0
     exp.public = 0
     exp.ambiguity = 0
-    exp.export = 1
+    exp.type = 'experiment'
     exp.grantPermission(context.active_user.user, 'owner')
     exp.saveExperiment()
     

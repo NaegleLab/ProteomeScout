@@ -16,6 +16,13 @@ experiment_PTM = Table('experiment_PTM', Base.metadata,
                     Column('experiment_id', Integer(10), ForeignKey('experiment.id')),
                     Column('PTM_id', Integer(10), ForeignKey('PTM.id')))
 
+class PermissionException(Exception):
+    def __init__(self, msg=''):
+        self.msg = msg
+
+    def __repr__(self):
+        return self.msg
+
 class ExperimentError(Base):
     __tablename__ = 'experiment_error'
     
@@ -78,8 +85,7 @@ class Experiment(Base):
     published = Column(Integer(1))
     
     ambiguity = Column(Integer(1))
-    export = Column(Integer(1))
-    experiment_id = Column(Integer(10), default=None)
+    experiment_id = Column(Integer(10), ForeignKey("experiment.id"), default=None)
     
     dataset = Column(Text)
     
@@ -96,6 +102,7 @@ class Experiment(Base):
     submitter_id = Column(Integer(10), ForeignKey('users.id'))
 
     modified_residues = Column(VARCHAR(40), default="")
+    type = Column(Enum(['compendia','experiment','dataset'], default='experiment'))
     
     def __get_job(self):
         from ptmscout.database import jobs
@@ -112,6 +119,8 @@ class Experiment(Base):
     permissions = relationship("Permission", backref="experiment", cascade="all,delete-orphan")
     measurements = relationship("MeasuredPeptide")
     modifications = relationship("PTM", secondary=experiment_PTM)
+
+    parent = relationship("Experiment", backref='children', remote_side=[id])
     
     def __init__(self):
         self.date = datetime.datetime.now()
@@ -136,7 +145,6 @@ class Experiment(Base):
         self.published = exp.published
         
         self.ambiguity = exp.ambiguity
-        self.export = exp.export
         self.experiment_id = exp.experiment_id
         
         self.dataset = exp.dataset
@@ -149,6 +157,7 @@ class Experiment(Base):
         self.publication_month = exp.publication_month
         
         self.public = exp.public
+        self.type = exp.type
         
         self.submitter_id = exp.submitter_id
         self.job_id = None
@@ -272,9 +281,15 @@ class Experiment(Base):
         return False
         
     def makePublic(self):
+        if self.experiment_id != None:
+            if self.parent.public != 1:
+                raise PermissionException()
         self.public = 1
         
     def makePrivate(self):
+        for child in self.children:
+            if child.public == 1:
+                raise PermissionException()
         self.public = 0
         
     def checkPermissions(self, user):
@@ -301,7 +316,19 @@ class Experiment(Base):
         condition.type = ctype
         condition.value = value
         self.conditions.append(condition)
-        
+
+    def getClickable(self, request, new_window=False):
+        url = None
+        if self.type == 'experiment':
+            url = request.route_url('experiment', id=self.id)
+        elif self.URL and self.URL != '':
+            url = self.URL
+
+        if url:
+            return '<a href="%s" %s>%s</a>' % ( url, 'target="_blank"' if new_window else '', self.name)
+
+        return self.name
+
 class NoSuchExperiment(Exception):
     def __init__(self, eid):
         self.eid = eid
@@ -337,26 +364,42 @@ def getExperimentById(experiment_id, user=None, check_ready=True, secure=True):
     
     return value
 
-def getAllExperiments(current_user, export=True):
+def getAllExperiments(current_user, filter_compendia=True, filter_datasets=True):
     exps = [ exp for exp in DBSession.query(Experiment).all() if exp.checkPermissions(current_user) and exp.ready() ]
-    if export:
-        return [exp for exp in exps if exp.export==1]
-    return exps
+
+    if filter_compendia:
+        exps = [exp for exp in exps if exp.type!='compendia']
+
+    if filter_datasets:
+        exps = [exp for exp in exps if exp.type!='dataset']
+
+    return sorted(exps, key=lambda item: item.name)
+
+def recursive_append(exp, tree, experiments, lp=None):
+    available = exp in experiments
+
+    if available:
+        tree.append(exp)
+        if lp != None:
+            exp.experiment_id = lp.id
+        else:
+            exp.experiment_id = None
+
+        lp = exp
+        experiments.remove(exp)
+
+    for child in exp.children:
+        recursive_append(child, tree, experiments, lp=lp)
 
 def getExperimentTree(current_user):
     experiments = getAllExperiments(current_user)
-    for experiment in experiments:
-        experiment.children = []
-        
-    experiment_dict = dict([(experiment.id, experiment) for experiment in experiments])
+    root_experiments = [ exp for exp in experiments if exp.experiment_id == None ]
     experiment_tree = []
-    for experiment in experiments:
-        if experiment.experiment_id != None:
-            if experiment.experiment_id in experiment_dict:
-                experiment_dict[experiment.experiment_id].children.append(experiment)
-        else:
-            experiment_tree.append(experiment)
-    
+
+    while len(root_experiments) > 0:
+        exp = root_experiments.pop(0)
+        recursive_append(exp, experiment_tree, experiments)
+
     return experiment_tree
     
 def getValuesForField(field_name):

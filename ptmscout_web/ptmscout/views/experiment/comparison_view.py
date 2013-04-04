@@ -18,7 +18,7 @@ def format_peptide_list(peptide_list):
     return formatted_peptides
 
 def compare_to_all(exp, user, experiment_list = set()):
-    exps = experiment.getAllExperiments(user, export=False)
+    exps = experiment.getAllExperiments(user, filter_compendia=False)
     if experiment_list == set():
         experiment_list = set([e.id for e in exps])
 
@@ -26,7 +26,7 @@ def compare_to_all(exp, user, experiment_list = set()):
 
     experiment_info = {}
     for exp in exps:
-        experiment_info[exp.id] = { 'name': exp.name, 'export': exp.export }
+        experiment_info[exp.id] = { 'name': exp.name, 'export': exp.type=='experiment' }
 
     by_experiment = {}
     for eid in experiment_list:

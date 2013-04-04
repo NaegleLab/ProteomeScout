@@ -22,7 +22,6 @@ def resume_upload_session(request):
         return HTTPFound(base_url % (session_id, session.stage))
 
 def prepare_experiment(session, exp):
-    exp.export = 1
     exp.job.status='in queue'
     exp.job.restart()
     exp.job.save()

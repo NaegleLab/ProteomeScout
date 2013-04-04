@@ -28,7 +28,6 @@ def prepare_experiment(session, exp, user):
     if session.load_type=='reload':
         modifications.deleteExperimentData(parent_exp.id)
     
-    exp_target.export = 1
     exp_target.saveExperiment()
     
     session.stage = 'complete'

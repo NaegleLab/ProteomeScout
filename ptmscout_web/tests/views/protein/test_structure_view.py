@@ -1,4 +1,4 @@
-from mock import patch
+from mock import patch, Mock
 from ptmscout.config import strings, settings
 from pyramid.testing import DummyRequest
 from tests.PTMScoutTestCase import UnitTestCase, IntegrationTestCase
@@ -36,13 +36,17 @@ class TestProteinStructureViewIntegration(IntegrationTestCase):
 class TestProteinStructureViews(UnitTestCase):
 
     def test_format_protein_modifications(self):
+        request = DummyRequest()
+        request.route_url = Mock()
+        request.route_url.return_value = 'some_experiment_page'
         prot = createMockProtein()
 
         exp1 = createMockExperiment(13)
         exp2 = createMockExperiment(16)
 
-        exp1.export = 1
-        exp2.export = 0
+        exp1.type = 'experiment'
+        exp2.type = 'compendia'
+        exp2.URL = 'http://compendia.com'
 
         ms1 = createMockMeasurement(prot.id, 13)
         ms1.experiment = exp1
@@ -71,7 +75,7 @@ class TestProteinStructureViews(UnitTestCase):
         region1 = createMockRegion(pid=prot.id, label='kinase', start=190, stop=220)
         prot.regions.append(region1)
 
-        experiments, mod_types, result = format_protein_modifications(prot, measured_peps)
+        experiments, mod_types, result = format_protein_modifications(request, prot, measured_peps)
 
         self.maxDiff=None
 
@@ -79,10 +83,10 @@ class TestProteinStructureViews(UnitTestCase):
                         210: {'mods':{}, 'residue':pep2.site_type, 'domain':'d1', 'peptide': pep2.pep_aligned, 'regions':['kinase']},
                         300: {'mods':{}, 'residue':pep3.site_type, 'domain':None, 'peptide': pep3.pep_aligned, 'regions':[] }}
 
-        exp_result[200]['mods'][ptm1.name] = [ {'MS': ms1.id, 'experiment':13, 'has_data': True, 'exported':True} ]
-        exp_result[210]['mods'][ptm1.name] = [ {'MS': ms1.id, 'experiment':13, 'has_data': True, 'exported':True} ]
-        exp_result[210]['mods'][ptm2.name] = [ {'MS': ms2.id, 'experiment':16, 'has_data': False, 'exported':False} ]
-        exp_result[300]['mods'][ptm1.name] = [ {'MS': ms2.id, 'experiment':16, 'has_data': False, 'exported':False} ]
+        exp_result[200]['mods'][ptm1.name] = [ {'MS': ms1.id, 'experiment_url': 'some_experiment_page', 'experiment':13, 'has_data': True} ]
+        exp_result[210]['mods'][ptm1.name] = [ {'MS': ms1.id, 'experiment_url': 'some_experiment_page', 'experiment':13, 'has_data': True} ]
+        exp_result[210]['mods'][ptm2.name] = [ {'MS': ms2.id, 'experiment_url': 'http://compendia.com', 'experiment':16, 'has_data': False} ]
+        exp_result[300]['mods'][ptm1.name] = [ {'MS': ms2.id, 'experiment_url': 'http://compendia.com', 'experiment':16, 'has_data': False} ]
 
         self.assertEqual(exp_result, result)
         self.assertEqual(sorted([ptm1.name, ptm2.name]), mod_types)
@@ -143,7 +147,7 @@ class TestProteinStructureViews(UnitTestCase):
 
         patch_getMods.assert_called_once_with(prot.id, request.user)
         patch_getProtein.assert_called_once_with(35546)
-        patch_formatMods.assert_called_once_with(prot, exp_mods)
+        patch_formatMods.assert_called_once_with(request, prot, exp_mods)
         patch_formatDomains.assert_called_once_with(prot)
         patch_formatRegions.assert_called_once_with(prot)
         patch_formatMutations.assert_called_once_with(prot)
@@ -163,7 +167,6 @@ class TestProteinStructureViews(UnitTestCase):
                     'regions': formatted_regions,
                     'pfam_url': settings.pfam_family_url,
                     'protein_data_url': "%s/proteins/%s/data" % (request.application_url, prot.id),
-                    'experiment_url': "%s/experiments" % (request.application_url),
                     'experiment':1302
                 }
 

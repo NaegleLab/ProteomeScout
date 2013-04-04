@@ -88,7 +88,7 @@ class TestModifications(DBTestCase):
         exp.job_id = self.create_job('finished')
         exp.published = 0
         exp.ambiguity = 0
-        exp.export = 0
+        exp.type = 'compendia'
         exp.dataset = ""
         exp.submitter = ""
         exp.primaryModification='Y,T'
@@ -103,7 +103,7 @@ class TestModifications(DBTestCase):
         exp2.job_id = self.create_job('finished')
         exp2.published = 0
         exp2.ambiguity = 0
-        exp2.export = 0
+        exp2.type = 'compendia'
         exp2.dataset = ""
         exp2.submitter = ""
         exp2.primaryModification='S'
@@ -119,7 +119,7 @@ class TestModifications(DBTestCase):
         exp3.published = 0
         exp3.job_id = self.create_job('running')
         exp3.ambiguity = 0
-        exp3.export = 0
+        exp3.type = 'compendia'
         exp3.dataset = ""
         exp3.submitter = ""
         exp3.primaryModification='S'

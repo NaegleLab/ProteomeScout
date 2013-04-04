@@ -15,7 +15,7 @@ class UserTestCase(DBTestCase):
             exp.author = ""
             exp.published = 0
             exp.ambiguity = 0
-            exp.export = 0
+            exp.type = 'compendia'
             exp.experiment_id = None
             exp.dataset = ""
             exp.submitter = ""

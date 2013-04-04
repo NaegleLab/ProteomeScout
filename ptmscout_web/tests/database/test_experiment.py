@@ -84,7 +84,7 @@ class ExperimentTestCase(DBTestCase):
         self.assertEqual(exp.published, nexp.published)
 
         self.assertEqual(exp.ambiguity, nexp.ambiguity)
-        self.assertEqual(exp.export, nexp.export)
+        self.assertEqual(exp.type, nexp.type)
         self.assertEqual(exp.experiment_id, nexp.experiment_id)
         
         self.assertEqual(exp.dataset, nexp.dataset)
@@ -179,29 +179,39 @@ class ExperimentTestCase(DBTestCase):
         
     @patch('ptmscout.database.experiment.getAllExperiments')
     def test_getExperimentTree_should_build_experiment_tree(self, patch_getAllExperiments):
-        experiments = [Experiment(), Experiment(), Experiment(), Experiment(), Experiment(), Experiment()]
+        experiments = [Experiment(), Experiment(), Experiment(), Experiment(), Experiment(), Experiment(), Experiment(), Experiment(), Experiment()]
         
-        experiments[0].id = 1
-        experiments[1].id = 2
-        experiments[2].id = 3
-        experiments[3].id = 4
-        experiments[4].id = 5
-        experiments[5].id = 6
-        
+        experiments[0].id = 0
+        experiments[1].id = 1
+        experiments[2].id = 2
+        experiments[3].id = 3
+        experiments[4].id = 4
+        experiments[5].id = 5
+        experiments[6].id = 6
+        experiments[7].id = 7
+        experiments[8].id = 8
+
         experiments[0].experiment_id = None
         experiments[1].experiment_id = None
-        experiments[2].experiment_id = 1
-        experiments[3].experiment_id = 1
+        experiments[2].experiment_id = 0
+        experiments[3].experiment_id = 0
         experiments[4].experiment_id = None
-        experiments[5].experiment_id = 2
+        experiments[5].experiment_id = 1
+        experiments[6].experiment_id = None
+        experiments[7].experiment_id = 8
+        experiments[8].experiment_id = 6
+
+        experiments[0].children = [experiments[2], experiments[3]]
+        experiments[1].children = [experiments[5]]
+        experiments[6].children = [experiments[8]]
+        experiments[8].children = [experiments[7]]
         
-        patch_getAllExperiments.return_value = experiments
+        patch_getAllExperiments.return_value = experiments[:8]
         
         current_user = 0
         experiment_tree = getExperimentTree(current_user)
-        
+        expected_tree = [experiments[0], experiments[2], experiments[3], experiments[1], experiments[5], experiments[4], experiments[6], experiments[7]]
+      
         patch_getAllExperiments.assert_called_with(current_user)
-        self.assertEqual([experiments[0], experiments[1], experiments[4]], experiment_tree)
-        self.assertEqual([experiments[2], experiments[3]], experiments[0].children)
-        self.assertEqual([experiments[5]], experiments[1].children)
-        
+        self.assertEqual(expected_tree, experiment_tree)
+        self.assertEqual(6, experiment_tree[-1].experiment_id)

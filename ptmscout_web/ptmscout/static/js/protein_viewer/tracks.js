@@ -160,15 +160,10 @@ function build_ptm_table(k, mods, protein_data) {
                     d3.select(this).append('td')
                         .text(d.mod_type);
                     exp_td = d3.select(this).append('td');
-
-                    if(d.exported == 1){
-                        exp_td.append('a')
-                            .attr('href', "{0}/{1}".format(protein_data.experiment_url, d.experiment))
-                            .attr('target', '_blank')
-                            .text(d.experiment_name);
-                    }else{
-                        exp_td.text(d.experiment_name);
-                    }
+                    exp_td.append('a')
+                        .attr('href', "{0}".format(d.experiment_url))
+                        .attr('target', '_blank')
+                        .text(d.experiment_name);
 
                     annotation_td = d3.select(this).append('td');
                     images_url = 'http://ptmscout.wustl.edu/static/images/{0}';

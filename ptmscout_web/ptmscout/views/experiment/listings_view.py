@@ -5,10 +5,13 @@ from ptmscout.config import strings
 
 @view_config(route_name='experiments', renderer='ptmscout:templates/experiments/experiments.pt')
 def experiment_listing(request):
-    experiments = experiment.getExperimentTree(request.user)
+    all_exps = experiment.getAllExperiments(request.user, filter_compendia = False)
+    all_compendia = [ exp for exp in all_exps if exp.type == 'compendia' ]
+    experiment_tree = experiment.getExperimentTree(request.user)
     
     return {'pageTitle': strings.experiments_page_title,
-            'experiments': experiments}
+            'compendia': all_compendia,
+            'experiments': experiment_tree}
 
 @view_config(route_name='experiment', renderer='ptmscout:templates/experiments/experiment_home.pt')
 def view_experiment(request):

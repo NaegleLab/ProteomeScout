@@ -13,7 +13,7 @@ def write_experiment_properties(nexp, session, schema, current_user):
     nexp.published = 1 if schema.get_form_value('published') == "yes" else 0
     nexp.ambiguity = 1 if schema.get_form_value('ambiguous') == "yes" else 0
     nexp.URL = schema.get_form_value('URL')
-    nexp.export = 0
+    nexp.type = 'experiment'
 
     nexp.contact = None
     nexp.author = None

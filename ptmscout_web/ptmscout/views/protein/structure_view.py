@@ -77,13 +77,17 @@ def get_site_regions(regions, pos):
 
     return region_names
 
-def format_protein_modifications(prot, mod_sites):
+def format_protein_modifications(request, prot, mod_sites):
     experiments = {}
     mod_types = set()
     mods = {}
 
     for ms in mod_sites:
         experiments[ms.experiment_id] = ms.experiment.name
+
+        exp_url = request.route_url('experiment', id=ms.experiment_id)
+        if ms.experiment.type == 'compendia':
+            exp_url = ms.experiment.URL
 
         for modpep in ms.peptides:
             mod_types.add(modpep.modification.name)
@@ -98,7 +102,7 @@ def format_protein_modifications(prot, mod_sites):
                                           'peptide': pep.pep_aligned} )
 
             mod_list = pos_description['mods'].get(ptm.name, [])
-            mod_list.append( {'MS': ms.id, 'experiment': ms.experiment_id, 'exported': ms.experiment.export == 1, 'has_data': len(ms.data) > 0 } )
+            mod_list.append( {'MS': ms.id, 'experiment_url': exp_url, 'experiment': ms.experiment_id, 'has_data': len(ms.data) > 0 } )
             pos_description['mods'][ptm.name] = mod_list
 
             mods[pep.site_pos] = pos_description
@@ -114,7 +118,7 @@ def protein_structure_viewer(request):
 
     mod_sites = modifications.getMeasuredPeptidesByProtein(protein_id, request.user)
 
-    formatted_exps, formatted_mod_types, formatted_mods = format_protein_modifications(prot, mod_sites)
+    formatted_exps, formatted_mod_types, formatted_mods = format_protein_modifications(request, prot, mod_sites)
     formatted_domains = format_protein_domains(prot)
     formatted_regions = format_protein_regions(prot)
     formatted_mutations = format_protein_mutations(prot)
@@ -129,7 +133,6 @@ def protein_structure_viewer(request):
             'scansite': formatted_scansite,
             'exps': formatted_exps,
             'pfam_url': settings.pfam_family_url,
-            'experiment_url': "%s/experiments" % (request.application_url),
             'protein_data_url': "%s/proteins/%d/data" % (request.application_url, protein_id),
             'experiment': request.urlfilter.get_field('experiment_id') }
     encoded_data = base64.b64encode( json.dumps( data ) )

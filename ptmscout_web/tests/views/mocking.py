@@ -156,7 +156,7 @@ def createMockSubset(sid=None, owner_id=None, experiment_id=None, name=None, for
     return mock
     
 
-def createMockExperiment(eid=random.randint(0,100000), public=0, parent_id=None, status='configuration'):
+def createMockExperiment(eid=random.randint(0,100000), public=0, parent_id=None, status='configuration', etype='experiment'):
     mock = Mock(spec=Experiment)
     mock.id = eid
     mock.public = public
@@ -169,6 +169,7 @@ def createMockExperiment(eid=random.randint(0,100000), public=0, parent_id=None,
     mock.date = datetime.datetime.now()
     mock.experiment_id = None
     mock.errors = []
+    mock.type = etype
 
     mock.status = status
     mock.progress=0
