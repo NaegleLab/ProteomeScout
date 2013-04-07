@@ -4,18 +4,8 @@
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/users.css')}" />
 	</div>
     <div metal:fill-slot="content">
-    	<div id="experimentInfo" >
-		   	<fieldset>
-		   		<legend>Experiment</legend>
-		   		<a href="${experiment.getUrl()}" tal:condition="experiment.getUrl() != None">${experiment.name}</a>
-		   		<tal:expname tal:condition="experiment.getUrl() == None">${experiment.name}</tal:expname><br />
-				<tal:expcitation tal:content="structure experiment.getLongCitationString()"></tal:expcitation><br />
-			    <br /><br />
-			    ${experiment.description}
-			    <br /><br />
-			    Loaded: ${experiment.date}<br />
-		    </fieldset>
-		</div>    
+      <div metal:use-macro="experiment_info" />
+
     	<div class = "infobox" tal:condition="not confirm">
     		<div class = "infoheader">${header}</div>
     		<p class = "infotext">${message}</p>

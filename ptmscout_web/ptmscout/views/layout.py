@@ -14,6 +14,7 @@ def add_path_definitions(event):
     event['experiment'] = None
 
     event['experiment_header'] = experiment_template()
+    event['experiment_info'] = experiment_info()
     event['experiment_summary_menu'] = experiment_summary_template()    
     event['experiment_list'] = experiment_list_template()
     event['protein_header'] = protein_template()
@@ -30,6 +31,11 @@ def site_layout():
 def experiment_template():
     renderer = get_renderer("ptmscout:templates/macro/experiment_header.pt")
     legend = renderer.implementation().macros['experiment_header']
+    return legend
+
+def experiment_info():
+    renderer = get_renderer("ptmscout:templates/macro/experiment_info.pt")
+    legend = renderer.implementation().macros['experiment_info']
     return legend
 
 def experiment_summary_template():

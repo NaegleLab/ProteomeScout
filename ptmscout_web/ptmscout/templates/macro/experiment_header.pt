@@ -14,18 +14,5 @@
 	   </ul>
 	</div>
 	<div id="experimentSummaryMenu" metal:define-slot="menu"></div>
-	<div id="experimentInfo" >
-	   	<fieldset class="object-info">
-	   		<legend>Experiment</legend>
-	   		<a href="${experiment.getUrl()}" tal:condition="experiment.getUrl() != None">${experiment.name}</a>
-	   		<tal:expname tal:condition="experiment.getUrl() == None">${experiment.name}</tal:expname><br />
-	   		<div tal:condition="experiment.published==1" >
-			<tal:expcitation tal:content="structure experiment.getLongCitationString()"></tal:expcitation><br />
-		    <br /><br />
-		    </div>
-		    ${experiment.description}
-		    <br /><br />
-		    Loaded: ${experiment.date}<br />
-	    </fieldset>
-	</div>
+	<div metal:use-macro="experiment_info" />
 </div>
