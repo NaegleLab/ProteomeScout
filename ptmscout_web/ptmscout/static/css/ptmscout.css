@@ -18,19 +18,25 @@ body {
 	min-height: 100%;
 	height: auto !important;
 	height: 100%;
-	margin: 0 auto -80px; /* the bottom margin is the negative value of the footer's height */
+	margin: 0 auto -200px; /* the bottom margin is the negative value of the footer's height */
+	background-color:gray;
+	margin-left: auto;
+	margin-right:auto;
 }
 #wrapper_container {
   width: 960px;
-  background-color:white;
+  background-color: white;
   margin-left:auto;
   margin-right:auto;
   min-height: 100%;
   height: auto !important;
   height: 100%;
+  border-left: 2px solid #666;
+  border-right: 2px solid #666;
 }
 #footer, #push {
-	height: 80px; /* .push must be the same height as .footer */
+  padding-top: 1em;
+	height: 200px; /* .push must be the same height as .footer */
 }
 
 
@@ -56,7 +62,6 @@ table {
 }
 
 #content {
-  
 }
 #content .container_12,
 #breadcrumb .container_12,
@@ -64,7 +69,6 @@ table {
 {
   background-color: white;
 }
-
 
 #menu {
   background-color: black;
@@ -78,13 +82,18 @@ table {
   color: white;
   text-decoration:none;
 }
+#menu a:hover {
+  color: blue;
+  text-decoration: underline;
+}
 
 #breadcrumb {
 }
 #breadcrumb .container_12 {
   text-indent: 0.2em;
-  border-top: 2px solid #333399;
-  border-bottom: 2px solid #333399;
+  border-top: 2px solid #666;
+  border-bottom: 2px solid #666;
+  color: #666;
 }
 
 #content { }
@@ -93,19 +102,31 @@ table {
   text-indent: 0.2em;  
 }
 
-
-#experimentMenu {
+#experimentMenu, #experimentSummaryMenu {
   height: 24px;
-  text-indent: 0.2em;
-  border-bottom: 2px solid #333399;
+  padding-left: 10px;
+  border-bottom: 2px solid #666;
+}
+#experimentMenu {
+  background-color: #009999;
+}
+#experimentMenu a, #experimentSummaryMenu a{
+  color: white;
+  text-decoration: none;
+}
+#experimentMenu a:hover, #experimentSummaryMenu a:hover {
+  color: blue;
+  text-decoration: underline;
 }
 #experimentSummaryMenu {
-  height: 24px;
+  background-color: #00AAAA;
 }
 
-#footer .container_12 {
+#footer {
   background-color: black;
-  height: 80px;
+}
+#footer .container_12 {
+  height: 200px;
   font-size: 10pt;
   color: white;
 }
