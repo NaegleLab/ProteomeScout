@@ -12,6 +12,12 @@ body {
   height: auto;
   background-color: #ccc;
 }
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
 
 
 #wrapper {
@@ -80,11 +86,9 @@ table {
 
 #menu a {
   color: white;
-  text-decoration:none;
 }
 #menu a:hover {
   color: blue;
-  text-decoration: underline;
 }
 
 #breadcrumb {
@@ -99,7 +103,6 @@ table {
 #content { }
 #content .container_12 {
   bottom: 0;	
-  text-indent: 0.2em;  
 }
 
 #experimentMenu, #experimentSummaryMenu {
@@ -112,11 +115,9 @@ table {
 }
 #experimentMenu a, #experimentSummaryMenu a{
   color: white;
-  text-decoration: none;
 }
 #experimentMenu a:hover, #experimentSummaryMenu a:hover {
   color: blue;
-  text-decoration: underline;
 }
 #experimentSummaryMenu {
   background-color: #00AAAA;
@@ -130,7 +131,9 @@ table {
   font-size: 10pt;
   color: white;
 }
-
+#footer a {
+  color: #009999;
+}
 ul.link_menu
 {
   display: block;
