@@ -2,7 +2,7 @@
 # play badly with C extensions.
 WSGIApplicationGroup %{GLOBAL}
 WSGIPassAuthorization On
-WSGIDaemonProcess pyramid user=www-data group=naeglelab threads=8 \
+WSGIDaemonProcess pyramid user=www-data threads=8 \
    python-path=/data/pyramid/lib/python2.7/site-packages
 WSGIScriptAlias /maintenance /data/pyramid/pyramid.wsgi
 
