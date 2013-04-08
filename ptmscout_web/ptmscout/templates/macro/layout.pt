@@ -1,8 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" metal:define-macro="layout">
-  <head>
+  <head profile="http://www.w3.org/2005/10/profile">
   	<?python import urllib; ?>
     <?python import ptmscout.config as config; ?>
+    <link rel="icon" type="image/png" href="${request.static_url('ptmscout:static/images/ptmscoutMagGlass.png')}">
     <title>${pageTitle}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta tal:condition="redirect != None" http-equiv="refresh" content="3; url=${redirect}" />
