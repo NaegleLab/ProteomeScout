@@ -51,6 +51,9 @@ def submit_viral_dataset(context):
 def submit_dataset_with_repeat_peptides_diff_mod(context):
     bot.upload_file(context, 'datasetLoad_samePepDiffMod.txt')
 
+@given(u'a user submits a dataset that has sites instead of peptides and an incorrect residue-site to protein match')
+def submit_dataset_with_sites_not_peptides(context):
+    bot.upload_file(context, 'datasetLoad_sites.txt')
    
 @then(u'the user should be sent an email with a link to the experiment which contains')
 @patch('transaction.abort')

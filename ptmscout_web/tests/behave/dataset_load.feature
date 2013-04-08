@@ -1,19 +1,19 @@
 Feature: Dataset Load
     In order to transfer a dataset accurately to PTMScout
     People should be able to see the errors that occurred during data loading
-    
+
     Scenario: Correct Dataset
           Given a user submits a correctly formatted dataset of phosphorylation data
           Then the user should be sent an email with a link to the experiment which contains:
             | peptides | proteins | rejected | errors |
             | 17       | 15       | 0        | 0      |
-    
+
     Scenario: Load a correct dataset with degenerate methylation names
           Given a user has loaded a dataset in which modifications have varying specificities of naming
           Then the user should be sent an email with a link to the experiment which contains:
             | peptides | proteins | rejected | errors |
             | 7        | 7        | 1        | 1      |
-    
+
     Scenario: Load a dataset with bad amino acid assignments
           Given a user has loaded a dataset and the modification type does not match the amino acid for that species
           Then the user should be sent an email with a link to the experiment which contains:
@@ -57,17 +57,24 @@ Feature: Dataset Load
     	Then the user should be sent an email with a link to the experiment which contains:
     	  | peptides | proteins | rejected | errors |
     	  | 0        | 0        | 9        | 9      |
-    
+
     Scenario: Handle an isoform
           Given a user submits a dataset in which an isoform specific record is included
           Then the user should be sent an email with a link to the experiment which contains:
             | peptides | proteins | rejected | errors |
             | 18       | 16       | 0        | 0      |
-          
-    @runme
+
     Scenario: Handle a viral proteins by checking PTM types of host organism
           Given a user submits a dataset in which viral proteins are included
           Then the user should be sent an email with a link to the experiment which contains:
             | peptides | proteins | rejected | errors |
             | 7        | 4        | 0        | 0      |
+
+    @runme
+    Scenario: Site specification instead of peptide
+          Given a user submits a dataset that has sites instead of peptides and an incorrect residue-site to protein match
+          Then the user should be sent an email with a link to the experiment which contains:
+            | peptides | proteins | rejected | errors |
+            | 8        | 6        | 1        | 1      |
+
 
