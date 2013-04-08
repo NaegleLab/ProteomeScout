@@ -35,7 +35,7 @@ class PeptideTasksTest(IntegrationTestCase):
         load_ambiguities = True
 
 
-        peptide_tasks.run_peptide_import(prot_map, peptides, mod_map, data_runs, headers, units, load_ambiguities, exp_id, job_id)
+        peptide_tasks.run_peptide_import(prot_map, peptides, mod_map, data_runs, headers, units, load_ambiguities, False, exp_id, job_id)
 
         patch_store_input.assert_called_once_with(exp_id, 'peptides', prot_map)
         patch_set_stage.apply_async.assert_called_once_with((job_id, 'peptides', 4))

@@ -293,7 +293,7 @@ class TestUploadUtils(unittest.TestCase):
         
         session.data_file = 'test/test_dataset_formatted_w_errors.txt'
         
-        errors = check_data_rows(session, c1, c4, c3, None, [c5,c6,c7,c8,c9,c10,c11,c12], [c13,c14,c15,c16,c17,c18,c19,c20])
+        errors = check_data_rows(session, c1, c4, None, c3, None, [c5,c6,c7,c8,c9,c10,c11,c12], [c13,c14,c15,c16,c17,c18,c19,c20])
         
         expected_errors = ["Line 1: Peptide modification error",
                            "Line 1: Peptide modification error",
@@ -492,8 +492,10 @@ class TestUploadUtils(unittest.TestCase):
 
     @patch('ptmscout.utils.uploadutils.check_data_rows')
     @patch('ptmscout.utils.uploadutils.check_unique_column')
-    def test_check_data_column_assignments_should_raise_errors(self, patch_check_unique, patch_check_rows):
+    @patch('ptmscout.utils.uploadutils.require_exactly_one')
+    def test_check_data_column_assignments_should_raise_errors(self, patch_require_one, patch_check_unique, patch_check_rows):
         ce = ColumnError("Some error")
+        patch_require_one.return_value='peptide', createMockSessionColumn(1, 'peptide', 2)
         patch_check_unique.return_value=createMockSessionColumn(0, 'accession', 1)
         patch_check_rows.return_value = [ce]
         
@@ -510,8 +512,10 @@ class TestUploadUtils(unittest.TestCase):
             
     @patch('ptmscout.utils.uploadutils.check_data_rows')
     @patch('ptmscout.utils.uploadutils.check_unique_column')
-    def test_check_data_column_assignments_should_raise_error_not_check_rows(self, patch_check_unique, patch_check):
+    @patch('ptmscout.utils.uploadutils.require_exactly_one')
+    def test_check_data_column_assignments_should_raise_error_not_check_rows(self, patch_require_one, patch_check_unique, patch_check):
         ce = ColumnError("Some error")
+        patch_require_one.return_value='sites', createMockSessionColumn(1, 'sites', 2)
         patch_check_unique.side_effect = ce
         patch_check.return_value = []
         
@@ -522,7 +526,7 @@ class TestUploadUtils(unittest.TestCase):
         try:
             check_data_column_assignments(session)
         except ErrorList, el:
-            self.assertEqual([ce.message] * 4, el.error_list())
+            self.assertEqual([ce.message] * 3, el.error_list())
             self.assertEqual(True, el.critical)
         else:
             self.fail("Expected exception: ErrorList([ColumnError()])")

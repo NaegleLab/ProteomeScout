@@ -16,7 +16,7 @@ def start_import(exp_id, session_id, job_id):
     session = upload.getSessionById(session_id, secure=False)
     
     log.info("Loading data file...")
-    accessions, peptides, mod_map, data_runs, errors, line_mapping = upload_helpers.parse_datafile(session)
+    accessions, sites, site_type, mod_map, data_runs, errors, line_mapping = upload_helpers.parse_datafile(session)
 
     if exp.loading_stage == 'in queue' or exp.status != 'error':
         exp.clearErrors()
@@ -40,7 +40,10 @@ def start_import(exp_id, session_id, job_id):
         query_task = protein_tasks.get_proteins_from_external_databases.s(accessions, line_mapping, exp_id, job_id)
         proteins_task = protein_tasks.query_protein_metadata.s(accessions, line_mapping, exp_id, job_id)
         GO_task = GO_tasks.import_go_terms.s(exp_id, job_id)
-        peptide_task = peptide_tasks.run_peptide_import.s(peptides, mod_map, data_runs, headers, session.units, load_ambiguities, exp_id, job_id)
+        
+        peptide_task = peptide_tasks.run_peptide_import.s(sites, mod_map, data_runs, headers, session.units, load_ambiguities, site_type == 'sites', exp_id, job_id)
+        
+
         annotate_task = annotate_tasks.annotate_experiment.si(exp_id, job_id)
         finalize_task = notify_tasks.finalize_experiment_import.si(exp_id)
 

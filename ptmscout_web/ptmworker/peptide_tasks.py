@@ -39,9 +39,16 @@ def load_protein(accession, protein_record):
     prot = protein.getProteinBySequence(protein_record.sequence, protein_record.species)
     return prot.id, prot.sequence, protein_record.species, protein_record.full_taxonomy
 
-def load_peptide_modification(exp_id, load_ambiguities, protein_accession, protein_record, pep_seq, mods, units, series_header, runs):
+
+
+def load_peptide_modification(exp_id, load_ambiguities, protein_accession, protein_record, site_designation, mods, units, series_header, runs, is_site=False):
     try:
         protein_id, protein_sequence, species, taxonomy = load_protein(protein_accession, protein_record)
+
+        pep_seq = site_designation
+        if is_site:
+            pep_seq = upload_helpers.get_pep_seq_from_sites(protein_sequence, site_designation)
+
         mod_types, aligned_sequences = upload_helpers.parse_modifications(protein_sequence, pep_seq, mods, taxonomy)
 
         filter_mods = []
@@ -50,12 +57,12 @@ def load_peptide_modification(exp_id, load_ambiguities, protein_accession, prote
             mod = mod_types[i]
             filter_mods.append((seq, mod))
 
-        pep_measurement = modifications.getMeasuredPeptide(exp_id, pep_seq, protein_id, filter_mods)
+        pep_measurement = modifications.getMeasuredPeptide(exp_id, site_designation, protein_id, filter_mods)
 
         if pep_measurement==None:
             pep_measurement = modifications.MeasuredPeptide()
             pep_measurement.experiment_id = exp_id
-            pep_measurement.peptide = pep_seq
+            pep_measurement.peptide = site_designation
             pep_measurement.protein_id = protein_id
             pep_measurement.query_accession = protein_accession
 
@@ -83,18 +90,18 @@ def load_peptide_modification(exp_id, load_ambiguities, protein_accession, prote
         pep_measurement.save()
 
     except uploadutils.ParseError, pe:
-        create_errors_for_runs(exp_id, protein_accession, pep_seq, pe.msg, runs)
+        create_errors_for_runs(exp_id, protein_accession, site_designation, pe.msg, runs)
     except scansite_tools.ScansiteError:
-        create_errors_for_runs(exp_id, protein_accession, pep_seq, "Scansite query failed for peptide: %s '%s'" % (protein_accession, pep_seq), runs)
+        create_errors_for_runs(exp_id, protein_accession, site_designation, "Scansite query failed for peptide: %s '%s'" % (protein_accession, site_designation), runs)
     except TypeError:
-        create_errors_for_runs(exp_id, protein_accession, pep_seq, "Failed to get data for protein: %s" % (protein_accession), runs)
+        create_errors_for_runs(exp_id, protein_accession, site_designation, "Failed to get data for protein: %s" % (protein_accession), runs)
     except DBAPIError:
         raise
     except SQLAlchemyError:
         raise
     except Exception, e:
-        log.warning("Unexpected Error: %s\n%s\nDuring import of peptide %d %s %s", str(e), traceback.format_exc(), exp_id, protein_accession, pep_seq)
-        create_errors_for_runs(exp_id, protein_accession, pep_seq, "Unexpected error: " + str(e), runs)
+        log.warning("Unexpected Error: %s\n%s\nDuring import of peptide %d %s %s", str(e), traceback.format_exc(), exp_id, protein_accession, site_designation)
+        create_errors_for_runs(exp_id, protein_accession, site_designation, "Unexpected error: " + str(e), runs)
 
 
 UPDATE_EVERY=30
@@ -102,7 +109,7 @@ UPDATE_EVERY=30
 @celery.task
 @upload_helpers.notify_job_failed
 @upload_helpers.transaction_task
-def run_peptide_import(prot_map, peptides, mod_map, data_runs, headers, units, load_ambiguities, exp_id, job_id):
+def run_peptide_import(prot_map, peptides, mod_map, data_runs, headers, units, load_ambiguities, by_site, exp_id, job_id):
     accessions = set( prot_map.keys() ) & set( peptides.keys() )
 
     total_peptides = 0
@@ -124,7 +131,7 @@ def run_peptide_import(prot_map, peptides, mod_map, data_runs, headers, units, l
                     line, series = data_runs[run_key][run_name]
                     run_tasks.append( (line, run_name, series) )
 
-                load_peptide_modification(exp_id, load_ambiguities, acc, prot_map[acc], pep, mod_str, units, headers, run_tasks )
+                load_peptide_modification(exp_id, load_ambiguities and not by_site, acc, prot_map[acc], pep, mod_str, units, headers, run_tasks, is_site = by_site)
 
                 i+=1
                 if i % UPDATE_EVERY == 0:

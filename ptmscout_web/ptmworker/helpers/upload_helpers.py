@@ -1,5 +1,5 @@
 from ptmscout.database import protein, taxonomies, modifications, experiment, gene_expression, mutations, uniprot
-from ptmscout.utils import uploadutils
+from ptmscout.utils import uploadutils, protein_utils
 from ptmscout.config import strings, settings
 from ptmscout.database.modifications import NoSuchPeptide
 from ptmworker.helpers import scansite_tools
@@ -383,6 +383,16 @@ def check_peptide_matches_protein_sequence(prot_seq, pep_seq):
 
     return index
 
+def get_pep_seq_from_sites(prot_seq, site_designation):
+    site_residues = dict( ( int(s[1:]), s[0] ) for s in site_designation.split(';') )
+    for pos in site_residues:
+        if site_residues[pos].upper() != prot_seq[pos-1].upper():
+            raise uploadutils.ParseError(None, None, "Designated residue site pair did not match protein sequence %s%d != %s%d" % (site_residues[pos], pos, prot_seq[pos-1], pos))
+
+    site_positions = set([ int(s[1:]) - 1 for s in site_designation.split(';') ])
+
+    return "".join( c.lower() if i in site_positions else c for i, c in enumerate(prot_seq.upper()) )
+
 def parse_modifications(prot_seq, pep_seq, mods, taxonomy):
     pep_seq = pep_seq.strip()
     index = check_peptide_matches_protein_sequence(prot_seq, pep_seq)
@@ -459,14 +469,25 @@ def get_series_headers(session):
 
 def parse_datafile(session):
     accessions = {}
-    peptides = {}
+    sites_map = {}
     mod_map = {}
     data_runs = {}
     line_mapping = {}
     errors = []
     
     acc_col = session.getColumns('accession')[0]
-    pep_col = session.getColumns('peptide')[0]
+
+    pep_col, site_col = None, None
+    site_type = None
+    pep_cols = session.getColumns('peptide')
+    site_cols = session.getColumns('sites')
+    if len(pep_cols) > 0:
+        pep_col = pep_cols[0]
+        site_type = 'peptide'
+    if len(site_cols) > 0:
+        site_col = site_cols[0]
+        site_type = 'sites'
+
     mod_col = session.getColumns('modification')[0]
     run_col = None
     
@@ -484,17 +505,24 @@ def parse_datafile(session):
     line=0
     for row in rows:
         line+=1
-        line_errors = uploadutils.check_data_row(line, row, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols, keys)
+        line_errors = uploadutils.check_data_row(line, row, acc_col, pep_col, site_col, mod_col, run_col, data_cols, stddev_cols, keys)
 
         acc = None
-        pep = None
+        sites = None
         try:
             acc = row[acc_col.column_number].strip()
-            pep = row[pep_col.column_number].strip()
+            if site_type == 'peptide':
+                sites = row[pep_col.column_number].strip()
+            if site_type == 'sites':
+                sites = row[site_col.column_number].strip()
+                try:
+                    sites = protein_utils.normalize_site_list(sites)
+                except:
+                    line_errors.append( uploadutils.ParseError(line, None, "Invalid formatting for sites %s" % (sites)) )
         except IndexError:
             pass
 
-        line_mapping[line] = (acc, pep)
+        line_mapping[line] = (acc, sites)
 
         if len(line_errors) > 0:
             errors.extend(line_errors)
@@ -506,15 +534,15 @@ def parse_datafile(session):
         line_set.append(line)
         accessions[acc] = line_set
         
-        pep_set = peptides.get(acc, set())
-        pep_set.add(pep)
-        peptides[acc] = pep_set
+        pep_set = sites_map.get(acc, set())
+        pep_set.add(sites)
+        sites_map[acc] = pep_set
         
-        mod_set = mod_map.get((acc,pep), set())
+        mod_set = mod_map.get((acc,sites), set())
         mod_set.add(mods)
-        mod_map[(acc,pep)] = mod_set
+        mod_map[(acc,sites)] = mod_set
 
-        run_data = data_runs.get((acc, pep, mods), {})
+        run_data = data_runs.get((acc, sites, mods), {})
         
         series = []
         for d in data_cols:
@@ -536,10 +564,10 @@ def parse_datafile(session):
         else:
             run_data[ 'average' ] = (line, series)
         
-        data_runs[(acc, pep, mods)] = run_data
+        data_runs[(acc, sites, mods)] = run_data
         
     
-    return accessions, peptides, mod_map, data_runs, errors, line_mapping
+    return accessions, sites_map, site_type, mod_map, data_runs, errors, line_mapping
     
 
 def extract_uniprot_accessions(accessions):

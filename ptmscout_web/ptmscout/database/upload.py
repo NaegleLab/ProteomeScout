@@ -9,7 +9,7 @@ class SessionColumn(Base):
     id=Column(Integer(10), primary_key=True, autoincrement=True)
     session_id=Column(Integer(10), ForeignKey('session.id'))
     
-    column_values=['hidden','data','stddev','accession','peptide','species','modification','run', 'none','numeric','nominative','cluster']
+    column_values=['hidden','data','stddev','accession','peptide','sites','species','modification','run', 'none','numeric','nominative','cluster']
     
     type=Column(Enum(column_values), default='none')
     label=Column(VARCHAR(45), default='')

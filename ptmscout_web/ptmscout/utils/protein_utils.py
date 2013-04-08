@@ -69,6 +69,18 @@ def get_accession_type(acc):
         
     return acc_type
 
+def normalize_site_list(sites):
+    amino_acids = set("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    sites = [ s.strip() for s in sites.split(";") ]
+    sites = [ (s[0], int(s[1:])) for s in sites ]
+    for residue, _ in sites:
+        if residue not in amino_acids:
+            raise Exception()
+
+    sorted(sites, key=lambda item: item[1])
+
+    return ';'.join([ "%s%d" % (r, p) for (r, p) in sites ])
+
 def check_peptide_alphabet(pep):
     amino_acids = set("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     

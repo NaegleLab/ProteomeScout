@@ -90,6 +90,23 @@ def check_unique_column(session, ctype, required=False):
         return None
     return cols[0]
 
+def require_exactly_one(session, ctypes):
+    found_type, col = None, None
+    for ctype in ctypes:
+        cols = get_columns_of_type(session, ctype)
+        if len(cols) > 1:
+            raise ColumnError(strings.experiment_upload_error_limit_one_column_of_type % (ctype,))
+        elif len(cols) == 1 and col != None:
+            raise ColumnError(strings.experiment_upload_error_must_have_no_more_column_among % (', '.join(ctypes),))
+        elif len(cols) == 1:
+            col = cols[0]
+            found_type = ctype
+
+    if col == None:
+        raise ColumnError(strings.experiment_upload_error_must_have_one_column_among % (', '.join(ctypes),))
+
+    return found_type, col
+
 def find_root(row, parents):
     for p1 in parents:
         is_root = True
@@ -107,17 +124,15 @@ def find_most_specific_parent(p, target):
 
     return find_most_specific_parent(valid[0], target)
 
-def check_modification_type_matches_peptide(row, peptide, modification, taxon_nodes=None):
-    modified_alphabet = set("abcdefghijklmnopqrstuvwxyz")
-    modified_residues = [ (i, r) for i, r in enumerate(peptide) if r in modified_alphabet ]
+def check_modification_type_matches_residues(row, modified_residues, modification, taxon_nodes):
     mod_list = [ m.strip() for m in modification.split(settings.mod_separator_character) ]
-    
+
     if len(mod_list) > 1 and len(modified_residues) != len(mod_list):
         raise ParseError(row, None, strings.experiment_upload_warning_wrong_number_of_mods % (len(mod_list), len(modified_residues)))
     
     if len(mod_list) == 1 and len(modified_residues) > 1:
         mod_list = mod_list * len(modified_residues)
-    
+
     mod_object = []
     mod_indices = []
     
@@ -152,34 +167,58 @@ def check_modification_type_matches_peptide(row, peptide, modification, taxon_no
         mod_object.append(selected_mod)
         
     return mod_indices, mod_object
-    
-    
-def check_data_row(r, row, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols, keys):
+
+def check_modification_type_matches_sites(row, sites, modification, taxon_nodes=None):
+    modified_residues = [ (int(s[1:]), s[0]) for s in sites.split(';') ]
+    return check_modification_type_matches_residues(row, modified_residues, modification, taxon_nodes)
+
+def check_modification_type_matches_peptide(row, peptide, modification, taxon_nodes=None):
+    modified_alphabet = set("abcdefghijklmnopqrstuvwxyz")
+    modified_residues = [ (i, r) for i, r in enumerate(peptide) if r in modified_alphabet ]
+    return check_modification_type_matches_residues(row, modified_residues, modification, taxon_nodes)
+   
+def check_data_row(r, row, acc_col, pep_col, site_col, mod_col, run_col, data_cols, stddev_cols, keys):
     errors = []
     
     try:
         accession = row[acc_col.column_number].strip()
-        peptide = row[pep_col.column_number].strip()
         modification = row[mod_col.column_number].strip()
 
         acc_type = protein_utils.get_accession_type(accession)
         if acc_type not in protein_utils.get_valid_accession_types():
             errors.append(ParseError(r, acc_col.column_number+1, strings.experiment_upload_warning_acc_column_contains_bad_accessions))
+
+        site_index = None
+
+        if pep_col != None:
+            peptide = row[pep_col.column_number].strip()
+                    
+            if not protein_utils.check_peptide_alphabet(peptide):
+                errors.append(ParseError(r, pep_col.column_number+1, strings.experiment_upload_warning_peptide_column_contains_bad_peptide_strings))
                 
-        if not protein_utils.check_peptide_alphabet(peptide):
-            errors.append(ParseError(r, pep_col.column_number+1, strings.experiment_upload_warning_peptide_column_contains_bad_peptide_strings))
-            
-        call_catch(ParseError, errors, check_modification_type_matches_peptide, r, peptide, modification)
+            call_catch(ParseError, errors, check_modification_type_matches_peptide, r, peptide, modification)
+
+            site_index = peptide
+        else:
+            sites = row[site_col.column_number].strip()
+            try:
+                normed_sites = protein_utils.normalize_site_list(sites)
+                call_catch(ParseError, errors, check_modification_type_matches_sites, r, normed_sites, modification)
+                sites = normed_sites
+            except:
+                errors.append( ParseError(r, None, "Invalid formatting for sites: %s" % (sites) ) )
+
+            site_index = sites
         
         run = None
         if run_col != None:
             run = row[run_col.column_number].strip()
-            k = (accession, peptide, modification, run)
+            k = (accession, site_index, modification, run)
             if k in keys:
                 errors.append(ParseError(r, None, strings.experiment_upload_warning_full_dupe))
             keys.add(k)
         else:
-            k = (accession, peptide, modification)
+            k = (accession, site_index, modification)
             if k in keys:
                 errors.append(ParseError(r, None, strings.experiment_upload_warning_no_run_column))
             keys.add(k)
@@ -191,7 +230,7 @@ def check_data_row(r, row, acc_col, pep_col, mod_col, run_col, data_cols, stddev
                 has_data = True
             except ValueError:
                 row[c.column_number] = None
-       
+        
         if len(data_cols) > 0 and not has_data:
             errors.append(ParseError(r, None, strings.experiment_upload_warning_data_missing))
     except IndexError:
@@ -199,7 +238,7 @@ def check_data_row(r, row, acc_col, pep_col, mod_col, run_col, data_cols, stddev
 
     return errors
     
-def check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols, N=MAX_ROW_CHECK):
+def check_data_rows(session, acc_col, pep_col, site_col, mod_col, run_col, data_cols, stddev_cols, N=MAX_ROW_CHECK):
     errors = []
     _, data = load_header_and_data_rows(session.data_file, N)
     
@@ -208,7 +247,7 @@ def check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stdd
     r = 0
     for row in data:
         r+=1
-        errors.extend(check_data_row(r, row, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols, keys))
+        errors.extend( check_data_row(r, row, acc_col, pep_col, site_col, mod_col, run_col, data_cols, stddev_cols, keys) )
     
     return errors
 
@@ -217,7 +256,15 @@ def check_data_column_assignments(session):
     errors = []
     
     acc_col     = call_catch(ColumnError, errors, check_unique_column, session, 'accession', required=True)
-    pep_col     = call_catch(ColumnError, errors, check_unique_column, session, 'peptide', required=True)
+    pep_col     = None
+    site_col    = None
+    type_col    = call_catch(ColumnError, errors, require_exactly_one, session, ['peptide', 'sites'])
+
+    if type_col and type_col[0] == 'peptide':
+        pep_col = type_col[1]
+    if type_col and type_col[0] == 'sites':
+        site_col = type_col[1]
+
     mod_col     = call_catch(ColumnError, errors, check_unique_column, session, 'modification', required=True)
     run_col     = call_catch(ColumnError, errors, check_unique_column, session, 'run')
     
@@ -227,7 +274,7 @@ def check_data_column_assignments(session):
         critical = False
         data_cols   = get_columns_of_type(session, 'data')
         stddev_cols = get_columns_of_type(session, 'stddev')
-        errors.extend(check_data_rows(session, acc_col, pep_col, mod_col, run_col, data_cols, stddev_cols))
+        errors.extend( check_data_rows(session, acc_col, pep_col, site_col, mod_col, run_col, data_cols, stddev_cols) )
         
     if len(errors) > 0:
         raise ErrorList(errors, critical)
@@ -255,6 +302,8 @@ def get_column_from_header(header):
             col['type'] = 'modification'
         elif hl.find('pep') == 0:
             col['type'] = 'peptide'
+        elif hl.find('site') == 0:
+            col['type'] = 'sites'
         elif hl == 'run':
             col['type'] = 'run'
         else:

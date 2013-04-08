@@ -363,7 +363,7 @@ class TestUploadConfigureView(UnitTestCase):
         
         self.assertEqual(strings.experiment_upload_configure_page_title, result['pageTitle'])
         
-        self.assertEqual(['none','hidden','data','stddev','accession','peptide','species','modification','run'], result['column_values'])
+        self.assertEqual(['none','hidden','data','stddev','accession','peptide','sites','species','modification','run'], result['column_values'])
 
 class IntegrationTestUploadConfigureView(IntegrationTestCase):
     def test_view_integration(self):
