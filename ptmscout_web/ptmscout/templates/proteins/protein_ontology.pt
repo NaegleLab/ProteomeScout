@@ -8,12 +8,10 @@
 		<div class="section">
 			<div class="section">
 				<div style="margin-bottom: 1em">
-					<a target="_blank"
-						href="http://ptmscout.mit.edu/docs/index.php?title=References_to_Data_Sources#Gene_Ontology">Gene
-						Ontologies (GO)</a> <a target="_blank" class="help"
-						href="http://ptmscout.mit.edu/docs/index.php?title=References_to_Data_Sources#Gene_Ontology"><img
-						class="help" border="0" alt="help" width="20"
-						src="http://ptmscout.mit.edu/images/help.jpg"></a> <br>
+                    <a target="_blank" href="http://ptmscout.mit.edu/docs/index.php?title=References_to_Data_Sources#Gene_Ontology">Gene Ontologies (GO)</a> 
+                    <a target="_blank" class="help" href="http://ptmscout.mit.edu/docs/index.php?title=References_to_Data_Sources#Gene_Ontology">
+                        <img class="help" border="0" alt="help" width="20" src="${request.static_url('ptmscout:static/images/help.jpg')}">
+                    </a> <br>
 					<font size="3">Version 1.2 10-11-2011</font><br>
 				</div>
 				<table cellspacing="0" cellpadding="0" id="gene_ontology_breakdown">

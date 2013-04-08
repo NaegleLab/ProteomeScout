@@ -9,9 +9,9 @@
     <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/ptmscout.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/jquery-ui-1.9.1.custom.css')}" />
 
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.0.js" ></script>
-    <script type="text/javascript" src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
-    <script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>
+    <script type="text/javascript" src="${request.static_url('ptmscout:static/js/jquery-1.9.0.min.js')}" ></script>
+    <script type="text/javascript" src="${request.static_url('ptmscout:static/js/jquery-ui-1.9.2.min.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('ptmscout:static/js/d3.v2.min.js')}"></script>
 
     <script type="text/javascript" src="${request.static_url('ptmscout:static/js/include/base64.js')}" ></script>
     <script type="text/javascript" src="${request.static_url('ptmscout:static/js/include/jquery.tablesorter.min.js')}" ></script>
@@ -60,7 +60,7 @@
         <div id="footerLicense">
           <p class="box">
             <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">
-                <img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" />
+                <img alt="Creative Commons License" style="border-width:0" src="${request.static_url('ptmscout:static/images/cc_license.png')}" />
             </a>
             <br />
             <span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">PTMScout</span>
