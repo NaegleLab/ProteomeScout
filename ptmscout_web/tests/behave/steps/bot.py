@@ -77,7 +77,7 @@ class Bot(object):
         result = result.forms['confirm'].submit()
         result.mustcontain(strings.publish_experiment_success_message)
         
-    def load_datafile(self, filename, form, load_type='new', parent_experiment='', change_description=''):
+    def load_datafile(self, filename, form, load_type='new', parent_experiment='',change_name='', change_description=''): 
         filename = os.path.join('tests','behave','data',filename)
         
         f = open(filename, 'rb')
@@ -87,6 +87,7 @@ class Bot(object):
         form.set('data_file', (filename, filecontents))
         form.set('load_type', load_type)
         form.set('parent_experiment', parent_experiment)
+        form.set('change_name', change_name)
         form.set('change_description', change_description)
         return form.submit()
     

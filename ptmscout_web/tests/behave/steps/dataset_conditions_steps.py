@@ -19,7 +19,6 @@ def open_experiment_conditions_page(context):
     result.form.set('URL', '')
     result.form.set('description', 'a correct experiment for test purposes')
     result.form.set('ambiguous', 'no')
-    result.form.set('notes','')
     
     context.result = result.form.submit().follow()
     

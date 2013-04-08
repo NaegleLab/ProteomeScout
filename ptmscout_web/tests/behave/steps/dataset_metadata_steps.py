@@ -16,6 +16,7 @@ def setup_pre_existing_session(context):
     session.experiment_id = None
     session.load_type = 'new'
     session.parent_experiment = None
+    session.change_name = ''
     session.change_description = ''
     session.data_file = 'some_dataset'
     session.user_id = context.active_user.user.id

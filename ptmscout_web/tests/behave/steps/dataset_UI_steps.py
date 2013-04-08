@@ -1,5 +1,5 @@
 from behave import *
-from ptmscout.database import experiment, upload
+from ptmscout.database import experiment, upload, jobs
 from ptmscout.config import strings
 from tests.behave.steps.assertions import assertEqual
 
@@ -14,24 +14,31 @@ def create_column(cnum, ctype, clabel=''):
 def setup_pre_existing_experiment_and_session(context):
     session = upload.Session()
     exp = experiment.Experiment()
-    
+    job = jobs.Job()
+    job.name = "Experiment pre-existing load"
+    job.type='load_experiment'
+    job.finish()
+    job.user_id = context.active_user.user.id
+    job.save()
+
     exp.name = "Some experiment"
     exp.author = "Some author"
     exp.dataset = "some_dataset"
     exp.description = "Some description"
     exp.errorLog = "Some log"
-    exp.status = "loaded"
     exp.submitter_id = context.active_user.user.id
     exp.published = 0
     exp.public = 0
     exp.ambiguity = 0
     exp.type = 'experiment'
+    exp.job_id = job.id
     exp.grantPermission(context.active_user.user, 'owner')
     exp.saveExperiment()
     
     session.experiment_id = exp.id
     session.load_type = 'new'
     session.parent_experiment = None
+    session.change_name = ''
     session.change_description = ''
     session.data_file = 'some_dataset'
     session.user_id = context.active_user.user.id
@@ -80,7 +87,7 @@ def load_data_file_when_replacing(context):
 
 @when(u'the user wants the dataset to extend another dataset')
 def load_data_file_when_extending(context):
-    context.result = context.active_user.load_datafile('datasetUI_correctDatasetNoHeader.txt', context.form, load_type='extension', parent_experiment=str(context.preexisting_exp), change_description="Some set of changes are happening").follow()
+    context.result = context.active_user.load_datafile('datasetUI_correctDatasetNoHeader.txt', context.form, load_type='extension', parent_experiment=str(context.preexisting_exp), change_name='some changes are happening', change_description="Some set of changes are happening").follow()
 
 
 @when(u'non-alphabetic characters appear in some of the entries')
@@ -129,7 +136,7 @@ def check_fields_prepopulated_properly(context):
 
 @then(u'show the user their headers')
 def check_fields_not_prepopulated_correct_header_titles_shown(context):
-    headers = "NAME    record id    Gene Symbol    modification    RSD    SITE_GRP_ID    SPECIES    MW (kD)    IN_DOMAIN    tryps    measurement 1    measurement 2    measurement 3".split("    ")
+    headers = "NAME    record id    Gene Symbol    modification    RSD    GRP_ID    SPECIES    MW (kD)    IN_DOMAIN    tryps    measurement 1    measurement 2    measurement 3".split("    ")
     
     for header in headers:
         context.result.mustcontain(header)
