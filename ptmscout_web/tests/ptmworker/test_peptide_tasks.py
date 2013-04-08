@@ -42,7 +42,7 @@ class PeptideTasksTest(IntegrationTestCase):
         patch_commit.assert_called_once_with()
         patch_set_progress.apply_async.assert_called_once_with((job_id, 4, 4))
 
-        self.assertIn(call(2600, True, 'Q9WTS6', 11, 'GGGTTTCCC', 'PHOSPHORYLATION', 'time(none)', ['some', 'sequence', 'of', 'headers'], [(1, 'average', [1, 2, 3])]), patch_load_peptide.call_args_list)
-        self.assertIn(call(2600, True, 'Q9NQG7', 9, 'AABDEF', 'DIMETHYLATION', 'time(none)', ['some', 'sequence', 'of', 'headers'], [(1, 'average', [1, 2, 3])]), patch_load_peptide.call_args_list)
-        self.assertIn(call(2600, True, 'Q9NQG7', 9, 'MEEVFG', 'PHOS', 'time(none)', ['some', 'sequence', 'of', 'headers'], [(1, 'average', [1, 2, 3])]), patch_load_peptide.call_args_list)
-        self.assertIn(call(2600, True, 'P49848', 24, 'LKLKLKLKLK', 'O-GlcNAc', 'time(none)', ['some', 'sequence', 'of', 'headers'], [(1, 'average', [1, 2, 3])]), patch_load_peptide.call_args_list)
+        self.assertIn(call(2600, True, 'Q9WTS6', 11, 'GGGTTTCCC', 'PHOSPHORYLATION', 'time(none)', ['some', 'sequence', 'of', 'headers'], [(1, 'average', [1, 2, 3])],is_site=False), patch_load_peptide.call_args_list)
+        self.assertIn(call(2600, True, 'Q9NQG7', 9, 'AABDEF', 'DIMETHYLATION', 'time(none)', ['some', 'sequence', 'of', 'headers'], [(1, 'average', [1, 2, 3])],is_site=False), patch_load_peptide.call_args_list)
+        self.assertIn(call(2600, True, 'Q9NQG7', 9, 'MEEVFG', 'PHOS', 'time(none)', ['some', 'sequence', 'of', 'headers'], [(1, 'average', [1, 2, 3])],is_site=False), patch_load_peptide.call_args_list)
+        self.assertIn(call(2600, True, 'P49848', 24, 'LKLKLKLKLK', 'O-GlcNAc', 'time(none)', ['some', 'sequence', 'of', 'headers'], [(1, 'average', [1, 2, 3])],is_site=False), patch_load_peptide.call_args_list)
