@@ -1,4 +1,4 @@
-NAME	acc	Gene Symbol	mod_type	RSD	SITE_GRP_ID	SPECIES	MW (kD)	IN_DOMAIN	pep	data:time(min):0	data:time(min):1	data:time(min):5	stddev:time(min):1	stddev:time(min):5
+NAME	acc	Gene Symbol	mod_type	RSD	GRP_ID	SPECIES	MW (kD)	IN_DOMAIN	pep	data:time(min):0	data:time(min):1	data:time(min):5	stddev:time(min):1	stddev:time(min):5
 14-3-3 theta	P27348	YWHAQ	methylation	K212	12194246	human	27.76	14-3-3	TLNEDSYkDSTLIMQ	0	0	1	0.3	0.5
 4930417G10Rik	Q8CDW1	4930417G10Rik	dimethylation	R257	9482571	mouse	34.46		GTGPQRPrSWAAADS	0	0	1	0.2	0.6
 53BP1	Q12888	TP53BP1	METHYLATION	R1396	2344821	human	213.57		GkAPVTPrGrGrrGr	2	0	0	0.4	0.2
