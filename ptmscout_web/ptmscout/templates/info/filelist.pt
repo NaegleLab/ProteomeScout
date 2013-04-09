@@ -1,0 +1,25 @@
+<div metal:use-macro="layout">
+	<metal:slot metal:fill-slot="header">
+    </metal:slot>
+    <div metal:fill-slot="content">
+        <div tal:condition="len(files) > 0" class="file-list">
+            <div class="description" tal:content="desc"></div>
+            <table>
+                <thead>
+                    <tr align="left" class="header">
+                        <th></th>
+                        <th>Filename</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr valign="top" tal:repeat="(r, f) enumerate(files)" tal:attributes="class 'row ' + 'even' if r % 2 == 0 else 'odd';" >
+                        <td></td>
+                        <td><a tal:attributes="href f['link']" tal:content="f['name']" ></a></td>
+                        <td tal:content="f['desc']"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

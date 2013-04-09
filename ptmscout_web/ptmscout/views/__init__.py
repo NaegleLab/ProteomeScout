@@ -7,7 +7,8 @@ def add_views(config):
     
     config.add_route('portal','/')
     
-    
+    config.add_route('compendia', '/compendia')
+    config.add_route('compendia_download', '/compendia/{name}')
     
     config.add_route('experiments','/experiments')
     config.add_route('experiment','/experiments/{id}')
