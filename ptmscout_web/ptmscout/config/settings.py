@@ -22,6 +22,7 @@ naegle_lab_url = 'http://naegle.wustl.edu/'
 pfam_family_url = 'http://pfam.sanger.ac.uk/family/'
 ptmscout_scratch_space = "/tmp"
 experiment_data_file_path = "data/experiments"
+export_file_path = "data/export"
 pfam_map_file_path = "ptmworker/helpers/pfam.map"
 ptmscout_path = "/data/ptmscout/ptmscout_web"
 motif_script_path = os.path.join('scripts', 'motif')

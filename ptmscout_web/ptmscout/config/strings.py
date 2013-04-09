@@ -28,6 +28,9 @@ account_activation_failed_message = "The specified account is not valid, please 
 
 account_management_page_title = "Account Management"
 
+compendia_download_page_title = 'PTMScout Flat File Data'
+compendia_download_page_desc = ''
+
 create_reviewer_account_page_title = "Create Reviewer Account"
 
 create_reviewer_account_confirm_message = "Are you sure you wish to create an anonymous reviewer account for this experiment? Experiment data will be accessible only to authorized users and holders of a valid review token."
