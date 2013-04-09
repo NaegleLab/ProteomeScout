@@ -28,6 +28,7 @@
 	    <span tal:condition="request.user != None">
 <!--            <a href="${request.application_url}/annotate">Annotate Datasets</a> | -->
             <a href='${request.application_url}/upload'>Upload Data</a> |
+            <a href='${request.application_url}/compendia'>Downloads</a> |
         </span>
 	    <a target='_blank' href="${documentationUrl}title=Main_Page">Documentation</a> |
 	    <a href='${request.application_url}/about'>About</a>
