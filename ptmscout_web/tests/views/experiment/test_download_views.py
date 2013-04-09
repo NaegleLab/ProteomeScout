@@ -121,12 +121,12 @@ class TestExperimentDownloadView(UnitTestCase):
 class IntegrationTestExperimentDownloadView(IntegrationTestCase):
     def test_view_should_forbidden_if_not_logged_in(self):
         self.bot.logout()
-        result = self.ptmscoutapp.get("/experiments/28/download", status=200)
+        result = self.ptmscoutapp.get("/experiments/28/download", status=403)
         result.mustcontain("forbidden")
         
     def test_view_should_forbidden_if_not_owner(self):
         self.bot.login()
-        result = self.ptmscoutapp.get("/experiments/28/download", status=200)
+        result = self.ptmscoutapp.get("/experiments/28/download", status=403)
         result.mustcontain("forbidden")
         
     def test_view_should_succeed_if_owner(self):
@@ -142,7 +142,7 @@ class IntegrationTestExperimentDownloadView(IntegrationTestCase):
         
     def test_export_view_is_private(self):
         self.bot.logout()
-        result = self.ptmscoutapp.get("/experiments/28/export", status=200)
+        result = self.ptmscoutapp.get("/experiments/28/export", status=403)
         result.mustcontain("forbidden")
         
     def test_export_view_should_have_default_columns(self):

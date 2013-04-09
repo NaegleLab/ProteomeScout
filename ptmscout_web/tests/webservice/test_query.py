@@ -25,12 +25,12 @@ class IntegrationTestQueryView(IntegrationTestCase):
         
     def test_get_pubmed_should_be_restricted(self):
         self.bot.logout()
-        result = self.ptmscoutapp.get("/webservice/pubmed/12230038", status=200)
+        result = self.ptmscoutapp.get("/webservice/pubmed/12230038", status=403)
         result.mustcontain("Forbidden")
         
     def test_get_autocomplete_for_field_is_restricted(self):
         self.bot.logout()
-        result = self.ptmscoutapp.get("/webservice/autocomplete/environment", status=200)
+        result = self.ptmscoutapp.get("/webservice/autocomplete/environment", status=403)
         result.mustcontain("Forbidden")
         
     def test_get_autocomplete_for_field(self):

@@ -18,21 +18,21 @@ class InfoFunctionalTests(IntegrationTestCase):
         exp.job.status = 'running'
         exp.saveExperiment()
         
-        response = self.ptmscoutapp.get("/experiments/1")
+        response = self.ptmscoutapp.get("/experiments/1", status=503)
         response.mustcontain(strings.error_resource_not_ready_page_title)
     
     def test_no_such_session_should_invoke_forbidden(self):
-        response = self.ptmscoutapp.get('/upload/2000123/config')
+        response = self.ptmscoutapp.get('/upload/2000123/config',status=403)
         response.mustcontain("forbidden")
-        response = self.ptmscoutapp.get('/upload/2000123/metadata')
+        response = self.ptmscoutapp.get('/upload/2000123/metadata',status=403)
         response.mustcontain("forbidden")
-        response = self.ptmscoutapp.get('/upload/2000123/confirm')
+        response = self.ptmscoutapp.get('/upload/2000123/confirm',status=403)
         response.mustcontain("forbidden")
     
     def test_no_such_experiment_should_invoke_forbidden(self):
-        response = self.ptmscoutapp.get('/experiments/2000123')
+        response = self.ptmscoutapp.get('/experiments/2000123',status=403)
         response.mustcontain("forbidden")
         
     def test_no_such_protein_should_give_info(self):
-        response = self.ptmscoutapp.get('/proteins/20131234234')
+        response = self.ptmscoutapp.get('/proteins/20131234234',status=404)
         response.mustcontain(strings.error_resource_not_found_page_title)

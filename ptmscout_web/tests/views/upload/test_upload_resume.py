@@ -182,7 +182,7 @@ class IntegrationTestUploadResumeView(IntegrationTestCase):
         
         self.bot.logout()
         
-        result = self.ptmscoutapp.get("/upload/%d" % (session.id), status=200)
+        result = self.ptmscoutapp.get("/upload/%d" % (session.id), status=403)
         result.mustcontain("Forbidden")
     
     def test_view_integration(self):

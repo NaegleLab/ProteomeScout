@@ -71,7 +71,7 @@ def user_lookup_ack1_homo_sapiens_data(context):
 @when(u'other users attempt to access my experiment directly')
 def user_lookup_experiment_26(context):
     context.active_user.login()
-    context.result = context.ptmscoutapp.get('/experiments/26')
+    context.result = context.ptmscoutapp.get('/experiments/26', status=403)
 
 @when(u'I enter another user email address in "Share dataset"')
 @patch('ptmscout.utils.mail.send_automail_message')
@@ -132,7 +132,7 @@ def other_users_cannot_see_experiment(context):
     assertDoesNotContain("Time-resolved mass spectrometry of tyrosine phosphorylation sites", context.result.normal_body)
     assertDoesNotContain("Effects of HER2 overexpression on cell signaling networks governing proliferation and migration", context.result.normal_body)
     
-    context.result = context.ptmscoutapp.get('/experiments/26', status=200)
+    context.result = context.ptmscoutapp.get('/experiments/26', status=403)
     context.result.mustcontain("Forbidden")
 
 @then(u'they should receive a 403 forbidden')
@@ -162,7 +162,8 @@ def ack1_exp_data_not_on_protein_page(context):
     
 @then(u'that user can now see my specific dataset')
 def step_1(context):
-    user_lookup_experiment_26(context)
+    context.active_user.login()
+    context.result = context.ptmscoutapp.get('/experiments/26', status=200)
     context.result.mustcontain("Time-resolved mass spectrometry of tyrosine phosphorylation sites")
 
 @then(u'everyone should be able to see my experiment')

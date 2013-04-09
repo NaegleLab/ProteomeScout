@@ -144,7 +144,7 @@ class IntegrationTestUploadView(IntegrationTestCase):
     
     def test_forbidden_should_invoke_on_unauthorized_access(self):
         self.bot.logout()
-        response = self.ptmscoutapp.get('/upload')
+        response = self.ptmscoutapp.get('/upload', status=403)
         response.mustcontain("forbidden")
     
     def test_view_integration_when_missing_fields(self):
