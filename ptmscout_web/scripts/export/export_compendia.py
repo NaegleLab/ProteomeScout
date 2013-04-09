@@ -2,6 +2,7 @@ from scripts.DB_init import DatabaseInitialization
 from ptmscout.database import protein, modifications
 import sys, os
 import csv
+from scripts.progressbar import ProgressBar
 
 def format_protein_accessions(accessions):
     return '; '.join([ acc.value for acc in sorted(accessions, key=lambda acc: acc.value) ])
@@ -85,6 +86,9 @@ if __name__=='__main__':
                     'species', 'sequence', 'modifications', 'domains', 
                     'mutations', 'scansite_predictions', 'GO_terms'])
 
+
+    pb = ProgressBar(max_value = prot_cnt)
+    pb.start()
     i = 0
     j = 0
     k = 0
@@ -110,8 +114,9 @@ if __name__=='__main__':
                 j+=1
 
         i+=1
-        if i % 100 == 0:
-            sys.stderr.write( "%d / %d\n" % (i, prot_cnt) )
+        if i % 10 == 0:
+            pb.update(i)
     
+    pb.finish()
     sys.stderr.write( 'Exported %d proteins, with %d unique modifications' % (j, k))
     db.close()
