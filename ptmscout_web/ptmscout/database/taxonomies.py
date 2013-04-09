@@ -30,7 +30,9 @@ class Species(Base):
     id = Column(Integer(10), primary_key=True, autoincrement=True)
     name = Column(VARCHAR(100), unique=True)
     taxon_id = Column(Integer(10), ForeignKey(Taxonomy.node_id))
-    
+
+    taxon = relationship(Taxonomy)
+
     def __init__(self, name):
         self.name = name
 

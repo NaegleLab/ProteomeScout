@@ -1,7 +1,6 @@
 from sqlalchemy import engine_from_config
 from paste.deploy.loadwsgi import appconfig
 from ptmscout.database import DBSession, Base  # base declarative object
-from pyramid import testing
 import sys, logging
 
 class DatabaseInitialization():
@@ -36,11 +35,12 @@ class DatabaseInitialization():
         self.trans.commit()
 
     def rollback(self):
-        testing.tearDown()
         self.trans.rollback()
         self.session.close()
 
     def tearDown(self):
-        testing.tearDown()
         self.trans.commit()
+        self.session.close()
+
+    def close(self):
         self.session.close()
