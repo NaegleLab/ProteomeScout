@@ -149,6 +149,16 @@ class TestUploadUtils(unittest.TestCase):
         self.assertEqual(test_file, result_file)
 
     @patch('ptmscout.database.modifications.findMatchingPTM')
+    def test_check_modification_type_matches_peptide_should_throw_error_when_no_modified_residues(self, patch_findPTM):
+        try:
+            check_modification_type_matches_peptide(1, "DFERTGDYDFQERAS", "METH")
+        except ParseError, pe:
+            self.assertEqual(1, pe.row)
+            self.assertEqual(strings.experiment_upload_warning_no_mods_found % ('DFERTGDYDFQERAS'), pe.msg)
+        else:
+            self.fail("Expected exception ParseError")
+
+    @patch('ptmscout.database.modifications.findMatchingPTM')
     def test_check_modification_type_matches_peptide_should_throw_error_when_mismatch_of_number_of_mods(self, patch_findPTM):
         try:
             check_modification_type_matches_peptide(1, "DFERtGdYDFqERAS", "%s%s %s" % ("Sulfation", settings.mod_separator_character, "METH"))

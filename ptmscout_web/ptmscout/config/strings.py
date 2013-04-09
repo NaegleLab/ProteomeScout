@@ -119,6 +119,7 @@ experiment_upload_warning_accession_not_found = "Warning: Protein accession '%s'
 experiment_upload_warning_acc_column_contains_bad_accessions = "Warning: Accession column contains accession with unrecognized types"
 experiment_upload_warning_peptide_column_contains_bad_peptide_strings = "Warning: Peptide column contains peptide with incorrect formatting"
 
+experiment_upload_warning_no_mods_found = "Warning: no modified residues were specified in peptide '%s', you must specify at least one modified residue in lower-case"
 experiment_upload_warning_modifications_not_valid = "Warning: Specified modification '%s' is not valid"
 experiment_upload_warning_modifications_do_not_match_amino_acids = "Warning: Specified modification '%s' does not match residue '%s' for any known species"
 experiment_upload_warning_modifications_do_not_match_species = "Warning: Specified modification '%s' does not match residue '%s' for specified species '%s'"

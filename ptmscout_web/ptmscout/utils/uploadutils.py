@@ -175,6 +175,10 @@ def check_modification_type_matches_sites(row, sites, modification, taxon_nodes=
 def check_modification_type_matches_peptide(row, peptide, modification, taxon_nodes=None):
     modified_alphabet = set("abcdefghijklmnopqrstuvwxyz")
     modified_residues = [ (i, r) for i, r in enumerate(peptide) if r in modified_alphabet ]
+
+    if len(modified_residues) == 0:
+        raise ParseError(row, None, strings.experiment_upload_warning_no_mods_found % (peptide))
+
     return check_modification_type_matches_residues(row, modified_residues, modification, taxon_nodes)
    
 def check_data_row(r, row, acc_col, pep_col, site_col, mod_col, run_col, data_cols, stddev_cols, keys):
