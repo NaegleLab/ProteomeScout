@@ -26,7 +26,7 @@ class TestCompendiaDownloadIntegration(IntegrationTestCase):
         self.ptmscoutapp.get('/compendia/not_a_real_file.tsv', status=404)
 
     def test_compendia_download_should_get_file(self):
-        result = self.ptmscoutapp.get('/compendia/vertebrata.tsv', status=200)
+        result = self.ptmscoutapp.get('/compendia/ptmscout_vertebrata.tsv', status=200)
         result.mustcontain('accessions	acc_gene	locus	protein_name	species	sequence	modifications	domains	mutations	scansite_predictions	GO_terms')
 
 class TestCompendiaDownload(UnitTestCase):
