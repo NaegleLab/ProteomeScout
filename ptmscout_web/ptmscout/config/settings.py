@@ -7,6 +7,9 @@ pubmedUrl = "www.ncbi.nlm.nih.gov/pubmed/%d"
 
 MINIMUM_PASSWORD_LENGTH = 7
 
+tracking_script = """
+
+"""
 
 accession_urls = {'swissprot':"http://www.uniprot.org/uniprot/%s",
                   'uniprot':"http://www.uniprot.org/uniprot/%s",

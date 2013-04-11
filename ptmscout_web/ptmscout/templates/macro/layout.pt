@@ -3,6 +3,8 @@
   <head profile="http://www.w3.org/2005/10/profile">
   	<?python import urllib; ?>
     <?python import ptmscout.config as config; ?>
+
+    
     <link rel="icon" type="image/png" href="${request.static_url('ptmscout:static/images/ptmscoutMagGlass.png')}">
     <title>${pageTitle}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -17,7 +19,7 @@
     <script type="text/javascript" src="${request.static_url('ptmscout:static/js/include/base64.js')}" ></script>
     <script type="text/javascript" src="${request.static_url('ptmscout:static/js/include/jquery.tablesorter.min.js')}" ></script>
     <script type="text/javascript" src="${request.static_url('ptmscout:static/js/ptmscout.js')}" ></script>
-	<metal:block metal:define-slot="header"></metal:block>
+    <script type="text/javascript" tal:content="structure config.settings.tracking_script"> </script>
   </head>
   <body>
 	<div id="menu">
