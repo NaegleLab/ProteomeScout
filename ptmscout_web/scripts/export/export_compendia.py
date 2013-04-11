@@ -3,6 +3,7 @@ from ptmscout.database import protein, modifications
 import sys, os
 import csv
 from scripts.progressbar import ProgressBar
+from collections import defaultdict
 
 def format_protein_accessions(accessions):
     return '; '.join([ acc.value for acc in sorted(accessions, key=lambda acc: acc.value) ])
@@ -26,11 +27,20 @@ def check_modtype_filter(mod, modtype_filter):
 
 
 def format_modifications(mods, modtype_filter):
-    modlist = [ (modpep.peptide, modpep.modification) for ms in mods for modpep in ms.peptides ]
-    modlist = [ (pep.site_pos, "%s-%s" % (pep.getName(), mod.name)) for pep, mod in modlist if check_modtype_filter(mod, modtype_filter) ]
+    modlist = [ (ms.experiment_id, modpep.peptide, modpep.modification) for ms in mods for modpep in ms.peptides ]
+    modlist = [ (exp_id, pep.site_pos, "%s-%s" % (pep.getName(), mod.name)) for exp_id, pep, mod in modlist if check_modtype_filter(mod, modtype_filter) ]
+
+    explist = defaultdict(set)
+    for exp_id, site_pos, modstr in modlist:
+        explist[(site_pos, modstr)].add(exp_id)
+
+    modlist = [ (site_pos, modstr) for _, site_pos, modstr in modlist ]
     modlist = [ modstr for site_pos, modstr in sorted( list( set(modlist) ) ) ]
+
+    explist = [ ','.join([ str(exp_id) for exp_id in sorted( list( explist[k] )) ]) for k in sorted(explist.keys())  ]
+
     n = len(modlist)
-    return n, '; '.join(modlist)
+    return n, '; '.join(modlist), '; '.join(explist)
 
 def format_regions(regions):
     return '; '.join( [ "%s:%d-%d" % (r.label, r.start, r.stop) for r in sorted( regions, key=lambda r: r.start ) ] )
@@ -82,8 +92,8 @@ if __name__=='__main__':
 
     cw = csv.writer(sys.stdout, dialect='excel-tab')
 
-    cw.writerow(['accessions', 'acc_gene', 'locus', 'protein_name', 
-                    'species', 'sequence', 'modifications', 'domains', 
+    cw.writerow(['protein_id', 'accessions', 'acc_gene', 'locus', 'protein_name',
+                    'species', 'sequence', 'modifications', 'evidence', 'domains',
                     'mutations', 'scansite_predictions', 'GO_terms'])
 
 
@@ -95,10 +105,11 @@ if __name__=='__main__':
     for p in all_proteins:
         if check_species_filter(species_filter, p):
             mods = modifications.getMeasuredPeptidesByProtein(p.id)
-            n, fmods = format_modifications(mods, modtype_filter)
+            n, fmods, fexps = format_modifications(mods, modtype_filter)
             if n > 0:
                 k+=n
                 row = []
+                row.append( p.id )
                 row.append( format_protein_accessions(p.accessions) )
                 row.append( p.acc_gene )
                 row.append( p.locus )
@@ -106,6 +117,7 @@ if __name__=='__main__':
                 row.append( p.species.name )
                 row.append( p.sequence )
                 row.append( fmods )
+                row.append( fexps )
                 row.append( format_regions(p.domains) )
                 row.append( format_mutations(p.mutations) )
                 row.append( format_scansite(mods) )

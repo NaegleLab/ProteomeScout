@@ -1,7 +1,7 @@
 from pyramid.view import view_config
 from pyramid.response import FileResponse
 from ptmscout.config import settings, strings
-import os
+import os, time
 from pyramid.httpexceptions import HTTPNotFound
 import pickle
 
@@ -21,14 +21,14 @@ def compendia_listing(request):
         listing = pickle.load(listing_file)
 
     files = [
-                create_file_entry( request, 'everything.tsv', 'All proteins and modifications', listing ),
-                create_file_entry( request, 'vertebrata.tsv', 'All vertebrate protein modifications', listing ),
-                create_file_entry( request, 'mammalia.tsv', 'All mammalian protein modifications', listing ),
-                create_file_entry( request, 'phosphorylation.tsv', 'All species phosphorylations', listing ),
-                create_file_entry( request, 'acetylation.tsv', 'All species acetylation', listing ),
-                create_file_entry( request, 'methylation.tsv', 'All species methylation', listing ),
-                create_file_entry( request, 'ubiquitination.tsv', 'All species ubiquitination', listing ),
-                create_file_entry( request, 'glycosylation.tsv', 'All species glycosylation', listing ),
+                create_file_entry( request, 'ptmscout_everything.tsv', 'All proteins and modifications', listing ),
+                create_file_entry( request, 'ptmscout_vertebrata.tsv', 'All vertebrate protein modifications', listing ),
+                create_file_entry( request, 'ptmscout_mammalia.tsv', 'All mammalian protein modifications', listing ),
+                create_file_entry( request, 'ptmscout_phosphorylation.tsv', 'All species phosphorylations', listing ),
+                create_file_entry( request, 'ptmscout_acetylation.tsv', 'All species acetylation', listing ),
+                create_file_entry( request, 'ptmscout_methylation.tsv', 'All species methylation', listing ),
+                create_file_entry( request, 'ptmscout_ubiquitination.tsv', 'All species ubiquitination', listing ),
+                create_file_entry( request, 'ptmscout_glycosylation.tsv', 'All species glycosylation', listing ),
             ]
 
     return {'files': files,
@@ -37,9 +37,19 @@ def compendia_listing(request):
 
 @view_config(route_name='compendia_download', permission='private')
 def compendia_download(context, request):
+    listing = None
+    with open(os.path.join(settings.ptmscout_path, settings.export_file_path, 'listing.pyp'),'r') as listing_file:
+        listing = pickle.load(listing_file)
+
     fname = request.matchdict['name']
     fpath = os.path.join(settings.ptmscout_path, settings.export_file_path, fname)
     if not os.path.exists(fpath):
         raise HTTPNotFound()
 
-    return FileResponse(fpath, request)
+    t = time.strptime( listing[fname]['date'] )
+    strt = time.strftime("%Y%m%d", t)
+    response = FileResponse(fpath, request)
+    response.content_type = 'text/tab-separated-values'
+    response.content_disposition = 'attachment; filename="%s"' % ('%s_%s.tsv' % (fname[:fname.find('.tsv')], strt))
+
+    return response

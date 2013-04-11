@@ -17,6 +17,8 @@ def format_size( size ):
 if __name__=='__main__':
     summary_struct = {}
     for filename in sys.argv[1:]:
+        if filename.find('.tsv') == -1:
+            continue
         fpath = os.path.join(settings.ptmscout_path, settings.export_file_path, filename)
 
         i = 0
