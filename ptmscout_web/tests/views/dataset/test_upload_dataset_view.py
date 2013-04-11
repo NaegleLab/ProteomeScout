@@ -61,7 +61,7 @@ class TestUploadDataset(UnitTestCase):
         
         self.assertEqual(patch_create_schema.return_value, result['formrenderer'].schema)
         self.assertEqual([strings.failure_reason_required_fields_cannot_be_empty], result['errors'])
-        self.assertEqual(strings.upload_annotations_page_title, result['pageTitle'])
+        self.assertEqual(strings.dataset_upload_page_title, result['pageTitle'])
         patch_create_schema.assert_called_once_with(request)
     
     @patch('ptmscout.views.dataset.upload_dataset_view.create_schema')
@@ -76,7 +76,7 @@ class TestUploadDataset(UnitTestCase):
         patch_create_schema.assert_called_once_with(request)
         
         self.assertEqual(patch_create_schema.return_value, result['formrenderer'].schema)
-        self.assertEqual(strings.upload_annotations_page_title, result['pageTitle'])
+        self.assertEqual(strings.dataset_upload_page_title, result['pageTitle'])
         self.assertEqual([], result['errors'])
     
 

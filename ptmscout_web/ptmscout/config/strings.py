@@ -45,6 +45,9 @@ password: %s<br />
 Anonymous reviewers may login to view your data by visiting the following address in their browser: %s<br />
 """
 
+dataset_upload_page_title = "Upload Dataset for Exploration"
+dataset_upload_configure_page_title = "Configure Data Fields"
+
 experiment_ambiguity_page_title = "Ambiguous Peptide Assignment Tool"
 experiment_ambiguity_error_no_change = "No peptide assignments were changed from the current assignments"
 

@@ -57,8 +57,7 @@ def upload_dataset_POST(request):
 
         return HTTPFound(request.route_url('dataset_configure', id=sid))
 
-    return {
-            'pageTitle': strings.upload_annotations_page_title,
+    return {'pageTitle': strings.dataset_upload_page_title,
             'formrenderer': forms.FormRenderer(schema),
             'errors':errors}
     
@@ -66,7 +65,6 @@ def upload_dataset_POST(request):
 def upload_dataset_GET(request):
     schema = create_schema(request)
     
-    return {
-            'pageTitle': strings.upload_annotations_page_title,
+    return {'pageTitle': strings.dataset_upload_page_title,
             'formrenderer': forms.FormRenderer(schema),
             'errors':[]}

@@ -66,8 +66,7 @@ def parse_user_input(session, request):
     return {'columns':columns,'units':units}, [ uploadutils.ColumnError(e) for e in errors ]
 
 
-@view_config(route_name='upload_config', renderer='ptmscout:/templates/upload/upload_config.pt')
-def upload_config(request):
+def upload_config_handler(request, pageTitle, nextPage):
     session_id = int(request.matchdict['id'])
     session = upload.getSessionById(session_id, request.user) 
     submitted = webutils.post(request, 'submitted', "false") == "true"
@@ -95,7 +94,7 @@ def upload_config(request):
         if commit:
             session.stage = 'metadata'
             session.save()
-            return HTTPFound(request.application_url + "/upload/%d/metadata" % (session_id))
+            return HTTPFound(nextPage)
     else:
         column_defs = uploadutils.assign_column_defaults(session)
     
@@ -108,4 +107,9 @@ def upload_config(request):
             'data_definitions':column_defs,
             'session_id': session_id,
             'column_values': ['none','hidden','data','stddev','accession','peptide','sites','species','modification','run'],
-            'pageTitle': strings.experiment_upload_configure_page_title}
+            'pageTitle': pageTitle}
+
+@view_config(route_name='upload_config', renderer='ptmscout:/templates/upload/upload_config.pt')
+def upload_config(request):
+    session_id = int(request.matchdict['id'])
+    return upload_config_handler( request, strings.experiment_upload_configure_page_title, request.application_url + "/upload/%d/metadata" % (session_id) )
