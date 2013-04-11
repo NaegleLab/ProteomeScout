@@ -9,7 +9,10 @@ def add_views(config):
     
     config.add_route('compendia', '/compendia')
     config.add_route('compendia_download', '/compendia/{name}')
-    
+
+    config.add_route('dataset_upload', '/dataset/upload')
+    config.add_route('dataset_configure', '/dataset/upload/{id}/config')
+
     config.add_route('experiments','/experiments')
     config.add_route('experiment','/experiments/{id}')
     config.add_route('experiment_browse','/experiments/{id}/browse')

@@ -53,3 +53,4 @@ isoform_sequence_diff_pfam_threshold = 50
 
 experiment_files_prefix = "experiment_data"
 annotation_files_prefix = "annotation_data"
+dataset_files_prefix = "dataset_data"

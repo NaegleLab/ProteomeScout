@@ -1,0 +1,31 @@
+<div metal:use-macro="layout">
+    <div metal:fill-slot="header">
+        <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/forms.css')}" />
+    </div>
+    <div metal:fill-slot="content">
+        <form action="" method="post" enctype="multipart/form-data">
+            <input type="hidden" value="true" name="submitted" />
+            <div class="wideform">
+                <div class="error_display" tal:condition="len(errors)>0">
+                    <ul>
+                        <li tal:repeat="error errors" tal:content="error"></li>
+                    </ul>
+                </div>
+                <div class="formcategory">Dataset</div>
+                <table>
+                    <tr>
+                        <td class="fieldname">Dataset Name: </td>
+                        <td > ${formrenderer.render('datasetname')} </td>
+                    </tr>
+                    <tr>
+                        <td class="fieldname">Dataset File: </td>
+                        <td > ${formrenderer.render('datasetfile')} </td>
+                    </tr>
+                </table>
+
+                <div class="formsubmission"><input type="submit" value="Continue" class="longtask" /></div>
+                <div class="clear"></div>               
+            </div>
+        </form>
+    </div>
+</div>
