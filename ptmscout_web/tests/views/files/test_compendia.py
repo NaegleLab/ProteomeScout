@@ -17,6 +17,7 @@ class TestCompendiaDownloadIntegration(IntegrationTestCase):
 
     def test_compendia_list_should_show_available_compendia(self):
         result = self.ptmscoutapp.get('/compendia', status=200)
+        result.showbrowser()
         result.mustcontain('everything.tsv')
         result.mustcontain('All proteins and modifications')
         result.mustcontain('ubiquitination.tsv')

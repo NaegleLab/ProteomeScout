@@ -10,6 +10,9 @@
                         <th></th>
                         <th>Filename</th>
                         <th>Description</th>
+                        <th>Contents</th>
+                        <th>Size</th>
+                        <th>Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -17,6 +20,9 @@
                         <td></td>
                         <td><a tal:attributes="href f['link']" tal:content="f['name']" ></a></td>
                         <td tal:content="f['desc']"></td>
+                        <td tal:content="f['contents']"></td>
+                        <td tal:content="f['size']"></td>
+                        <td tal:content="f['date']"></td>
                     </tr>
                 </tbody>
             </table>
