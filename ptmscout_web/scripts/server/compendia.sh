@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 cd /data/ptmscout/ptmscout_web
 python scripts/export/export_compendia.py > data/export/ptmscout_everything.tsv
