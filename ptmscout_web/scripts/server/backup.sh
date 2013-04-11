@@ -10,5 +10,7 @@ BACKUP_1=""
 BACKUP_2=""
 
 mysqldump --user=$DB_USER --password=$DB_PASS ptmscout > $DB_BACKUP
-echo "put $DB_BACKUP" | sftp $BACKUP_1
-echo "put $DB_BACKUP" | sftp $BACKUP_2
+gzip $DB_BACKUP
+
+echo "put $DB_BACKUP.gz" | sftp $BACKUP_1
+echo "put $DB_BACKUP.gz" | sftp $BACKUP_2
