@@ -19,6 +19,8 @@
     <script type="text/javascript" src="${request.static_url('ptmscout:static/js/include/jquery.tablesorter.min.js')}" ></script>
     <script type="text/javascript" src="${request.static_url('ptmscout:static/js/ptmscout.js')}" ></script>
     <script type="text/javascript" tal:content="structure config.settings.tracking_script"> </script>
+
+    <metal:slot metal:define-slot="header"></metal:slot>
   </head>
   <body>
 	<div id="menu">

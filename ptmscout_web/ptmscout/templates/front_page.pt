@@ -64,11 +64,12 @@
                         <span>Browse<br>Experiments</span>
                     </div>
                 </a>
-<!--                <a href="${request.application_url}/annotate">
-</a>-->
-                    <div class="inactive" style="top:200px; right:160px;">
+
+                <a href="${request.route_url('dataset_upload')}">
+                    <div class="menuitem" style="top:200px; right:160px;">
                         <span>Annotate<br>Peptides</span>
                     </div>
+                </a>
 
                 <a href="${documentationUrl}title=Main_Page">
                     <div class="menuitem" style="top:345px; left:195px;">

@@ -37,7 +37,7 @@ def create_session(experiment_id, annotation_filename, user):
 def create_schema(request):
     schema = forms.FormSchema()
     
-    schema.add_text_field('datasetname', 'Dataset Name')
+    schema.add_text_field('datasetname', 'Dataset Name', width=55)
     schema.add_file_upload_field('datasetfile', 'Input Data File')
     schema.set_required_field('datasetname')
     schema.set_required_field('datasetfile')
