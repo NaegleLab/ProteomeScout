@@ -52,8 +52,8 @@ def format_GO_terms(prot):
     return '; '.join( [ "%s-%s" % (goe.GO_term.GO, goe.GO_term.term) for goe in sorted(prot.GO_terms, key=lambda term: term.GO_term.GO) ] )
 
 def format_scansite(mods):
-    plist = [ (modpep.peptide.site_pos, pred.source, pred.value, pred.percentile) for ms in mods for modpep in ms.peptides for pred in modpep.peptide.predictions ]
-    return '; '.join( [ '%d %s %s (%.2f)' % (pos, source, value, percentile) for pos, source, value, percentile in sorted( list( set( plist ) ) ) ])
+    plist = [ (modpep.peptide.site_pos, modpep.peptide.site_type, pred.source, pred.value, pred.percentile) for ms in mods for modpep in ms.peptides for pred in modpep.peptide.predictions ]
+    return '; '.join( [ '%s%d-%s-%s:%.2f' % (site_tp, pos, source, value, percentile) for pos, site_tp, source, value, percentile in sorted( list( set( plist ) ) ) ])
 
 def check_species_filter(f, p):
     if f == None:
