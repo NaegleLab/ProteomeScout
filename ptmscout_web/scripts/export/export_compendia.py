@@ -4,9 +4,10 @@ import sys, os
 import csv
 from scripts.progressbar import ProgressBar
 from collections import defaultdict
+from ptmscout.utils import protein_utils
 
 def format_protein_accessions(accessions):
-    return '; '.join([ acc.value for acc in sorted(accessions, key=lambda acc: acc.value) ])
+    return '; '.join([ acc.value for acc in sorted(accessions, key=lambda acc: acc.value) if protein_utils.get_accession_type( acc.value ) in protein_utils.get_valid_accession_types() ])
 
 def check_modtype_filter(mod, modtype_filter):
     if modtype_filter == None:
