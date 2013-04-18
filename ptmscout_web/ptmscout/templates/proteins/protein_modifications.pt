@@ -16,7 +16,7 @@
 					</tr>
 					<tal:empty tal:repeat="(i, mod) enumerate(modification_sites)">
 						<tr valign="top" tal:attributes="class 'mod_site ' + ('even' if i % 2 == 0 else 'odd');">
-							<td class="modsite"><a tal:attributes="name mod['name']" tal:content="mod['name']"></a></td>
+							<td class="modsite"><a tal:attributes="name mod['name']"></a><span tal:content="mod['name']"></span></td>
 							<td class="peptide" tal:content="mod['peptide']"></td>
                             <td tal:content="mod['type']"></td>
 							<td>

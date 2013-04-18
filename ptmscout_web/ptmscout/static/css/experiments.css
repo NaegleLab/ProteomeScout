@@ -110,15 +110,6 @@ table.experiment_summary td.listing {
 
 .data_table table, .GO_table table{
 	width:100%;
-	border:solid 1px black;
-	border-collapse:collapse;
-}
-
-.data_table th, .GO_table th {
-	color:white;
-	background:black;
-	padding-left:10px;
-	padding-right:10px;
 }
 
 .data_table .value, .GO_table .value {

@@ -26,7 +26,7 @@
   <div id="wrapper">
   	<div id="menu">
   	  <div class="container_12">
-    	  <div class="grid_10" style="text-align:left">
+    	  <div class="grid_6" style="text-align:left">
     	    <ul class="link_menu">
     	      <li><a href="${request.application_url}">Portal</a></li>
     	      <li><a href="${request.application_url}/experiments">Experiments</a></li>
@@ -38,15 +38,17 @@
     	      <li><a target='_blank' href="${documentationUrl}title=Main_Page">Documentation</a></li>
     	      <li><a href='${request.application_url}/about'>About</a></li>
     	  </div>
-    	  <div class="grid_2" style="text-align:right">
-    	    <span tal:condition="request.user == None">
-    	    	<a href='${request.application_url}/login'>Login</a>
-    	    </span>
-    	    <span tal:condition="request.user != None">
-    	    	<a href='${request.application_url}/account'>Account: ${request.username}</a> |
-    	    	<a href='${request.application_url}/account/experiments'>My Experiments</a> |
-    		    <a href='${request.application_url}/logout'>Logout</a>
-    	    </span>
+    	  <div class="grid_6" style="text-align:right">
+    	    <ul class="link_menu" tal:condition="request.user == None" style="float:right;">
+    	      <li>
+      	    	<a href='${request.application_url}/login'>Login</a>
+      	    </li>
+      	  </ul>
+    	    <ul class="link_menu" tal:condition="request.user != None" style="float:right;">
+    	    	<li><a href='${request.application_url}/account'>Account: ${request.username}</a></li>
+    	    	<li><a href='${request.application_url}/account/experiments'>My Experiments</a></li>
+    		    <li><a href='${request.application_url}/logout'>Logout</a></li>
+      	  </ul>
         </div>
       </div>
   	</div>
