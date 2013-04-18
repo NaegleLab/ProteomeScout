@@ -14,7 +14,7 @@ def upload_already_started_view(request):
             'message': strings.annotation_upload_started_message % (request.application_url + "/account/experiments")}
 
 
-def create_annotate_job(session, request):
+def create_dataset_job(session, request):
     job = jobs.Job()
     job.name = 'Load Annotations for Experiment %d' % (session.experiment_id)
     job.type = 'load_annotations'
@@ -49,7 +49,7 @@ def upload_confirm_view(request):
     reason = None
     
     if confirm and terms_of_use_accepted:
-        create_annotate_job(session, request)
+        create_dataset_job(session, request)
         
     
         return {'pageTitle': strings.annotation_upload_started_page_title,

@@ -19,6 +19,12 @@ class EntrezQueryTestCase(IntegrationTestCase):
 
         self.assertEqual(exp_lin, taxonomy)
 
+    def test_get_IPI_record(self):
+        pm = Proteome.ProteinManager(settings.adminEmail, uniprotShortcut=False)
+        pr = entrez_tools.get_protein_information(pm, 'IPI00796541')
+        
+        pr.name
+
     def test_get_pubmed_record_22373819(self):
         record = entrez_tools.get_pubmed_record_by_id(22373819)
 

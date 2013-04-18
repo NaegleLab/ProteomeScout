@@ -12,6 +12,7 @@ def add_views(config):
 
     config.add_route('dataset_upload', '/dataset/upload')
     config.add_route('dataset_configure', '/dataset/upload/{id}/config')
+    config.add_route('dataset_confirm', '/dataset/upload/{id}/confirm')
 
     config.add_route('experiments','/experiments')
     config.add_route('experiment','/experiments/{id}')

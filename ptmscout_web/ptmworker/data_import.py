@@ -61,3 +61,11 @@ def start_import(exp_id, session_id, job_id):
         log.info("Tasks created... now we wait")
 
         return load_task, (last_stage_arg,), None
+
+@celery.task
+@upload_helpers.notify_job_failed
+@upload_helpers.dynamic_transaction_task
+def start_dataset_import(exp_id, session_id, job_id):
+    pass
+
+

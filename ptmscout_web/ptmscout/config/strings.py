@@ -159,6 +159,13 @@ annotation_upload_started_message = \
 """Annotation upload process successfully started. An e-mail will be sent to you when the annotation upload is complete. Additionally, you may check the status of the upload by visiting <a href=\"%s\">this page</a>"""
 
 
+dataset_upload_confirm_page_title = "Confirm Submission"
+dataset_upload_confirm_message = "Required dataset information is now complete. Are you sure you wish to proceed with the upload? Please review and accept the terms of use below. Pressing cancel will remove this upload session, you may start a new one later."
+dataset_upload_started_page_title = "Upload Started"
+dataset_upload_started_message = \
+"""Dataset upload process successfully started. An e-mail will be sent to you when the dataset upload is complete. Additionally, you may check the status of the upload by visiting <a href=\"%s\">this page</a>"""
+
+
 forgotten_password_page_title = "Forgotten Password Retrieval"
 forgotten_password_success_header = "Password Reset Success"
 forgotten_password_success_message = "Your username and a temporary password have been sent to your e-mail address"
@@ -335,3 +342,8 @@ The PTMScout administrator has been notified of this error. If problems persist 
 """
 
 failure_reason_account_expired = "This account has expired"
+
+
+
+
+
