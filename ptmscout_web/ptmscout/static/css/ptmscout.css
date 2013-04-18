@@ -13,10 +13,14 @@ body {
   background-color: #ccc;
 }
 a {
+  color: blue;
   text-decoration: none;
 }
 a:hover {
   text-decoration: underline;
+}
+a:visited{
+  color: blue;
 }
 
 
@@ -251,9 +255,41 @@ ul.link_menu li:first-child {
    clear: both;
 }
 
-tr th {
- text-align:left;
+/* Generic Table Styles */
+
+table {
+  margin-top:1em;
+	border-collapse: collapse;
+	width:90%;
+	margin-left:auto;
+	margin-right:auto;
+	border:solid;
+	border-width:1px;
+	border-color:black;
 }
+
+th, td {
+ padding-left: 0.5em;
+ padding-right: 0.5em;
+}
+
+th {
+  text-align:left;
+  background:#333;
+  color:white;
+  padding-top: 0.3em;
+  padding-bottom:0.3em;
+}
+td {
+	vertical-align:top;
+}
+tr.odd {
+	background:white;
+}
+tr.even {
+	background:#DDD;
+}
+/* end of generic table styles */
 a img {
  border:none;
 }
@@ -329,7 +365,10 @@ img.help {
 ul.no_bullet {
   list-style-type: none; 
   padding: 0;
-  margin-left: 0.5em;
+  margin-left: 0;
+}
+ul.no_bullet li {
+  margin-left: 0;
 }
 
 
@@ -367,24 +406,8 @@ table#peptide_table {
   max-width: 1024px;
 }
 
-table#peptide_table th {
-  background-color: black;
-  color: white; 
-}
-table#peptide_table th,td {
- padding-left: 0.5em;
- padding-right: 0.5em;
-}
-table#peptide_table td {
- border: 1px solid black;
-}
-
 table#peptide_table li {
   margin-bottom: 0.5em;
-}
-
-table#peptide_table tr.odd {
-  background-color: #DDDDDD;
 }
 
 

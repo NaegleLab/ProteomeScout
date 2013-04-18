@@ -14,8 +14,8 @@
                 <tr tal:attributes="class 'experiment' + (' even' if i % 2 == 0 else ' odd'); id 'e%d' % (experiment.id)" >
                     <td><a tal:condition="len(experiment.children) > 0" class="expand" href="${request.application_url}/experiments" tal:attributes="id 'e'+str(experiment.id)">[+]</a></td>
                     <td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.name"></a></td>
-                    <td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.description"></a></td>
-                    <td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.author"></a></td>
+                    <td tal:content="experiment.description"></td>
+                    <td tal:content="experiment.author"></td>
                     <td class="citation" tal:content="experiment.getCitationString()"></td>
                 </tr>
                 <tr tal:repeat="child experiment.children" tal:attributes="class 'subexperiment' + (' even' if i % 2 == 0 else ' odd');id 'e'+str(experiment.id)" >

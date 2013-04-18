@@ -29,8 +29,8 @@
     	  <div class="grid_10" style="text-align:left">
     	    <ul class="link_menu">
     	      <li><a href="${request.application_url}">Portal</a></li>
-    	      <li><a href="${request.application_url}/experiments">Browse Experiments</a></li>
-            <li><a href='${request.application_url}/proteins'>Browse Proteins</a></li>
+    	      <li><a href="${request.application_url}/experiments">Experiments</a></li>
+            <li><a href='${request.application_url}/proteins'>Proteins</a></li>
     	      <li tal:condition="request.user != None">
     <!--            <a href="${request.application_url}/annotate">Annotate Datasets</a> | -->
                 <a href='${request.application_url}/upload'>Upload Data</a>

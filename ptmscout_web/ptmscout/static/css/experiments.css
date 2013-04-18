@@ -4,26 +4,9 @@
 }
 
 .experimenttable {
-	border-collapse: collapse;
-	width:90%;
-	margin-left:auto;
-	margin-right:auto;
-	border:solid;
-	border-width:1px;
-	border-color:black;
+  margin-top:2em;
 }
 
-.experimenttable th {
-	background:blue;
-	color:white;
-	padding-left:10px;
-	padding-right:10px;
-}
-
-.experimenttable td {
-	font-size:13px;
-	vertical-align:top;
-}
 
 .experimenttable .status {
 	font-weight:bold;
@@ -41,16 +24,8 @@
 	border-left-color:black;
 }
 
-.experimenttable td.citation {
-	font-size:16px;
-}
 
-.experimenttable tr.odd {
-	background:white;
-}
-.experimenttable tr.even {
-	background:#9999cc;
-}
+
 
 .restricted {
 	font-weight:bold;
@@ -73,6 +48,7 @@
 }
 
 table.summary_quantity {
+  border: none;
 	width:200px;
 	margin-top:10px;
 	margin-bottom:20px;
