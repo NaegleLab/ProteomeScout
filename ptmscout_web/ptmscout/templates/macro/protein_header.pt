@@ -1,33 +1,6 @@
 <div metal:define-macro="protein_header">
-	<div id="proteinMenu">
-		<a href="${request.urlfilter.encode_url('/proteins/%d/sequence' % (protein.id))}">Sequence</a> |
-		<a href="${request.urlfilter.encode_url('/proteins/%d/GO' % (protein.id))}">Gene Ontology</a> |
-		<a href="${request.urlfilter.encode_url('/proteins/%d/expression' % (protein.id))}">Gene Expression</a> |
-		<a href="${request.urlfilter.encode_url('/proteins/%d/modifications' % (protein.id))}">Modification Sites</a> |
-		<a href="${request.urlfilter.encode_url('/proteins/%d/data' % (protein.id))}">Data</a>
-	</div>
-	<div id="proteinInfo" >
-	   	<fieldset class="object-info">
-	   		<legend>Protein</legend>
-	   		<div>
-	   			<label>Name:</label> ${protein.name}
-	   		</div>
-	   		<div>
-	   			<label>Species:</label> ${protein.species.name}
-	   		</div>
-	   		<div> 
-		   		<label>Accessions:</label>
-		   		<ul>
-		   			<li tal:repeat="acc protein.accessions">
-		   				<span class="acc_type" tal:content="structure acc.getType()"></span>:
-		   				<a class="acc_id" tal:condition="acc.getURL() != None" tal:attributes="href acc.getURL()" target="_blank" tal:content="acc.getAccessionName()" ></a>
-		   				<span class="acc_id" tal:condition="acc.getURL() == None" tal:content="acc.getAccessionName()"></span>
-		   			</li>
-		   		</ul>
-	   		</div>
-	    </fieldset>
-    </div>
-    <div class='notification' tal:condition="request.urlfilter.field_is_set('experiment_id')">
-        Experiment filter active. Some data may not be shown. <a href="${request.urlfilter.clear_url()}">Click here</a> to show all data.
-    </div>
+  <!-- <div metal:use-macro="protein_info" /> -->
+  <div class='notification' tal:condition="request.urlfilter.field_is_set('experiment_id')">
+      Experiment filter active. Some data may not be shown. <a href="${request.urlfilter.clear_url()}">Click here</a> to show all data.
+  </div>
 </div>

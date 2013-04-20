@@ -19,6 +19,8 @@ def add_path_definitions(event):
     event['experiment_list'] = experiment_list_template()
     event['protein_header'] = protein_template()
     event['protein_list'] = protein_list_template()
+    event['protein_info'] = protein_info_template()
+    event['protein_nav'] = protein_nav_template()
     event['dataset_explorer'] = dataset_explorer_template()
 
     event['redirect'] = None
@@ -56,6 +58,16 @@ def experiment_list_template():
 def protein_list_template():
     renderer = get_renderer("ptmscout:templates/macro/protein_list.pt")
     legend = renderer.implementation().macros['protein_list']
+    return legend
+
+def protein_info_template():
+    renderer = get_renderer("ptmscout:templates/macro/protein_info.pt")
+    legend = renderer.implementation().macros['protein_info']
+    return legend
+
+def protein_nav_template():
+    renderer = get_renderer("ptmscout:templates/macro/protein_nav.pt")
+    legend = renderer.implementation().macros['protein_nav']
     return legend
 
 def dataset_explorer_template():

@@ -8,8 +8,13 @@
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/experiment_search.js')}" ></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/compare.experiments.js')}" ></script>
 	</metal:slot>
+	<div metal:fill-slot="nav">
+    <div metal:use-macro="experiment_header"></div>
+  </div>
+  <div metal:fill-slot="subnav">
+  </div>
+	
 	<div metal:fill-slot="content">
-        <div metal:use-macro="experiment_header"></div>
 
         <div id="comparison_actions">
             <form method="POST" action="" >

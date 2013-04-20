@@ -42,8 +42,9 @@ a:visited{
   height: auto !important;
   height: 100%;
   border-left: 2px solid #666;
-  border-right: 2px solid #666;
+  border-right: 2px solid #666;  
 }
+
 #footer, #push {
   padding-top: 1em;
 	height: 200px; /* .push must be the same height as .footer */
@@ -74,8 +75,7 @@ table {
 #content {
 }
 #content .container_12,
-#breadcrumb .container_12,
-#header .container_12
+#breadcrumb .container_12
 {
   background-color: white;
 }
@@ -110,22 +110,20 @@ table {
 #content .container_12 {
   bottom: 0;	
 }
-
-#experimentMenu, #experimentSummaryMenu {
+#nav, #subnav {
   height: 24px;
   padding-left: 10px;
-  border-bottom: 2px solid #666;
 }
-#experimentMenu {
+#nav {
   background-color: #009999;
 }
-#experimentMenu a, #experimentSummaryMenu a{
+#nav a, #subnav a{
   color: white;
 }
-#experimentMenu a:hover, #experimentSummaryMenu a:hover {
+#nav a:hover, #subnav a:hover {
   color: blue;
 }
-#experimentSummaryMenu {
+#subnav {
   background-color: #00AAAA;
 }
 

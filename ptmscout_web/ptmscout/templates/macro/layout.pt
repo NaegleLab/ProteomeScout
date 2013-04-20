@@ -56,18 +56,20 @@
         </div>
       </div>
   	</div>
-  	<div id="wrapper_container">
 
+  	<div id="wrapper_container">
+    	<div id="nav_wrapper">
+    	  <div class="container_12">
+  	       <div metal:define-slot="nav"></div>
+    	  </div>
+    	</div>
+    	<div id="subnav_wrapper">
+    	  <div class="container_12">
+  	       <div metal:define-slot="subnav"></div>
+    	  </div>
+    	</div>
 
     	<div id="page">
-	
-    	  <div id="header">
-    	    <div class="container_12">
-      	    <a href="${request.application_url}/">
-      	      <img alt="PTMScout logo" src="${request.static_url('ptmscout:static/images/ptmscout_logo.png')}" title="Home" />
-      	    </a>
-      	  </div>
-    	  </div>
 	
     	  <div id="breadcrumb">
     	    <div class="container_12">

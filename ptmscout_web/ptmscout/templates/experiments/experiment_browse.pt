@@ -3,36 +3,41 @@
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/experiments.css')}" />
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/proteins.css')}" />
 	</div>
+	<div metal:fill-slot="nav">
+    <div metal:use-macro="experiment_header"></div>
+  </div>
+  <div metal:fill-slot="subnav">
+  </div>
+	
 	<div metal:fill-slot="content">
-		<div metal:use-macro="experiment_header"></div>
-        <form class="search_form" name="search" method="GET" action="${request.application_url}/experiments/${experiment.id}/browse">
-            <fieldset>
-                <legend>Search</legend>
+    <form class="search_form" name="search" method="GET" action="${request.application_url}/experiments/${experiment.id}/browse">
+        <fieldset>
+            <legend>Search</legend>
 
-                <input type="hidden" name="submitted" value="true">
-                <div class="error_display" tal:condition="len(errors)>0">
-                    <ul>
-                        <li tal:repeat="error errors" tal:content="error"></li>
-                    </ul>
-                </div>
-                <p>
-                    <label for="acc_search">Protein:</label>
-                    ${form.render('acc_search')}
-                    ${form.render('include_name')}
-                <p>
-                    <label for="pep_search">Peptide:</label>
-                    ${form.render('pep_search')}
-                </p>
-                <p>
-                    <label for="species">Species:</label> <br />
-                    ${form.render('species')}
-                </p>
-                <input type="submit" value="Search" class="longtask" />
-            </fieldset>
-        </form>
-    
-        <div class="paginator" tal:content="structure pager.build()"></div>
-        <div metal:use-macro="protein_list"></div>
-    </div>
+            <input type="hidden" name="submitted" value="true">
+            <div class="error_display" tal:condition="len(errors)>0">
+                <ul>
+                    <li tal:repeat="error errors" tal:content="error"></li>
+                </ul>
+            </div>
+            <p>
+                <label for="acc_search">Protein:</label>
+                ${form.render('acc_search')}
+                ${form.render('include_name')}
+            <p>
+                <label for="pep_search">Peptide:</label>
+                ${form.render('pep_search')}
+            </p>
+            <p>
+                <label for="species">Species:</label> <br />
+                ${form.render('species')}
+            </p>
+            <input type="submit" value="Search" class="longtask" />
+        </fieldset>
+    </form>
+
+    <div class="paginator" tal:content="structure pager.build()"></div>
+    <div metal:use-macro="protein_list"></div>
+  </div>
 </div>
 	
