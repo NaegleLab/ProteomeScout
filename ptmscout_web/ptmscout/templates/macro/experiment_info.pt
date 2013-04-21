@@ -1,0 +1,14 @@
+<div metal:define-macro="experiment_info">
+	<div id="experimentInfo" >
+   	<fieldset>
+   		<legend>Experiment</legend>
+   		<a href="${experiment.getUrl()}" tal:condition="experiment.getUrl() != None">${experiment.name}</a>
+   		<tal:expname tal:condition="experiment.getUrl() == None">${experiment.name}</tal:expname><br />
+		<tal:expcitation tal:content="structure experiment.getLongCitationString()"></tal:expcitation><br />
+	    <br /><br />
+	    ${experiment.description}
+	    <br /><br />
+	    Loaded: ${experiment.date}<br />
+    </fieldset>
+  </div>    
+</div>
