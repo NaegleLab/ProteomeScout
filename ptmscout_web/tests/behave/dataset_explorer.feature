@@ -12,3 +12,22 @@ Feature: Dataset Explorer
           And the user should be able to filter by nominative data
           And the user should be able to filter by numerical data
           And the user should be able to view nominative features in the enrichment data
+          
+         @runme
+	Scenario: Load residues of interest from a dataset and annotate them
+		Given a user uploads a file containing non-mass spec experimental data
+		Then the user should be sent an email with a link to the experiment which contains:
+		  | proteins | peptides | rejected | errors |
+		  | 5        | 8        | 1        | 1      |
+		And the user should be able to export their dataset with additional annotations:
+		  | field                | elements |
+		  | modifications        |          |
+		  | nearby_modifications |          |
+		  | GO_terms             |          |
+		  | scansite_kinase      |          |
+		  | scansite_bind        |          |
+		  | pfam_domains         |          |
+		  | pfam_sites           |          |
+		And the user should be able to view summary data
+		And the user should be able to use the dataset explorer
+		And the user should not be able to use other experiment specific tools

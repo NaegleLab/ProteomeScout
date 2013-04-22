@@ -66,7 +66,7 @@ def parse_user_input(session, request):
     return {'columns':columns,'units':units}, [ uploadutils.ColumnError(e) for e in errors ]
 
 
-def upload_config_handler(request, pageTitle, nextPage):
+def upload_config_handler(request, pageTitle, nextPage, mod_required=True):
     session_id = int(request.matchdict['id'])
     session = upload.getSessionById(session_id, request.user) 
     submitted = webutils.post(request, 'submitted', "false") == "true"
@@ -84,7 +84,7 @@ def upload_config_handler(request, pageTitle, nextPage):
             if len(errors) > 0:
                 raise uploadutils.ErrorList(errors, True)
                 
-            uploadutils.check_data_column_assignments(session)
+            uploadutils.check_data_column_assignments(session, mod_required)
             commit = True
         except uploadutils.ErrorList, ce:
             allowoverride = not ce.critical

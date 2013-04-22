@@ -181,12 +181,15 @@ def check_modification_type_matches_peptide(row, peptide, modification, taxon_no
 
     return check_modification_type_matches_residues(row, modified_residues, modification, taxon_nodes)
    
-def check_data_row(r, row, acc_col, pep_col, site_col, mod_col, run_col, data_cols, stddev_cols, keys):
+def check_data_row(r, row, acc_col, pep_col, site_col, mod_col, run_col, data_cols, stddev_cols, keys, mod_col_required=True):
     errors = []
     
     try:
         accession = row[acc_col.column_number].strip()
-        modification = row[mod_col.column_number].strip()
+        
+        modification = None
+        if mod_col_required:
+            modification = row[mod_col.column_number].strip()
 
         acc_type = protein_utils.get_accession_type(accession)
         if acc_type not in protein_utils.get_valid_accession_types():
@@ -199,15 +202,17 @@ def check_data_row(r, row, acc_col, pep_col, site_col, mod_col, run_col, data_co
                     
             if not protein_utils.check_peptide_alphabet(peptide):
                 errors.append(ParseError(r, pep_col.column_number+1, strings.experiment_upload_warning_peptide_column_contains_bad_peptide_strings))
-                
-            call_catch(ParseError, errors, check_modification_type_matches_peptide, r, peptide, modification)
+            
+            if mod_col_required:
+                call_catch(ParseError, errors, check_modification_type_matches_peptide, r, peptide, modification)
 
             site_index = peptide
         else:
             sites = row[site_col.column_number].strip()
             try:
                 normed_sites = protein_utils.normalize_site_list(sites)
-                call_catch(ParseError, errors, check_modification_type_matches_sites, r, normed_sites, modification)
+                if mod_col_required:
+                    call_catch(ParseError, errors, check_modification_type_matches_sites, r, normed_sites, modification)
                 sites = normed_sites
             except:
                 errors.append( ParseError(r, None, "Invalid formatting for sites: %s" % (sites) ) )
@@ -242,7 +247,7 @@ def check_data_row(r, row, acc_col, pep_col, site_col, mod_col, run_col, data_co
 
     return errors
     
-def check_data_rows(session, acc_col, pep_col, site_col, mod_col, run_col, data_cols, stddev_cols, N=MAX_ROW_CHECK):
+def check_data_rows(session, acc_col, pep_col, site_col, mod_col, run_col, data_cols, stddev_cols, mod_col_required=True, N=MAX_ROW_CHECK):
     errors = []
     _, data = load_header_and_data_rows(session.data_file, N)
     
@@ -251,12 +256,12 @@ def check_data_rows(session, acc_col, pep_col, site_col, mod_col, run_col, data_
     r = 0
     for row in data:
         r+=1
-        errors.extend( check_data_row(r, row, acc_col, pep_col, site_col, mod_col, run_col, data_cols, stddev_cols, keys) )
+        errors.extend( check_data_row(r, row, acc_col, pep_col, site_col, mod_col, run_col, data_cols, stddev_cols, keys, mod_col_required) )
     
     return errors
 
 
-def check_data_column_assignments(session):
+def check_data_column_assignments(session, mod_col_required=True):
     errors = []
     
     acc_col     = call_catch(ColumnError, errors, check_unique_column, session, 'accession', required=True)
@@ -269,7 +274,7 @@ def check_data_column_assignments(session):
     if type_col and type_col[0] == 'sites':
         site_col = type_col[1]
 
-    mod_col     = call_catch(ColumnError, errors, check_unique_column, session, 'modification', required=True)
+    mod_col     = call_catch(ColumnError, errors, check_unique_column, session, 'modification', required=mod_col_required)
     run_col     = call_catch(ColumnError, errors, check_unique_column, session, 'run')
     
     critical = True
@@ -278,7 +283,7 @@ def check_data_column_assignments(session):
         critical = False
         data_cols   = get_columns_of_type(session, 'data')
         stddev_cols = get_columns_of_type(session, 'stddev')
-        errors.extend( check_data_rows(session, acc_col, pep_col, site_col, mod_col, run_col, data_cols, stddev_cols) )
+        errors.extend( check_data_rows(session, acc_col, pep_col, site_col, mod_col, run_col, data_cols, stddev_cols, mod_col_required) )
         
     if len(errors) > 0:
         raise ErrorList(errors, critical)

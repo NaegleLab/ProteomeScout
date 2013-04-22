@@ -26,7 +26,7 @@ def create_dataset_job(exp, session, request):
     
     job.save()
     
-    data_import.start_dataset_import.apply_async((exp.id, session.id, job.id))
+    data_import.start_import.apply_async((exp.id, session.id, job.id, True))
 
 @view_config(route_name='dataset_confirm', renderer='ptmscout:/templates/upload/upload_confirm.pt', permission='private')
 def upload_confirm_view(request):

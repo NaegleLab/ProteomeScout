@@ -393,6 +393,18 @@ def get_pep_seq_from_sites(prot_seq, site_designation):
 
     return "".join( c.lower() if i in site_positions else c for i, c in enumerate(prot_seq.upper()) )
 
+def get_residue_indicies(pep_seq):
+    modified_alphabet = set("abcdefghijklmnopqrstuvwxyz")
+    return [i for i, r in enumerate( pep_seq ) if r in modified_alphabet ]
+    
+
+def parse_nullmod(prot_seq, pep_seq):
+    pep_seq = pep_seq.strip()
+    index = check_peptide_matches_protein_sequence(prot_seq, pep_seq)
+    residue_indices = get_residue_indicies(pep_seq)
+    aligned_sequences = get_aligned_peptide_sequences(residue_indices, index, pep_seq, prot_seq)
+    return aligned_sequences
+    
 def parse_modifications(prot_seq, pep_seq, mods, taxonomy):
     pep_seq = pep_seq.strip()
     index = check_peptide_matches_protein_sequence(prot_seq, pep_seq)
@@ -467,7 +479,7 @@ def get_series_headers(session):
 
 
 
-def parse_datafile(session):
+def parse_datafile(session, nullmod=False):
     accessions = {}
     sites_map = {}
     mod_map = {}
@@ -487,8 +499,11 @@ def parse_datafile(session):
     if len(site_cols) > 0:
         site_col = site_cols[0]
         site_type = 'sites'
-
-    mod_col = session.getColumns('modification')[0]
+    
+    mod_col = None
+    if not nullmod:
+        mod_col = session.getColumns('modification')[0]
+    
     run_col = None
     
     found_cols = session.getColumns('run')
@@ -505,7 +520,7 @@ def parse_datafile(session):
     line=0
     for row in rows:
         line+=1
-        line_errors = uploadutils.check_data_row(line, row, acc_col, pep_col, site_col, mod_col, run_col, data_cols, stddev_cols, keys)
+        line_errors = uploadutils.check_data_row(line, row, acc_col, pep_col, site_col, mod_col, run_col, data_cols, stddev_cols, keys, not nullmod)
 
         acc = None
         sites = None
@@ -528,7 +543,9 @@ def parse_datafile(session):
             errors.extend(line_errors)
             continue
      
-        mods = row[mod_col.column_number].strip()
+        mods = []
+        if not nullmod:
+            mods = row[mod_col.column_number].strip()
         
         line_set = accessions.get(acc, [])
         line_set.append(line)

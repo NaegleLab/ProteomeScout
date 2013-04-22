@@ -8,7 +8,7 @@ log = logging.getLogger('ptmscout')
 @celery.task
 @upload_helpers.notify_job_failed
 @upload_helpers.dynamic_transaction_task
-def start_import(exp_id, session_id, job_id):
+def start_import(exp_id, session_id, job_id, nullmods=False):
     exp = experiment.getExperimentById(exp_id, check_ready=False, secure=False)
     job = exp.job
     
@@ -16,7 +16,7 @@ def start_import(exp_id, session_id, job_id):
     session = upload.getSessionById(session_id, secure=False)
     
     log.info("Loading data file...")
-    accessions, sites, site_type, mod_map, data_runs, errors, line_mapping = upload_helpers.parse_datafile(session)
+    accessions, sites, site_type, mod_map, data_runs, errors, line_mapping = upload_helpers.parse_datafile(session, nullmods)
 
     if exp.loading_stage == 'in queue' or exp.status != 'error':
         exp.clearErrors()
@@ -41,7 +41,7 @@ def start_import(exp_id, session_id, job_id):
         proteins_task = protein_tasks.query_protein_metadata.s(accessions, line_mapping, exp_id, job_id)
         GO_task = GO_tasks.import_go_terms.s(exp_id, job_id)
         
-        peptide_task = peptide_tasks.run_peptide_import.s(sites, mod_map, data_runs, headers, session.units, load_ambiguities, site_type == 'sites', exp_id, job_id)
+        peptide_task = peptide_tasks.run_peptide_import.s(sites, mod_map, data_runs, headers, session.units, load_ambiguities, nullmods, site_type == 'sites', exp_id, job_id)
         
 
         annotate_task = annotate_tasks.annotate_experiment.si(exp_id, job_id)
@@ -61,11 +61,4 @@ def start_import(exp_id, session_id, job_id):
         log.info("Tasks created... now we wait")
 
         return load_task, (last_stage_arg,), None
-
-@celery.task
-@upload_helpers.notify_job_failed
-@upload_helpers.dynamic_transaction_task
-def start_dataset_import(exp_id, session_id, job_id):
-    pass
-
 

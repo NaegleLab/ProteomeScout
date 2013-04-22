@@ -113,3 +113,11 @@ def view_nominative_enrichment(context):
     
     assertAlmostEqual(0.23759270964480667, fun_p_values['not fun'])
     assertAlmostEqual(0.3949453933540862, fun_p_values['fun'])
+
+
+
+@given(u'a user uploads a file containing non-mass spec experimental data')
+def upload_dataset_for_annotation(context):
+    pass
+    
+    

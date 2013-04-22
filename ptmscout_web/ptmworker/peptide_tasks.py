@@ -41,7 +41,7 @@ def load_protein(accession, protein_record):
 
 
 
-def load_peptide_modification(exp_id, load_ambiguities, protein_accession, protein_record, site_designation, mods, units, series_header, runs, is_site=False):
+def load_peptide_modification(exp_id, load_ambiguities, protein_accession, protein_record, site_designation, mods, nullmods, units, series_header, runs, is_site=False):
     try:
         protein_id, protein_sequence, species, taxonomy = load_protein(protein_accession, protein_record)
 
@@ -49,7 +49,13 @@ def load_peptide_modification(exp_id, load_ambiguities, protein_accession, prote
         if is_site:
             pep_seq = upload_helpers.get_pep_seq_from_sites(protein_sequence, site_designation)
 
-        mod_types, aligned_sequences = upload_helpers.parse_modifications(protein_sequence, pep_seq, mods, taxonomy)
+        mod_types = []
+        aligned_sequences = []
+        if nullmods:
+            aligned_sequences = upload_helpers.parse_nullmod(protein_sequence, pep_seq)
+            mod_types = [ None for _seq in aligned_sequences ]
+        else:
+            mod_types, aligned_sequences = upload_helpers.parse_modifications(protein_sequence, pep_seq, mods, taxonomy)
 
         filter_mods = []
         for i in xrange(0, len(mod_types)):
@@ -70,7 +76,7 @@ def load_peptide_modification(exp_id, load_ambiguities, protein_accession, prote
                 upload_helpers.check_ambiguity( pep_measurement, species )
 
         for i in xrange(0, len(aligned_sequences)):
-            mod_type = mod_types[i] 
+            mod_type = mod_types[i]
             site_pos, pep_sequence, _ = aligned_sequences[i]
 
             pep, created = upload_helpers.get_peptide(protein_id, site_pos, pep_sequence)
@@ -109,7 +115,7 @@ UPDATE_EVERY=30
 @celery.task
 @upload_helpers.notify_job_failed
 @upload_helpers.transaction_task
-def run_peptide_import(prot_map, peptides, mod_map, data_runs, headers, units, load_ambiguities, by_site, exp_id, job_id):
+def run_peptide_import(prot_map, peptides, mod_map, data_runs, headers, units, load_ambiguities, nullmods, by_site, exp_id, job_id):
     accessions = set( prot_map.keys() ) & set( peptides.keys() )
 
     total_peptides = 0
@@ -131,7 +137,7 @@ def run_peptide_import(prot_map, peptides, mod_map, data_runs, headers, units, l
                     line, series = data_runs[run_key][run_name]
                     run_tasks.append( (line, run_name, series) )
 
-                load_peptide_modification(exp_id, load_ambiguities and not by_site, acc, prot_map[acc], pep, mod_str, units, headers, run_tasks, is_site = by_site)
+                load_peptide_modification(exp_id, load_ambiguities and not by_site, acc, prot_map[acc], pep, mod_str, nullmods, units, headers, run_tasks, is_site = by_site)
 
                 i+=1
                 if i % UPDATE_EVERY == 0:
