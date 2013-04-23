@@ -66,7 +66,7 @@ def parse_user_input(session, request):
     return {'columns':columns,'units':units}, [ uploadutils.ColumnError(e) for e in errors ]
 
 
-def upload_config_handler(request, pageTitle, nextPage, mod_required=True):
+def upload_config_handler(request, pageTitle, nextPage, mod_required=True, nextStage='metadata'):
     session_id = int(request.matchdict['id'])
     session = upload.getSessionById(session_id, request.user) 
     submitted = webutils.post(request, 'submitted', "false") == "true"
@@ -92,7 +92,7 @@ def upload_config_handler(request, pageTitle, nextPage, mod_required=True):
             errors = ce.error_list()
             
         if commit:
-            session.stage = 'metadata'
+            session.stage = nextStage
             session.save()
             return HTTPFound(nextPage)
     else:
