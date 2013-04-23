@@ -13,6 +13,12 @@ from ptmscout.database import jobs
 
 class TestModifications(DBTestCase):
 
+    def test_findPTM_should_block_none(self):
+        ptms, found_match, found_match_residue = findMatchingPTM("None")
+        self.assertEqual([], ptms)
+        self.assertFalse(found_match)
+        self.assertFalse(found_match_residue)
+
     def test_findPTM_should_get_ptms_with_strain_specific(self):
         taxonomy = ['Plasmodium falciparum (isolate 3D7)']
         modname = 'Sulfothreonine'
@@ -64,6 +70,16 @@ class TestModifications(DBTestCase):
         job.type = 'load_experiment'
         job.save()
         return job.id
+
+    def test_get_modifications_should_not_return_mods_for_dataset_type_experiments(self):
+        exp = getExperimentById(26)
+        exp.type='dataset'
+        exp.saveExperiment()
+        
+        ms_entries = getMeasuredPeptidesByProtein(35546, None)
+        
+        self.assertEqual(2, len(ms_entries))
+        self.assertTrue( 26 not in [ms.experiment_id for ms in ms_entries] )
 
     def test_get_modifications_should_return_mods_allowed_by_user_credentials(self):
         u = User("username", "name", "email", "institution")

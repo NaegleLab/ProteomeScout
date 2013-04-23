@@ -422,17 +422,10 @@ def createExperimentError(exp_id, line, accession, peptide, message):
     
     DBSession.add(err)
 
-def getExperimentProgress(exp_id):
-    entry = DBSession.query(ExperimentProgress).filter_by(experiment_id=exp_id).first()
-    if entry == None:
-        return 0, 0
-    return entry.value, entry.max_value
-
-
 def searchExperiments(text_search=None, conditions={}, user=None, page=None):
     q = DBSession.query(Experiment.id).outerjoin(Experiment.conditions).outerjoin(Experiment.permissions)
 
-    filter_clauses = []
+    filter_clauses = [ Experiment.type != 'dataset' ]
     if user:
         filter_clauses.append( or_( Experiment.public==1, Permission.user_id==user.id ) )
     else:

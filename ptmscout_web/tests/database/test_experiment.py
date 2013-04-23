@@ -8,6 +8,16 @@ from ptmscout.database import user, permissions
 
 class ExperimentTestCase(DBTestCase):
 
+    def test_experiment_searchExperiments_no_datasets(self):
+        exp = dbexperiment.getExperimentById(28)
+        exp.type='dataset'
+        exp.saveExperiment()
+        
+        cnt, experiments = searchExperiments(text_search='HER2')
+        
+        self.assertEqual(0, cnt)
+        self.assertEqual(0, len(experiments))
+
     def test_experiment_searchExperiments_by_condition(self):
         cnt, experiments = searchExperiments(text_search='HER2', conditions={'drug':['dasatinib']})
         
@@ -170,12 +180,17 @@ class ExperimentTestCase(DBTestCase):
         exp2.job.status = 'configuration'
         exp2.saveExperiment()
         
-        experiments = dbexperiment.getAllExperiments(None)
+        exp3 = dbexperiment.getExperimentById(25, None)
+        exp3.type = 'dataset'
+        exp3.saveExperiment()
+        
+        experiments = dbexperiment.getAllExperiments(None, filter_compendia=False)
         
         self.assertTrue(len(experiments) > 0)
         
         self.assertFalse( exp.id in [ e.id for e in experiments ] )
         self.assertFalse( exp2.id in [ e.id for e in experiments ] )
+        self.assertFalse( exp3.id in [ e.id for e in experiments ] )
         
     @patch('ptmscout.database.experiment.getAllExperiments')
     def test_getExperimentTree_should_build_experiment_tree(self, patch_getAllExperiments):

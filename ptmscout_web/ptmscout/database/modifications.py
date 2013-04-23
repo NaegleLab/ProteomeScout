@@ -240,6 +240,9 @@ def getModificationByName(ptm_name):
     return DBSession.query(PTM).filter_by(name=ptm_name).first()
 
 def findMatchingPTM(mod_type, residue=None, taxons=None):
+    if mod_type == "None":
+        return [], False, False 
+    
     mods = DBSession.query(PTM).outerjoin(PTMkeyword).filter(or_(PTM.accession==mod_type, PTM.name==mod_type, PTMkeyword.keyword==mod_type)).all()
     
     mods_exist = len(mods) > 0
