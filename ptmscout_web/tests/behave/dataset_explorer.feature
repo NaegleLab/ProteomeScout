@@ -16,18 +16,20 @@ Feature: Dataset Explorer
          @runme
 	Scenario: Load residues of interest from a dataset and annotate them
 		Given a user uploads a file containing non-mass spec experimental data
-		Then the user should be sent an email with a link to the experiment which contains:
+		Then the user should be sent an email with a link to the dataset which contains:
 		  | proteins | peptides | rejected | errors |
-		  | 5        | 8        | 1        | 1      |
+		  | 3        | 7        | 1        | 1      |
 		And the user should be able to export their dataset with additional annotations:
 		  | field                | elements |
-		  | modifications        |          |
-		  | nearby_modifications |          |
-		  | GO_terms             |          |
-		  | scansite_kinase      |          |
-		  | scansite_bind        |          |
-		  | pfam_domains         |          |
-		  | pfam_sites           |          |
+		  | nearby_modifications | 17       |
+		  | protein_domains      | 37       |
+		  | site_regions         | 2        |
+		  | site_domains         | 5        |
+		  | scansite_kinase      | 15       |
+		  | scansite_bind        | 4        |
+		  | protein_GO_BP        | 153      |
+		  | protein_GO_MF        | 62       |
+		  | protein_GO_CC        | 55       |
 		And the user should be able to view summary data
 		And the user should be able to use the dataset explorer
 		And the user should not be able to use other experiment specific tools

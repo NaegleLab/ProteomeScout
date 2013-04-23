@@ -1,0 +1,9 @@
+accession	site	data:time:1	data:time:10	data:time:20	stddev:time:10	stddev:time:20	
+P00533	T725; Y727	2	3	2	0.25	1.28	# nearby: K728-N6-acetyllysine, G724S; G719A; G719C; G719D; G719S; E734K, Pkinase_Tyr, INPP5D_SH2
+P00533	T693; S695	1	5	9	0.5	1.5	# nearby: CDC2_Pro_ST_kin; CDK5_Pro_ST_kin; MAPK3_Pro_ST_kin 
+P00533	K728	3	4	1	1	1.5	# nearby: T725; Y727, G724S; E734K, Pkinase_Tyr
+P00533	Y869	2	4	1	0.7	1.9	# nearby: K867-N6-acetyllysine, G873E, Kinase Activation Loop, Pkinase_Tyr, INSR_Y_kin
+P29317	S570;Y575;S579	3	1	0.2	0.1	0.7	# nearby: R568H, Pfam-B_1584, CDC2_Pro_ST_kin; CDK5_Pro_ST_kin; PRKACG_Baso_ST_kin; PIK3R1_SH2; ABL1_Y_kin; EGFR_Y_kin; FGR_Y_kin; LCK_Y_kin; SRC_Y_kin
+P29317	Y772	2	2	2	0.1	0.4	# nearby: T771;T773;T774, G777S, Kinase Activation Loop, Pkinase_Tyr, ABL1_Y_kin; LCK_Y_kin
+Q13523	S166	2	3	3	0.2	0.4	# nearby: T162; S164; S165; T167; K168-N6-acetyllysine, YWHAZ_pST_bind; CLK2_Baso_ST_kin; PRKCA_Baso_ST_kin
+Q13523	R167	3	1	2	0.1	0.3	# error
