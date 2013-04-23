@@ -17,12 +17,14 @@
                 <dt><a href="${request.application_url}/experiments/${experiment.id}/subsets">Evaluate Subsets</a></dt>
                 <dd>Select a foreground from data or metadata, view composition and evaluate enrichment</dd>
     
-                <dt><a href="${request.application_url}/experiments/${experiment.id}/compare">Compare Datasets</a></dt>
-                <dd>View novel sites compared to other datasets</dd>
-            
-                <tal:empty tal:condition="experiment.ambiguity == 1">
-                    <dt><a href="${request.application_url}/experiments/${experiment.id}/ambiguity">Report Ambiguity</a></dt>
-                    <dd>See all peptide assignments that might be ambiguously assigned.  Explore and change assignments</dd>
+    			<tal:empty tal:condition="experiment.isExperiment()">
+	                <dt><a href="${request.application_url}/experiments/${experiment.id}/compare">Compare Datasets</a></dt>
+	                <dd>View novel sites compared to other datasets</dd>
+	            
+	                <tal:empty tal:condition="experiment.ambiguity == 1">
+	                    <dt><a href="${request.application_url}/experiments/${experiment.id}/ambiguity">Report Ambiguity</a></dt>
+	                    <dd>See all peptide assignments that might be ambiguously assigned.  Explore and change assignments</dd>
+	                </tal:empty>
                 </tal:empty>
 	    	</dl>
     	</fieldset>
