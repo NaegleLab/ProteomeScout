@@ -30,14 +30,14 @@
 
         <div id="menu">
             <div style="float:right;text-align:right">
-                <span tal:condition="request.user == None">
-                    <a href='${request.application_url}/login'>Login</a>
-                </span>
-                <span tal:condition="request.user != None">
-                    <a href='${request.application_url}/account'>Account: ${request.username}</a> |
-                    <a href='${request.application_url}/account/experiments'>My Experiments</a> |
-                    <a href='${request.application_url}/logout'>Logout</a>
-                </span>
+			    <span tal:condition="request.user == None">
+			    	<a href="${request.route_url('login')}">Login</a>
+			    </span>
+			    <span tal:condition="request.user != None">
+			    	<a href="${request.route_url('account_management')}">Account: ${request.username}</a> |
+			    	<a href="${request.route_url('my_experiments')}">My Experiments</a> |
+				    <a href="${request.route_url('logout')}">Logout</a>
+			    </span>
             </div>
         </div>
         <div class="split"></div>
@@ -48,18 +48,18 @@
                 <div class="menusplash">
                     <img src="${request.static_url('ptmscout:static/images/ptmscout_splash.png')}" />
                 </div>
-                <a href="${request.application_url}/proteins">
+                <a href="${request.route_url('protein_search')}">
                     <div class="menuitem" style="top:70px; left:255px;">
                         <span>Browse<br>Proteins</span>
                     </div>
                 </a>
-                <a href="${request.application_url}/upload">
+                <a href="${request.route_url('upload')}">
                     <div class="menuitem" style="top:70px; right:255px;">
                         <span>Upload<br>Dataset</span>
                     </div>
                 </a>
 
-                <a href="${request.application_url}/experiments">
+                <a href="${request.route_url('experiments')}">
                     <div class="menuitem" style="top:200px; left:160px;">
                         <span>Browse<br>Experiments</span>
                     </div>
@@ -95,7 +95,7 @@
             is licensed under a
             <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.
 		    <br />
-		    <a rel="terms" href="${request.application_url}/terms">Terms of Use</a>
+		    <a rel="terms" href="${request.route_url('terms')}">Terms of Use</a>
 		  </p>
 	    </div>
       </div>
