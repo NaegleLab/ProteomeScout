@@ -21,7 +21,7 @@ class IntegrationTestUploadStatusView(IntegrationTestCase):
         result = self.ptmscoutapp.get("/dataset/upload/%d/confirm" % (session.id), status=200)
         result.mustcontain(strings.dataset_upload_started_page_title)
     
-    @patch('ptmworker.data_import.start_dataset_import.apply_async')
+    @patch('ptmworker.data_import.start_import.apply_async')
     def test_view_integration(self, patch_startImport):
         from ptmscout.database import experiment
         self.bot.login()

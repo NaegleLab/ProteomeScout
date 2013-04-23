@@ -19,6 +19,7 @@ def create_dataset_job(exp, session, request):
     job.name = 'Load Dataset: %s' % (exp.name)
     job.type = 'load_dataset'
     
+    job.stage = 'query'
     job.status = 'in queue'
     job.status_url = request.route_url('my_experiments')
     job.result_url = request.route_url('experiment', id=exp.id)
@@ -26,6 +27,9 @@ def create_dataset_job(exp, session, request):
     
     job.save()
     
+    exp.job_id = job.id
+    exp.saveExperiment()
+        
     data_import.start_import.apply_async((exp.id, session.id, job.id, True))
 
 @view_config(route_name='dataset_confirm', renderer='ptmscout:/templates/upload/upload_confirm.pt', permission='private')
