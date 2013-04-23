@@ -150,7 +150,7 @@ class MeasuredPeptide(Base):
 
     def save(self):
         DBSession.add(self)
-        
+    
     def isAmbiguous(self):
         return len(self.ambiguities) > 1
 
@@ -207,7 +207,7 @@ def getMeasuredPeptideById(ms_id):
 
 def getMeasuredPeptidesByProtein(pid, user=None):
     modifications = DBSession.query(MeasuredPeptide).filter_by(protein_id=pid).all()
-    return [ mod for mod in modifications if mod.experiment.checkPermissions(user) and mod.experiment.ready() ]
+    return [ mod for mod in modifications if mod.experiment.checkPermissions(user) and mod.experiment.ready() and mod.experiment.isExperiment() ]
 
 def queryProteinsByExperiment(exp_id):
     return DBSession.query(MeasuredPeptide.protein_id).filter(MeasuredPeptide.experiment_id==exp_id).distinct()

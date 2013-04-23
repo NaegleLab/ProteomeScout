@@ -170,6 +170,9 @@ class Experiment(Base):
             
             self.conditions.append(expc)
             
+    def isExperiment(self):
+        return self.type in set(['compendia','experiment'])
+            
     def clearErrors(self):
         self.errors = []
 
