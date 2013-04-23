@@ -1,6 +1,27 @@
 import time
 import os
 
+
+def get_experiment(match_field, types=set(['experiment','dataset','compendia'])):
+    def do_wrap(fn):
+        from ptmscout.database import experiment
+        
+        def wrapper(*args):
+            request = args[1]
+            eid = int(request.matchdict[match_field])
+            exp = experiment.getExperimentById(eid, user=request.user)
+            
+            if exp.type not in types:
+                raise experiment.NoSuchExperiment(eid) 
+            
+            nargs = tuple( list(args) + [exp] )
+            
+            return fn(*nargs)
+        
+        return wrapper
+    return do_wrap
+            
+
 def page_query(start=0, yield_per=1000):
     """
         Decorator to page queries
