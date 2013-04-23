@@ -1,7 +1,8 @@
 from pyramid.view import view_config
 from ptmscout.config import strings
 from ptmscout.database import experiment, modifications, protein, upload
-from ptmscout.utils import forms, webutils, downloadutils, uploadutils
+from ptmscout.utils import forms, webutils, downloadutils, uploadutils,\
+    decorators
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 import re
 
@@ -119,18 +120,14 @@ def create_ambiguity_schema(measurements, request):
 
     return form_schema, pep_list
 
-@view_config(route_name='experiment_ambiguity', renderer='ptmscout:templates/experiments/experiment_ambiguity.pt')
-def experiment_ambiguity_view(request):
+def internal_experiment_ambiguity_view(request, exp):
     submitted = webutils.post(request, 'submitted', False) == 'true'
     defaults = webutils.get(request, 'defaults', False) == 'true'
-
-    eid = int(request.matchdict['id'])
-    exp = experiment.getExperimentById(eid, user=request.user)
-
+    
     if exp.ambiguity == 0:
         raise HTTPForbidden()
 
-    peptides = modifications.getMeasuredPeptidesByExperiment(eid, user=request.user)
+    peptides = modifications.getMeasuredPeptidesByExperiment(exp.id, user=request.user)
 
     form_schema, pep_list = create_ambiguity_schema(peptides, request)
 
@@ -157,3 +154,9 @@ def experiment_ambiguity_view(request):
             'assigned_defaults': defaults,
             'changed_default': changed_msids,
             'pageTitle': "%s: %s" % (strings.experiment_ambiguity_page_title, exp.name)}
+
+
+@view_config(route_name='experiment_ambiguity', renderer='ptmscout:templates/experiments/experiment_ambiguity.pt')
+@decorators.get_experiment('id',types=set(['experiment','compendia']))
+def experiment_ambiguity_view(context, request, exp):
+    return internal_experiment_ambiguity_view(request, exp)

@@ -7,7 +7,7 @@ from tests.views.mocking import createMockExperiment, createMockMeasurement,\
 from ptmscout.views.experiment import ambiguity_view
 from ptmscout.config import strings
 from ptmscout.utils import forms
-from pyramid.httpexceptions import HTTPFound, HTTPForbidden
+from pyramid.httpexceptions import HTTPForbidden
 
 class ExperimentAmbiguityViewIntegrationTests(IntegrationTestCase):
     def test_experiment_ambiguity_view(self):
@@ -121,8 +121,7 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
     @patch('ptmscout.utils.forms.FormValidator')
     @patch('ptmscout.views.experiment.ambiguity_view.create_ambiguity_schema')
     @patch('ptmscout.database.modifications.getMeasuredPeptidesByExperiment')
-    @patch('ptmscout.database.experiment.getExperimentById')
-    def test_experiment_ambiguity_should_eval_on_submission_pass_if_valid(self, patch_getExperiment, patch_getPeptides, patch_createSchema, patch_validator, patch_createSession):
+    def test_experiment_ambiguity_should_eval_on_submission_pass_if_valid(self, patch_getPeptides, patch_createSchema, patch_validator, patch_createSession):
         request = DummyRequest()
         request.POST['submitted'] = 'true'
         request.matchdict['id'] = '1323'
@@ -136,17 +135,15 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
 
         pep_list = "Some peptide list"
         exp = createMockExperiment(1323)
-        patch_getExperiment.return_value = exp
         patch_getPeptides.return_value = "Some peptides"
         patch_createSchema.return_value = schema, pep_list
         patch_createSession.return_value = session_id
         validator.validate.return_value = []
 
-        f = ambiguity_view.experiment_ambiguity_view(request)
+        f = ambiguity_view.internal_experiment_ambiguity_view(request, exp)
         self.assertEqual("%s/upload/%d" % (request.application_url, session_id), f.location)
 
         patch_createSession.assert_called_once_with(exp, request.user, schema, False)
-        patch_getExperiment.assert_called_once_with(1323, user=request.user)
         patch_getPeptides.assert_called_once_with(1323, user=request.user)
         patch_createSchema.assert_called_once_with("Some peptides", request)
         validator.validate.assert_called_once_with()
@@ -156,8 +153,7 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
     @patch('ptmscout.utils.forms.FormValidator')
     @patch('ptmscout.views.experiment.ambiguity_view.create_ambiguity_schema')
     @patch('ptmscout.database.modifications.getMeasuredPeptidesByExperiment')
-    @patch('ptmscout.database.experiment.getExperimentById')
-    def test_experiment_ambiguity_should_eval_on_submission_fail_if_invalid(self, patch_getExperiment, patch_getPeptides, patch_createSchema, patch_validator):
+    def test_experiment_ambiguity_should_eval_on_submission_fail_if_invalid(self, patch_getPeptides, patch_createSchema, patch_validator):
         request = DummyRequest()
         request.POST['submitted'] = 'true'
         request.matchdict['id'] = '1323'
@@ -168,14 +164,12 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
         schema = forms.FormSchema()
         pep_list = "Some peptide list"
         exp = createMockExperiment(1323)
-        patch_getExperiment.return_value = exp
         patch_getPeptides.return_value = "Some peptides"
         patch_createSchema.return_value = schema, pep_list
         validator.validate.return_value = ["Some error"]
 
-        result = ambiguity_view.experiment_ambiguity_view(request)
+        result = ambiguity_view.internal_experiment_ambiguity_view(request, exp)
 
-        patch_getExperiment.assert_called_once_with(1323, user=request.user)
         patch_getPeptides.assert_called_once_with(1323, user=request.user)
         patch_createSchema.assert_called_once_with("Some peptides", request)
         validator.validate.assert_called_once_with()
@@ -190,8 +184,7 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
     @patch('ptmscout.views.experiment.ambiguity_view.assign_defaults')
     @patch('ptmscout.views.experiment.ambiguity_view.create_ambiguity_schema')
     @patch('ptmscout.database.modifications.getMeasuredPeptidesByExperiment')
-    @patch('ptmscout.database.experiment.getExperimentById')
-    def test_experiment_ambiguity_should_assign_defaults_if_get_defaults_is_true(self, patch_getExperiment, patch_getPeptides, patch_createSchema, patch_assign):
+    def test_experiment_ambiguity_should_assign_defaults_if_get_defaults_is_true(self, patch_getPeptides, patch_createSchema, patch_assign):
         request = DummyRequest()
         request.matchdict['id'] = '1323'
         request.GET['defaults'] = 'true'
@@ -200,14 +193,12 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
         schema = forms.FormSchema()
         pep_list = "Some peptide list"
         exp = createMockExperiment(1323)
-        patch_getExperiment.return_value = exp
         patch_getPeptides.return_value = "Some peptides"
         patch_createSchema.return_value = schema, pep_list
         patch_assign.return_value = ["Some list of ms ids that changed"]
 
-        result = ambiguity_view.experiment_ambiguity_view(request)
+        result = ambiguity_view.internal_experiment_ambiguity_view(request, exp)
 
-        patch_getExperiment.assert_called_once_with(1323, user=request.user)
         patch_getPeptides.assert_called_once_with(1323, user=request.user)
         patch_createSchema.assert_called_once_with("Some peptides", request)
         patch_assign.assert_called_once_with("Some peptides", schema, request.user)
@@ -220,8 +211,7 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
         self.assertEqual(schema, result['formrenderer'].schema)
         self.assertEqual("%s: %s" % (strings.experiment_ambiguity_page_title, exp.name), result['pageTitle'])
 
-    @patch('ptmscout.database.experiment.getExperimentById')
-    def test_experiment_ambiguity_should_throw_forbidden_if_no_ambiguous_assignments(self, patch_getExperiment):
+    def test_experiment_ambiguity_should_throw_forbidden_if_no_ambiguous_assignments(self):
         request = DummyRequest()
         request.matchdict['id'] = '1323'
         request.user = None
@@ -231,10 +221,8 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
         exp = createMockExperiment(1323)
         exp.ambiguity = 0
 
-        patch_getExperiment.return_value = exp
-
         try:
-            ambiguity_view.experiment_ambiguity_view(request)
+            ambiguity_view.internal_experiment_ambiguity_view(request, exp)
         except HTTPForbidden:
             pass
         else:
@@ -242,8 +230,7 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
 
     @patch('ptmscout.views.experiment.ambiguity_view.create_ambiguity_schema')
     @patch('ptmscout.database.modifications.getMeasuredPeptidesByExperiment')
-    @patch('ptmscout.database.experiment.getExperimentById')
-    def test_experiment_ambiguity(self, patch_getExperiment, patch_getPeptides, patch_createSchema):
+    def test_experiment_ambiguity(self, patch_getPeptides, patch_createSchema):
         request = DummyRequest()
         request.matchdict['id'] = '1323'
         request.user = None
@@ -251,13 +238,11 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
         schema = forms.FormSchema()
         pep_list = "Some peptide list"
         exp = createMockExperiment(1323)
-        patch_getExperiment.return_value = exp
         patch_getPeptides.return_value = "Some peptides"
         patch_createSchema.return_value = schema, pep_list
 
-        result = ambiguity_view.experiment_ambiguity_view(request)
+        result = ambiguity_view.internal_experiment_ambiguity_view(request, exp)
 
-        patch_getExperiment.assert_called_once_with(1323, user=request.user)
         patch_getPeptides.assert_called_once_with(1323, user=request.user)
         patch_createSchema.assert_called_once_with("Some peptides", request)
 

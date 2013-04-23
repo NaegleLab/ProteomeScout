@@ -1,7 +1,7 @@
 from pyramid.view import view_config
 from ptmscout.config import strings
 from ptmscout.database import experiment, modifications
-from ptmscout.utils import webutils
+from ptmscout.utils import webutils, decorators
 
 def format_peptide_list(peptide_list):
     formatted_peptides = []
@@ -55,21 +55,22 @@ def compare_to_all(exp, user, experiment_list = set()):
 
     return {'ambiguous': format_peptide_list(ambiguous_peptides), 'novel': format_peptide_list(novel_sites), 'by_experiment': by_experiment, 'experiment_info': experiment_info}
 
-@view_config(route_name='experiment_compare', renderer='ptmscout:templates/experiments/experiment_compare.pt')
-def experiment_comparison_view(request):
-    submitted_val = webutils.post(request, 'submitted', False)
 
-    eid = int(request.matchdict['id'])
-    exp = experiment.getExperimentById(eid, user=request.user)
+def internal_experiment_comparison_view(request, exp):
+    submitted_val = webutils.post(request, 'submitted', False)
 
     results = None
     if submitted_val == 'all':
         results = compare_to_all(exp, request.user)
     elif submitted_val == 'subset':
-        experiment_list = set([int(eid) for eid in request.POST.getall('experiment')])
+        experiment_list = set([int(exp.id) for exp.id in request.POST.getall('experiment')])
         results = compare_to_all(exp, request.user, experiment_list)
-
 
     return {'pageTitle': strings.experiment_compare_page_title,
             'experiment': exp,
             'results': results}
+
+@view_config(route_name='experiment_compare', renderer='ptmscout:templates/experiments/experiment_compare.pt')
+@decorators.get_experiment('id',types=set(['experiment','compendia']))
+def experiment_comparison_view(context, request, exp):
+    return internal_experiment_comparison_view(request, exp)
