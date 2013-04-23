@@ -53,7 +53,8 @@ def load_peptide_modification(exp_id, load_ambiguities, protein_accession, prote
         aligned_sequences = []
         if nullmods:
             aligned_sequences = upload_helpers.parse_nullmod(protein_sequence, pep_seq)
-            mod_types = [ None for _seq in aligned_sequences ]
+            none_mod = modifications.getModificationByName('None')
+            mod_types = [ none_mod for _seq in aligned_sequences ]
         else:
             mod_types, aligned_sequences = upload_helpers.parse_modifications(protein_sequence, pep_seq, mods, taxonomy)
 

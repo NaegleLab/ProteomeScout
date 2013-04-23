@@ -48,7 +48,7 @@ def start_import(exp_id, session_id, job_id, nullmods=False):
         finalize_task = notify_tasks.finalize_experiment_import.si(exp_id)
 
         last_stage_arg = upload_helpers.get_stage_input(exp.id, exp.loading_stage)
-
+        
         if exp.loading_stage == 'query':
             load_task = ( query_task | proteins_task | GO_task | peptide_task | annotate_task | finalize_task )
         elif exp.loading_stage == 'proteins':

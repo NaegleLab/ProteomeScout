@@ -81,9 +81,9 @@ def notify_job_failed(fn):
     from ptmworker import notify_tasks
 
     @wraps(fn)
-    def ttask(*args):
+    def ttask(*args, **kwargs):
         try:
-            result = fn(*args)
+            result = fn(*args, **kwargs)
             return result
         except Exception, e:
             job_id = args[-1]
@@ -94,10 +94,10 @@ def notify_job_failed(fn):
 def transaction_task(fn):
 
     @wraps(fn)
-    def ttask(*args):
+    def ttask(*args, **kwargs):
         log.debug("Running task: %s", fn.__name__)
         try:
-            result = fn(*args)
+            result = fn(*args, **kwargs)
             transaction.commit()
             return result
         except:
@@ -110,10 +110,10 @@ def transaction_task(fn):
 def dynamic_transaction_task(fn):
 
     @wraps(fn)
-    def ttask(*args):
+    def ttask(*args, **kwargs):
         log.debug("Running task: %s", fn.__name__)
         try:
-            result = fn(*args)
+            result = fn(*args, **kwargs)
             transaction.commit()
 
             if result != None and len(result) == 3:
@@ -386,6 +386,8 @@ def check_peptide_matches_protein_sequence(prot_seq, pep_seq):
 def get_pep_seq_from_sites(prot_seq, site_designation):
     site_residues = dict( ( int(s[1:]), s[0] ) for s in site_designation.split(';') )
     for pos in site_residues:
+        if pos > len(prot_seq):
+            raise uploadutils.ParseError(None, None, "Protein (length %d) does not have site %d" % (len(prot_seq), pos))
         if site_residues[pos].upper() != prot_seq[pos-1].upper():
             raise uploadutils.ParseError(None, None, "Designated residue site pair did not match protein sequence %s%d != %s%d" % (site_residues[pos], pos, prot_seq[pos-1], pos))
 
@@ -543,7 +545,7 @@ def parse_datafile(session, nullmod=False):
             errors.extend(line_errors)
             continue
      
-        mods = []
+        mods = None
         if not nullmod:
             mods = row[mod_col.column_number].strip()
         

@@ -35,14 +35,14 @@ class PeptideTasksTest(IntegrationTestCase):
         load_ambiguities = True
 
 
-        peptide_tasks.run_peptide_import(prot_map, peptides, mod_map, data_runs, headers, units, load_ambiguities, False, exp_id, job_id)
+        peptide_tasks.run_peptide_import(prot_map, peptides, mod_map, data_runs, headers, units, load_ambiguities, False, False, exp_id, job_id)
 
         patch_store_input.assert_called_once_with(exp_id, 'peptides', prot_map)
         patch_set_stage.apply_async.assert_called_once_with((job_id, 'peptides', 4))
         patch_commit.assert_called_once_with()
         patch_set_progress.apply_async.assert_called_once_with((job_id, 4, 4))
 
-        self.assertIn(call(2600, True, 'Q9WTS6', 11, 'GGGTTTCCC', 'PHOSPHORYLATION', 'time(none)', ['some', 'sequence', 'of', 'headers'], [(1, 'average', [1, 2, 3])],is_site=False), patch_load_peptide.call_args_list)
-        self.assertIn(call(2600, True, 'Q9NQG7', 9, 'AABDEF', 'DIMETHYLATION', 'time(none)', ['some', 'sequence', 'of', 'headers'], [(1, 'average', [1, 2, 3])],is_site=False), patch_load_peptide.call_args_list)
-        self.assertIn(call(2600, True, 'Q9NQG7', 9, 'MEEVFG', 'PHOS', 'time(none)', ['some', 'sequence', 'of', 'headers'], [(1, 'average', [1, 2, 3])],is_site=False), patch_load_peptide.call_args_list)
-        self.assertIn(call(2600, True, 'P49848', 24, 'LKLKLKLKLK', 'O-GlcNAc', 'time(none)', ['some', 'sequence', 'of', 'headers'], [(1, 'average', [1, 2, 3])],is_site=False), patch_load_peptide.call_args_list)
+        self.assertIn(call(2600, True, 'Q9WTS6', 11, 'GGGTTTCCC', 'PHOSPHORYLATION', False, 'time(none)', ['some', 'sequence', 'of', 'headers'], [(1, 'average', [1, 2, 3])],is_site=False), patch_load_peptide.call_args_list)
+        self.assertIn(call(2600, True, 'Q9NQG7', 9, 'AABDEF', 'DIMETHYLATION', False, 'time(none)', ['some', 'sequence', 'of', 'headers'], [(1, 'average', [1, 2, 3])],is_site=False), patch_load_peptide.call_args_list)
+        self.assertIn(call(2600, True, 'Q9NQG7', 9, 'MEEVFG', 'PHOS', False, 'time(none)', ['some', 'sequence', 'of', 'headers'], [(1, 'average', [1, 2, 3])],is_site=False), patch_load_peptide.call_args_list)
+        self.assertIn(call(2600, True, 'P49848', 24, 'LKLKLKLKLK', 'O-GlcNAc', False, 'time(none)', ['some', 'sequence', 'of', 'headers'], [(1, 'average', [1, 2, 3])],is_site=False), patch_load_peptide.call_args_list)
