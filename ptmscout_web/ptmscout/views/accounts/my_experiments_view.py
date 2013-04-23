@@ -185,19 +185,27 @@ def get_sessions(user_experiments):
     
     return session_map
 
+def get_experiment_breakdown( users_experiments ):
+    in_process = [ exp for exp in users_experiments if exp.status == 'configuration' ]
+    available = [ exp for exp in users_experiments if exp.status != 'configuration' ]
+    error_state = [ exp for exp in users_experiments if exp.status == 'error' ]
+    sessions = get_sessions(in_process + error_state)
+    
+    return {
+            'available': available,
+            'in_process': in_process,
+            'sessions': sessions,
+           }
+
 @view_config(route_name='my_experiments', renderer='ptmscout:templates/accounts/my_experiments.pt', permission='private')
 def manage_experiments(request):
     users_experiments = request.user.myExperiments()
-
-    in_process = [ exp for exp in users_experiments if exp.status == 'configuration' ]
-    available_experiments = [ exp for exp in users_experiments if exp.status != 'configuration' ]
-    error_state = [ exp for exp in users_experiments if exp.status == 'error' ]
+    users_datasets = request.user.myDatasets()
 
     users_active_jobs = [ job for job in request.user.jobs if job.is_active() or not job.is_old() ]
-    sessions = get_sessions(in_process + error_state)
     
-    return {'pageTitle':strings.my_experiments_page_title,
-            'in_process': in_process,
-            'sessions': sessions,
-            'experiments': available_experiments,
-            'jobs': users_active_jobs}
+    
+    return { 'pageTitle':strings.my_experiments_page_title,
+             'experiments':get_experiment_breakdown( users_experiments ),
+             'datasets':get_experiment_breakdown( users_datasets ),
+             'jobs': users_active_jobs }

@@ -16,8 +16,7 @@
 		   		</tr>
     		</thead>
     		<tbody>
-
-		   		<tal:experiments tal:repeat="(i, experiment) enumerate(experiments)">
+		   		<tal:experiments tal:repeat="(i, experiment) enumerate(experiments['available'])">
 					<tr tal:attributes="class 'experiment' + (' even' if i % 2 == 0 else ' odd');" >
 						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.name"></td>
 						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.description"></a></td>
@@ -27,7 +26,7 @@
                             <div class="status">
                                 <div tal:condition="experiment.status == 'running'" tal:content="'loading: see jobs below'"></div>
                                 <div tal:condition="experiment.status != 'running'" tal:content="experiment.status"></div>
-                                <a tal:condition="experiment.status == 'error'" tal:attributes="href '%s/upload/%d/retry' % (request.application_url, sessions[experiment.id])">retry</a>
+                                <a tal:condition="experiment.status == 'error'" tal:attributes="href '%s/upload/%d/retry' % (request.application_url, experiments['sessions'][experiment.id])">retry</a>
                             </div>
 						</td>
 						<td class="accesscontrol" tal:condition="experiment.public == 0">
@@ -54,18 +53,18 @@
 					</tr>
 				</tal:experiments>
 				
-				<tal:empty tal:condition = "len(in_process) > 0">
+				<tal:empty tal:condition = "len(experiments['in_process']) > 0">
 	    			<tr>
 	    				<th colspan="6">Experiments awaiting configuration and confirmation:</th>
 	    			</tr>
-					<tal:experiments tal:repeat="(i, experiment) enumerate(in_process)">
+					<tal:experiments tal:repeat="(i, experiment) enumerate(experiments['in_process'])">
 						<tr tal:attributes="class 'experiment' + (' even' if i % 2 == 0 else ' odd');" >
 							<td tal:content="experiment.name"></td>
 							<td tal:content="experiment.description"></td>
 							<td tal:content="experiment.author"></td>
 							<td class="citation" tal:content="experiment.getCitationString()"></td>
 							<td>
-	                            <div class="status"><a tal:attributes="href '%s/upload/%d' % (request.application_url, sessions[experiment.id])">continue upload</a></div>
+	                            <div class="status"><a tal:attributes="href '%s/upload/%d' % (request.application_url, experiments['sessions'][experiment.id])">continue upload</a></div>
 	   						</td>
 							<td class="accesscontrol"></td>
 						</tr>
@@ -73,7 +72,47 @@
 				</tal:empty>
 			</tbody>
 		</table>
-
+		
+		<tal:empty tal:condition = "len(datasets) > 0">
+			<table class = "experimenttable">
+	    		<thead>
+	    	  		<tr>
+			   			<th style="width:90%">Dataset</th>
+			   			<th>Status</th>
+			   		</tr>
+	    		</thead>
+	    		<tbody>
+	
+			   		<tal:experiments tal:repeat="(i, experiment) enumerate(datasets['available'])">
+						<tr tal:attributes="class 'experiment' + (' even' if i % 2 == 0 else ' odd');" >
+							<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.name"></td>
+							<td>
+	                            <div class="status">
+	                                <div tal:condition="experiment.status == 'running'" tal:content="'loading: see jobs below'"></div>
+	                                <div tal:condition="experiment.status != 'running'" tal:content="experiment.status"></div>
+	                                <a tal:condition="experiment.status == 'error'" tal:attributes="href request.route_url('dataset_upload_retry', id=datasets['sessions'][experiment.id])">retry</a>
+	                            </div>
+							</td>
+						</tr>
+					</tal:experiments>
+					
+					<tal:empty tal:condition = "len(datasets['in_process']) > 0">
+		    			<tr>
+		    				<th colspan="6">Datasets awaiting configuration and confirmation:</th>
+		    			</tr>
+						<tal:experiments tal:repeat="(i, experiment) enumerate(datasets['in_process'])">
+							<tr tal:attributes="class 'experiment' + (' even' if i % 2 == 0 else ' odd');" >
+								<td tal:content="experiment.name"></td>
+								<td>
+		                            <div class="status"><a tal:attributes="href request.route_url('dataset_upload_resume', id=datasets['sessions'][experiment.id])">continue upload</a></div>
+		   						</td>
+							</tr>
+						</tal:experiments>
+					</tal:empty>
+				</tbody>
+			</table>
+		</tal:empty>
+		
 		<tal:empty tal:condition = "len(jobs) > 0">
 			<table class = "experimenttable">
 	    		<thead>

@@ -11,6 +11,8 @@ def add_views(config):
     config.add_route('compendia_download', '/compendia/{name}')
 
     config.add_route('dataset_upload', '/dataset/upload')
+    config.add_route('dataset_upload_resume', '/dataset/upload/{id}')
+    config.add_route('dataset_upload_retry', '/dataset/upload/{id}/retry')
     config.add_route('dataset_configure', '/dataset/upload/{id}/config')
     config.add_route('dataset_confirm', '/dataset/upload/{id}/confirm')
 

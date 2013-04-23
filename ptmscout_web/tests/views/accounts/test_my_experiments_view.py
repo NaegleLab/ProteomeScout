@@ -1,4 +1,4 @@
-from mock import patch
+from mock import patch, call
 from ptmscout.config import strings
 from ptmscout.database.user import NoSuchUser
 from ptmscout.views.accounts.my_experiments_view import confirm_invite_user, \
@@ -12,6 +12,79 @@ from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 from ptmscout.database import upload
 
 class MyExperimentsViewIntegrationTests(IntegrationTestCase):
+    
+    def test_integration_with_datasets(self):
+        from ptmscout.database import experiment
+        
+        exp = experiment.getExperimentById(26, None, False)
+        exp.type='dataset'
+        exp.job.status = 'running'
+        exp.job.stage = 'proteins'
+        exp.job.progress = 1000
+        exp.job.max_progress = 10000
+        exp.job.user_id = self.bot.user.id
+        exp.grantPermission(self.bot.user, 'owner')
+        exp.saveExperiment()
+
+        exp2 = experiment.getExperimentById(25, None, False)
+        exp2.type='dataset'
+        exp2.job.status = 'running'
+        exp2.job.stage = 'GO terms'
+        exp2.job.progress = 0
+        exp2.job.max_progress = 0
+        exp2.job.user_id = self.bot.user.id
+        exp2.grantPermission(self.bot.user, 'owner')
+        exp2.saveExperiment()
+
+
+        exp3 = experiment.getExperimentById(28, None, False)
+        exp3.type='dataset'
+        exp3.job_id = None
+        exp3.grantPermission(self.bot.user, 'owner')
+        exp3.saveExperiment()
+
+        exp4 = experiment.getExperimentById(1, None, False)
+        exp4.type='dataset'
+        exp4.job.status = 'error'
+        exp4.job.user_id = self.bot.user.id
+        exp4.grantPermission(self.bot.user, 'owner')
+        exp4.saveExperiment()
+
+        session = upload.Session()
+        session.experiment_id = exp3.id
+        session.user_id = self.bot.user.id
+        session.data_file = ''
+        session.change_name = ''
+        session.change_description = ''
+        session.load_type = ''
+        session.stage = 'confirm'
+        session.save()
+
+        session2 = upload.Session()
+        session2.experiment_id = exp4.id
+        session2.user_id = self.bot.user.id
+        session2.data_file = ''
+        session2.change_name = ''
+        session2.change_description = ''
+        session2.load_type = ''
+        session2.stage = 'confirm'
+        session2.save()
+        
+        self.bot.login()
+        
+        result = self.ptmscoutapp.get('/account/experiments')
+        
+        result.mustcontain(exp.name)
+        result.mustcontain('Status')
+        result.mustcontain('processing: proteins')
+        result.mustcontain('1000 / 10000')
+        result.mustcontain('processing: GO terms')
+        result.mustcontain('error')
+        result.mustcontain('retry')
+        result.mustcontain('continue upload')
+        
+        result.mustcontain('<a href="%s/dataset/upload/%d">continue upload</a>' % ("http://localhost", session.id))
+        result.mustcontain('<a href="%s/dataset/upload/%d/retry">retry</a>' % ("http://localhost", session2.id))
     
     def test_integration(self):
         from ptmscout.database import experiment
@@ -80,6 +153,7 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         result.mustcontain('continue upload')
         
         result.mustcontain('<a href="%s/upload/%d">continue upload</a>' % ("http://localhost", session.id))
+        result.mustcontain('<a href="%s/upload/%d/retry">retry</a>' % ("http://localhost", session2.id))
         
 
 class MyExperimentsViewTests(UnitTestCase):
@@ -507,13 +581,19 @@ class MyExperimentsViewTests(UnitTestCase):
         patch_getSessions.return_value = {"some map":"of session ids"}
         
         ptm_user.myExperiments.return_value = [exp1, exp2, exp3, exp4]
+        ptm_user.myDatasets.return_value = []
 
         info = manage_experiments(request)
         
-        patch_getSessions.assert_called_once_with([exp3, exp4])
+        self.assertTrue( call([exp3, exp4]) in patch_getSessions.call_args_list)
 
-        self.assertEqual([exp1, exp2, exp4], info['experiments'])
-        self.assertEqual([exp3], info['in_process'])
-        self.assertEqual(patch_getSessions.return_value, info['sessions'])
+        self.assertEqual([exp1, exp2, exp4], info['experiments']['available'])
+        self.assertEqual([exp3], info['experiments']['in_process'])
+        self.assertEqual(patch_getSessions.return_value, info['experiments']['sessions'])
+        
+        self.assertEqual([], info['datasets']['available'])
+        self.assertEqual([], info['datasets']['in_process'])
+        self.assertEqual(patch_getSessions.return_value, info['datasets']['sessions'])
+        
         self.assertEqual(strings.my_experiments_page_title, info['pageTitle'])
         

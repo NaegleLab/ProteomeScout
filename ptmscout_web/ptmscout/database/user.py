@@ -65,7 +65,13 @@ class User(Base):
     def myExperiments(self):
         return [ permission.experiment \
                     for permission in self.permissions \
-                        if permission.access_level == 'owner' ]
+                        if permission.access_level == 'owner' and permission.experiment.isExperiment() ]
+        
+    def myDatasets(self):
+        return [ permission.experiment \
+                    for permission in self.permissions \
+                        if permission.access_level == 'owner' and not permission.experiment.isExperiment() ]
+
         
     def experimentOwner(self, exp):
         result = [ permission.experiment \
