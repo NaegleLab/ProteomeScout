@@ -69,4 +69,18 @@ class IntegrationTestExperimentErrorsView(IntegrationTestCase):
     def test_view_integration(self):
         self.bot.acquire_experiments([28])
         experiment.createExperimentError(28, 3, 'acc', 'pep', 'message')
-        self.ptmscoutapp.get("/experiments/28/errors", status=200)
+        result = self.ptmscoutapp.get("/experiments/28/errors", status=200)
+        
+        result.mustcontain('http://localhost/upload?load_type=append&parent_experiment=28')
+        
+    def test_view_integration_with_datasets(self):
+        self.bot.acquire_experiments([28])
+        
+        exp = experiment.getExperimentById(28, self.bot.user)
+        exp.type='dataset'
+        exp.saveExperiment()
+        
+        experiment.createExperimentError(28, 3, 'acc', 'pep', 'message')
+        result = self.ptmscoutapp.get("/experiments/28/errors", status=200)
+        
+        result.mustcontain('http://localhost/dataset/upload?load_type=append&parent_experiment=28')

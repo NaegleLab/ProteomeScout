@@ -36,7 +36,8 @@
 				<ol class="resolution_steps">
 					<li><a href="${request.application_url}/experiments/${experiment.id}/download?errors=True">Download</a> your data set with error annotations.</li>
 					<li>Correct the reported errors in the data set and save the file.</li>
-					<li><a href="${request.application_url}/upload?load_type=append&parent_experiment=${experiment.id}">Upload</a> your corrected data set.</li>
+					<li tal:condition="experiment.isExperiment()"><a href="${structure:request.route_url('upload', _query={'load_type':'append', 'parent_experiment':experiment.id})}">Upload</a> your corrected data set.</li>
+					<li tal:condition="not experiment.isExperiment()"><a href="${structure:request.route_url('dataset_upload', _query={'load_type':'append', 'parent_experiment':experiment.id})}">Upload</a> your corrected data set.</li>
 				</ol>
 			</div>
 		</div>
