@@ -6,6 +6,12 @@ $(document).ready(function(){
 	var r_checked = $('#reload_dataset').attr("checked") == "checked"
 	var e_checked = $('#extend_dataset').attr("checked") == "checked"
 	
+	$('#datasetname').css('display', function(){
+		if(!( a_checked || r_checked ))
+			return "table-row"
+		return "none"
+	});
+		
 	$('#parent_exp').css('display', function(){
 		if(a_checked || r_checked || e_checked)
 			return "table-row"
@@ -40,6 +46,7 @@ $(document).ready(function(){
 	$('#new_dataset')
 		.click(function(){
 			$('#expselect option[value=""]').attr('selected','true')
+			$('#datasetname').css('display', "table-row");
 			$('#parent_exp').css('display', "none");
 			$('#change_name').css('display', "none");
 			$('#change_desc').css('display', "none");
@@ -47,6 +54,7 @@ $(document).ready(function(){
 	
 	$('#append_dataset')
 		.click(function(){
+			$('#datasetname').css('display', "none");
 			$('#parent_exp').css('display', "table-row");
 			$('#change_name').css('display', "none");
 			$('#change_desc').css('display', "none");
@@ -54,6 +62,7 @@ $(document).ready(function(){
 	
 	$('#reload_dataset')
 		.click(function(){
+			$('#datasetname').css('display', "none");
 			$('#parent_exp').css('display', "table-row");
 			$('#change_name').css('display', "none");
 			$('#change_desc').css('display', "none");

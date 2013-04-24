@@ -1,5 +1,6 @@
 <div metal:use-macro="layout">
     <metal:slot metal:fill-slot="header">
+    	<script type="text/javascript" src="${request.static_url('ptmscout:static/js/upload.form.js')}"></script>
         <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/forms.css')}" />
     </metal:slot>
     <div metal:fill-slot="content">
@@ -14,6 +15,20 @@
                 <div class="formcategory">Dataset</div>
                 <table>
                     <tr>
+                        <td class="fieldname">Upload type:</td>
+                        <td>
+                            ${formrenderer.render('load_type', id_='new_dataset', tooltip='Create a new dataset')}
+                            ${formrenderer.render('load_type', id_='append_dataset', tooltip='Append data to an existing dataset')}
+                            ${formrenderer.render('load_type', id_='reload_dataset', tooltip='Replace an existing dataset with new data')}
+                        </td>
+                    </tr>
+                    <tr id="parent_exp">
+                        <td class="fieldname">Source Dataset:</td>
+                        <td>
+                            ${formrenderer.render('source_dataset', id_='expselect', class_='stretch')}
+                        </td>
+                    </tr>
+                    <tr id="datasetname">
                         <td class="fieldname">Dataset Name: </td>
                         <td > ${formrenderer.render('datasetname')} </td>
                     </tr>

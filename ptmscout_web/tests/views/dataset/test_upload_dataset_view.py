@@ -16,16 +16,19 @@ class TestUploadDataset(UnitTestCase):
     @patch('ptmscout.views.dataset.upload_dataset_view.create_schema')
     def test_view_should_handle_form_submission_redirect_on_success(self, patch_create_schema, patch_validator, patch_save, patch_create_exp, patch_create_session):
         request = DummyRequest()
+        request.POST['load_type'] = 'new'
         request.POST['datasetname'] = 'some name'
         request.POST['datasetfile'] = 'some file field'
         request.route_url = Mock()
         request.route_url.return_value = 'some_route' 
         
         request.user = createMockUser()
+        request.user.myDatasets.return_value = []
         exp = createMockExperiment(11, 0, 0)
         
         validator = patch_validator.return_value
-        patch_create_schema.return_value = Mock(spec=forms.FormSchema())
+        schema = Mock(spec=forms.FormSchema())
+        patch_create_schema.return_value = schema
         validator.validate.return_value = []
 
         patch_create_exp.return_value = 1001
@@ -40,16 +43,17 @@ class TestUploadDataset(UnitTestCase):
 
         patch_create_exp.assert_called_once_with('some name', "filename", request.user)
         patch_save.assert_called_once_with('some file field', settings.dataset_files_prefix)
-        patch_create_session.assert_called_once_with(1001, "filename", request.user)
+        patch_create_session.assert_called_once_with(1001, "new", '', "filename", request.user)
         
         validator.validate.assert_called_once_with()
-        patch_create_schema.assert_called_once_with(request)
+        patch_create_schema.assert_called_once_with(request, [])
     
     @patch('ptmscout.utils.forms.FormValidator')
     @patch('ptmscout.views.dataset.upload_dataset_view.create_schema')
     def test_view_should_handle_form_submission_fail_on_check(self, patch_create_schema, patch_validator):
         request = DummyRequest()
         request.user = createMockUser()
+        request.user.myDatasets.return_value = []
         
         validator = patch_validator.return_value
         patch_create_schema.return_value = Mock(spec=forms.FormSchema())
@@ -62,18 +66,19 @@ class TestUploadDataset(UnitTestCase):
         self.assertEqual(patch_create_schema.return_value, result['formrenderer'].schema)
         self.assertEqual([strings.failure_reason_required_fields_cannot_be_empty], result['errors'])
         self.assertEqual(strings.dataset_upload_page_title, result['pageTitle'])
-        patch_create_schema.assert_called_once_with(request)
+        patch_create_schema.assert_called_once_with(request, [])
     
     @patch('ptmscout.views.dataset.upload_dataset_view.create_schema')
     def test_view_should_display(self, patch_create_schema):
         request = DummyRequest()
         request.user = createMockUser()
+        request.user.myDatasets.return_value = []
         
         patch_create_schema.return_value = Mock(spec=forms.FormSchema())
         
         result = upload_dataset_view.upload_dataset_GET(request)
         
-        patch_create_schema.assert_called_once_with(request)
+        patch_create_schema.assert_called_once_with(request, [])
         
         self.assertEqual(patch_create_schema.return_value, result['formrenderer'].schema)
         self.assertEqual(strings.dataset_upload_page_title, result['pageTitle'])
@@ -90,6 +95,7 @@ class IntegrationTestUploadDataset(IntegrationTestCase):
         f = open(filename, 'rb')
         filecontents = f.read()
        
+        form.set('load_type', 'new')
         form.set('datasetname', 'New dataset')
         form.set('datasetfile', (filename, filecontents))
         form.submit(status=302)
