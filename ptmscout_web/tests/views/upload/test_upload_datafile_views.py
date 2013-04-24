@@ -75,6 +75,7 @@ class TestUploaddata_fileView(UnitTestCase):
         request.POST['submitted'] = "true"
         request.POST['data_file'] = 'some file field'
         request.user = createMockUser()
+        request.user.myExperiments.return_value = []
         
         patch_create_schema.return_value = Mock(spec=forms.FormSchema())
         validator = patch_validator.return_value
@@ -99,6 +100,7 @@ class TestUploaddata_fileView(UnitTestCase):
         request = DummyRequest()
         request.POST['submitted'] = "true"
         request.user = createMockUser()
+        request.user.myExperiments.return_value = []
         
         validator = patch_validator.return_value
         patch_create_schema.return_value = Mock(spec=forms.FormSchema())
@@ -121,14 +123,10 @@ class TestUploaddata_fileView(UnitTestCase):
         request.user = createMockUser()
         e1 = createMockExperiment(2, 0, 0)
         e1.ready.return_value = True
-        e2 = createMockExperiment(3, 0, 0)
-        e2.ready.return_value = True
         e3 = createMockExperiment(4, 0, 0)
         e3.ready.return_value = False
-        p1 = createMockPermission(request.user, e1, 'owner')
-        p2 = createMockPermission(request.user, e2, 'view')
-        p3 = createMockPermission(request.user, e3, 'owner')
-        request.user.permissions = [p1,p2,p3]
+        
+        request.user.myExperiments.return_value = [e1,e3]
         
         result = upload_data_file(request)
         
