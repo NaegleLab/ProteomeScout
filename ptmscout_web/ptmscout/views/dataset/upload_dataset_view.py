@@ -24,6 +24,7 @@ def create_session(experiment_id, load_type, source_dataset, annotation_filename
     session.data_file = annotation_filename
     session.experiment_id = experiment_id
     
+    session.resource_type = 'dataset'
     session.load_type = load_type
     if session.load_type == 'append' or session.load_type == 'reload':
         session.parent_experiment = int(source_dataset)

@@ -9,7 +9,8 @@ def create_session(experiment_id, annotation_filename, user):
     session.data_file = annotation_filename
     session.experiment_id = experiment_id
     
-    session.load_type = 'annotations'
+    session.resource_type = 'annotations'
+    session.load_type = 'new'
     session.stage = 'config'
     session.user_id = user.id
     session.change_name=''

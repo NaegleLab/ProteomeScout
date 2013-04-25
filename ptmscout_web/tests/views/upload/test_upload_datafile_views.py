@@ -4,8 +4,7 @@ from ptmscout.config import settings, strings
 import os
 from ptmscout.views.upload.upload_datafile import upload_data_file, create_session
 from mock import patch, Mock
-from tests.views.mocking import createMockUser, createMockExperiment,\
-    createMockPermission
+from tests.views.mocking import createMockUser, createMockExperiment
 from pyramid.httpexceptions import HTTPFound
 from ptmscout.utils import forms
 
@@ -32,6 +31,7 @@ class TestUploaddata_fileView(UnitTestCase):
         
         self.assertEqual(request.user.id, gen_session.user_id)
         
+        self.assertEqual('experiment', gen_session.resource_type)
         self.assertEqual('exp_filename', gen_session.data_file)
         self.assertEqual('extension', gen_session.load_type)
         self.assertEqual(24, gen_session.parent_experiment)
@@ -59,6 +59,7 @@ class TestUploaddata_fileView(UnitTestCase):
         
         self.assertEqual(request.user.id, gen_session.user_id)
         
+        self.assertEqual('experiment', gen_session.resource_type)
         self.assertEqual('exp_filename', gen_session.data_file)
         self.assertEqual('new', gen_session.load_type)
         self.assertEqual(None, gen_session.parent_experiment)

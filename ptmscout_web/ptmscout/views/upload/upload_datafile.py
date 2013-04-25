@@ -11,6 +11,7 @@ def create_session(request, exp_file):
     
     session.user_id = request.user.id
     session.data_file = exp_file
+    session.resource_type = 'experiment'
     session.load_type = request.POST['load_type'].strip()
     session.parent_experiment = None
     session.stage = 'config'
