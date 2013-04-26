@@ -42,7 +42,7 @@ class TestUploadDataset(UnitTestCase):
 
         patch_create_exp.assert_called_once_with('some name', "filename", request.user)
         patch_save.assert_called_once_with('some file field', settings.dataset_files_prefix)
-        patch_create_session.assert_called_once_with(1001, "new", '', "filename", request.user)
+        patch_create_session.assert_called_once_with(1001, "new", None, "filename", request.user)
         
         validator.validate.assert_called_once_with()
         patch_create_schema.assert_called_once_with(request, [])

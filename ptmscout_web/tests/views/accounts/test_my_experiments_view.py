@@ -56,7 +56,8 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         session.data_file = ''
         session.change_name = ''
         session.change_description = ''
-        session.load_type = ''
+        session.load_type = 'new'
+        session.resource_type = 'dataset'
         session.stage = 'confirm'
         session.save()
 
@@ -66,7 +67,8 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         session2.data_file = ''
         session2.change_name = ''
         session2.change_description = ''
-        session2.load_type = ''
+        session2.load_type = 'new'
+        session2.resource_type = 'dataset'
         session2.stage = 'confirm'
         session2.save()
         
@@ -125,7 +127,8 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         session.data_file = ''
         session.change_name = ''
         session.change_description = ''
-        session.load_type = ''
+        session.load_type = 'new'
+        session.resource_type = 'experiment'
         session.stage = 'confirm'
         session.save()
 
@@ -135,7 +138,8 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         session2.data_file = ''
         session2.change_name = ''
         session2.change_description = ''
-        session2.load_type = ''
+        session2.load_type = 'new'
+        session2.resource_type = 'experiment'
         session2.stage = 'confirm'
         session2.save()
         
