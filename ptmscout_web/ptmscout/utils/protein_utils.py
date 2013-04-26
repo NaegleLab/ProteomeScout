@@ -91,7 +91,7 @@ def check_peptide_alphabet(pep):
     return True
 
 def get_valid_accession_types():
-    return set(['gi','refseq','swissprot','genbank','ipi'])
+    return set(['gi','refseq','swissprot','genbank'])
 
 
 
