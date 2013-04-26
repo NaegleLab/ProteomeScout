@@ -4,9 +4,14 @@ from ptmscout.config import settings, strings
 from ptmscout.utils import uploadutils, forms, webutils
 from ptmscout.database import experiment, upload
 
-def create_experiment(name, filename, user):
+def create_experiment(name, load_type, source_dataset, filename, user):
     exp = experiment.Experiment()
     exp.name = name
+    
+    if load_type == 'append' or load_type == 'reload':
+        parent_exp = experiment.getExperimentById(int(source_dataset), user)
+        exp.name = parent_exp.name
+    
     exp.description=''
     exp.published=0
     exp.ambiguity=0
@@ -68,11 +73,13 @@ def upload_dataset_POST(request):
     if len(errors) == 0:
         load_type = webutils.post(request, 'load_type', 'new')
         source_dataset = webutils.post(request, 'source_dataset', None)
+        dataset_name = webutils.post(request, 'datasetname', '')
         
         output_file = uploadutils.save_data_file(request.POST['datasetfile'], settings.dataset_files_prefix)
-        experiment_id = create_experiment(request.POST['datasetname'], output_file, request.user)
+        experiment_id = create_experiment(dataset_name, load_type, source_dataset, output_file, request.user)
+        
         sid = create_session(experiment_id, load_type, source_dataset, output_file, request.user)
-
+        
         return HTTPFound(request.route_url('dataset_configure', id=sid))
 
     return {'pageTitle': strings.dataset_upload_page_title,

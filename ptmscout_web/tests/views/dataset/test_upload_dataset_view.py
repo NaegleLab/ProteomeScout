@@ -40,7 +40,7 @@ class TestUploadDataset(UnitTestCase):
 
         request.route_url.assert_called_once_with('dataset_configure', id=111)
 
-        patch_create_exp.assert_called_once_with('some name', "filename", request.user)
+        patch_create_exp.assert_called_once_with('some name', 'new', None, "filename", request.user)
         patch_save.assert_called_once_with('some file field', settings.dataset_files_prefix)
         patch_create_session.assert_called_once_with(1001, "new", None, "filename", request.user)
         
