@@ -28,7 +28,7 @@
 			    		</form>
 		    		</td>
 		    		<td>
-			    		<form id="cancel" method="link" action="${request.application_url}/account/experiments">
+			    		<form id="cancel" method="link" action="${request.route_url('my_experiments')}">
 			    			<input type="submit" value="Cancel" />
 			    		</form>
 		    		</td>

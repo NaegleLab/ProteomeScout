@@ -295,6 +295,13 @@ class Experiment(Base):
                 raise PermissionException()
         self.public = 0
         
+    def isOwner(self, user):
+        if user == None:
+            return False
+        
+        owner_users = [ p.user_id for p in self.permissions if p.access_level == 'owner' ]
+        return user.id in owner_users
+        
     def checkPermissions(self, user):
         if self.public == 1:
             return True

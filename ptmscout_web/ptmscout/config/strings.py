@@ -105,6 +105,10 @@ cancel_upload_successful_message = "Experiment upload session cancelled"
 cancel_upload_already_started_message = "This experiment upload session has already been completed, you cannot cancel it."
 cancel_upload_already_started_header = "Experiment Upload Could Not Be Cancelled"
 
+delete_experiment_page_title = "Delete Dataset"
+delete_experiment_success_message = "Data associated with this dataset has been purged from the database."
+delete_experiment_confirm_message = "Are you sure you wish to delete this dataset? This action cannot be undone."
+
 
 experiment_upload_error_reasons_column_title = "Error Information"
 experiment_upload_error_standard_deviation_label_does_not_match_any_data_column = "Standard deviation column number %d with label '%s' does not match any column label in data columns"
@@ -342,8 +346,5 @@ The PTMScout administrator has been notified of this error. If problems persist 
 """
 
 failure_reason_account_expired = "This account has expired"
-
-
-
 
 

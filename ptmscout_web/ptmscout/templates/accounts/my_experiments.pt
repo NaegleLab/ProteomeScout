@@ -79,6 +79,7 @@
 	    	  		<tr>
 			   			<th style="width:90%">Dataset</th>
 			   			<th>Status</th>
+			   			<th class="accesscontrol">Access Control</th>
 			   		</tr>
 	    		</thead>
 	    		<tbody>
@@ -106,13 +107,29 @@
 												<input type = "submit" value="Change Permissions" />
 											</form>
 										</td>
+										<td>
+											<a href="${request.route_url('delete_experiment')">
+												<button>Delete</button>
+											</a>
+										</td>
 									</tr>
 								</table>
 							</td>
 							<td class="accesscontrol" tal:condition="experiment.public == 1">
-								<form tal:attributes="id 'unpublish'+str(experiment.id);action request.application_url + '/account/experiments/' + str(experiment.id) + '/unpublish'" method="link">
-									<input type = "submit" value="Make Private" />
-								</form>
+								<table>
+									<tr>
+										<td>
+											<form tal:attributes="id 'unpublish'+str(experiment.id);action request.application_url + '/account/experiments/' + str(experiment.id) + '/unpublish'" method="link">
+												<input type = "submit" value="Make Private" />
+											</form>
+										</td>
+										<td>
+											<a href="${request.route_url('delete_experiment')">
+												<button>Delete</button>
+											</a>
+										</td>
+									</tr>
+								</table>
 							</td>
 						</tr>
 					</tal:experiments>

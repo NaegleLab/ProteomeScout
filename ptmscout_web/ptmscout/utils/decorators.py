@@ -20,7 +20,7 @@ def get_session(match_field, resource_type):
     return do_wrap
 
 
-def get_experiment(match_field, types=set(['experiment','dataset','compendia'])):
+def get_experiment(match_field, types=set(['experiment','dataset','compendia']), owner_required=False):
     def do_wrap(fn):
         from ptmscout.database import experiment
         
@@ -30,7 +30,10 @@ def get_experiment(match_field, types=set(['experiment','dataset','compendia']))
             exp = experiment.getExperimentById(eid, user=request.user)
             
             if exp.type not in types:
-                raise experiment.NoSuchExperiment(eid) 
+                raise experiment.NoSuchExperiment(eid)
+            
+            if owner_required and not exp.isOwner(request.user):
+                raise experiment.NoSuchExperiment(eid)
             
             nargs = tuple( list(args) + [exp] )
             
