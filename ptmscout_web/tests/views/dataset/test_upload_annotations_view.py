@@ -9,6 +9,24 @@ import os
 
 class TestAnnotateView(UnitTestCase):
     
+    @patch('ptmscout.database.upload.Session')
+    def test_create_session_should_save_annotation_resource_session(self, patch_session):
+        session_obj = patch_session.return_value
+        user = createMockUser()
+        
+        upload_annotations_view.create_session(12, 'filename', user)
+        
+        self.assertEqual('filename', session_obj.data_file)
+        self.assertEqual(12, session_obj.experiment_id)
+        self.assertEqual(user.id, session_obj.user_id)
+        self.assertEqual('new', session_obj.load_type)
+        self.assertEqual('annotations', session_obj.resource_type)
+        self.assertEqual('config', session_obj.stage)
+        self.assertEqual('', session_obj.change_name)
+        self.assertEqual('', session_obj.change_description)
+        
+        session_obj.save.assert_called_once_with()
+    
     @patch('ptmscout.views.dataset.upload_annotations_view.create_session')
     @patch('ptmscout.utils.uploadutils.save_data_file')
     @patch('ptmscout.database.experiment.getExperimentById')

@@ -9,7 +9,8 @@ class IntegrationTestConfigureAnnotationUploadView(IntegrationTestCase):
         session.change_name=''
         session.change_description = ""
         session.data_file = 'test/experiment.28.test.annotations.tsv'
-        session.load_type = 'annotations'
+        session.resource_type = 'annotations'
+        session.load_type = 'new'
         session.stage='config'
         session.save()
         
@@ -29,7 +30,8 @@ class IntegrationTestConfigureAnnotationUploadView(IntegrationTestCase):
         session.change_name=''
         session.change_description = ""
         session.data_file = 'test/experiment.28.test.annotations.tsv'
-        session.load_type = 'annotations'
+        session.resource_type = 'annotations'
+        session.load_type = 'new'
         session.stage='config'
         session.save()
         

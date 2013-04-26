@@ -10,6 +10,7 @@ class IntegrationTestUploadStatusView(IntegrationTestCase):
         session = upload.Session()
         session.experiment_id = 1
         session.user_id = self.bot.user.id
+        session.resource_type='dataset'
         session.load_type='new'
         session.data_file='exp_file'
         session.parent_experiment=None
@@ -33,6 +34,7 @@ class IntegrationTestUploadStatusView(IntegrationTestCase):
         session = upload.Session()
         session.experiment_id = 1
         session.user_id = self.bot.user.id
+        session.resource_type='dataset'
         session.load_type='new'
         session.data_file='exp_file'
         session.parent_experiment=None

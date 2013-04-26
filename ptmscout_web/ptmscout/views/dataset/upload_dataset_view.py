@@ -67,7 +67,7 @@ def upload_dataset_POST(request):
     
     if len(errors) == 0:
         load_type = webutils.post(request, 'load_type', 'new')
-        source_dataset = webutils.post(request, 'source_dataset', '')
+        source_dataset = webutils.post(request, 'source_dataset', None)
         
         output_file = uploadutils.save_data_file(request.POST['datasetfile'], settings.dataset_files_prefix)
         experiment_id = create_experiment(request.POST['datasetname'], output_file, request.user)

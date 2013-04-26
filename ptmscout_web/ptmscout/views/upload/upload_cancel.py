@@ -1,6 +1,7 @@
 from pyramid.view import view_config
 from ptmscout.config import strings
 from ptmscout.database import upload, experiment
+from ptmscout.utils import decorators
 
 @view_config(route_name='upload_cancel', renderer='ptmscout:/templates/info/information.pt')
 def cancel_upload_view(request):

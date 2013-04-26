@@ -131,6 +131,7 @@ def upload_dataset_for_annotation(context):
     f = open(filename, 'rb')
     filecontents = f.read()
     
+    form.set('load_type', "new")
     form.set('datasetname', "Test Data Set with 1 Error")
     form.set('datasetfile', (filename, filecontents))
     context.result = form.submit().follow()

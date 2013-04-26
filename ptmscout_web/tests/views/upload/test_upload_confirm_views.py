@@ -1,7 +1,7 @@
 from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 from ptmscout.config import strings
 from pyramid.testing import DummyRequest
-from ptmscout.views.upload.upload_confirm import upload_confirm_view,\
+from ptmscout.views.upload.upload_confirm import upload_confirm,\
     UploadAlreadyStarted, prepare_experiment
 from tests.views.mocking import createMockExperiment, createMockUser,\
     createMockSession
@@ -11,17 +11,15 @@ from ptmscout.utils import webutils
 
 class TestUploadStatusView(UnitTestCase):
     
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_start_upload_view_should_redirect_if_already_started(self, patch_getSession):
+    def test_start_upload_view_should_redirect_if_already_started(self):
         request = DummyRequest()
         request.matchdict['id'] = "102"
         request.user = createMockUser() 
         
         session = createMockSession(request.user, sid=102, experiment_id=26, stage='complete')
-        patch_getSession.return_value = session
 
         try:
-            upload_confirm_view(request)
+            upload_confirm(request, session)
         except UploadAlreadyStarted:
             pass
         else:
@@ -125,19 +123,16 @@ class TestUploadStatusView(UnitTestCase):
     @patch('ptmscout.views.upload.upload_confirm.create_job')
     @patch('ptmscout.views.upload.upload_confirm.prepare_experiment')
     @patch('ptmscout.database.experiment.getExperimentById')
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_start_upload_view_should_start_job_and_display_confirmation(self, patch_getSession, patch_getExperiment, patch_prepare, patch_createJob, patch_startUpload):
+    def test_start_upload_view_should_start_job_and_display_confirmation(self, patch_getExperiment, patch_prepare, patch_createJob, patch_startUpload):
         request = DummyRequest()
         request.POST['confirm'] = "true"
         request.POST['terms_of_use'] = "yes"
-        request.matchdict['id'] = "102"
         request.user = createMockUser()
         
         session = createMockSession(request.user, sid=102, experiment_id=26, stage='confirm')
         exp = createMockExperiment(26, 0, None, 'configuration')
         target_exp = createMockExperiment(28, 0, None, 'preload')
         
-        patch_getSession.return_value = session
         patch_getExperiment.return_value = exp
         exp.getUrl.return_value = "url"
         exp.getLongCitationString.return_value = "citation"
@@ -145,9 +140,8 @@ class TestUploadStatusView(UnitTestCase):
         patch_prepare.return_value = target_exp
         patch_createJob.return_value = 702
         
-        result = upload_confirm_view(request)
+        result = upload_confirm(request, session)
         
-        patch_getSession.assert_called_once_with(102, request.user)
         patch_getExperiment.assert_called_once_with(26, request.user, False)
         patch_createJob.assert_called_once_with(request, target_exp, session, request.user)
         patch_startUpload.assert_called_once_with((target_exp.id, session.id, 702))
@@ -164,24 +158,20 @@ class TestUploadStatusView(UnitTestCase):
         self.assertEqual(True, result['confirm'])
         
     @patch('ptmscout.database.experiment.getExperimentById')
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_start_upload_view_should_fail_if_terms_not_accepted(self, patch_getSession, patch_getExperiment):
+    def test_start_upload_view_should_fail_if_terms_not_accepted(self, patch_getExperiment):
         request = DummyRequest()
-        request.matchdict['id'] = "102"
         request.user = createMockUser() 
         request.POST['confirm'] = "true"
         
         session = createMockSession(request.user, sid=102, experiment_id=26, stage='confirm')
         exp = createMockExperiment(26, 0, None, 'in queue')
         
-        patch_getSession.return_value=session
         patch_getExperiment.return_value = exp
         exp.getUrl.return_value = "url"
         exp.getLongCitationString.return_value = "citation"
         
-        result = upload_confirm_view(request)
+        result = upload_confirm(request, session)
         
-        patch_getSession.assert_called_once_with(102, request.user)
         patch_getExperiment.assert_called_once_with(26, request.user, False)
         
         exp_dict = webutils.object_to_dict(exp)
@@ -196,23 +186,19 @@ class TestUploadStatusView(UnitTestCase):
         self.assertEqual(False, result['confirm'])
     
     @patch('ptmscout.database.experiment.getExperimentById')
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_start_upload_view_should_get_confirmation(self, patch_getSession, patch_getExperiment):
+    def test_start_upload_view_should_get_confirmation(self, patch_getExperiment):
         request = DummyRequest()
-        request.matchdict['id'] = "102"
         request.user = createMockUser() 
         
         session = createMockSession(request.user, sid=102, experiment_id=26, stage='confirm')
         exp = createMockExperiment(26, 0, None, 'in queue')
         
-        patch_getSession.return_value=session
         patch_getExperiment.return_value = exp
         exp.getUrl.return_value = "url"
         exp.getLongCitationString.return_value = "citation"
         
-        result = upload_confirm_view(request)
+        result = upload_confirm(request, session)
         
-        patch_getSession.assert_called_once_with(102, request.user)
         patch_getExperiment.assert_called_once_with(26, request.user, False)
         
         exp_dict = webutils.object_to_dict(exp)
@@ -240,6 +226,7 @@ class IntegrationTestUploadStatusView(IntegrationTestCase):
         session = upload.Session()
         session.experiment_id = 1
         session.user_id = self.bot.user.id
+        session.resource_type = 'experiment'
         session.load_type='new'
         session.data_file='exp_file'
         session.parent_experiment=None
@@ -263,6 +250,7 @@ class IntegrationTestUploadStatusView(IntegrationTestCase):
         session = upload.Session()
         session.experiment_id = 1
         session.user_id = self.bot.user.id
+        session.resource_type = 'experiment'
         session.load_type='new'
         session.data_file='exp_file'
         session.parent_experiment=None

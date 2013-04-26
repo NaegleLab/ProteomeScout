@@ -1,6 +1,6 @@
 from pyramid.view import view_config
 from ptmscout.config import strings
-from ptmscout.utils import uploadutils, webutils
+from ptmscout.utils import uploadutils, webutils, decorators
 from ptmscout.database import upload, experiment
 import re
 from pyramid.httpexceptions import HTTPFound
@@ -83,33 +83,33 @@ def parse_column_assignments(request, session, headers):
     
     return errors
 
-@view_config(route_name='configure_annotations', request_method='POST', renderer='ptmscout:/templates/upload/upload_config.pt', permission='private')
-def configure_annotations_POST(request):
+def configure_annotations_POST(request, experiment, session):
     force = webutils.post(request, 'override', "false") != "false"
-    
-    experiment_id = int(request.matchdict['id'])
-    session_id = int(request.matchdict['sid'])
-    session = upload.getSessionById(session_id, request.user)
-    experiment.getExperimentById(experiment_id, request.user)
     
     headers, data_rows = uploadutils.load_header_and_data_rows(session.data_file, N=100)
     errors = parse_column_assignments(request, session, headers)
     if len(errors) > 0:
-        result = configure_annotations_GET(request)
+        result = configure_annotations_GET(request, experiment, session)
         result['error'] = errors
         return result
         
     errors = verify_dataset(session, data_rows)    
     
     if len(errors) > 0 and not force:
-        result = configure_annotations_GET(request)
+        result = configure_annotations_GET(request, experiment, session)
         result['error'] = errors
         result['allowoverride'] = True
         return result
     
-    return HTTPFound(request.route_url('confirm_annotations', id=experiment_id, sid=session_id))
+    return HTTPFound(request.route_url('confirm_annotations', id=experiment.id, sid=session.id))
 
-
+@view_config(route_name='configure_annotations', request_method='POST', renderer='ptmscout:/templates/upload/upload_config.pt', permission='private')
+@decorators.get_experiment('id',types=set(['experiment']))    
+@decorators.get_session('sid','annotations')
+def configure_annotations_POST_view(context, request, experiment, session):
+    return configure_annotations_POST(request, experiment, session)
+    
+    
 def get_columns_from_header(h):
     col = {'type':'','label':''}
     
@@ -130,13 +130,8 @@ def get_columns_from_header(h):
     return col
 
 
-@view_config(route_name='configure_annotations', request_method='GET', renderer='ptmscout:/templates/upload/upload_config.pt', permission='private')
-def configure_annotations_GET(request):
-    experiment_id = int(request.matchdict['id'])
-    session_id = int(request.matchdict['sid'])
-    session = upload.getSessionById(session_id, request.user)
-    experiment.getExperimentById(experiment_id, request.user)
-    
+
+def configure_annotations_GET(request, experiment, session):
     headers, data_rows = uploadutils.load_header_and_data_rows(session.data_file, N=100, truncate=30)
     
     data_definitions = { 'columns':dict([ (i, get_columns_from_header(h)) for i, h in enumerate(headers) ] ) }
@@ -146,7 +141,7 @@ def configure_annotations_GET(request):
         data_definitions = session_defs
         
     return {
-            'session_id': session_id,
+            'session_id': session.id,
             'pageTitle':strings.upload_configure_annotations_page_title,
             'error':[],
             'headers':headers,
@@ -155,3 +150,9 @@ def configure_annotations_GET(request):
             'data_definitions': data_definitions,
             'column_values': ['none','MS_id','cluster','numeric','nominative']
             }
+
+@view_config(route_name='configure_annotations', request_method='GET', renderer='ptmscout:/templates/upload/upload_config.pt', permission='private')
+@decorators.get_experiment('id',types=set(['experiment']))    
+@decorators.get_session('sid','annotations')
+def configure_annotations_GET_view(context, request, experiment, session):
+    return configure_annotations_GET(request, experiment, session)

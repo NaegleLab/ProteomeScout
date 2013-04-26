@@ -1,6 +1,24 @@
 import time
 import os
 
+def get_session(match_field, resource_type):
+    def do_wrap(fn):
+        from ptmscout.database import upload
+        
+        def wrapper(*args):
+            request = args[1]
+            sid = int(request.matchdict[match_field])
+            session = upload.getSessionById(sid, user=request.user)
+            
+            if session.resource_type != resource_type:
+                raise upload.NoSuchSession(sid) 
+            
+            nargs = tuple( list(args) + [session] )
+            
+            return fn(*nargs)
+        return wrapper
+    return do_wrap
+
 
 def get_experiment(match_field, types=set(['experiment','dataset','compendia'])):
     def do_wrap(fn):

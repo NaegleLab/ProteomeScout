@@ -51,6 +51,7 @@ class ExperimentAmbiguityViewTests(UnitTestCase):
 
         self.assertEqual(new_session.id, session_id)
         self.assertEqual(exp_file, new_session.data_file)
+        self.assertEqual('experiment', new_session.resource_type)
         self.assertEqual('extension', new_session.load_type)
         self.assertEqual('metadata', new_session.stage)
         self.assertEqual('accession', new_session.columns[0].type)

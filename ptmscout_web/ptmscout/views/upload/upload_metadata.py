@@ -1,6 +1,6 @@
 from pyramid.view import view_config
 from ptmscout.config import strings
-from ptmscout.utils import webutils, forms
+from ptmscout.utils import webutils, forms, decorators
 from pyramid.httpexceptions import HTTPFound
 from ptmscout.database import experiment, upload
 
@@ -159,11 +159,9 @@ def populate_schema_from_experiment(schema, session, user):
     if field_dict != None:
         schema.parse_fields_dict(field_dict)
 
-@view_config(route_name='upload_metadata', renderer='ptmscout:templates/upload/upload_metadata.pt', permission='private')
-def upload_metadata(request):
+
+def upload_metadata(request, session):
     submitted = webutils.post(request,'submitted',"false")
-    session_id = int(request.matchdict['id'])
-    session = upload.getSessionById(session_id, request.user)
     
     schema = create_schema(request)
     errors = []
@@ -176,11 +174,16 @@ def upload_metadata(request):
             nexp = get_experiment_ref(session, request.user)
             write_experiment_properties(nexp, session, schema, request.user)
             mark_status(nexp, session)
-            return HTTPFound(request.application_url + "/upload/%d/conditions" % session_id)
+            return HTTPFound(request.application_url + "/upload/%d/conditions" % session.id)
     else:
         populate_schema_from_experiment(schema, session, request.user)
         
     return {'pageTitle': strings.upload_page_title,
             'errors':errors,
-            'session_id': session_id,
+            'session_id': session.id,
             'formrenderer':forms.FormRenderer(schema)}
+
+@view_config(route_name='upload_metadata', renderer='ptmscout:templates/upload/upload_metadata.pt', permission='private')
+@decorators.get_session('id', 'experiment')
+def upload_metadata_view(context, request, session):
+    return upload_metadata(request, session)

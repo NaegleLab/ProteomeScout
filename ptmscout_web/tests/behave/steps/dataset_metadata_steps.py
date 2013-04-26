@@ -14,6 +14,7 @@ def setup_pre_existing_session(context):
     session = upload.Session()
     
     session.experiment_id = None
+    session.resource_type = 'experiment'
     session.load_type = 'new'
     session.parent_experiment = None
     session.change_name = ''

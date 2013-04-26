@@ -1,7 +1,7 @@
 from pyramid.view import view_config
-from ptmscout.database import experiment, upload, jobs
+from ptmscout.database import experiment, jobs
 from ptmscout.config import strings
-from ptmscout.utils import webutils
+from ptmscout.utils import webutils, decorators
 from ptmworker import data_import
 
 class DatasetUploadAlreadyStarted(Exception):
@@ -32,11 +32,7 @@ def create_dataset_job(exp, session, request):
         
     data_import.start_import.apply_async((exp.id, session.id, job.id, True))
 
-@view_config(route_name='dataset_confirm', renderer='ptmscout:/templates/upload/upload_confirm.pt', permission='private')
-def upload_confirm_view(request):
-    session_id = int(request.matchdict['id'])
-    session = upload.getSessionById(session_id, request.user)
-    
+def upload_confirm(request, session):
     exp = experiment.getExperimentById(session.experiment_id, request.user, False)
     exp_dict = webutils.object_to_dict(exp)
     exp_dict['citation'] = exp.getLongCitationString()
@@ -55,9 +51,9 @@ def upload_confirm_view(request):
         
     
         return {'pageTitle': strings.dataset_upload_started_page_title,
-                'message': strings.dataset_upload_started_message % (request.application_url + "/account/experiments"),
+                'message': strings.dataset_upload_started_message % (request.route_url('my_experiments')),
                 'experiment': exp_dict,
-                'session_id':session_id,
+                'session_id':session.id,
                 'reason':reason,
                 'confirm':confirm}
     
@@ -68,6 +64,12 @@ def upload_confirm_view(request):
     return {'pageTitle': strings.dataset_upload_confirm_page_title,
             'message': strings.dataset_upload_confirm_message,
             'experiment': exp_dict,
-            'session_id': session_id,
+            'session_id': session.id,
             'reason':reason,
             'confirm': confirm}
+    
+    
+@view_config(route_name='dataset_confirm', renderer='ptmscout:/templates/upload/upload_confirm.pt', permission='private')
+@decorators.get_session('id', 'dataset')
+def upload_confirm_view(context, request, session):
+    return upload_confirm(request, session)

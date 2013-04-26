@@ -1,7 +1,7 @@
 from ptmscout.config import strings
 from pyramid.view import view_config
 from ptmscout.database import upload
-from ptmscout.utils import webutils
+from ptmscout.utils import webutils, decorators
 from pyramid.httpexceptions import HTTPFound
 from ptmscout.utils import uploadutils
 import re
@@ -66,9 +66,7 @@ def parse_user_input(session, request):
     return {'columns':columns,'units':units}, [ uploadutils.ColumnError(e) for e in errors ]
 
 
-def upload_config_handler(request, pageTitle, nextPage, mod_required=True, nextStage='metadata'):
-    session_id = int(request.matchdict['id'])
-    session = upload.getSessionById(session_id, request.user) 
+def upload_config_handler(request, session, pageTitle, nextPage, mod_required=True, nextStage='metadata'):
     submitted = webutils.post(request, 'submitted', "false") == "true"
     force = webutils.post(request, 'override', "false") != "false"
     
@@ -105,11 +103,14 @@ def upload_config_handler(request, pageTitle, nextPage, mod_required=True, nextS
             'data_rows': data_rows,
             'error': errors,
             'data_definitions':column_defs,
-            'session_id': session_id,
+            'session_id': session.id,
             'column_values': ['none','hidden','data','stddev','accession','peptide','sites','species','modification','run'],
             'pageTitle': pageTitle}
 
+def upload_config(request, session):
+    return upload_config_handler( request, session, strings.experiment_upload_configure_page_title, request.route_url('upload_metadata', id=session.id) )
+
 @view_config(route_name='upload_config', renderer='ptmscout:/templates/upload/upload_config.pt')
-def upload_config(request):
-    session_id = int(request.matchdict['id'])
-    return upload_config_handler( request, strings.experiment_upload_configure_page_title, request.application_url + "/upload/%d/metadata" % (session_id) )
+@decorators.get_session('id','experiment')
+def upload_config_view(context, request, session):
+    return upload_config(request, session)

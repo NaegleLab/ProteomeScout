@@ -12,20 +12,16 @@ from ptmscout.config import strings
 class TestUploadResumeView(UnitTestCase):
 
     @patch('ptmscout.database.experiment.getExperimentById')
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_retry_upload_view_should_redirect_if_already_started(self, patch_getSession, patch_getExperiment):
+    def test_retry_upload_view_should_redirect_if_already_started(self, patch_getExperiment):
         request = DummyRequest()
-        request.matchdict['id'] = "102"
         request.user = createMockUser() 
         
         session = createMockSession(request.user, sid=102, experiment_id=26, stage='complete')
-        patch_getSession.return_value = session
-
         exp = createMockExperiment(26, 0, None, 'loading')
         patch_getExperiment.return_value = exp
 
         try:
-            retry_failed_upload(request)
+            retry_failed_upload(request, session)
         except upload_confirm.UploadAlreadyStarted:
             pass
         else:
@@ -35,8 +31,7 @@ class TestUploadResumeView(UnitTestCase):
     @patch('ptmworker.data_import.start_import.apply_async')        
     @patch('ptmscout.views.upload.upload_resume.prepare_experiment')
     @patch('ptmscout.database.experiment.getExperimentById')
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_retry_upload_view_should_start_job_and_display_confirmation(self, patch_getSession, patch_getExperiment, patch_prepare, patch_startUpload):
+    def test_retry_upload_view_should_start_job_and_display_confirmation(self, patch_getExperiment, patch_prepare, patch_startUpload):
         request = DummyRequest()
         request.POST['confirm'] = "true"
         request.POST['terms_of_use'] = "yes"
@@ -46,14 +41,12 @@ class TestUploadResumeView(UnitTestCase):
         session = createMockSession(request.user, sid=102, experiment_id=26, stage='confirm')
         exp = createMockExperiment(26, 0, None, 'error')
         
-        patch_getSession.return_value = session
         patch_getExperiment.return_value = exp
         exp.getUrl.return_value = "url"
         exp.getLongCitationString.return_value = "citation"
         
-        result = retry_failed_upload(request)
+        result = retry_failed_upload(request, session)
         
-        patch_getSession.assert_called_once_with(102, request.user)
         patch_getExperiment.assert_called_once_with(26, request.user, False)
 
         patch_startUpload.assert_called_once_with((exp.id, session.id, exp.job.id))
@@ -71,8 +64,7 @@ class TestUploadResumeView(UnitTestCase):
         
 
 
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_view_should_redirect_to_config(self, patch_getSession):
+    def test_view_should_redirect_to_config(self):
         user = createMockUser()
         session = createMockSession(user)
         session.stage = 'config'
@@ -81,18 +73,14 @@ class TestUploadResumeView(UnitTestCase):
         request.matchdict['id'] = str(session.id)
         request.user = user
         
-        patch_getSession.return_value = session
         
-        f = resume_upload_session(request)
+        f = resume_upload_session(request, session)
         
         self.assertTrue(isinstance(f, HTTPFound))
         self.assertEqual(request.application_url + "/upload/%d/config" % (session.id), f.location)
                 
-        patch_getSession.assert_called_once_with(session.id, user)
-        
     
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_view_should_redirect_to_metadata(self, patch_getSession):
+    def test_view_should_redirect_to_metadata(self):
         user = createMockUser()
         session = createMockSession(user)
         session.stage = 'metadata'
@@ -101,17 +89,12 @@ class TestUploadResumeView(UnitTestCase):
         request.matchdict['id'] = str(session.id)
         request.user = user
         
-        patch_getSession.return_value = session
-        
-        f = resume_upload_session(request)
+        f = resume_upload_session(request, session)
         
         self.assertTrue(isinstance(f, HTTPFound))
         self.assertEqual(request.application_url + "/upload/%d/metadata" % (session.id), f.location)
-                
-        patch_getSession.assert_called_once_with(session.id, user)
         
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_view_should_redirect_to_conditions(self, patch_getSession):
+    def test_view_should_redirect_to_conditions(self):
         user = createMockUser()
         session = createMockSession(user)
         session.stage = 'condition'
@@ -120,17 +103,12 @@ class TestUploadResumeView(UnitTestCase):
         request.matchdict['id'] = str(session.id)
         request.user = user
         
-        patch_getSession.return_value = session
-        
-        f = resume_upload_session(request)
+        f = resume_upload_session(request, session)
         
         self.assertTrue(isinstance(f, HTTPFound))
         self.assertEqual(request.application_url + "/upload/%d/conditions" % (session.id), f.location)
-                
-        patch_getSession.assert_called_once_with(session.id, user)
         
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_view_should_redirect_to_confirm(self, patch_getSession):
+    def test_view_should_redirect_to_confirm(self):
         user = createMockUser()
         session = createMockSession(user)
         session.stage = 'confirm'
@@ -139,17 +117,12 @@ class TestUploadResumeView(UnitTestCase):
         request.matchdict['id'] = str(session.id)
         request.user = user
         
-        patch_getSession.return_value = session
-        
-        f = resume_upload_session(request)
+        f = resume_upload_session(request, session)
         
         self.assertTrue(isinstance(f, HTTPFound))
         self.assertEqual(request.application_url + "/upload/%d/confirm" % (session.id), f.location)
-                
-        patch_getSession.assert_called_once_with(session.id, user)    
         
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_view_should_redirect_to_confirm_if_complete(self, patch_getSession):
+    def test_view_should_redirect_to_confirm_if_complete(self):
         user = createMockUser()
         session = createMockSession(user)
         session.stage = 'complete'
@@ -158,22 +131,37 @@ class TestUploadResumeView(UnitTestCase):
         request.matchdict['id'] = str(session.id)
         request.user = user
         
-        patch_getSession.return_value = session
-        
-        f = resume_upload_session(request)
+        f = resume_upload_session(request, session)
         
         self.assertTrue(isinstance(f, HTTPFound))
         self.assertEqual(request.application_url + "/upload/%d/confirm" % (session.id), f.location)
-                
-        patch_getSession.assert_called_once_with(session.id, user)
         
 class IntegrationTestUploadResumeView(IntegrationTestCase):
+    def test_view_should_forbid_if_session_resource_does_not_match(self):
+        session = upload.Session()
+        session.experiment_id = 26
+        session.data_file = ''
+        session.change_name = ''
+        session.change_description = ''
+        session.resource_type = 'dataset'
+        session.load_type = 'new'
+        session.stage = 'confirm'
+        session.units = ''
+        session.user_id = self.bot.user.id
+        session.save()
+        
+        self.bot.logout()
+        
+        result = self.ptmscoutapp.get("/upload/%d" % (session.id), status=403)
+        result.mustcontain("Forbidden")
+    
     def test_view_should_forbid(self):
         session = upload.Session()
         session.experiment_id = 26
         session.data_file = ''
         session.change_name = ''
         session.change_description = ''
+        session.resource_type = 'experiment'
         session.load_type = 'new'
         session.stage = 'confirm'
         session.units = ''
@@ -191,6 +179,7 @@ class IntegrationTestUploadResumeView(IntegrationTestCase):
         session.data_file = ''
         session.change_name = ''
         session.change_description = ''
+        session.resource_type = 'experiment'
         session.load_type = 'new'
         session.stage = 'confirm'
         session.units = ''

@@ -6,7 +6,7 @@ from mock import Mock, patch
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockSession, createMockUser,\
     createMockExperiment, createMockCondition
-from ptmscout.views.upload.upload_conditions import upload_conditions_view,\
+from ptmscout.views.upload.upload_conditions import upload_conditions,\
     get_form_schema, MAX_VALUES, CONDITION_TYPES, save_form_data
 from pyramid.httpexceptions import HTTPFound
 
@@ -146,9 +146,8 @@ class TestUploadConditionsView(UnitTestCase):
     @patch('ptmscout.database.experiment.getExperimentById')
     @patch('ptmscout.views.upload.upload_conditions.save_form_data')
     @patch('ptmscout.utils.forms.FormValidator')
-    @patch('ptmscout.database.upload.getSessionById')
     @patch('ptmscout.views.upload.upload_conditions.get_form_schema')
-    def test_view_should_validate_on_submission_store_experiment_conditions(self, patch_getSchema, patch_getSession, patch_validator, patch_save_form_data, patch_getExperiment):
+    def test_view_should_validate_on_submission_store_experiment_conditions(self, patch_getSchema, patch_validator, patch_save_form_data, patch_getExperiment):
         mockValidator = patch_validator.return_value
         mockValidator.validate.return_value = [] 
         
@@ -163,13 +162,12 @@ class TestUploadConditionsView(UnitTestCase):
         session.stage='condition'
         session.parent_experiment = None
         
-        patch_getSession.return_value = session
         request = DummyRequest()
         request.user = user
         request.matchdict['id'] = session.id
         request.POST['submitted'] = "true"
         
-        result = upload_conditions_view(request)
+        result = upload_conditions(request, session)
         
         self.assertTrue(isinstance(result, HTTPFound))
         self.assertEqual(request.application_url + "/upload/%d/confirm" % (session.id), result.location)
@@ -182,13 +180,11 @@ class TestUploadConditionsView(UnitTestCase):
         
         patch_save_form_data.assert_called_once_with(exp, mockSchema, set([1,2,3]))
         patch_getSchema.assert_called_once_with(exp, None, request)
-        patch_getSession.assert_called_once_with(session.id, user)
         
     @patch('ptmscout.database.experiment.getExperimentById')
     @patch('ptmscout.utils.forms.FormValidator')    
-    @patch('ptmscout.database.upload.getSessionById')
     @patch('ptmscout.views.upload.upload_conditions.get_form_schema')
-    def test_view_should_validate_on_submission_show_errors(self, patch_getSchema, patch_getSession, patch_validator, patch_getExperiment):
+    def test_view_should_validate_on_submission_show_errors(self, patch_getSchema, patch_validator, patch_getExperiment):
         mockValidator = patch_validator.return_value
         mockValidator.validate.return_value = ["some errors"]
         
@@ -201,17 +197,15 @@ class TestUploadConditionsView(UnitTestCase):
         session = createMockSession(user, experiment_id=exp.id)
         session.parent_experiment = None
         
-        patch_getSession.return_value = session
         request = DummyRequest()
         request.user = user
         request.matchdict['id'] = session.id
         request.POST['submitted'] = "true"
         
-        result = upload_conditions_view(request)
+        result = upload_conditions(request, session)
         
         mockValidator.validate.assert_called_once_with()
         patch_getSchema.assert_called_once_with(exp, None, request)
-        patch_getSession.assert_called_once_with(session.id, user)
         
         self.assertEqual(set([1,2,3]), result['added_fields'])
         self.assertEqual(["some errors"], result['errors'])
@@ -221,9 +215,8 @@ class TestUploadConditionsView(UnitTestCase):
         
         
     @patch('ptmscout.database.experiment.getExperimentById')
-    @patch('ptmscout.database.upload.getSessionById')
     @patch('ptmscout.views.upload.upload_conditions.get_form_schema')    
-    def test_view_should_show_form(self, patch_getSchema, patch_getSession, patch_getExperiment):
+    def test_view_should_show_form(self, patch_getSchema, patch_getExperiment):
         mockSchema = Mock(spec=forms.FormSchema)
         patch_getSchema.return_value = mockSchema, set()
         
@@ -233,15 +226,13 @@ class TestUploadConditionsView(UnitTestCase):
         session = createMockSession(user, experiment_id=exp.id)
         session.parent_experiment = None
         
-        patch_getSession.return_value = session
         request = DummyRequest()
         request.user = user
         request.matchdict['id'] = session.id
         
-        result = upload_conditions_view(request)
+        result = upload_conditions(request, session)
         
         patch_getSchema.assert_called_once_with(exp, None, request)
-        patch_getSession.assert_called_once_with(session.id, user)
         
         self.assertEqual(session.id, result['session_id'])
         self.assertEqual(set(), result['added_fields'])
@@ -262,6 +253,7 @@ class IntegrationTestUploadConditionsView(IntegrationTestCase):
         session = upload.Session()
         session.experiment_id = 1
         session.user_id = self.bot.user.id
+        session.resource_type='experiment'
         session.load_type='new'
         session.data_file='exp_file'
         session.parent_experiment=None
@@ -289,6 +281,7 @@ class IntegrationTestUploadConditionsView(IntegrationTestCase):
         session = upload.Session()
         session.experiment_id = 26
         session.user_id = self.bot.user.id
+        session.resource_type='experiment'
         session.load_type='new'
         session.data_file='exp_file'
         session.parent_experiment=28

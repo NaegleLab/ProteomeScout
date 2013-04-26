@@ -147,8 +147,7 @@ class TestUploadView(UnitTestCase):
     @patch('ptmscout.views.upload.upload_metadata.get_experiment_ref')
     @patch('ptmscout.utils.forms.FormValidator')
     @patch('ptmscout.views.upload.upload_metadata.create_schema')
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_view_should_start_upload_on_successful_verification(self, patch_getSession, patch_create_schema, patch_validator, patch_getref, patch_write, patch_mark):
+    def test_view_should_start_upload_on_successful_verification(self, patch_create_schema, patch_validator, patch_getref, patch_write, patch_mark):
         request = DummyRequest()
         
         schema = Mock(spec=forms.FormSchema)
@@ -164,12 +163,11 @@ class TestUploadView(UnitTestCase):
         exp = createMockExperiment()
         patch_getref.return_value = exp
         
-        session = createMockSession(request.user)
-        patch_getSession.return_value = session 
+        session = createMockSession(sid=session_id, user=request.user)
         
         validator.validate.return_value = []
         
-        f = upload_metadata(request)
+        f = upload_metadata(request, session)
         self.assertEqual(request.application_url + "/upload/%d/conditions" % session_id, f.location)
                 
         patch_getref.assert_called_once_with(session, request.user)
@@ -179,8 +177,7 @@ class TestUploadView(UnitTestCase):
         
     @patch('ptmscout.utils.forms.FormValidator')
     @patch('ptmscout.views.upload.upload_metadata.create_schema')
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_view_should_handle_form_submission_fail_on_check(self, patch_getSession, patch_create_schema, patch_validator):
+    def test_view_should_handle_form_submission_fail_on_check(self,  patch_create_schema, patch_validator):
         request = DummyRequest()
         
         schema = Mock(spec=forms.FormSchema)
@@ -194,11 +191,10 @@ class TestUploadView(UnitTestCase):
         request.user = createMockUser()
         
         session = createMockSession(request.user)
-        patch_getSession.return_value = session 
         
         validator.validate.return_value = [strings.failure_reason_required_fields_cannot_be_empty]
         
-        result = upload_metadata(request)
+        result = upload_metadata(request, session)
 
         self.assertEqual([strings.failure_reason_required_fields_cannot_be_empty], result['errors'])
         self.assertEqual(schema, result['formrenderer'].schema)
@@ -347,8 +343,7 @@ class TestUploadView(UnitTestCase):
 
     @patch('ptmscout.views.upload.upload_metadata.create_schema')
     @patch('ptmscout.views.upload.upload_metadata.populate_schema_from_experiment')
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_view_should_populate_field_if_parent_experiment_avaiable(self, patch_getSession, patch_prepopulate, patch_create_schema):
+    def test_view_should_populate_field_if_parent_experiment_avaiable(self, patch_prepopulate, patch_create_schema):
         request = DummyRequest()
         session_id = 10
         request.matchdict['id'] = session_id
@@ -357,11 +352,10 @@ class TestUploadView(UnitTestCase):
         schema = Mock(spec=forms.FormSchema)
         patch_create_schema.return_value = schema
         
-        session = createMockSession(request.user)
+        session = createMockSession(sid=session_id, user=request.user)
         session.parent_experiment = 100
-        patch_getSession.return_value = session 
         
-        result = upload_metadata(request)
+        result = upload_metadata(request, session)
         
         patch_prepopulate.assert_called_once_with(schema, session, request.user)
         
@@ -379,6 +373,7 @@ class IntegrationTestUploadMetadataView(IntegrationTestCase):
         session.change_name = ''
         session.change_description = ''
         session.experiment_id = None
+        session.resource_type = 'experiment'
         session.load_type = 'new'
         session.parent_experiment = None
         session.stage = 'metadata'

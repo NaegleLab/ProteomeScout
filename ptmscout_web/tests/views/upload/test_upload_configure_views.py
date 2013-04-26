@@ -2,7 +2,7 @@ from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 from ptmscout.database import upload
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockSession, createMockUser
-from mock import patch
+from mock import patch, Mock
 from ptmscout.config import strings, settings
 import os
 from pyramid.httpexceptions import HTTPFound
@@ -154,28 +154,27 @@ class TestUploadConfigureView(UnitTestCase):
         
         
     @patch('ptmscout.views.upload.upload_configure.parse_user_input')
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_view_should_stop_and_show_errors_disallow_force_if_error_in_form_input(self, patch_getSession, patch_parse):
+    def test_view_should_stop_and_show_errors_disallow_force_if_error_in_form_input(self, patch_parse):
         request = DummyRequest()
         request.matchdict['id'] = '234'
         request.POST['submitted'] = "true"
         request.POST['override'] = "true"
         request.user = createMockUser()
+        request.route_url = Mock()
+        request.route_url.return_value = 'some_url'
         
         session = createMockSession(request.user, sid=234)
         session.data_file = 'test/test_dataset_formatted.txt'
         session.load_type = 'new'
         session.stage = 'config'
         session.user_id = request.user.id
-        patch_getSession.return_value = session
         
         column_vals = {"some":"defaults"}
         patch_parse.return_value = column_vals, [ColumnError("This is the error")]
         
-        result = upload_config(request)
+        result = upload_config(request, session)
 
         patch_parse.assert_called_once_with(session, request)        
-        patch_getSession.assert_called_once_with(234, request.user)
         
         expected_headers = open(os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'test', 'test_dataset_formatted.txt'), 'r').readline().split("\t")
         expected_headers = [item for item in expected_headers if item.strip() != ""]
@@ -193,29 +192,28 @@ class TestUploadConfigureView(UnitTestCase):
 
     @patch('ptmscout.views.upload.upload_configure.parse_user_input')
     @patch('ptmscout.utils.uploadutils.check_data_column_assignments')
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_view_should_stop_and_show_errors_disallow_override_if_critical_error(self, patch_getSession, patch_check, patch_parse):
+    def test_view_should_stop_and_show_errors_disallow_override_if_critical_error(self, patch_check, patch_parse):
         request = DummyRequest()
         request.matchdict['id'] = '234'
         request.POST['submitted'] = "true"
         request.user = createMockUser()
+        request.route_url = Mock()
+        request.route_url.return_value = 'some_url'
         
         session = createMockSession(request.user, sid=234)
         session.data_file = 'test/test_dataset_formatted.txt'
         session.load_type = 'new'
         session.stage = 'config'
         session.user_id = request.user.id
-        patch_getSession.return_value = session
         
         patch_check.side_effect = ErrorList([ColumnError("This is the error")], True)
         
         column_vals = {"some":"defaults"}
         patch_parse.return_value = column_vals, []
         
-        result = upload_config(request)
+        result = upload_config(request, session)
 
         patch_parse.assert_called_once_with(session, request)        
-        patch_getSession.assert_called_once_with(234, request.user)
         
         expected_headers = open(os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'test', 'test_dataset_formatted.txt'), 'r').readline().split("\t")
         expected_headers = [item for item in expected_headers if item.strip() != ""]
@@ -233,29 +231,28 @@ class TestUploadConfigureView(UnitTestCase):
     
     @patch('ptmscout.views.upload.upload_configure.parse_user_input')
     @patch('ptmscout.utils.uploadutils.check_data_column_assignments')
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_view_should_stop_and_show_errors(self, patch_getSession, patch_check, patch_parse):
+    def test_view_should_stop_and_show_errors(self, patch_check, patch_parse):
         request = DummyRequest()
         request.matchdict['id'] = '234'
         request.POST['submitted'] = "true"
         request.user = createMockUser()
+        request.route_url = Mock()
+        request.route_url.return_value = 'some_url'
         
         session = createMockSession(request.user, sid=234)
         session.data_file = 'test/test_dataset_formatted.txt'
         session.load_type = 'new'
         session.stage = 'config'
         session.user_id = request.user.id
-        patch_getSession.return_value = session
         
         patch_check.side_effect = ErrorList([ColumnError("This is the error")], False)
         
         column_vals = {"some":"defaults"}
         patch_parse.return_value = column_vals, []
         
-        result = upload_config(request)
+        result = upload_config(request, session)
 
         patch_parse.assert_called_once_with(session, request)        
-        patch_getSession.assert_called_once_with(234, request.user)
         
         expected_headers = open(os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'test', 'test_dataset_formatted.txt'), 'r').readline().split("\t")
         expected_headers = [item for item in expected_headers if item.strip() != ""]
@@ -272,29 +269,31 @@ class TestUploadConfigureView(UnitTestCase):
 
     @patch('ptmscout.views.upload.upload_configure.parse_user_input')
     @patch('ptmscout.utils.uploadutils.check_data_column_assignments')
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_view_should_configure_session_and_forward_to_metadata_even_with_errors_if_forced(self, patch_getSession, patch_check, patch_parse):
+    def test_view_should_configure_session_and_forward_to_metadata_even_with_errors_if_forced(self, patch_check, patch_parse):
         request = DummyRequest()
         request.matchdict['id'] = '234'
         request.POST['submitted'] = "true"
         request.POST['override'] = "true"
         request.user = createMockUser()
+        request.route_url = Mock()
+        request.route_url.return_value = 'some_url'
         
         session = createMockSession(request.user, sid=234)
         session.data_file = 'test/test_dataset_formatted.txt'
         session.load_type = 'new'
         session.stage = 'config'
         session.user_id = request.user.id
-        patch_getSession.return_value = session
         
         patch_parse.return_value = 'some_defs', []
         
         patch_check.side_effect = ErrorList([ColumnError("Ignored error")], False)
         
-        f = upload_config(request)
+        f = upload_config(request, session)
         
         assert isinstance(f, HTTPFound)
-        self.assertEqual(request.application_url + "/upload/%d/metadata" % (session.id), f.location)
+        self.assertEqual('some_url', f.location)
+        
+        request.route_url.assert_called_once_with('upload_metadata',id=session.id)
 
         self.assertEqual('metadata', session.stage)
         session.save.assert_called_once_with()
@@ -303,25 +302,26 @@ class TestUploadConfigureView(UnitTestCase):
     
     @patch('ptmscout.views.upload.upload_configure.parse_user_input')
     @patch('ptmscout.utils.uploadutils.check_data_column_assignments')
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_view_should_configure_session_and_forward_to_metadata(self, patch_getSession, patch_check, patch_parse):
+    def test_view_should_configure_session_and_forward_to_metadata(self,  patch_check, patch_parse):
         request = DummyRequest()
         request.matchdict['id'] = '234'
         request.POST['submitted'] = "true"
         request.user = createMockUser()
+        request.route_url = Mock()
+        request.route_url.return_value = 'some_url'
         
         session = createMockSession(request.user, sid=234)
         session.data_file = 'test/test_dataset_formatted.txt'
         session.load_type = 'new'
         session.stage = 'config'
         session.user_id = request.user.id
-        patch_getSession.return_value = session
         patch_parse.return_value = 'some_defs', []
         
-        f = upload_config(request)
+        f = upload_config(request, session)
         
         assert isinstance(f, HTTPFound)
-        self.assertEqual(request.application_url + "/upload/%d/metadata" % (session.id), f.location)
+        self.assertEqual('some_url', f.location)
+        request.route_url.assert_called_once_with('upload_metadata',id=session.id)
 
         patch_parse.assert_called_once_with(session, request)
         patch_check.assert_called_once_with(session, True)
@@ -329,25 +329,23 @@ class TestUploadConfigureView(UnitTestCase):
         session.save.assert_called_once_with()
     
     @patch('ptmscout.utils.uploadutils.assign_column_defaults')
-    @patch('ptmscout.database.upload.getSessionById')
-    def test_view_should_get_session_and_initialize_data(self, patch_getSession, patch_column_defaults):
+    def test_view_should_get_session_and_initialize_data(self, patch_column_defaults):
         request = DummyRequest()
         request.matchdict['id'] = '234'
         request.user = createMockUser()
+        request.route_url = Mock()
+        request.route_url.return_value = 'some_url'
         
         session = createMockSession(request.user, sid=234)
         session.data_file = 'test/test_dataset_formatted.txt'
         session.load_type = 'new'
         session.stage = 'config'
         session.user_id = request.user.id
-        patch_getSession.return_value = session
         
         def_column_vals = {"some":"defaults"}
         patch_column_defaults.return_value = def_column_vals
         
-        result = upload_config(request)
-        
-        patch_getSession.assert_called_once_with(234, request.user)
+        result = upload_config(request, session)
         
         expected_headers = open(os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'test', 'test_dataset_formatted.txt'), 'r').readline().split("\t")
         expected_headers = [item for item in expected_headers if item.strip() != ""]
@@ -370,6 +368,7 @@ class IntegrationTestUploadConfigureView(IntegrationTestCase):
         self.bot.login()
         
         session = upload.Session()
+        session.resource_type='experiment'
         session.load_type='new'
         session.data_file='test/test_dataset_formatted.txt'
         session.stage='config'

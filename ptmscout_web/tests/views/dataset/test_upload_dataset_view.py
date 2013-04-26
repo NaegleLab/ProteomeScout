@@ -3,7 +3,7 @@ from ptmscout.views.dataset import upload_dataset_view
 from pyramid.testing import DummyRequest
 from mock import patch, Mock
 from ptmscout.config import strings, settings
-from tests.views.mocking import createMockUser, createMockExperiment
+from tests.views.mocking import createMockUser
 from ptmscout.utils import forms
 import os
 
@@ -24,7 +24,6 @@ class TestUploadDataset(UnitTestCase):
         
         request.user = createMockUser()
         request.user.myDatasets.return_value = []
-        exp = createMockExperiment(11, 0, 0)
         
         validator = patch_validator.return_value
         schema = Mock(spec=forms.FormSchema())

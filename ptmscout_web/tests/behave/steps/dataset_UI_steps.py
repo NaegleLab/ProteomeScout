@@ -36,6 +36,7 @@ def setup_pre_existing_experiment_and_session(context):
     exp.saveExperiment()
     
     session.experiment_id = exp.id
+    session.resource_type = 'experiment'
     session.load_type = 'new'
     session.parent_experiment = None
     session.change_name = ''

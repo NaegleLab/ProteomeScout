@@ -1,6 +1,6 @@
 from pyramid.view import view_config
 from ptmscout.config import strings
-from ptmscout.utils import forms, webutils
+from ptmscout.utils import forms, webutils, decorators
 from ptmscout.database import upload, experiment
 from pyramid.httpexceptions import HTTPFound
 
@@ -57,12 +57,9 @@ def mark_status(session):
     session.stage='confirm'
     session.save()
 
-@view_config(route_name='upload_conditions', renderer='ptmscout:/templates/upload/upload_conditions.pt')
-def upload_conditions_view(request):
+def upload_conditions(request, session):
     submitted = webutils.post(request, 'submitted', False) == "true"
     
-    session_id = int(request.matchdict['id'])
-    session = upload.getSessionById(session_id, request.user)
     exp = experiment.getExperimentById(session.experiment_id, request.user, False)
     parent_exp = None
 
@@ -79,13 +76,18 @@ def upload_conditions_view(request):
         if len(errors) == 0:
             save_form_data(exp, schema, added_fields)
             mark_status(session)
-            return HTTPFound(request.application_url + "/upload/%d/confirm" % (session_id))
+            return HTTPFound(request.application_url + "/upload/%d/confirm" % (session.id))
     
     return {'formrenderer':renderer,
             'pageTitle': strings.experiment_upload_conditions_page_title,
             'header': strings.experiment_upload_conditions_page_title,
             'errors':errors,
-            'session_id': session_id,
+            'session_id': session.id,
             'added_fields':added_fields,
             'MAX_FIELDS':MAX_VALUES
             }
+
+@view_config(route_name='upload_conditions', renderer='ptmscout:/templates/upload/upload_conditions.pt')
+@decorators.get_session('id','experiment')
+def upload_conditions_view(context, request, session):
+    return upload_conditions(request, session)

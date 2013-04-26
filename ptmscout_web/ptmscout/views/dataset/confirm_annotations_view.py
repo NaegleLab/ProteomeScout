@@ -1,7 +1,7 @@
 from pyramid.view import view_config
 from ptmscout.database import experiment, upload, jobs
 from ptmscout.config import strings
-from ptmscout.utils import webutils
+from ptmscout.utils import webutils, decorators
 from ptmworker import annotate_tasks
 
 class AnnotationUploadAlreadyStarted(Exception):
@@ -28,14 +28,7 @@ def create_dataset_job(session, request):
     
     annotate_tasks.start_annotation_import.apply_async((session.id, job.id))
 
-@view_config(route_name='confirm_annotations', renderer='ptmscout:/templates/upload/upload_confirm.pt', permission='private')
-def upload_confirm_view(request):
-    session_id = int(request.matchdict['sid'])
-    experiment_id = int(request.matchdict['id'])
-    
-    session = upload.getSessionById(session_id, request.user)
-    
-    exp = experiment.getExperimentById(experiment_id, request.user, False)
+def upload_confirm(request, exp, session):
     exp_dict = webutils.object_to_dict(exp)
     exp_dict['citation'] = exp.getLongCitationString()
     exp_dict['url'] = exp.getUrl()
@@ -53,9 +46,9 @@ def upload_confirm_view(request):
         
     
         return {'pageTitle': strings.annotation_upload_started_page_title,
-                'message': strings.annotation_upload_started_message % (request.application_url + "/account/experiments"),
+                'message': strings.annotation_upload_started_message % (request.route_url('my_experiments')),
                 'experiment': exp_dict,
-                'session_id':session_id,
+                'session_id':session.id,
                 'reason':reason,
                 'confirm':confirm}
     
@@ -66,6 +59,12 @@ def upload_confirm_view(request):
     return {'pageTitle': strings.annotation_upload_confirm_page_title,
             'message': strings.annotation_upload_confirm_message,
             'experiment': exp_dict,
-            'session_id': session_id,
+            'session_id': session.id,
             'reason':reason,
             'confirm': confirm}
+    
+@view_config(route_name='confirm_annotations', renderer='ptmscout:/templates/upload/upload_confirm.pt', permission='private')
+@decorators.get_experiment('id', types=set(['experiment']))
+@decorators.get_session('sid', 'annotations')
+def upload_confirm_view(context, request, exp, session):
+    return upload_confirm(request, exp, session)

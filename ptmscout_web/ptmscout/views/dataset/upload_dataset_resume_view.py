@@ -2,19 +2,21 @@ from ptmscout.database import upload, experiment
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 from ptmscout.views.upload import upload_confirm
-from ptmscout.utils import webutils
+from ptmscout.utils import webutils, decorators
 from ptmworker import data_import
 from ptmscout.config import strings
 
-@view_config(route_name='dataset_upload_resume', permission='private')
-def resume_upload_session(request):
-    session_id = int(request.matchdict['id'])
-    session = upload.getSessionById(session_id, request.user)
-    
+def resume_upload_session(request, session):
     if session.stage == 'complete':
-        return HTTPFound(request.route_url('dataset_confirm', id=session_id))
+        return HTTPFound(request.route_url('dataset_confirm', id=session.id))
     else:
-        return HTTPFound(request.route_url('dataset_configure', id=session_id))
+        return HTTPFound(request.route_url('dataset_configure', id=session.id))
+
+
+@view_config(route_name='dataset_upload_resume', permission='private')
+@decorators.get_session('id', 'dataset')
+def resume_upload_session_view(context, request, session):
+    return resume_upload_session(request, session)
 
 def prepare_experiment(session, exp):
     exp.job.status='in queue'
@@ -22,11 +24,7 @@ def prepare_experiment(session, exp):
     exp.job.save()
     exp.saveExperiment()
 
-
-@view_config(route_name='dataset_upload_retry', renderer='ptmscout:/templates/upload/upload_confirm.pt', permission='private')
-def retry_failed_upload(request):
-    session_id = int(request.matchdict['id'])
-    session = upload.getSessionById(session_id, request.user)
+def retry_failed_upload(request, session):
     exp = experiment.getExperimentById(session.experiment_id, request.user, False)
 
     if exp.status != 'error':
@@ -37,11 +35,16 @@ def retry_failed_upload(request):
     exp_dict['url'] = exp.getUrl()
     
     prepare_experiment(session, exp)
-    data_import.start_import.apply_async((exp.id, session_id, exp.job.id, True))
+    data_import.start_import.apply_async((exp.id, session.id, exp.job.id, True))
 
     return {'pageTitle': strings.dataset_upload_started_page_title,
-            'message': strings.dataset_upload_started_message % (request.application_url + "/account/experiments"),
+            'message': strings.dataset_upload_started_message % (request.route_url('my_experiments')),
             'experiment': exp_dict,
-            'session_id':session_id,
+            'session_id':session.id,
             'reason':None,
             'confirm':True}
+
+@view_config(route_name='dataset_upload_retry', renderer='ptmscout:/templates/upload/upload_confirm.pt', permission='private')
+@decorators.get_session('id', 'dataset')
+def retry_failed_upload_view(context, request, session):
+    return retry_failed_upload(request, session)
