@@ -96,8 +96,8 @@ class IntegrationTestPICR(IntegrationTestCase):
         r1 = picr_tools.get_picr('gi|86168', 9031)
         r2 = picr_tools.get_picr('P03891', 9606)
 
-        self.assertEqual(set([('ipi', 'IPI00596848'), ('ipi', 'IPI00596848.1'), ('swissprot', 'P68034'), ('swissprot', 'P68034.1'), ('refseq', 'NP_001072949'), ('refseq', 'NP_001072949.1')]), set(r1))
-        self.assertEqual(set([('swissprot', 'P03891'), ('swissprot', 'P03891.2'), ('refseq', 'YP_003024027'), ('refseq', 'YP_003024027.1'), ('ipi', 'IPI00007979'), ('ipi', 'IPI00007979.4')]), set(r2))
+        self.assertEqual(set([('swissprot', 'P68034'), ('swissprot', 'P68034.1'), ('refseq', 'NP_001072949'), ('refseq', 'NP_001072949.1')]), set(r1))
+        self.assertEqual(set([('swissprot', 'P03891'), ('swissprot', 'P03891.2'), ('refseq', 'YP_003024027'), ('refseq', 'YP_003024027.1')]), set(r2))
 
     def test_get_picr_2(self):
         result = picr_tools.get_picr('EAX03173', 9606)
@@ -107,13 +107,9 @@ class IntegrationTestPICR(IntegrationTestCase):
     def test_get_picr(self):
         result = picr_tools.get_picr('P29375', 9606)
 
-        self.assertEqual(8, len(result))
+        self.assertEqual(4, len(result))
         self.assertTrue(('swissprot', 'P29375') in result)
         self.assertTrue(('swissprot', 'P29375.3') in result)
         self.assertTrue(('refseq', 'NP_001036068') in result)
         self.assertTrue(('refseq', 'NP_001036068.1') in result)
-        self.assertTrue(('ipi', 'IPI01014284') in result)
-        self.assertTrue(('ipi', 'IPI01014284.1') in result)
-        self.assertTrue(('ipi', 'IPI00021363') in result)
-        self.assertTrue(('ipi', 'IPI00021363.3') in result)
         

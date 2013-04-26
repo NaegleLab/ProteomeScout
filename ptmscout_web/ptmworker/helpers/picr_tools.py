@@ -32,8 +32,8 @@ class PICRParser(object):
         self.references.append((dbName.lower(), accession))
         self.references.append((dbName.lower(), "%s.%s" % (accession, version)))
 
-picr_accession_query_url = "http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=%s&taxid=%d&database=IPI&database=REFSEQ&database=SWISSPROT"
-picr_sequence_query_url  = "http://www.ebi.ac.uk/Tools/picr/rest/getUPIForSequence?sequence=%s&taxid=%d&database=IPI&database=REFSEQ&database=SWISSPROT"
+picr_accession_query_url = "http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=%s&taxid=%d&database=REFSEQ&database=SWISSPROT"
+picr_sequence_query_url  = "http://www.ebi.ac.uk/Tools/picr/rest/getUPIForSequence?sequence=%s&taxid=%d&database=REFSEQ&database=SWISSPROT"
 PICR_QUERY_TIMEOUT=15
 PICR_QUERY_RETRIES=3
 
