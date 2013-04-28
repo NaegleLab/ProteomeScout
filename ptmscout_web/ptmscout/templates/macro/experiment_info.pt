@@ -1,5 +1,6 @@
 <div metal:define-macro="experiment_info">
 	<div id="experimentInfo" >
+	  <h4>Experiment</h4>
    	<fieldset>
    		<legend>Experiment</legend>
    		<a href="${experiment.getUrl()}" tal:condition="experiment.getUrl() != None">${experiment.name}</a>

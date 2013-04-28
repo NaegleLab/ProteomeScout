@@ -96,6 +96,9 @@ table {
 #menu a:hover {
   color: blue;
 }
+#menu a.nav_active {
+  color: #FF0;
+}
 
 #breadcrumb {
 }
@@ -122,6 +125,9 @@ table {
 }
 #nav a:hover, #subnav a:hover {
   color: blue;
+}
+#nav a.nav_active, #subnav a.nav_active {
+  color: #FF0;
 }
 #subnav {
   background-color: #00AAAA;
@@ -304,8 +310,6 @@ dd {
  
   margin-left:auto;
   margin-right: auto;
-
-  text-align: center;
 }
 
 

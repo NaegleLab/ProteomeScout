@@ -9,7 +9,9 @@
   </div>
 	
     <div metal:fill-slot="content">
-    	
+    	<div metal:use-macro="experiment_info"></div>
+  	  
+  	  
     	<fieldset>
     		<legend>Tools</legend>
 	    	<p class="restricted" tal:condition="experiment.export == 0">There is limited functionality for this dataset because export capability has been restricted. This was either a choice of the person who loaded the dataset or it is because this is a data compendium and not an experiment.<br /><br /></p>

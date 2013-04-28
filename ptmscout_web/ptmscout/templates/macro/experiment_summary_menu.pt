@@ -1,6 +1,5 @@
 <div id="subnav" metal:define-macro="experiment_summary_menu">
   <ul class="link_menu">
-  	<li><a href="${request.application_url}/experiments/${experiment.id}/summary">Summary</a></li>
   	<li><a href="${request.application_url}/experiments/${experiment.id}/GO">GO Terms</a></li>
   	<li><a href="${request.application_url}/experiments/${experiment.id}/pfam">Protein Families</a></li>
   	<li><a href="${request.application_url}/experiments/${experiment.id}/predictions">Scansite Predictions</a></li>

@@ -17,6 +17,7 @@
   </div>
 	
 	<div metal:fill-slot="content">
+	  <div metal:use-macro="experiment_info"></div>
 
 		<div class="section_group">
 			<div class="title">Experiment Data Summary</div>
