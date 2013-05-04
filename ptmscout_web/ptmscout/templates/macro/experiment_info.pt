@@ -2,7 +2,7 @@
 	<div id="experimentInfo" class="grid_12" style="padding-left:1em">
 	  
 	  <h2>Experiment</h2>
-	  <div>
+	  <div class="body">
 	    <div style="margin-bottom:1em">
   	    <label for="name">Name:</label>
   	    <br />

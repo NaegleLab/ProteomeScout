@@ -92,8 +92,8 @@ table.experiment_summary td.listing {
 	width:750px;
 }
 
-.section_group .body {
-	text-align:center;
+.body {
+	margin-left:1em;
 }
 
 .section_group .title {
