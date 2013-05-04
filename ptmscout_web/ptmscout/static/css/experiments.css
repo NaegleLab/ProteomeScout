@@ -50,14 +50,17 @@
 table.summary_quantity {
   border: none;
 	width:200px;
+	margin: 0;
 	margin-top:10px;
 	margin-bottom:20px;
 }
 
-.summary_quantity .field {
+.summary_quantity th.field {
 	float:left;
 	width:150px;
 	font-weight:bold;
+	background-color: white;
+	color: black;
 }
 
 .summary_quantity .value {
@@ -65,11 +68,8 @@ table.summary_quantity {
 }
 
 table.experiment_summary {
-	margin-left:auto;
-	margin-right:auto;
+  margin: 0;
 	width:600px;
-	border-collapse:collapse;
-	border: solid 1px black;
 }
 
 table.experiment_summary th {

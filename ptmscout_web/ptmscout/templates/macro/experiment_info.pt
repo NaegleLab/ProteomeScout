@@ -1,5 +1,6 @@
 <div metal:define-macro="experiment_info">
-	<div id="experimentInfo" style="padding-left:1em">
+	<div id="experimentInfo" class="grid_12" style="padding-left:1em">
+	  
 	  <h2>Experiment</h2>
 	  <div>
 	    <div style="margin-bottom:1em">
@@ -23,6 +24,9 @@
 	      <br />
 	      ${experiment.date}
 	    </div>
+	    
     </div>
-  </div>    
+    
+  </div>  
+    
 </div>

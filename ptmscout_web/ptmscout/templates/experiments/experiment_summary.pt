@@ -19,25 +19,25 @@
 	<div metal:fill-slot="content">
 	  <div metal:use-macro="experiment_info"></div>
 
-		<div class="section_group">
-			<div class="title">Experiment Data Summary</div>
+		<div class="grid_12">
+		  <h2>Experiment Data Summary</h2>
 			
 			<div class="body">
 				<table class="summary_quantity">
 					<tr>
-						<td class="field">Proteins</td>
+						<th class="field">Proteins</th>
 						<td class="value">${measurement_summary.proteins}</td>
 					</tr>
 					<tr>
-						<td class="field">Measured Peptides</td>
+						<th class="field">Measured Peptides</th>
 						<td class="value">${measurement_summary.measured}</td>
 					</tr>
 					<tr>
-						<td class="field">Modification Sites</td>
+						<th class="field">Modification Sites</th>
 						<td class="value">${measurement_summary.modifications}</td>
 					</tr>
 					<tr>
-						<td class="field">Rejected Peptides</td>
+						<th class="field">Rejected Peptides</th>
 						<td class="value">${rejected_peptides}</td>
 					</tr>
 				</table>
@@ -76,10 +76,10 @@
 					</tr>
 				</table>
 			</div>
-		</div>
-		
-		<div class="section_group">
-			<div class="title">Peptide Sequence Profile</div>
+    </div>
+    
+		<div class="grid_12" style="margin-top:1em">
+		  <h2>Peptide Sequence Profile</h2>
 			<div class="body">
 				<div class="seqdata" tal:content="sequence_profile"></div>
 				<div class="seqchart"></div>
