@@ -11,30 +11,31 @@
     <div metal:fill-slot="content">
     	<div metal:use-macro="experiment_info"></div>
   	  
-  	  
-    	<fieldset>
-    		<legend>Tools</legend>
-	    	<p class="restricted" tal:condition="experiment.export == 0">There is limited functionality for this dataset because export capability has been restricted. This was either a choice of the person who loaded the dataset or it is because this is a data compendium and not an experiment.<br /><br /></p>
-    		<dl>
-				<dt><a href="${request.application_url}/experiments/${experiment.id}/summary">Experiment Summary</a></dt>
-				<dd>Tables and pie graphs of all annotations for the entire dataset</dd>
+  	  <div style="padding-left: 1em">
+    	  <h3>Tools</h3>
+    	  <div>
+        	<p class="restricted" tal:condition="experiment.export == 0">There is limited functionality for this dataset because export capability has been restricted. This was either a choice of the person who loaded the dataset or it is because this is a data compendium and not an experiment.<br /><br /></p>
+        		<dl>
+    				<dt><a href="${request.application_url}/experiments/${experiment.id}/summary">Experiment Summary</a></dt>
+    				<dd>Tables and pie graphs of all annotations for the entire dataset</dd>
 			
-				<tal:empty tal:condition="experiment.export != 0">
-					<dt><a href="${request.application_url}/experiments/${experiment.id}/browse">Browse Dataset</a></dt>
-					<dd>View sites and proteins in the experiment</dd>
+    				<tal:empty tal:condition="experiment.export != 0">
+    					<dt><a href="${request.application_url}/experiments/${experiment.id}/browse">Browse Dataset</a></dt>
+    					<dd>View sites and proteins in the experiment</dd>
 				
-					<dt><a href="${request.application_url}/experiments/${experiment.id}/subsets">Evaluate Subsets</a></dt>
-					<dd>Select a foreground from data or metadata, view composition and evaluate enrichment</dd>
+    					<dt><a href="${request.application_url}/experiments/${experiment.id}/subsets">Evaluate Subsets</a></dt>
+    					<dd>Select a foreground from data or metadata, view composition and evaluate enrichment</dd>
 		
-					<dt><a href="${request.application_url}/experiments/${experiment.id}/compare">Compare Datasets</a></dt>
-					<dd>View novel sites compared to other datasets</dd>
+    					<dt><a href="${request.application_url}/experiments/${experiment.id}/compare">Compare Datasets</a></dt>
+    					<dd>View novel sites compared to other datasets</dd>
 				
-					<tal:empty tal:condition="experiment.ambiguity == 1">
-						<dt><a href="${request.application_url}/experiments/${experiment.id}/ambiguity">Report Ambiguity</a></dt>
-						<dd>See all peptide assignments that might be ambiguously assigned.  Explore and change assignments</dd>
-					</tal:empty>
-		    	</tal:empty>
-	    	</dl>
-    	</fieldset>
+    					<tal:empty tal:condition="experiment.ambiguity == 1">
+    						<dt><a href="${request.application_url}/experiments/${experiment.id}/ambiguity">Report Ambiguity</a></dt>
+    						<dd>See all peptide assignments that might be ambiguously assigned.  Explore and change assignments</dd>
+    					</tal:empty>
+    		    	</tal:empty>
+    	    	</dl>
+    	    </div>
+    	  </div>
     </div>
 </div>
