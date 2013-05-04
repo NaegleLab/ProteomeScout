@@ -1,100 +1,50 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" metal:define-macro="layout">
-    <head>
-        <?python import ptmscout.config as config; ?>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>PTMScout Portal</title>
-        <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/ptmscout.css')}" />
-        <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/jquery-ui-1.9.1.custom.css')}" />
+<div metal:use-macro="layout">
+	<div metal:fill-slot="content">
 
-        <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.1.js" ></script>
-        <script type="text/javascript" src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
+    <div id="iewarn" title="Warning!" style="display: none;">
+        Warning! We have detected that your browser does not support Scalable Vector Graphics. We recommend viewing this site using the most recent versions of Chrome, Opera, or Firefox. We recommend Chrome for the best performance. Using Internet Explorer or any legacy browser will not allow you to use many graphical features of PTMScout.
+    </div>
 
-        <script type='text/javascript'>
-            $(function() {
-                        if(!document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1")){
-                            $( "#iewarn" ).dialog({
-                                                      height: 300,
-                                                      modal: true
-                                        });
-                        }
-                });
-        </script>
-    </head>
-    <body>
-        <div id="iewarn" title="Warning!" style="display: none;">
-            Warning! We have detected that your browser does not support Scalable Vector Graphics. We recommend viewing this site using the most recent versions of Chrome, Opera, or Firefox. We recommend Chrome for the best performance. Using Internet Explorer or any legacy browser will not allow you to use many graphical features of PTMScout.
+    <div id="splash">
+
+      <div id="portal">
+        <div class="menusplash">
+          <img src="${request.static_url('ptmscout:static/images/ptmscout_splash.png')}" style="margin-left:-85px" />
+        </div>
+      
+        <a href="${request.application_url}/proteins">
+          <div class="menuitem" style="top:70px; left:255px;">
+            <span>Browse<br>Proteins</span>
+          </div>
+        </a>
+        <a href="${request.application_url}/upload">
+          <div class="menuitem" style="top:70px; right:255px;">
+            <span>Upload<br>Dataset</span>
+          </div>
+        </a>
+
+        <a href="${request.application_url}/experiments">
+          <div class="menuitem" style="top:230px; left:180px;">
+            <span>Browse<br>Experiments</span>
+          </div>
+        </a>
+
+        <div class="inactive" style="top:230px; right:180px;">
+            <span>Annotate<br>Peptides</span>
         </div>
 
-        <div id="menu">
-            <div style="float:right;text-align:right">
-                <span tal:condition="request.user == None">
-                    <a href='${request.application_url}/login'>Login</a>
-                </span>
-                <span tal:condition="request.user != None">
-                    <a href='${request.application_url}/account'>Account: ${request.username}</a> |
-                    <a href='${request.application_url}/account/experiments'>My Experiments</a> |
-                    <a href='${request.application_url}/logout'>Logout</a>
-                </span>
-            </div>
-        </div>
-        <div class="split"></div>
-        <div id="splash">
-            <img src="${request.static_url('ptmscout:static/images/ptmscout_logo.png')}" />
-
-            <div id="portal">
-                <div class="menusplash">
-                    <img src="${request.static_url('ptmscout:static/images/ptmscout_splash.png')}" />
-                </div>
-                <a href="${request.application_url}/proteins">
-                    <div class="menuitem" style="top:70px; left:255px;">
-                        <span>Browse<br>Proteins</span>
-                    </div>
-                </a>
-                <a href="${request.application_url}/upload">
-                    <div class="menuitem" style="top:70px; right:255px;">
-                        <span>Upload<br>Dataset</span>
-                    </div>
-                </a>
-
-                <a href="${request.application_url}/experiments">
-                    <div class="menuitem" style="top:200px; left:160px;">
-                        <span>Browse<br>Experiments</span>
-                    </div>
-                </a>
-<!--                <a href="${request.application_url}/annotate">
-</a>-->
-                    <div class="inactive" style="top:200px; right:160px;">
-                        <span>Annotate<br>Peptides</span>
-                    </div>
-
-                <a href="${documentationUrl}title=Main_Page">
-                    <div class="menuitem" style="top:345px; left:195px;">
-                        <span>Documentation</span>
-                    </div>
-                </a>
-                <a href="${naegleUrl}">
-                    <div class="menuitem" style="top:345px; right:195px;">
-                        <span>The Naegle Lab</span>
-                    </div>
-                </a>
-            </div>
-        </div>
-
-	  <div id="footer">Questions or comments? <br/>Email ${adminEmail}
-        <div id="footerLicense">
-          <p class="box">
-            <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">
-                <img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" />
-            </a>
-            <br />
-            <span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">PTMScout</span>
-            is licensed under a
-            <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.
-		    <br />
-		    <a rel="terms" href="${request.application_url}/terms">Terms of Use</a>
-		  </p>
-	    </div>
-      </div>
-    </body>
-</html>
+        <a href="${documentationUrl}title=Main_Page">
+          <div class="menuitem" style="top:380px; left:255px;">
+              <span>View<br>Documentation</span>
+          </div>
+        </a>
+      
+        <a href="${naegleUrl}">
+          <div class="menuitem" style="top:380px; right:255px;">
+              <span>The Naegle<br>Lab</span>
+          </div>
+        </a>
+      </div> <!-- portal -->
+    </div> <!-- splash -->
+  </div> 
+</div> 

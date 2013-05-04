@@ -11,4 +11,4 @@ def terms_view(request):
 
 @view_config(route_name='portal', renderer='ptmscout:templates/front_page.pt')
 def portal_view(request):
-    return {}
+    return {'pageTitle':strings.portal_page_title}

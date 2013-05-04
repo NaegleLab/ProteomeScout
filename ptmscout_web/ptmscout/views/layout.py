@@ -23,6 +23,8 @@ def add_path_definitions(event):
     event['protein_nav'] = protein_nav_template()
     event['dataset_explorer'] = dataset_explorer_template()
 
+    event['footer'] = footer_template()
+    
     event['redirect'] = None
 
 def site_layout():
@@ -73,4 +75,9 @@ def protein_nav_template():
 def dataset_explorer_template():
     renderer = get_renderer("ptmscout:templates/dataset/dataset_explorer.pt")
     legend = renderer.implementation().macros['dataset_explorer']
+    return legend
+
+def footer_template():
+    renderer = get_renderer("ptmscout:templates/macro/footer.pt")
+    legend = renderer.implementation().macros['footer']
     return legend

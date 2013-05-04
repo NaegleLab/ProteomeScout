@@ -160,28 +160,16 @@ ul.link_menu li:first-child {
 }
 
 
-.split {
-    width:100%;
-    border:solid 1px black;
-}
-
 #splash {
-    margin-left:auto;
-    margin-right:auto;
     text-align:center;
-    width:800px;
 }
 
 #portal {
-    width:800px;
-    height:700px;
     position:relative;
 }
 
 #portal .menusplash {
-    width:600px;
-    height:600px;
-    margin-left:55px;
+    margin-left:auto;
     margin-right:auto;
     padding-top:20px;
 }
@@ -233,6 +221,7 @@ ul.link_menu li:first-child {
     line-height: normal;
     vertical-align: middle;
     color:white;
+    margin-top:40px;
 }
 
 .notification {

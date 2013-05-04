@@ -194,7 +194,7 @@ user_registration_page_title = "User Registration"
 user_registration_success_header = "Registration Successful"
 user_registration_success_message = "A confirmation e-mail has been sent to the specified e-mail address. Please check your e-mail to complete your registration."
 
-user_registration_email_subject = "PTMScout Account Activiation Details"
+user_registration_email_subject = "PTMScout Account Activation Details"
 user_registration_email_message = """
 %s,
 
@@ -206,6 +206,7 @@ Thanks,
 -The PTMScout Team<br>
 """
 
+portal_page_title = 'PTMScout Portal'
 view_page_title = "PTMScout Terms of Use"
 
 failure_reason_experiment_file_not_enough_columns = "Not enough columns detected in data file. Verify that the file is TSV format and try again"
