@@ -18,64 +18,68 @@
   </div>
 	
 	<div metal:fill-slot="content">
-		<div class="GO_map">
-			<div class="data" tal:content="go_tree"></div>
-		</div>
+	  <div class="grid_12">
+	    <h3 style="margin-bottom:0">GO Map</h3>
+	    <p style="text-align:center;margin:0;color:#999;font-family:courier;font-size:12px">click to zoom</p>
+  		<div class="GO_map">
+  			<div class="data" tal:content="go_tree"></div>
+  		</div>
 		
-		<div class="GO_table">
-			<div class="table_title">Molecular Functions</div>
-			<table>
-				<tr>
-					<th class="number_col">GO</th>
-					<th>Term</th>
-					<th class="value">Proteins</th>
-				</tr>
-				<tr tal:repeat="entry go_tables.molecular_function">
-					<td class="number_col">
-						<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + entry[0]"
-										target="_blank" tal:content="entry[0]"></a>
-					</td>
-					<td tal:content="entry[1]"></td>
-					<td class="number_col value" tal:content="entry[2]"></td>
-				</tr>
-			</table>
-		</div>
-		<div class="GO_table">
-			<div class="table_title">Cellular Components</div>
-			<table>
-				<tr>
-					<th class="number_col">GO</th>
-					<th>Term</th>
-					<th class="value">Proteins</th>
-				</tr>
-				<tr tal:repeat="entry go_tables.cellular_component">
-					<td class="number_col">
-						<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + entry[0]"
-										target="_blank" tal:content="entry[0]"></a>
-					</td>
-					<td tal:content="entry[1]"></td>
-					<td class="number_col value" tal:content="entry[2]"></td>
-				</tr>
-			</table>
-		</div>
-		<div class="GO_table">
-			<div class="table_title">Biological Processes</div>
-			<table>
-				<tr>
-					<th class="number_col">GO</th>
-					<th>Term</th>
-					<th class="value">Proteins</th>
-				</tr>
-				<tr tal:repeat="entry go_tables.biological_process">
-					<td class="number_col">
-						<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + entry[0]"
-										target="_blank" tal:content="entry[0]"></a>
-					</td>
-					<td tal:content="entry[1]"></td>
-					<td class="number_col value" tal:content="entry[2]"></td>
-				</tr>
-			</table>
-		</div>
-	</div>
+  		<div class="GO_table row-hover-highlight">
+  		  <h3>Molecular Functions</h3>
+  			<table>
+  				<tr>
+  					<th class="number_col">GO</th>
+  					<th>Term</th>
+  					<th class="value">Proteins</th>
+  				</tr>
+  				<tr tal:repeat="(i, entry) enumerate(go_tables.molecular_function)" tal:attributes="class 'even' if i % 2 == 0 else ' odd';">
+  					<td class="number_col">
+  						<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + entry[0]"
+  										target="_blank" tal:content="entry[0]"></a>
+  					</td>
+  					<td tal:content="entry[1]"></td>
+  					<td class="number_col value" tal:content="entry[2]"></td>
+  				</tr>
+  			</table>
+  		</div>
+  		<div class="GO_table row-hover-highlight">
+  			<h3>Cellular Components</h3>
+  			<table>
+  				<tr>
+  					<th class="number_col">GO</th>
+  					<th>Term</th>
+  					<th class="value">Proteins</th>
+  				</tr>
+  				<tr tal:repeat="(i, entry) enumerate(go_tables.cellular_component)" tal:attributes="class 'even' if i % 2 == 0 else ' odd';">
+  					<td class="number_col">
+  						<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + entry[0]"
+  										target="_blank" tal:content="entry[0]"></a>
+  					</td>
+  					<td tal:content="entry[1]"></td>
+  					<td class="number_col value" tal:content="entry[2]"></td>
+  				</tr>
+  			</table>
+  		</div> 
+  		<div class="GO_table row-hover-highlight">
+  			<h3>Biological Processes</h3>
+  			<table>
+  				<tr>
+  					<th class="number_col">GO</th>
+  					<th>Term</th>
+  					<th class="value">Proteins</th>
+  				</tr>
+  				<tr tal:repeat="(i, entry) enumerate(go_tables.biological_process)" tal:attributes="class 'even' if i % 2 == 0 else ' odd';">
+  					<td class="number_col">
+  						<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + entry[0]"
+  										target="_blank" tal:content="entry[0]"></a>
+  					</td>
+  					<td tal:content="entry[1]"></td>
+  					<td class="number_col value" tal:content="entry[2]"></td>
+  				</tr>
+  			</table>
+  		</div>
+  	</div>
+  </div>
 </div>
 		

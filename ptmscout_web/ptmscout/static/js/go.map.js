@@ -12,7 +12,7 @@ function getNodeTitle(d){
 }
 
 function createGOMap(json_data, container){
-	var w = 1000,
+	var w = 940,
 	    h = 800,
 	    r = 720,
 	    x = d3.scale.linear().range([0, r]),

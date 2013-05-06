@@ -142,17 +142,16 @@ table.experiment_summary td.listing {
 	width:100px;	
 }
 
-.GO_table .table_title {
-	font-weight:bold;
-	margin-bottom:10px;
-}
-
 .GO_table {
 	margin-top:10px;
 	margin-bottom:30px;
 	margin-left:auto;
 	margin-right:auto;
-	width:800px;
+	width:98%;
+}
+
+table.row-hover-highlight tr:hover {
+  background-color: #FFC;
 }
 
 .resolution_steps li {

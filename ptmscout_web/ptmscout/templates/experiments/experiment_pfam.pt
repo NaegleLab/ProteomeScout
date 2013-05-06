@@ -18,9 +18,8 @@
   </div>
 	
 	<div metal:fill-slot="content">
-		
-		<div class="section_group">
-			<div class="title">Pfam Sites</div>
+		<div class="grid_12">
+		  <h3>Pfam Sites</h3>  
 			<div class="body">
 				<div class="data_table">
 					<table>
@@ -28,7 +27,7 @@
 							<th>Site</th>
 							<th class="value">Peptides</th>
 						</tr>
-						<tr tal:repeat="entry sites.table">
+						<tr tal:repeat="(i, entry) enumerate(sites.table)" tal:attributes="class 'even' if i % 2 == 0 else ' odd';">
 							<td tal:content="entry[0]"></td>
 							<td class="value" tal:content="entry[1]"></td>
 						</tr>
@@ -36,14 +35,12 @@
 				</div>
 				<div class="data_chart chart">
 					<div class="data" tal:content="sites.json"></div>
-					
+				
 				</div>
 				<div class="clear"></div>
 			</div>
-		</div>			
 		
-		<div class="section_group">
-			<div class="title">Pfam Domains</div>
+			<h3>Pfam Domains</h3>
 			<div class="body">
 				<div class="data_table">
 					<table>
@@ -51,7 +48,7 @@
 							<th>Domain</th>
 							<th class="value">Proteins</th>
 						</tr>
-						<tr tal:repeat="entry domains.table">
+						<tr tal:repeat="(i, entry) enumerate(domains.table) " tal:attributes="class 'even' if i % 2 == 0 else ' odd';">
 							<td tal:content="entry[0]"></td>
 							<td class="value" tal:content="entry[1]"></td>
 						</tr>
@@ -64,6 +61,5 @@
 				<div class="clear"></div>
 			</div>
 		</div>			
-		
 	</div>
 </div>
