@@ -55,7 +55,8 @@
                             <td tal:content="acc"></td>
                             <td tal:content="gene"></td>
                             <td tal:content="prot_name"></td>
-                            <td tal:content="pep"></td>
+                            <td title="${pep}" class="overflow-ellipsis" style="max-width:100px; width:100px;"  tal:content="pep">
+                            </td>
                             <td>
                                 <div class="modsite" tal:repeat="(name,mod) sites" tal:content="name"></div>
                             </td>

@@ -91,7 +91,7 @@
             </div>
         </div>
       </div>
-      <div class="grid_12" tal:condition="results != None">
+      <div class="grid_12" tal:condition="results != None" style="margin-top:1em">
         <h3>Comparison Results</h3>
         <div id="comparison_results">
           

@@ -1,6 +1,6 @@
 <div metal:define-macro="experiment_list">
   <div class="body">
-    <table class = "experimenttable">
+    <table class = "experimenttable drop-shadow">
         <thead>
             <tr>
                 <th></th>

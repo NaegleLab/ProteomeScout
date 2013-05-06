@@ -454,3 +454,10 @@ div.section {
 }
 /** End Stuff for drawing sections of a page */
 
+
+/** assign the element a max-width and width and any text that overflows will be replaced with ... */
+.overflow-ellipsis {
+  overflow-x: hidden;
+  white-space: nowrap; 
+  text-overflow: ellipsis;
+}
