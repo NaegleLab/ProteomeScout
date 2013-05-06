@@ -1,6 +1,8 @@
 <div metal:use-macro="layout">
 	<div metal:fill-slot="content">
-		<br /> <br />
+	  <div class="grid_12">
+	    <h1>Terms of Use</h1>
+	    <div class="body">
 
 		<div style="text-align: left; width: 65%">
 			PLEASE READ THESE TERMS OF USE CAREFULLY AS THEY CONTAIN IMPORTANT
@@ -268,6 +270,7 @@
 
 		</div>
 		<br /> <br /> <br />
-
+  </div>
+</div>
 	</div>
 </div>
