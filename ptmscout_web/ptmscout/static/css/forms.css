@@ -80,6 +80,7 @@ form.newform {
   margin-right: auto;
   border: 2px solid #333;
   border-radius: 5px;
+  padding-bottom: 1em;
 }
 
 form.newform label {
@@ -95,7 +96,7 @@ form.newform .formfields:first-child {
   margin-top: 1em;
 }
 
-form.newform input[type='text'], form.newform input[type='password'] {
+form.newform input[type='text'], form.newform input[type='password'] ,form.newform textarea {
   border: 1px solid #333;
   border-radius: 2px;
   padding-top:2px;
