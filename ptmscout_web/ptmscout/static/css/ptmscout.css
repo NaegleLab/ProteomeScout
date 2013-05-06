@@ -118,7 +118,13 @@ table {
   padding-left: 10px;
 }
 #nav {
-  background-color: #009999;
+  background-color: #777;
+  background-image: -ms-linear-gradient(top, #666 0%, #888 100%);
+  background-image: -moz-linear-gradient(top, #666 0%, #888 100%);
+  background-image: -o-linear-gradient(top, #666 0%, #888 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #666), color-stop(1, #888));
+  background-image: -webkit-linear-gradient(top, #666 0%, #888 100%);
+  background-image: linear-gradient(to bottom, #666 0%, #888 100%);
 }
 #nav a, #subnav a{
   color: white;
@@ -127,10 +133,17 @@ table {
   color: blue;
 }
 #nav a.nav_active, #subnav a.nav_active {
-  color: #FF0;
+  color: black;
+  font-weight: bold !important;
 }
 #subnav {
-  background-color: #00AAAA;
+  background-color: #999;
+  background-image: -ms-linear-gradient(top, #888 0%, #AAA 100%);
+  background-image: -moz-linear-gradient(top, #888 0%, #AAA 100%);
+  background-image: -o-linear-gradient(top, #888 0%, #AAA 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #888), color-stop(1, #AAA));
+  background-image: -webkit-linear-gradient(top, #888 0%, #AAA 100%);
+  background-image: linear-gradient(to bottom, #888 0%, #AAA 100%);
 }
 
 #footer {
