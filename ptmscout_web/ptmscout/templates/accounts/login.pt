@@ -3,25 +3,39 @@
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/forms.css')}" />
 	</div>
     <div metal:fill-slot="content">
-    	<div class="loginform">
-    		<div tal:condition="reason != None" class="errorbox">Error: ${reason}</div>
-	        <form method="POST" action="${request.application_url}/process_login">
-	      		<div class="formcategory">Enter Credentials:</div>
-	        	<table>
-	        		<tr>
-	        			<td class="fieldname">Username:</td>
-	        			<td><input type="text" name="username" value="${username}" /></td>
-	        		</tr>
-	        		<tr>
-	        			<td class="fieldname">Password:</td>
-	        			<td><input type="password" name="password" value="" /></td>
-	        		</tr>
-	        	</table>
-	        	<div class="formsubmission"><input type="submit" value="Login" /></div>
-	        </form>
-	        <div class="centered">Forgot your password? Click <a href="${request.application_url}/forgot_password">here</a></div>
-	        <div class="centered">No credentials? Register <a href="${request.application_url}/register">here</a></div>
-	        <div></div>
-	    </div>
+      <div class="body">
+    	  <h3>Login</h3>
+            <a href="${request.application_url}/register">Register</a>
+          <form method="POST" action="${request.application_url}/process_login" class="newform drop-shadow" style="width:600px;margin-left:0">
+        		<div tal:condition="reason != None" class="errorbox">Error: ${reason}</div>
+            <div class="formfields">
+              <div class="grid_3 right-align">
+                <label for="username">Username</label>
+              </div>
+              <div class="grid_3">
+                <input type="text" name="username" size="40" value="${username}" id="username"/>
+              </div>
+            </div>
+            
+            <div class="formfields">
+              <div class="grid_3 right-align">
+                <label for="password">Password</label>
+              </div>
+              <div class="grid_3">
+                <input type="password" name="password" size="40" value="" id="password"/>
+              </div>
+            </div>
+            <div class="formfields">
+              <div class="grid_3">&nbsp;</div>
+              <div class="grid_4">
+          	    <input type="submit" value="Login" style="width:120px"/> 
+          	  </div>
+          	</div>
+
+          </form>
+      <div>
+  	    <a href="${request.application_url}/forgot_password">Forgot Password?</a>
+      </div>
     </div>
+  </div>
 </div>
