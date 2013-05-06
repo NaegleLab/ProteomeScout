@@ -262,6 +262,11 @@ ul.link_menu li:first-child {
    clear: both;
 }
 
+.body {
+	margin-left:1em;
+}
+
+
 /* Generic Table Styles */
 
 table {
@@ -295,6 +300,23 @@ tr.odd {
 }
 tr.even {
 	background:#DDD;
+}
+
+/* when you want to lay the headers out vertically, you can use this class on the table */
+table.vertical-headers th {
+  background-color: transparent;
+  color: black;
+  font-weight: bold;
+  padding-top:0;
+  padding-bottom: 0;
+}
+
+.drop-shadow {
+  box-shadow: 10px 10px 5px #888888;
+}
+table.vertical-padding th, table.vertical-padding td {
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
 }
 /* end of generic table styles */
 a img {
