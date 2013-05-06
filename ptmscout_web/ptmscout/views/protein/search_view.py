@@ -100,4 +100,5 @@ def protein_search_view(request):
             'proteins':proteins,
             'protein_metadata':protein_metadata,
             'errors': errors,
-            'submitted': submitted}
+            'submitted': submitted,
+            'search_url': "%s/proteins" % request.application_url}

@@ -2,6 +2,7 @@
 	<div metal:fill-slot="header">
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/experiments.css')}" />
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/proteins.css')}" />
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/forms.css')}" />
 	</div>
 	<div metal:fill-slot="nav">
     <div metal:use-macro="experiment_header"></div>
@@ -11,37 +12,14 @@
 	
 	<div metal:fill-slot="content">
 	  <div class="grid_12">
-	    <h2>Browse Dataset</h2>
+	    <h1>Browse Dataset</h1>
       <div class="body">
-        <form class="search_form" name="search" method="GET" action="${request.application_url}/experiments/${experiment.id}/browse">
-          <input type="hidden" name="submitted" value="true">
-          <div class="error_display" tal:condition="len(errors)>0">
-              <ul>
-                  <li tal:repeat="error errors" tal:content="error"></li>
-              </ul>
-          </div>
-          <div>
-              <label for="acc_search">Protein:</label>
-              ${form.render('acc_search')}
-              ${form.render('include_name')}
-          </div>
-          <div>
-              <label for="pep_search">Peptide:</label>
-              ${form.render('pep_search')}
-          </div>
-          <div>
-              <label for="species">Species:</label>
-              ${form.render('species')}
-          </div>
-          <div style="margin-top:1em">
-            <input type="submit" value="Search" class="longtask" style="margin-left:1em;width:80px;"/>
-          </div>
-        </form>
+        <div metal:use-macro="protein_search_form" /> 
       </div>
     </div>
 
     <div class="grid_12" style="margin-top:1em">
-      <h3 style="margin-bottom:0">Proteins</h3>
+      <h2 style="margin-bottom:0">Proteins</h2>
       <div class="body">
         <div class="paginator" tal:content="structure pager.build()"></div>
         <div metal:use-macro="protein_list"></div>

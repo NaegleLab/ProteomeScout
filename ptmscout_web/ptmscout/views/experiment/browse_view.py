@@ -38,9 +38,10 @@ def browse_experiment(request):
     form_renderer = forms.FormRenderer(form_schema)
     return {'pageTitle': strings.experiment_browse_page_title % (ptm_exp.name),
             'experiment': ptm_exp,
-            'form':form_renderer,
+            'formrenderer':form_renderer,
             'pager': pager,
             'proteins':proteins,
             'protein_metadata':protein_metadata,
             'errors': errors,
-            'submitted': submitted}
+            'submitted': submitted,
+            'search_url': "%s/experiments/%d/browse" % (request.application_url, ptm_exp.id)}
