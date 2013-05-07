@@ -151,7 +151,7 @@ class TestProteinStructureViews(UnitTestCase):
         patch_formatDomains.assert_called_once_with(prot)
         patch_formatRegions.assert_called_once_with(prot)
         patch_formatMutations.assert_called_once_with(prot)
-        patch_formatScansite.assert_called_once_with(prot, exp_mods)
+        patch_formatScansite.assert_called_once_with(prot)
 
         self.assertEqual(strings.protein_structure_page_title, result['pageTitle'])
         self.assertEqual(prot, result['protein'])

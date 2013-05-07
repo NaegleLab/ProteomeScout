@@ -19,8 +19,8 @@ class TestPredictionViews(UnitTestCase):
         testing.tearDown()
     
     def test_filter_predictions(self):
-        pred1 = createMockScansite(1)
-        pred2 = createMockScansite(1)
+        pred1 = createMockScansite(1, 1)
+        pred2 = createMockScansite(1, 1)
         
         pred1.percentile = 3
         pred2.percentile = 0.2
@@ -52,12 +52,12 @@ class TestPredictionViews(UnitTestCase):
         
         measurements = [m1,m2,m3]
         
-        pred1 = createMockScansite(pep1.id)
-        pred2 = createMockScansite(pep1.id)
-        pred3 = createMockScansite(pep2.id)
-        pred4 = createMockScansite(pep2.id)
-        pred5 = createMockScansite(pep2.id)
-        pred6 = createMockScansite(pep3.id)
+        pred1 = createMockScansite(p1.id, pep1.site_pos)
+        pred2 = createMockScansite(p1.id, pep1.site_pos)
+        pred3 = createMockScansite(p1.id, pep2.site_pos)
+        pred4 = createMockScansite(p1.id, pep2.site_pos)
+        pred5 = createMockScansite(p1.id, pep2.site_pos)
+        pred6 = createMockScansite(p1.id, pep3.site_pos)
         
         pep1.predictions.extend([pred1, pred2])
         pep2.predictions = [pred3, pred4, pred5]

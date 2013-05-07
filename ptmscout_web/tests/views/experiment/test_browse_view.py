@@ -73,9 +73,9 @@ class ExperimentBrowseViewTests(unittest.TestCase):
         createMockPeptideModification(m2, pep3, mod)
         createMockPeptideModification(m3, pep4, mod)
         
-        s1 = createMockScansite(pep1.id)
-        s2 = createMockScansite(pep2.id)
-        s3 = createMockScansite(pep3.id)
+        s1 = createMockScansite(p1.id, pep1.site_pos)
+        s2 = createMockScansite(p1.id, pep2.site_pos)
+        s3 = createMockScansite(p1.id, pep3.site_pos)
         
         s1.source='scansite'
         s2.source='scansite_kinase'

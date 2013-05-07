@@ -21,64 +21,10 @@ def get_motif_class(taxonomy):
 
     return motif_class
 
-def contains_prediction(scansite, pep):
-    for pp in pep.predictions:
-        if pp.value == scansite.nickname and pp.source == scansite.parse_source():
-            return True
-    return False
-
-def copy_predictions(pep, scansite_predictions):
-    pep.predictions = []
-    for scansite in scansite_predictions:
-        if pep.pep_aligned == scansite.sequence and not contains_prediction(scansite, pep):
-            pred = modifications.ScansitePrediction()
-            pred.score = scansite.score
-            pred.percentile = scansite.percentile
-            pred.value = scansite.nickname
-            pred.source = scansite.parse_source()
-            pep.predictions.append(pred)
-
-    pep.scansite_date = datetime.datetime.now()
-
-def create_missing_peptides(prot, pep_map, scansite_predictions):
-    created = 0
-    for scansite in scansite_predictions:
-        site_pos = int(scansite.site[1:])
-        site_type = scansite.site[0]
-        if not any( k == site_pos for k in pep_map ):
-            created += 1
-            npep = modifications.Peptide()
-            npep.site_pos = site_pos
-            npep.site_type = site_type
-            npep.pep_aligned = prot.get_kmer(site_pos, k=7)
-            npep.protein_domain = prot.get_domain(site_pos)
-            npep.protein_id = prot.id
-            pep_map[site_pos] = npep
-    return created
-
 @decorators.page_query()
 def page_proteins(limit, offset):
     sq = DBSession.query(protein.Protein.id).order_by(protein.Protein.id).limit(limit).offset(offset).subquery()
     return DBSession.query(protein.Protein).join(sq, protein.Protein.id == sq.c.id)
-
-def get_peptides_for_protein(protein_id):
-    pep_map = {}
-    for pep in DBSession.query(modifications.Peptide).filter(modifications.Peptide.protein_id==protein_id):
-        pep_map[pep.site_pos] = pep
-    return pep_map
-
-def assign_scansite_to_peptides(pep_map, scansite_predictions):
-    k = 0
-    for site in pep_map:
-        pep = pep_map[site]
-        copy_predictions(pep, scansite_predictions)
-        DBSession.add(pep)
-        k += 1
-    return k
-
-def is_annotated(pep_map):
-    return any( len(pep_map[site_pos].predictions) > 0 for site_pos in pep_map )
-
 
 def iterate( iterable, process_func, report_func, report_interval=1000 ):
     i = 0
@@ -87,6 +33,24 @@ def iterate( iterable, process_func, report_func, report_interval=1000 ):
         i += 1
         if i % report_interval == 0:
             report_func(i)
+
+
+def assign_scansite_to_protein(prot, scansite_predictions):
+    k = 0
+    for sp in scansite_predictions:
+        pred = protein.ProteinScansite()
+        pred.score = sp.score
+        pred.percentile = sp.percentile
+        pred.value = sp.nickname
+        pred.source = sp.parse_source()
+        pred.site_pos = int(sp.site[1:])
+        
+        if not prot.hasPrediction(pred.source, pred.value, pred.site_pos):
+            k += 1
+            prot.scansite.append(pred)
+        
+    prot.saveProtein()
+    return k
 
 if __name__ == "__main__":
     try:
@@ -100,7 +64,6 @@ if __name__ == "__main__":
 
         j=0
         k=0
-        created = 0
         print "Getting scansite annotations..."
 
         def process_protein(prot):
@@ -108,15 +71,12 @@ if __name__ == "__main__":
             motif_class = get_motif_class( upload_helpers.get_taxonomic_lineage( prot.species.name ) )
 
             if motif_class:
-                pep_map = get_peptides_for_protein(prot.id)
-                if not is_annotated(pep_map):
-                    scansite_predictions = scansite_tools.get_scansite_protein_motifs(prot.sequence, motif_class)
-                    j += len(scansite_predictions)
-                    created += create_missing_peptides(prot, pep_map, scansite_predictions)
-                    k += assign_scansite_to_peptides(pep_map, scansite_predictions)
+                scansite_predictions = scansite_tools.get_scansite_protein_motifs(prot.sequence, motif_class)
+                j += len(scansite_predictions)
+                k += assign_scansite_to_protein(prot, scansite_predictions)
 
         def report_progress(i):
-            print "Got %d annotations, assigned %d peptides, created %d peptides, processed %d / %d protein sequences" % (j, k, created, i, total_proteins)
+            print "Got %d annotations, assigned %d annotations, processed %d / %d protein sequences" % (j, k, created, i, total_proteins)
             DBSession.flush()
             dbinit.commit()
             dbinit.new_transaction()

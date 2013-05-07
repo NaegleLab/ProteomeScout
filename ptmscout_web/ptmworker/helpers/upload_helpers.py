@@ -416,20 +416,20 @@ def parse_modifications(prot_seq, pep_seq, mods, taxonomy):
     return mod_types, aligned_sequences
 
 
-def query_peptide_predictions(pep_seq, motif_class):
+def query_protein_scansite(prot, motif_class):
     log.info("Loading scansite predictions...")
-    scansite_predictions = scansite_tools.get_scansite_motif(pep_seq, motif_class)
+    scansite_predictions = scansite_tools.get_scansite_protein_motifs(prot.sequence, motif_class)
     
-    db_predictions = []
-    for scansite in scansite_predictions:
-        pred = modifications.ScansitePrediction()
-        pred.score = scansite.score
-        pred.percentile = scansite.percentile
-        pred.value = scansite.nickname
-        pred.source = scansite.parse_source()
-        db_predictions.append(pred)
+    for sp in scansite_predictions:
+        pred = protein.ProteinScansite()
+        pred.score = sp.score
+        pred.percentile = sp.percentile
+        pred.value = sp.nickname
+        pred.source = sp.parse_source()
+        pred.site_pos = int(sp.site[1:])
         
-    return db_predictions
+        if not prot.hasPrediction(pred.source, pred.value, pred.site_pos):
+            prot.scansite.append(pred)
 
 def get_peptide(prot_id, pep_site, peptide_sequence):
     upper_pep = peptide_sequence.upper()

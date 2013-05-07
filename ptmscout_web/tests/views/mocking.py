@@ -5,10 +5,10 @@ from ptmscout.database.experiment import Experiment, ExperimentData,\
     ExperimentCondition, ExperimentError
 from ptmscout.database.permissions import Permission
 from ptmscout.database.protein import Protein, GeneOntology, ProteinDomain,\
-    GeneOntologyEntry, ProteinAccession, ProteinRegion
+    GeneOntologyEntry, ProteinAccession, ProteinRegion, ProteinScansite
 import random
 from ptmscout.database.modifications import MeasuredPeptide, Peptide,\
-    ScansitePrediction, PTM, PTMkeyword, PeptideModification, PeptideAmbiguity
+    PTM, PTMkeyword, PeptideModification, PeptideAmbiguity
 from ptmscout.database.gene_expression import ExpressionProbeset,\
     ExpressionSample, ExpressionCollection, ExpressionTissue
 from ptmscout.database.taxonomies import Species, Taxonomy
@@ -408,15 +408,16 @@ def createMockExpSample(probe_id, collection_id, collection, tissue_id, tissue):
     mock.value = random.random()
     return mock
     
-def createMockScansite(pep_id):
-    mock = Mock(spec=ScansitePrediction)
+def createMockScansite(protein_id, site_pos):
+    mock = Mock(spec=ProteinScansite)
     
     mock.id = random.randint(0, 100000)
     mock.source = "somesource" + str(mock.id)
     mock.value = "Some_Value" + str(mock.id)
     mock.score = random.random()
     mock.percentile = random.random()
-    mock.phophopep_id = pep_id
+    mock.site_pos = site_pos
+    mock.protein_id = protein_id
     
     return mock
 

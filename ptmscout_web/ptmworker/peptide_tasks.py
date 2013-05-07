@@ -1,34 +1,13 @@
-import celery
-import logging
-from ptmworker import notify_tasks
-from ptmworker.helpers import upload_helpers, scansite_tools
 from ptmscout.database import modifications, protein, experiment
 from ptmscout.utils import uploadutils
-import datetime
-import traceback
+from ptmworker import notify_tasks
+from ptmworker.helpers import upload_helpers, scansite_tools
 from sqlalchemy.exc import DBAPIError, SQLAlchemyError
+import celery
+import logging
+import traceback
 
 log = logging.getLogger('ptmscout')
-
-def load_scansite_peptide(pep, taxonomy):
-    scansite_residues = set(['Y', 'S', 'T'])
-    motif_class = None
-    if 'mammalia' in taxonomy:
-        motif_class="MAMMALIAN"
-    elif 'saccharomycotina' in taxonomy:
-        motif_class="YEAST"
-    elif 'saccharomyces' in taxonomy:
-        motif_class="YEAST"
-    
-    if motif_class != None and pep.site_type in scansite_residues:
-        pep.predictions = upload_helpers.query_peptide_predictions(pep.pep_aligned, motif_class)
-        pep.scansite_date = datetime.datetime.now()
-
-def load_new_peptide(prot_id, pep, taxonomy):
-    pep.protein_domain = protein.getProteinDomain(prot_id, pep.site_pos)
-    load_scansite_peptide(pep, taxonomy)
-    pep.save()
-
 
 def create_errors_for_runs(exp_id, protein_accession, pep_seq, msg, runs):
     log.warning("Error importing peptide (%s, %s): %s", protein_accession, pep_seq, msg)
@@ -89,8 +68,9 @@ def load_peptide_modification(exp_id, load_ambiguities, protein_accession, prote
                 pep_measurement.peptides.append(pepmod)
 
             if created:
-                load_new_peptide(protein_id, pep, taxonomy)
-
+                pep.protein_domain = protein.getProteinDomain(protein_id, pep.site_pos)
+                pep.save()
+            
         for line, run_name, series in runs:
             upload_helpers.insert_run_data(pep_measurement, line, units, series_header, run_name, series)
 

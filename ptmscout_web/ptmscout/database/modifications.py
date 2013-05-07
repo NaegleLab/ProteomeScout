@@ -72,16 +72,16 @@ class PTM(Base):
     def __gt__(self, other): return other.isParent(self)
     def __ge__(self, other): return other.isParent(self) or self.id == other.id
 
-class ScansitePrediction(Base):
-    __tablename__ = 'peptide_predictions'
-    id = Column(Integer(10), autoincrement=True, primary_key=True)
-    source = Column(VARCHAR(40), default='scansite')
-    value = Column(VARCHAR(20))
-    score = Column(Float)
-    percentile = Column(Float)
-    peptide_id = Column(Integer(10), ForeignKey('peptide.id'))
-    
-    UniqueConstraint('source', 'value', 'peptide_id', name="UNIQUE_pepId_source_value")
+#class ScansitePrediction(Base):
+#    __tablename__ = 'peptide_predictions'
+#    id = Column(Integer(10), autoincrement=True, primary_key=True)
+#    source = Column(VARCHAR(40), default='scansite')
+#    value = Column(VARCHAR(20))
+#    score = Column(Float)
+#    percentile = Column(Float)
+#    peptide_id = Column(Integer(10), ForeignKey('peptide.id'))
+#    
+#    UniqueConstraint('source', 'value', 'peptide_id', name="UNIQUE_pepId_source_value")
 
 class Peptide(Base):
     __tablename__ = 'peptide'
@@ -97,7 +97,11 @@ class Peptide(Base):
     
     protein = relationship("Protein")
     protein_domain = relationship("ProteinDomain")
-    predictions = relationship(ScansitePrediction)
+    
+    def __get_predictions(self):
+        return [ p for p in self.protein.scansite if p.site_pos == self.site_pos ]
+    
+    predictions = property(__get_predictions)
     
     def getPeptide(self):
         return self.pep_aligned

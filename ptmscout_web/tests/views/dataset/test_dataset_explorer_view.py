@@ -70,7 +70,7 @@ class TestDatasetExplorerView(UnitTestCase):
         ms3.protein = p1
         
         pep = createMockPeptide(p1.id, '101', 'T')
-        scansite = createMockScansite(pep.id)
+        scansite = createMockScansite(p1.id, pep.site_pos)
         scansite.value = 'PDGFRB_Y_kin'
         scansite.source = 'scansite_bind'
         scansite.percentile = 0.01
@@ -87,7 +87,7 @@ class TestDatasetExplorerView(UnitTestCase):
         ms5.protein = p2
         
         pep = createMockPeptide(p2.id, '1011', 'Y')
-        scansite = createMockScansite(pep.id)
+        scansite = createMockScansite(p2.id, pep.site_pos)
         scansite.value = 'PDGFRB_Y_kin'
         scansite.source = 'scansite_kinase'
         scansite.percentile = 0.01
@@ -99,7 +99,7 @@ class TestDatasetExplorerView(UnitTestCase):
         ms6 = createMockMeasurement(p2.id, 101)
         ms6.protein = p2
         pep = createMockPeptide(p2.id, '21', 'S')
-        scansite = createMockScansite(pep.id)
+        scansite = createMockScansite(p2.id, pep.site_pos)
         scansite.value = 'PDGFRB_Y_kin'
         scansite.source = 'scansite_kinase'
         scansite.percentile = 0.01
@@ -115,7 +115,7 @@ class TestDatasetExplorerView(UnitTestCase):
         ms8 = createMockMeasurement(p3.id, 101)
         ms8.protein = p3
         pep = createMockPeptide(p3.id, '101', 'T')
-        scansite = createMockScansite(pep.id)
+        scansite = createMockScansite(p2.id, pep.site_pos)
         scansite.value = 'PDGFRB_Y_kin'
         scansite.source = 'scansite_kinase'
         scansite.percentile = 1.0
@@ -127,7 +127,7 @@ class TestDatasetExplorerView(UnitTestCase):
         ms9 = createMockMeasurement(p2.id, 101)
         ms9.protein = p2
         pep = createMockPeptide(p2.id, '31', 'S')
-        scansite = createMockScansite(pep.id)
+        scansite = createMockScansite(p2.id, pep.site_pos)
         scansite.value = 'PDGFRB_Y_kin'
         scansite.source = 'scansite_kinase'
         scansite.percentile = 0.01

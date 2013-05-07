@@ -34,6 +34,17 @@ def log_errors(query_errors, exp_id, accessions, line_mappings):
             accession, peptide = line_mappings[line]
             experiment.createExperimentError(exp_id, line, accession, peptide, strings.experiment_upload_warning_accession_not_found % (accession))
 
+def load_scansite(prot, taxonomy):
+    motif_class = None
+    if 'mammalia' in taxonomy:
+        motif_class="MAMMALIAN"
+    elif 'saccharomycotina' in taxonomy:
+        motif_class="YEAST"
+    elif 'saccharomyces' in taxonomy:
+        motif_class="YEAST"
+    
+    if motif_class != None:
+        upload_helpers.query_protein_scansite(prot, motif_class)
 
 def load_new_protein(accession, protein_record):
     created = False
@@ -57,6 +68,8 @@ def load_new_protein(accession, protein_record):
     if created:
         pfam_tools.parse_or_query_domains(prot, protein_record.domains, accession)
         upload_helpers.find_activation_loops(prot)
+        load_scansite( prot, protein_record.full_taxonomy )
+        
 
     for m in protein_record.mutations:
         if not prot.hasMutation(m):

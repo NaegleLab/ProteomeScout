@@ -3,26 +3,17 @@ from ptmscout.config import strings, settings
 from ptmscout.database import protein, modifications
 from ptmscout.views.protein import decorators
 import json, base64
+from collections import defaultdict
 
-
-def format_scansite_predictions(prot, mod_sites):
-    peptides = {}
-    for ms in mod_sites:
-        for modpep in ms.peptides:
-            pep = modpep.peptide
-            peptides[pep.site_pos] = pep
-
-    formatted_scansite = {}
-    for site in peptides:
-        pep = peptides[site]
-        scansite_predictions = []
-        for ss in pep.predictions:
-            scansite_predictions.append({ \
-                    'source': ss.source,
-                    'value': ss.value,
-                    'score': ss.percentile
-                })
-        formatted_scansite[site] = scansite_predictions
+def format_scansite_predictions(prot):
+    formatted_scansite = defaultdict(list)
+    
+    for pred in prot.scansite:
+        ss = { 'source': pred.source,
+               'value': pred.value,
+               'score': pred.percentile
+               }
+        formatted_scansite[pred.site_pos].append( ss )
 
     return formatted_scansite
 
@@ -122,7 +113,7 @@ def protein_structure_viewer(request):
     formatted_domains = format_protein_domains(prot)
     formatted_regions = format_protein_regions(prot)
     formatted_mutations = format_protein_mutations(prot)
-    formatted_scansite = format_scansite_predictions(prot, mod_sites)
+    formatted_scansite = format_scansite_predictions(prot)
 
     data = {'seq': prot.sequence, 
             'domains': formatted_domains, 
