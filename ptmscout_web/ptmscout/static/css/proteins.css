@@ -2,12 +2,22 @@
 	margin-top:15px;
 }
 
+.GO_list li:hover {
+  background-color: #FFC;
+}
+.GO_list li {
+  margin-bottom: 0.2em;
+}
 .GO_id {
-	
+	vertical-align: top;
 }
 
 .GO_term {
-	margin-left:20px;
+	vertical-align: top;
+	margin-left:1em;
+	width: 195px;
+	max-width: 195px;
+	display: inline-block;
 }
 
 .errortext {
