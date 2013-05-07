@@ -123,10 +123,10 @@ function StructureViewer(protein_data) {
     this.protein_data = protein_data;
 
     this.show_residues_size_limit = 100;
-    this.default_height = 340;
+    this.default_height = 390;
     this.macro_viewer_position = 0;
-    this.zoom_viewer_position = 340;
-    this.zoom_window_height = 650;
+    this.zoom_viewer_position = 390;
+    this.zoom_window_height = 750;
 
     this.transition_duration = 250;
 
@@ -156,6 +156,7 @@ function StructureViewer(protein_data) {
     this.create_residue_track(this.macro_viewer, this.show_residues_size_limit >= this.protein_data.seq.length);
 
     this.create_mutation_track(this.macro_viewer, macro_residues);
+    this.create_scansite_track(this.macro_viewer, macro_residues);
 
     this.create_region_track(this.macro_viewer);
     this.create_domain_track(this.macro_viewer);
@@ -168,7 +169,8 @@ function StructureViewer(protein_data) {
     this.create_residue_track(this.zoom_viewer, true);
 
     this.create_mutation_track(this.zoom_viewer, true);
-
+    this.create_scansite_track(this.zoom_viewer, true);
+    
     this.create_region_track(this.zoom_viewer);
     this.create_domain_track(this.zoom_viewer);
     this.zoom_viewer.hide();
@@ -186,6 +188,12 @@ StructureViewer.prototype.create_mutation_track = function(track_viewer, show_re
     mutation_track = new MutationTrack('Mutations', track_viewer.viewer, this.protein_data);
     mutation_track.create(track_viewer.axis, this.width, show_residues);
     track_viewer.add_track(mutation_track);
+};
+
+StructureViewer.prototype.create_scansite_track = function(track_viewer, show_residues) {
+    scansite_track = new ScansiteTrack('Scansite', track_viewer.viewer, this.protein_data);
+    scansite_track.create(track_viewer.axis, this.width, show_residues);
+    track_viewer.add_track(scansite_track);
 };
 
 StructureViewer.prototype.create_residue_track = function(track_viewer, show_residues) {

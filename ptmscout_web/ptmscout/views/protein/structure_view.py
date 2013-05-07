@@ -132,5 +132,5 @@ def protein_structure_viewer(request):
             'protein': prot,
             'experiments': formatted_exps,
             'mod_types': formatted_mod_types,
-            'tracks': ["Domains", "PTMs", "Regions", "Mutations"],
+            'tracks': ["Domains", "PTMs", "Regions", "Mutations", "Scansite"],
             'data':encoded_data}

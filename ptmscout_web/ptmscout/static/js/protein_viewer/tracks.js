@@ -643,3 +643,112 @@ MutationTrack.prototype.update_display = function(axis, viewer_width) {
                 .attr('x', function(d) { return axis(d.key - 0.5); })
                 .style('font-size', Math.min(16, axis(1) - axis(0)));
 };
+
+function ScansiteTrack(name, track_viewer, protein_data){
+    init_track(this, name, track_viewer, protein_data);
+
+    // configurables
+    this.height = 45;
+    this.min_scansite_size = 5;
+
+    var max_scansite = 0;
+    for(var k in protein_data.scansite) {
+        var num_scansite = protein_data.scansite[k].length;
+        if(num_scansite > max_scansite){
+        	max_scansite = num_scansite;
+        }
+    }
+
+    this.raxis = d3.scale.linear().domain([0, max_scansite]).range([5, 10]);
+
+    this.g.append('text')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('dy', '0.5em')
+        .attr('text-anchor', 'left')
+        .attr('class', 'track-label')
+        .text(name);
+
+}
+
+function get_scansite_tooltip(d){
+    var tooltip_text = ""
+
+    var i = 0
+    while(i < d.value.length){
+        ss = d.value[i];
+        tooltip_text += ("{0}: {1} ({2})<br>".format(ss.source, ss.value, ss.score));
+        i += 1;
+    }
+
+    return tooltip_text;
+}
+
+ScansiteTrack.prototype.create = function(axis, viewer_width, show_residues) {
+    this.protein_regions = $.extend(true, [], this.protein_data.regions);
+    var residue_max_width = (axis(1) - axis(0)) * 0.75;
+    if(residue_max_width < this.min_scansite_size){
+        residue_max_width = this.min_scansite_size;
+    }
+    this.raxis.range([residue_max_width/2, residue_max_width]);
+    var raxis = this.raxis;
+
+    this.show_residues = show_residues;
+
+    this.g.append('line')
+            .attr('class', "strand")
+            .attr('x1', 0)
+            .attr('x2', viewer_width)
+            .attr('y1', this.height/2)
+            .attr('y2', this.height/2);
+
+    this.g.selectAll('circle.scansite')
+        .data(d3.entries( this.protein_data.scansite ))
+            .enter().append('circle')
+                .attr('class', 'scansite')
+                .attr('cx', function(d) { return axis(parseInt(d.key) - 0.5); })
+                .attr('cy', this.height / 2 )
+                .attr('r', function(d) { return raxis(d.value.length); })
+                .attr('title', function(d) { return get_scansite_tooltip(d); })
+                .style('fill', 'blue' )
+                .on('mouseover', function() { d3.select(this).style('fill', 'black'); })
+                .on('mouseout', function() { d3.select(this).style('fill', 'blue'); });
+
+    if(this.show_residues){
+        var original_residues = {};
+        for(var k in this.protein_data.scansite){
+            index = parseInt(k);
+            original_residues[index] = this.protein_data.seq[index-1];
+        }
+
+        this.g.selectAll('text.scansite')
+            .data(d3.entries(original_residues))
+                .enter().append('text')
+                    .attr('class', 'scansite')
+                    .attr('x', function(d) { return axis(d.key - 0.5); })
+                    .attr('y', this.height/2)
+                    .attr('dy', '0.35em')
+                    .attr('text-anchor', 'middle')
+                    .style('pointer-events', 'none')
+                    .style('fill', 'white')
+                    .style('font-size', Math.min(16, axis(1) - axis(0)))
+                    .text(function(d) { return d.value; });
+    }
+};
+
+ScansiteTrack.prototype.update_display = function(axis, viewer_width) {
+    var residue_max_width = (axis(1) - axis(0)) * 0.75;
+    if(residue_max_width < this.min_scansite_size){
+        residue_max_width = this.min_scansite_size;
+    }
+    this.raxis.range([residue_max_width/2, residue_max_width]);
+    var raxis = this.raxis;
+
+    this.g.selectAll('circle.scansite')
+                .attr('cx', function(d) { return axis(parseInt(d.key) - 0.5); })
+                .attr('r', function(d) { return raxis(d.value.length); });
+
+    this.g.selectAll('text.scansite')
+                .attr('x', function(d) { return axis(d.key - 0.5); })
+                .style('font-size', Math.min(16, axis(1) - axis(0)));
+};

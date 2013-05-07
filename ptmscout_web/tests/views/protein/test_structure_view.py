@@ -173,4 +173,4 @@ class TestProteinStructureViews(UnitTestCase):
         self.assertEqual(exp_data, decoded_data)
         self.assertEqual(formatted_exps, result['experiments'])
         self.assertEqual(formatted_mod_types, result['mod_types'])
-        self.assertEqual(['Domains', 'PTMs', 'Regions', 'Mutations'], result['tracks'])
+        self.assertEqual(['Domains', 'PTMs', 'Regions', 'Mutations', 'Scansite'], result['tracks'])
