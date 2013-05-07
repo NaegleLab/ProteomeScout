@@ -6,8 +6,10 @@ from scripts.progressbar import ProgressBar
 from collections import defaultdict
 from ptmscout.utils import protein_utils
 
-def format_protein_accessions(accessions):
-    return '; '.join([ acc.value for acc in sorted(accessions, key=lambda acc: acc.value) if protein_utils.get_accession_type( acc.value ) in protein_utils.get_valid_accession_types() ])
+def format_protein_accessions(accessions, query_accessions):
+    accessions = [ acc.value for acc in sorted(accessions, key=lambda acc: acc.value) if protein_utils.get_accession_type( acc.value ) in protein_utils.get_valid_accession_types() ]
+    accessions = sorted(accessions, key=lambda item: (0 if item in query_accessions else 1, item))
+    return accessions
 
 def check_modtype_filter(mod, modtype_filter):
     if modtype_filter == None:
@@ -26,6 +28,9 @@ def check_modtype_filter(mod, modtype_filter):
 
     return False
 
+def get_query_accessions(mods):
+    return set([ ms.query_accession for ms in mods ])
+        
 
 def format_modifications(mods, modtype_filter):
     modlist = [ (ms.experiment_id, modpep.peptide, modpep.modification) for ms in mods for modpep in ms.peptides ]
@@ -106,12 +111,13 @@ if __name__=='__main__':
     for p in all_proteins:
         if check_species_filter(species_filter, p):
             mods = modifications.getMeasuredPeptidesByProtein(p.id)
+            qaccs = get_query_accessions(mods)
             n, fmods, fexps = format_modifications(mods, modtype_filter)
             if n > 0:
                 k+=n
                 row = []
                 row.append( p.id )
-                row.append( format_protein_accessions(p.accessions) )
+                row.append( format_protein_accessions(p.accessions, qaccs) )
                 row.append( p.acc_gene )
                 row.append( p.locus )
                 row.append( p.name )

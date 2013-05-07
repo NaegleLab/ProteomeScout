@@ -58,15 +58,16 @@ def get_accession_type(acc):
         acc_type = 'swissprot'
     elif(re.search('^[A-N|R-Z]\d[A-Z]..\d([\.\-]\d+)?$', acc) != None):
         acc_type = 'swissprot'
-    elif(re.search('^[A-Z]{4}_[A-Z]+$', acc) != None):
-        acc_type = 'swissprot'
     elif(re.search('^[A-Z]{3}\d{5}$', acc) != None):
         acc_type = 'genbank'
     elif(re.search('^IPI\d+(\.\d+)?$', acc) != None):
         acc_type = 'ipi'
     elif re.search('^ENS', acc) != None:
         acc_type = 'ensembl'
-        
+
+#    elif(re.search('^[A-Z]{4}_[A-Z]+$', acc) != None):
+#        acc_type = 'swissprot_'
+
     return acc_type
 
 def normalize_site_list(sites):
@@ -91,7 +92,7 @@ def check_peptide_alphabet(pep):
     return True
 
 def get_valid_accession_types():
-    return set(['gi','refseq','swissprot','genbank'])
+    return set(['gi','refseq','swissprot','genbank','uniprot'])
 
 
 
