@@ -60,6 +60,20 @@ class GeneOntologyEntry(Base):
     
     GO_term = relationship("GeneOntology")
 
+class ProteinScansite(Base):
+    __tablename__='protein_scansite'
+    id = Column(Integer(10), autoincrement=True, primary_key=True)
+    
+    source = Column(VARCHAR(40), default='scansite')
+    value = Column(VARCHAR(20))
+    score = Column(Float)
+    percentile = Column(Float)
+    site_pos = Column(Integer(10))
+    
+    protein_id = Column(Integer(10), ForeignKey('protein.id'))
+    
+    UniqueConstraint('source', 'value', 'peptide_id', name="UNIQUE_pepId_source_value")
+
 class ProteinAccession(Base):
     __tablename__='protein_acc'
     id = Column(Integer(10), primary_key=True, autoincrement=True)
@@ -136,9 +150,18 @@ class Protein(Base):
     expression_probes = relationship("ExpressionProbeset", secondary=expression_association_table)
     mutations = relationship("Mutation", cascade="all,delete-orphan")
     regions = relationship("ProteinRegion")
+    scansite = relationship("ProteinScansite")
 
     def __init__(self):
         self.date = datetime.datetime.now()
+    
+    def hasPrediction(self, source, value, site_pos):
+        for pred in self.scansite:
+            if source == pred.source and \
+                value == pred.value and \
+                site_pos == pred.site_pos:
+                return True
+        return False
     
     def saveProtein(self):
         DBSession.add(self)

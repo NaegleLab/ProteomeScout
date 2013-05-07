@@ -15,17 +15,23 @@ class DBTestCase(unittest.TestCase):
     def setUpClass(cls):
         if cls.engine == None:
             cls.engine = engine_from_config(settings, prefix='sqlalchemy.')
+            cls.connection = cls.engine.connect()
+    
+            # bind an individual Session to the connection
+            DBSession.configure(bind=cls.connection)
+            cls.session = DBSession
+            Base.session = cls.session
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.engine != None:
+            cls.session.close()
 
     def setUp(self):
-        connection = self.engine.connect()
-
+        DBTestCase.setUpClass()
         # begin a non-ORM transaction
-        self.trans = connection.begin()
-
-        # bind an individual Session to the connection
-        DBSession.configure(bind=connection)
-        self.session = DBSession
-        Base.session = self.session
+        self.trans = DBTestCase.connection.begin()
+        self.session = DBTestCase.session
 
     def tearDown(self):
         # rollback - everything that happened with the
@@ -33,4 +39,5 @@ class DBTestCase(unittest.TestCase):
         # is rolled back.
         testing.tearDown()
         self.trans.rollback()
-        self.session.close()
+        
+        DBTestCase.tearDownClass()

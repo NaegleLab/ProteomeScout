@@ -45,7 +45,7 @@ class ProgressBar(object):
         percent_str = "%0.2f" % (100.0 * percent)
         time_remaining = self.estimate_time(percent)
 
-        sys.stderr.write( "\r|%s| %6s%% | %s" % (bar_str, percent_str, time_remaining) )
+        sys.stderr.write( "\r|%s| %6s%% | %s           " % (bar_str, percent_str, time_remaining) )
 
     def finish(self):
         self.update(self.max_value)

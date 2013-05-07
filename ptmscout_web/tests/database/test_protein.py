@@ -5,6 +5,31 @@ from sqlalchemy.exc import IntegrityError
 
 class ProteinTest(DBTestCase):
 
+    def test_hasPrediction_should_verify_prediction(self):
+        p = protein.Protein()
+        
+        s1 = protein.ProteinScansite()
+        s1.source = 'scansite_bind'
+        s1.value = 'SRC'
+        s1.site_pos = 800
+        
+        s2 = protein.ProteinScansite()
+        s2.source = 'scansite_kinase'
+        s2.value = 'Pkin_S'
+        s2.site_pos = 800
+        
+        s3 = protein.ProteinScansite()
+        s3.source = 'scansite'
+        s3.value = 'Something'
+        s3.site_pos = 900
+        
+        p.scansite = [s1, s2, s3]
+        
+        self.assertTrue( p.hasPrediction('scansite_bind', 'SRC', 800) )
+        self.assertFalse( p.hasPrediction('scansite_bind', 'SRC', 801) )
+        self.assertFalse( p.hasPrediction('scansite_bind', 'SRC1', 800) )
+        self.assertFalse( p.hasPrediction('scansite_kinase', 'SRC', 800) )
+
     def test_gene_ontology_hasChild_should_find_child_terms(self):
         go = GeneOntology()
         go.aspect = 'F'
