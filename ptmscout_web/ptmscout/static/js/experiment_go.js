@@ -18,6 +18,6 @@ $(document).ready(function(){
 	
 	d3.selectAll(".GO_table")
 		.each(function(){
-			makeTableCollapsable(d3.select(this), 3, max_row_display);
+			makeTableCollapsable(d3.select(this), 4, max_row_display);
 		});
 });

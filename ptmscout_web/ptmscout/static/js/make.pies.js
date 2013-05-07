@@ -3,7 +3,7 @@ $(document).ready(function() {
 	
 	d3.selectAll(".data_table")
 		.each(function(){
-			makeTableCollapsable(d3.select(this), 2, 10);
+			makeTableCollapsable(d3.select(this), 3, 10);
 		});
 	
 	d3.selectAll(".data_chart")
