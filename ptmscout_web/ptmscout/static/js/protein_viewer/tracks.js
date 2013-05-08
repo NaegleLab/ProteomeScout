@@ -710,9 +710,9 @@ ScansiteTrack.prototype.create = function(axis, viewer_width, show_residues) {
                 .attr('cy', this.height / 2 )
                 .attr('r', function(d) { return raxis(d.value.length); })
                 .attr('title', function(d) { return get_scansite_tooltip(d); })
-                .style('fill', 'blue' )
+                .style('fill', '#6495ED' )
                 .on('mouseover', function() { d3.select(this).style('fill', 'black'); })
-                .on('mouseout', function() { d3.select(this).style('fill', 'blue'); });
+                .on('mouseout', function() { d3.select(this).style('fill', '#6495ED'); });
 
     if(this.show_residues){
         var original_residues = {};
