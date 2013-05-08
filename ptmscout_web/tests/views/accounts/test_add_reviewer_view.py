@@ -19,7 +19,7 @@ class TestAddReviewerView(UnitTestCase):
         
         result = add_reviewer_view.get_login_link(exp, request)
         
-        self.assertEqual('http://example.com/login?redirect=%2Fexperiments%2F26', result)
+        self.assertEqual('http://example.com/login?origin=%2Fexperiments%2F26', result)
         
         request.route_url.assert_called_once_with('login')
         request.route_path.assert_called_once_with('experiment', id=exp.id)
@@ -74,4 +74,4 @@ class IntegrationTestAddReviewerView(IntegrationTestCase):
         result = result.forms[0].submit()
         
         result.mustcontain('username: reviewer_')
-        result.mustcontain('Anonymous reviewers may login to view your data by visiting the following address in their browser: http://localhost/login?redirect=%2Fexperiments%2F26')
+        result.mustcontain('Anonymous reviewers may login to view your data by visiting the following address in their browser: http://localhost/login?origin=%2Fexperiments%2F26')

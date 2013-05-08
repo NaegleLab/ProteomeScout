@@ -6,6 +6,9 @@
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/export.svg.js')}" ></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/protein_data.js')}" ></script>
 	</metal:slot>
+	<div metal:fill-slot="nav">
+	  <div metal:use-macro="protein_nav"></div>
+	</div>
 	<div metal:fill-slot="content">
 		<div metal:use-macro="protein_header"></div>
 

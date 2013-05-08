@@ -4,8 +4,13 @@
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/experiments.css')}" />
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/proteins.css')}" />
 	</div>
+	<div metal:fill-slot="nav">
+    <div metal:use-macro="experiment_header"></div>
+  </div>
+  <div metal:fill-slot="subnav">
+  </div>
+  
 	<div metal:fill-slot="content">
-        <div metal:use-macro="experiment_header"></div>
 
         <form method="POST" action="">
             <input type="hidden" name="submitted" value="true"/>
@@ -50,7 +55,8 @@
                             <td tal:content="acc"></td>
                             <td tal:content="gene"></td>
                             <td tal:content="prot_name"></td>
-                            <td tal:content="pep"></td>
+                            <td title="${pep}" class="overflow-ellipsis" style="max-width:100px; width:100px;"  tal:content="pep">
+                            </td>
                             <td>
                                 <div class="modsite" tal:repeat="(name,mod) sites" tal:content="name"></div>
                             </td>

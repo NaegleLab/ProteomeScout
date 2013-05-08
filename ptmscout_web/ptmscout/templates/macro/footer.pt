@@ -1,0 +1,45 @@
+<div id="footer" metal:define-macro="footer">
+  <div class="container_12">
+    <div class="grid_4">
+      <ul>
+        <li><h3>Contact</h3></li>
+        <li>
+	        ${adminEmail}
+	      </li>
+	    </ul>
+	  </div>
+	  <div class="grid_4">
+	    <ul>
+	      <li>
+	        <h3>About</h3>
+	      </li>
+	      <li>Created by <a href="http://naegle.wustl.edu">The Naegle Lab</a></li>
+	      <li>In <a href="http://cbse.wustl.edu/">The Center for Biological Systems Engineering</a></li>
+	      <li>At <a href="http://wustl.edu">Washington University in St. Louis</a></li>
+	      <li>
+          <a rel="terms" href="${request.application_url}/terms">Terms of Use</a>
+        </li>
+      </ul>
+      
+    </div>
+    
+    <div class="grid_4">
+      <ul>
+        <li>
+          <h3>License</h3>
+        </li>
+        <li>
+          <span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">PTMScout</span>
+          is licensed under a
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.
+        </li>
+        <li>
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">
+              <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" />
+          </a>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+</div

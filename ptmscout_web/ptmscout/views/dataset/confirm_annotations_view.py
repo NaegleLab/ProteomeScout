@@ -29,10 +29,6 @@ def create_dataset_job(session, request):
     annotate_tasks.start_annotation_import.apply_async((session.id, job.id))
 
 def upload_confirm(request, exp, session):
-    exp_dict = webutils.object_to_dict(exp)
-    exp_dict['citation'] = exp.getLongCitationString()
-    exp_dict['url'] = exp.getUrl()
-    
     confirm = webutils.post(request, "confirm", "false") == "true"
     terms_of_use_accepted = 'terms_of_use' in request.POST
     
@@ -47,7 +43,7 @@ def upload_confirm(request, exp, session):
     
         return {'pageTitle': strings.annotation_upload_started_page_title,
                 'message': strings.annotation_upload_started_message % (request.route_url('my_experiments')),
-                'experiment': exp_dict,
+                'experiment': exp,
                 'session_id':session.id,
                 'reason':reason,
                 'confirm':confirm}
@@ -58,7 +54,7 @@ def upload_confirm(request, exp, session):
     
     return {'pageTitle': strings.annotation_upload_confirm_page_title,
             'message': strings.annotation_upload_confirm_message,
-            'experiment': exp_dict,
+            'experiment': exp,
             'session_id': session.id,
             'reason':reason,
             'confirm': confirm}

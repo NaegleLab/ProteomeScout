@@ -31,7 +31,7 @@ def create_review_user(exp):
     return username, auth_token
 
 def get_login_link(exp, request):
-    return "%s?%s" % (request.route_url('login'), urllib.urlencode({'redirect':request.route_path('experiment', id=exp.id)}))
+    return "%s?%s" % (request.route_url('login'), urllib.urlencode({'origin':request.route_path('experiment', id=exp.id)}))
 
 @view_config(route_name='review_account', renderer='ptmscout:templates/accounts/modify_confirm.pt')
 def create_reviewer_account(request):

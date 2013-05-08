@@ -10,19 +10,19 @@
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/table.minimizer.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/make.pies.js')}"></script>
 	</div>
+	
+	<div metal:fill-slot="nav">
+    <div metal:use-macro="experiment_header"></div>
+  </div>
+  <div metal:fill-slot="subnav">
+	  <div metal:use-macro="experiment_summary_menu"></div>  	  
+  </div>
+	
 	<div metal:fill-slot="content">
-		<div metal:use-macro="experiment_header">
-			<div id="experimentSummaryMenu" metal:fill-slot="menu">
-				<a href="${request.application_url}/experiments/${experiment.id}/summary">Summary</a>
-				| <a href="${request.application_url}/experiments/${experiment.id}/GO">GO Terms</a>
-				| <a href="${request.application_url}/experiments/${experiment.id}/pfam">Protein Families</a>
-				| <a href="${request.application_url}/experiments/${experiment.id}/predictions">Scansite Predictions</a>
-				<tal:empty tal:condition="user_owner">| <a href="${request.application_url}/experiments/${experiment.id}/errors">Error Log</a></tal:empty>
-			</div>
-		</div>
+	  <div class="grid_12">
         <div class="errortext" tal:condition = "len(predictions) == 0">The peptides in this experiment do not have any associated scansite predictions</div>
-		<div class="section_group" tal:repeat="(source, data) predictions.items()">
-			<div class="title" tal:content="source"></div>
+  		<div tal:repeat="(source, data) predictions.items()">
+  		  <h3 tal:content="source"></h3>
 			<div class="body">
 				<div class="data_table">
 					<table>
@@ -31,7 +31,7 @@
 							<th>Prediction</th>
 							<th class="value">Peptides</th>
 						</tr>
-                        <tr tal:repeat="entry data.table">
+  						<tr tal:repeat="(i, entry) enumerate(data.table)" tal:attributes="class 'even' if i % 2 == 0 else ' odd';">
                             <td tal:condition="entry[0] != 'None'" >
                                 <a target="_blank" href="${request.route_url('experiment_subset', id=experiment.id, _query=query_generators[source](entry[0]) )}">
                                     <img height="20" src="${request.static_url('ptmscout:static/images/glass.png')}" />
@@ -51,4 +51,5 @@
 			</div>
 		</div>			
 	</div>
+  </div>
 </div>

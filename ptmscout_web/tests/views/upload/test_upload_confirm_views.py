@@ -146,10 +146,7 @@ class TestUploadStatusView(UnitTestCase):
         patch_createJob.assert_called_once_with(request, target_exp, session, request.user)
         patch_startUpload.assert_called_once_with((target_exp.id, session.id, 702))
         
-        exp_dict = webutils.object_to_dict(exp)
-        exp_dict['url'] = "url"
-        exp_dict['citation'] = "citation"
-        self.assertEqual(exp_dict, result['experiment'])
+        self.assertEqual(exp, result['experiment'])
         
         self.assertEqual(None, result['reason'])
         self.assertEqual(strings.experiment_upload_started_page_title, result['pageTitle'])
@@ -174,10 +171,7 @@ class TestUploadStatusView(UnitTestCase):
         
         patch_getExperiment.assert_called_once_with(26, request.user, False)
         
-        exp_dict = webutils.object_to_dict(exp)
-        exp_dict['url'] = "url"
-        exp_dict['citation'] = "citation"
-        self.assertEqual(exp_dict, result['experiment'])
+        self.assertEqual(exp, result['experiment'])
         
         self.assertEqual(strings.failure_reason_terms_of_use_not_accepted, result['reason'])
         self.assertEqual(strings.experiment_upload_confirm_page_title, result['pageTitle'])
@@ -201,10 +195,7 @@ class TestUploadStatusView(UnitTestCase):
         
         patch_getExperiment.assert_called_once_with(26, request.user, False)
         
-        exp_dict = webutils.object_to_dict(exp)
-        exp_dict['url'] = "url"
-        exp_dict['citation'] = "citation"
-        self.assertEqual(exp_dict, result['experiment'])
+        self.assertEqual(exp, result['experiment'])
         
         self.assertEqual(None, result['reason'])
         self.assertEqual(strings.experiment_upload_confirm_page_title, result['pageTitle'])

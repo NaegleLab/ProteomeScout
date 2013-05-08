@@ -2,49 +2,71 @@
 	<div metal:fill-slot="header">
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/forms.css')}" />
 	</div>
-    <div metal:fill-slot="content">
-    	<div class="loginform">
-    		<div class="formcategory">Account Information:</div>
-        	<table>
-        		<tr>
-        			<td class="fieldname">Username:</td>
-        			<td>${username}</td>
-        		</tr>
-        		<tr>
-        			<td class="fieldname">Full Name:</td>
-        			<td>${fullname}</td>
-        		</tr>
-        		<tr>
-        			<td class="fieldname">Institution:</td>
-        			<td>${institution}</td>
-        		</tr>
-        		<tr>
-        			<td class="fieldname">E-mail:</td>
-        			<td>${email}</td>
-        		</tr>
-        	</table>
-      	
-   			<div tal:condition="reason != None" class="errorbox">Error: ${reason}</div>
-	      	<div class="formcategory">Change your password:</div>
-	        <form method="POST" action="${request.application_url}/change_password">
-	           	<table>
-	        		<tr>
-	        			<td class="fieldname">Current password:</td>
-	        			<td><input type="password" name="old_pass" value="" /></td>
-	        		</tr>
-	        		<tr>
-	        			<td class="fieldname">Enter new password:</td>
-	        			<td><input type="password" name="new_pass2" value="" /></td>
-	        		</tr>
-	        		<tr>
-	        			<td class="fieldname">Repeat new password:</td>
-	        			<td><input type="password" name="new_pass1" value="" /></td>
-	        		</tr>
-	        	</table>
-	        	<div class="formsubmission"><input type="submit" value="Change Password" /></div>
-	        </form>
-	        
-	        <div></div>
-	    </div>
+	
+  <div metal:fill-slot="content">
+    <div class="grid_12">
+      <h3>Account Information</h3>
+      <div class="body">
+      	<table class="vertical-headers drop-shadow vertical-padding" style="width:600px;margin-left: 1em">
+      		<tr class="odd">
+      			<th style="width:100px;text-align:right" class="fieldname">Username</th>
+      			<td>${username}</td>
+      		</tr>
+      		<tr class="even">
+      			<th style="text-align:right" class="fieldname">Full Name</th>
+      			<td>${fullname}</td>
+      		</tr>
+      		<tr class="odd">
+      			<th style="text-align:right"  class="fieldname">Institution</th>
+      			<td>${institution}</td>
+      		</tr>
+      		<tr class="even">
+      			<th style="text-align:right"  class="fieldname">E-mail</th>
+      			<td>${email}</td>
+      		</tr>
+      	</table>
+    	</div>
     </div>
+  
+    <div class="grid_12">
+      <h3>Change Password</h3>
+      <div class="body">
+        <form method="POST" action="${request.application_url}/change_password" class="newform drop-shadow" style="width:500px;margin-left: 1em">
+     			<div tal:condition="reason != None" class="errorbox">Error: ${reason}</div>
+          <div class="formfields">
+            <div class="grid_3 right-align">
+              <label for="old_pass">Current Password</label>
+            </div>
+            <div class="grid_3">
+              <input type="password" name="old_pass" id="old_pass" size="40" value="" />
+            </div>
+          </div>
+      
+          <div class="formfields">
+            <div class="grid_3 right-align">
+              <label for="new_pass2">New Password</label>
+            </div>
+            <div class="grid_3">
+              <input type="password" name="new_pass2" id="new_pass2" size="40" value="" />
+            </div>            
+          </div>
+      
+          <div class="formfields"> 
+            <div class="grid_3 right-align">
+              <label for="new_pass1">Repeat New Password</label>
+            </div>
+            <div class="grid_3">
+              <input type="password" name="new_pass1" id="new_pass1" size="40" value="" />
+            </div>
+          </div>
+          <div class="formfields">
+            <div class="grid_3">&nbsp;</div>
+            <div class="grid_3">
+        	    <input type="submit" value="Change Password" />
+        	  </div>
+        	</div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>

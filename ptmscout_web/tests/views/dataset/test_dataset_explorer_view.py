@@ -373,7 +373,7 @@ class TestDatasetExplorerView(UnitTestCase):
 class IntegrationTestDatasetExplorerView(IntegrationTestCase):
     def test_view_enrichment_page(self):
         result = self.ptmscoutapp.get("/experiments/28/subsets", status=200)
-        result.mustcontain('Effects of HER2 overexpression on cell signaling networks governing proliferation and migration.')
+        result.mustcontain('Evaluate Subsets')
         
     def perform_subset_fetch_test(self, exp_id, foreground_query, background_query = 'experiment'):
         query_expression = {

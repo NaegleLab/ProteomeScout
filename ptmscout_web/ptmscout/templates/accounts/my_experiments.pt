@@ -1,77 +1,83 @@
 <div metal:use-macro="layout">
-	<div metal:fill-slot="header">
+	<metal:slot metal:fill-slot="header">
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/experiments.js')}" ></script>
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/experiments.css')}" />
-	</div>
+	</metal:slot>
     <div metal:fill-slot="content">
-    	<table class = "experimenttable">
-    		<thead>
-    	  		<tr>
-		   			<th>Experiment</th>
-		   			<th>Description</th>
-		   			<th>Author</th>
-		   			<th>Journal Info</th>
-		   			<th>Status</th>
-		   			<th class="accesscontrol">Access Control</th>
-		   		</tr>
-    		</thead>
-    		<tbody>
-		   		<tal:experiments tal:repeat="(i, experiment) enumerate(experiments['available'])">
-					<tr tal:attributes="class 'experiment' + (' even' if i % 2 == 0 else ' odd');" >
-						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.name"></td>
-						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.description"></a></td>
-						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.author"></a></td>
-						<td class="citation" tal:content="experiment.getCitationString()"></td>
-						<td>
-                            <div class="status">
-                                <div tal:condition="experiment.status == 'running'" tal:content="'loading: see jobs below'"></div>
-                                <div tal:condition="experiment.status != 'running'" tal:content="experiment.status"></div>
-                                <a tal:condition="experiment.status == 'error'" tal:attributes="href '%s/upload/%d/retry' % (request.application_url, experiments['sessions'][experiment.id])">retry</a>
-                            </div>
-						</td>
-						<td class="accesscontrol" tal:condition="experiment.public == 0">
-							<table>
-								<tr>
-									<td>
-										<form tal:attributes="id 'publish'+str(experiment.id);action request.application_url + '/account/experiments/' + str(experiment.id) + '/publish'" method="link">											
-											<input type = "submit" value="Publish" />
-										</form>
-									</td>
-									<td>
-										<form tal:attributes="id 'share'+str(experiment.id);action request.application_url + '/account/experiments/' + str(experiment.id) + '/share'" method="link">
-											<input type = "submit" value="Change Permissions" />
-										</form>
-									</td>
-								</tr>
-							</table>
-						</td>
-						<td class="accesscontrol" tal:condition="experiment.public == 1">
-							<form tal:attributes="id 'unpublish'+str(experiment.id);action request.application_url + '/account/experiments/' + str(experiment.id) + '/unpublish'" method="link">
-								<input type = "submit" value="Make Private" />
-							</form>
-						</td>
-					</tr>
-				</tal:experiments>
-				
+      
+      <div class="grid_12">
+        <div style="margin-top:1em">
+          <a href='${request.application_url}/upload'>Upload Data</a>
+        </div>
+      	<table class = "experimenttable">
+      		<thead>
+      	  		<tr>
+  		   			<th>Experiment</th>
+  		   			<th>Description</th>
+  		   			<th>Author</th>
+  		   			<th>Journal Info</th>
+  		   			<th>Status</th>
+  		   			<th class="accesscontrol">Access Control</th>
+  		   		</tr>
+      		</thead>
+            <tbody>
+
+                <tal:experiments tal:repeat="(i, experiment) enumerate(experiments['available'])">
+  					<tr tal:attributes="class 'experiment' + (' even' if i % 2 == 0 else ' odd');" >
+  						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.name"></td>
+  						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.description"></a></td>
+  						<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.author"></a></td>
+  						<td class="citation" tal:content="experiment.getCitationString()"></td>
+  						<td>
+                              <div class="status">
+                                  <div tal:condition="experiment.status == 'running'" tal:content="'loading: see jobs below'"></div>
+                                  <div tal:condition="experiment.status != 'running'" tal:content="experiment.status"></div>
+                                  <a tal:condition="experiment.status == 'error'" tal:attributes="href '%s/upload/%d/retry' % (request.application_url, experiments['sessions'][experiment.id])">retry</a>
+                              </div>
+  						</td>
+  						<td class="accesscontrol" tal:condition="experiment.public == 0">
+  							<table>
+  								<tr>
+  									<td>
+  										<form tal:attributes="id 'publish'+str(experiment.id);action request.application_url + '/account/experiments/' + str(experiment.id) + '/publish'" method="link">											
+  											<input type = "submit" value="Publish" />
+  										</form>
+  									</td>
+  									<td>
+  										<form tal:attributes="id 'share'+str(experiment.id);action request.application_url + '/account/experiments/' + str(experiment.id) + '/share'" method="link">
+  											<input type = "submit" value="Change Permissions" />
+  										</form>
+  									</td>
+  								</tr>
+  							</table>
+  						</td>
+  						<td class="accesscontrol" tal:condition="experiment.public == 1">
+  							<form tal:attributes="id 'unpublish'+str(experiment.id);action request.application_url + '/account/experiments/' + str(experiment.id) + '/unpublish'" method="link">
+  								<input type = "submit" value="Make Private" />
+  							</form>
+  						</td>
+  					</tr>
+                </tal:experiments>
+
 				<tal:empty tal:condition = "len(experiments['in_process']) > 0">
-	    			<tr>
-	    				<th colspan="6">Experiments awaiting configuration and confirmation:</th>
-	    			</tr>
-					<tal:experiments tal:repeat="(i, experiment) enumerate(experiments['in_process'])">
-						<tr tal:attributes="class 'experiment' + (' even' if i % 2 == 0 else ' odd');" >
-							<td tal:content="experiment.name"></td>
-							<td tal:content="experiment.description"></td>
-							<td tal:content="experiment.author"></td>
-							<td class="citation" tal:content="experiment.getCitationString()"></td>
-							<td>
-	                            <div class="status"><a tal:attributes="href '%s/upload/%d' % (request.application_url, experiments['sessions'][experiment.id])">continue upload</a></div>
-	   						</td>
-							<td class="accesscontrol"></td>
-						</tr>
-					</tal:experiments>
-				</tal:empty>
-			</tbody>
-		</table>
+  	    			<tr>
+  	    				<th colspan="6">Experiments awaiting configuration and confirmation:</th>
+  	    			</tr>
+  					<tal:experiments tal:repeat="(i, experiment) enumerate(experiments['in_process'])">
+  						<tr tal:attributes="class 'experiment' + (' even' if i % 2 == 0 else ' odd');" >
+  							<td tal:content="experiment.name"></td>
+  							<td tal:content="experiment.description"></td>
+  							<td tal:content="experiment.author"></td>
+  							<td class="citation" tal:content="experiment.getCitationString()"></td>
+  							<td>
+  	                            <div class="status"><a tal:attributes="href '%s/upload/%d' % (request.application_url, experiments['sessions'][experiment.id])">continue upload</a></div>
+  	   						</td>
+  							<td class="accesscontrol"></td>
+  						</tr>
+  					</tal:experiments>
+  				</tal:empty>
+  			</tbody>
+  		</table>
 		
 		<tal:empty tal:condition = "len(datasets) > 0">
 			<table class = "experimenttable">
@@ -186,5 +192,6 @@
 				</tbody>
 			</table>
 		</tal:empty>
+      </div>
     </div>
 </div>

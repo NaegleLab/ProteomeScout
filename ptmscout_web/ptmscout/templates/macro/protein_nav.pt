@@ -1,0 +1,9 @@
+<div id="nav" metal:define-macro="protein_nav">
+  <ul class='link_menu'>
+    <li><a href="${request.urlfilter.encode_url('/proteins/%d/sequence' % (protein.id))}">Sequence</a></li>
+		<li><a href="${request.urlfilter.encode_url('/proteins/%d/GO' % (protein.id))}">Gene Ontology</a></li>
+		<li><a href="${request.urlfilter.encode_url('/proteins/%d/expression' % (protein.id))}">Gene Expression</a></li>
+		<li><a href="${request.urlfilter.encode_url('/proteins/%d/modifications' % (protein.id))}">Modification Sites</a></li>
+		<li><a href="${request.urlfilter.encode_url('/proteins/%d/data' % (protein.id))}">Data</a></li>
+	</ul>
+</div>

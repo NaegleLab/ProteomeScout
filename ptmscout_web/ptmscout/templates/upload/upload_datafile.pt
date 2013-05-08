@@ -7,56 +7,62 @@
         <script type="text/javascript" src="${request.static_url('ptmscout:static/js/upload.form.js')}"></script>
     </div>
     <div metal:fill-slot="content">
-        <form action="" method="post" enctype="multipart/form-data">
+      <div class="grid_12">
+        <form action="" method="post" enctype="multipart/form-data" class="newform drop-shadow" style="width:600px;margin-top:1em">
+          <div class="errorbox" tal:condition="len(errors)>0">
+              <ul>
+                  <li tal:repeat="error errors" tal:content="error"></li>
+              </ul>
+          </div>
+          <div class="body">
             <input type="hidden" value="true" name="submitted" />
-            <div class="wideform">
-                <div class="error_display" tal:condition="len(errors)>0">
-                    <ul>
-                        <li tal:repeat="error errors" tal:content="error"></li>
-                    </ul>
-                </div>
-                <div class="formcategory">Experiment Upload Type</div>
-                <table>
-                    <tr>
-                        <td class="fieldname">Upload type:</td>
-                        <td>
-                            ${formrenderer.render('load_type', id_='new_dataset', tooltip='Create a new experiment')}
-                            ${formrenderer.render('load_type', id_='append_dataset', tooltip='Append data to an existing experiment')}
-                            ${formrenderer.render('load_type', id_='reload_dataset', tooltip='Replace an existing experiment with new data')}
-                            ${formrenderer.render('load_type', id_='extend_dataset', tooltip='Create a new experiment using modified data from an existing experiment')}
-                        </td>
-                    </tr>
-                    <tr id="parent_exp">
-                        <td class="fieldname">Parent Experiment:</td>
-                        <td>
-                            ${formrenderer.render('parent_experiment', id_='expselect', class_='stretch')}
-                        </td>
-                    </tr>
-                    <tr id="change_name">
-                        <td class="fieldname">Extension Title:</td>
-                        <td>
-                            ${formrenderer.render('change_name')}
-                        </td>
-                    </tr>
-                    <tr id="change_desc">
-                        <td class="fieldname">Description of Extension:</td>
-                        <td>
-                            ${formrenderer.render('change_description')}
-                        </td>
-                    </tr>
-                </table>
-                                
-                <div class="formcategory">Experiment Data</div>
-                <table>
-                    <tr>
-                        <td class="fieldname">Data input file: </td>
-                        <td > ${formrenderer.render('data_file')} </td>
-                    </tr>
-                </table>
+              
+              
+              <h3>Experiment Upload Type</h3>
+              <table class="vertical-headers vertical-padding drop-shadow" style="width:98%;">
+                <tr>
+                    <td class="fieldname">Upload type:</td>
+                    <td>
+                        ${formrenderer.render('load_type', id_='new_dataset', tooltip='Create a new experiment')}
+                        ${formrenderer.render('load_type', id_='append_dataset', tooltip='Append data to an existing experiment')}
+                        ${formrenderer.render('load_type', id_='reload_dataset', tooltip='Replace an existing experiment with new data')}
+                        ${formrenderer.render('load_type', id_='extend_dataset', tooltip='Create a new experiment using modified data from an existing experiment')}
+                    </td>
+                </tr>
+                <tr id="parent_exp" class="">
+                    <th class="right-align">Parent Experiment</th>
+                    <td>
+                        ${formrenderer.render('parent_experiment', id_='expselect', class_='stretch')}
+                    </td>
+                </tr>
+                  <tr id="change_name" class="">
+                    <th class="right-align">Extension Title</th>
+                    <td>
+                        ${formrenderer.render('change_name')}
+                    </td>
+                </tr>
+                  <tr id="change_desc" class="">
+                    <th class="right-align">Description of Extension</th>
+                    <td>
+                        ${formrenderer.render('change_description')}
+                          <br />
+                    </td>
+                </tr>
+            </table>
+                            
+              <h3>Experiment Data</h3>
+              <table class="vertical-headers vertical-padding drop-shadow" style="width:98%">
+                <tr>
+                    <th class="right-align">Data input file</th>
+                    <td > ${formrenderer.render('data_file')} </td>
+                </tr>
+            </table>
 
-                <div class="formsubmission"><input type="submit" value="Continue" class="longtask" /></div>
-                <div class="clear"></div>               
-            </div>
+              <div class='right-align'>
+                <input type="submit" value="Continue" class="longtask" style="width:120px;font-weight:bold" />
+              </div>
+          </div>
         </form>
     </div>
+  </div>
 </div>

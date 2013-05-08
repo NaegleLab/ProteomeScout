@@ -65,9 +65,6 @@ def upload_confirm(request, session):
     reason = None
     
     exp = experiment.getExperimentById(session.experiment_id, request.user, False)
-    exp_dict = webutils.object_to_dict(exp)
-    exp_dict['citation'] = exp.getLongCitationString()
-    exp_dict['url'] = exp.getUrl()
     
     if confirm and terms_of_use_accepted:
         target_exp = prepare_experiment(session, exp, request.user)
@@ -76,7 +73,7 @@ def upload_confirm(request, session):
         
         return {'pageTitle': strings.experiment_upload_started_page_title,
                 'message': strings.experiment_upload_started_message % (request.application_url + "/account/experiments"),
-                'experiment': exp_dict,
+                'experiment': exp,
                 'session_id':session.id,
                 'reason':reason,
                 'confirm':confirm}
@@ -87,7 +84,7 @@ def upload_confirm(request, session):
     
     return {'pageTitle': strings.experiment_upload_confirm_page_title,
             'message': strings.experiment_upload_confirm_message,
-            'experiment': exp_dict,
+            'experiment': exp,
             'session_id': session.id,
             'reason':reason,
             'confirm': confirm}

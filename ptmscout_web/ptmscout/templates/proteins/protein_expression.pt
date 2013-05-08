@@ -3,6 +3,10 @@
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/proteins.css')}" />
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/expression.js')}" ></script>
 	</div>
+	<div metal:fill-slot="nav">
+	  <div metal:use-macro="protein_nav"></div>
+	</div>
+	
 	<div metal:fill-slot="content">
 		<div metal:use-macro="protein_header"></div>
 

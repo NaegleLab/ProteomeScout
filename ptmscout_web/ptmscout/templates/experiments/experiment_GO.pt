@@ -10,23 +10,23 @@
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/table.minimizer.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/experiment_go.js')}"></script>
 	</div>
-	<div metal:fill-slot="content">
-		<div metal:use-macro="experiment_header">
-			<div id="experimentSummaryMenu" metal:fill-slot="menu">
-				<a href="${request.application_url}/experiments/${experiment.id}/summary">Summary</a>
-				| <a href="${request.application_url}/experiments/${experiment.id}/GO">GO Terms</a>
-				| <a href="${request.application_url}/experiments/${experiment.id}/pfam">Protein Families</a>
-				| <a href="${request.application_url}/experiments/${experiment.id}/predictions">Scansite Predictions</a>
-				<tal:empty tal:condition="user_owner">| <a href="${request.application_url}/experiments/${experiment.id}/errors">Error Log</a></tal:empty>
-			</div>
-		</div>
-
-		<div class="GO_map">
-			<div class="data" tal:content="go_tree"></div>
-		</div>
+	<div metal:fill-slot="nav">
+    <div metal:use-macro="experiment_header"></div>
+  </div>
+  <div metal:fill-slot="subnav">
+	  <div metal:use-macro="experiment_summary_menu"></div>  	  
+  </div>
+	
+  <div metal:fill-slot="content">
+	  <div class="grid_12">
+	    <h3 style="margin-bottom:0">GO Map</h3>
+	    <p style="text-align:center;margin:0;color:#999;font-family:courier;font-size:12px">click to zoom</p>
+  		<div class="GO_map">
+  			<div class="data" tal:content="go_tree"></div>
+  		</div>
 		
-		<div class="GO_table">
-			<div class="table_title">Molecular Functions</div>
+  		<div class="GO_table row-hover-highlight">
+  		  <h3>Molecular Functions</h3>
 			<table>
                 <tr>
                     <th></th>
@@ -34,60 +34,61 @@
 					<th>Term</th>
 					<th class="value">Proteins</th>
 				</tr>
-                <tr tal:repeat="entry go_tables.molecular_function">
+                <tr tal:repeat="(i, entry) enumerate(go_tables.molecular_function)" tal:attributes="class 'even' if i % 2 == 0 else ' odd';">
                     <td tal:condition="entry[0] != 'None'" ><a target="_blank" href="${request.route_url('experiment_subset', id=experiment.id, _query=generate_GO_MF('%s: %s' % (entry[0], entry[1])) )}"><img height="20" src="${request.static_url('ptmscout:static/images/glass.png')}" /></a></td>
                     <td tal:condition="entry[0] == 'None'" ></td>
-					<td class="number_col">
-						<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + entry[0]"
-										target="_blank" tal:content="entry[0]"></a>
-					</td>
-					<td tal:content="entry[1]"></td>
-					<td class="number_col value" tal:content="entry[2]"></td>
-				</tr>
-			</table>
-		</div>
-		<div class="GO_table">
-			<div class="table_title">Cellular Components</div>
-			<table>
-				<tr>
+  					<td class="number_col">
+  						<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + entry[0]"
+  										target="_blank" tal:content="entry[0]"></a>
+  					</td>
+  					<td tal:content="entry[1]"></td>
+  					<td class="number_col value" tal:content="entry[2]"></td>
+  				</tr>
+  			</table>
+  		</div>
+  		<div class="GO_table row-hover-highlight">
+  			<h3>Cellular Components</h3>
+  			<table>
+  				<tr>
                     <th></th>
-					<th class="number_col">GO</th>
-					<th>Term</th>
-					<th class="value">Proteins</th>
-				</tr>
-				<tr tal:repeat="entry go_tables.cellular_component">
+  					<th class="number_col">GO</th>
+  					<th>Term</th>
+  					<th class="value">Proteins</th>
+  				</tr>
+  				<tr tal:repeat="(i, entry) enumerate(go_tables.cellular_component)" tal:attributes="class 'even' if i % 2 == 0 else ' odd';">
                     <td tal:condition="entry[0] != 'None'" ><a target="_blank" href="${request.route_url('experiment_subset', id=experiment.id, _query=generate_GO_CC('%s: %s' % (entry[0], entry[1])) )}"><img height="20" src="${request.static_url('ptmscout:static/images/glass.png')}" /></a></td>
                     <td tal:condition="entry[0] == 'None'" ></td>
-					<td class="number_col">
-						<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + entry[0]"
-										target="_blank" tal:content="entry[0]"></a>
-					</td>
-					<td tal:content="entry[1]"></td>
-					<td class="number_col value" tal:content="entry[2]"></td>
-				</tr>
-			</table>
-		</div>
-		<div class="GO_table">
-			<div class="table_title">Biological Processes</div>
-			<table>
+  					<td class="number_col">
+  						<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + entry[0]"
+  										target="_blank" tal:content="entry[0]"></a>
+  					</td>
+  					<td tal:content="entry[1]"></td>
+  					<td class="number_col value" tal:content="entry[2]"></td>
+  				</tr>
+  			</table>
+  		</div> 
+  		<div class="GO_table row-hover-highlight">
+  			<h3>Biological Processes</h3>
+  			<table>
 				<tr>
                     <th></th>
-					<th class="number_col">GO</th>
-					<th>Term</th>
-					<th class="value">Proteins</th>
-				</tr>
-				<tr tal:repeat="entry go_tables.biological_process">
+  					<th class="number_col">GO</th>
+  					<th>Term</th>
+  					<th class="value">Proteins</th>
+  				</tr>
+  				<tr tal:repeat="(i, entry) enumerate(go_tables.biological_process)" tal:attributes="class 'even' if i % 2 == 0 else ' odd';">
                     <td tal:condition="entry[0] != 'None'" ><a target="_blank" href="${request.route_url('experiment_subset', id=experiment.id, _query=generate_GO_BP('%s: %s' % (entry[0], entry[1])) )}"><img height="20" src="${request.static_url('ptmscout:static/images/glass.png')}" /></a></td>
                     <td tal:condition="entry[0] == 'None'" ></td>
-					<td class="number_col">
-						<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + entry[0]"
-										target="_blank" tal:content="entry[0]"></a>
-					</td>
-					<td tal:content="entry[1]"></td>
-					<td class="number_col value" tal:content="entry[2]"></td>
-				</tr>
-			</table>
-		</div>
-	</div>
+  					<td class="number_col">
+  						<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + entry[0]"
+  										target="_blank" tal:content="entry[0]"></a>
+  					</td>
+  					<td tal:content="entry[1]"></td>
+  					<td class="number_col value" tal:content="entry[2]"></td>
+  				</tr>
+  			</table>
+  		</div>
+  	</div>
+  </div>
 </div>
 		

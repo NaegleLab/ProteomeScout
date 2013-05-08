@@ -1,0 +1,48 @@
+<div metal:define-macro="protein_search_form">
+  <form  name="search" method="GET" action="${search_url}" class="newform drop-shadow" style="width:800px">
+    <input type="hidden" name="submitted" value="true">
+    <div class="errorbox" tal:condition="len(errors)>0">
+        <ul>
+            <li tal:repeat="error errors" tal:content="error"></li>
+        </ul>
+    </div>
+
+    <div class="formfields">
+      <div class="grid_3 right-align">
+        <label for="acc_search">Protein</label>
+      </div>
+      <div class="grid_5">
+        ${formrenderer.render('acc_search')}
+        ${formrenderer.render('include_name')}
+      </div>
+    </div>
+
+    <div class="formfields">
+      <div class="grid_3 right-align">
+        <label for="pep_serach">Peptide</label>
+      </div>
+      <div class="grid_3">
+        ${formrenderer.render('pep_search')}
+      </div>
+    </div>
+
+    <div class="formfields">
+      <div class="grid_3 right-align">
+        <label for="pep_serach">Species</label>
+      </div>
+      <div class="grid_3">
+        ${formrenderer.render('species', class_='autocomplete')}
+      </div>
+    </div>
+
+    <div class="formfields">
+      <div class="grid_3 right-align">
+        &nbsp;
+      </div>
+      <div class="grid_3">
+  			<input type="submit" value="Search" class="longtask" style="width:120px" />
+      </div>
+    </div>
+
+  </form>
+</div>

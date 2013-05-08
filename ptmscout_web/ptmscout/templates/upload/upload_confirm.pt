@@ -5,20 +5,7 @@
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/forms.css')}" />
 	</div>
     <div metal:fill-slot="content">
-    	<div id="experimentInfo" >
-		   	<fieldset>
-		   		<legend>Experiment</legend>
-		   		<a href="${experiment['url']}" tal:condition="experiment['url'] != None">${experiment.name}</a>
-		   		<tal:expname tal:condition="experiment['url'] == None">${experiment['name']}</tal:expname><br />
-	            <div tal:condition="experiment['published']==1" >
-	               <tal:expcitation tal:content="structure experiment['citation']"></tal:expcitation><br />
-	               <br /><br />
-	            </div>
-			    ${experiment['description']}
-			    <br /><br />
-			    Loaded: ${experiment['date']}<br />
-		    </fieldset>
-		</div>    
+    	<div metal:use-macro="experiment_info" />
     	<div class = "infobox" tal:condition="not confirm">
     		<div class = "infoheader">Confirm</div>
     		<p class = "infotext">${message}</p>

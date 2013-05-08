@@ -14,7 +14,7 @@ class UserLoginViewIntegration(IntegrationTestCase):
     def test_login_with_redirect(self):
         self.bot.logout()
         
-        result = self.ptmscoutapp.get('/login?redirect=%2Fexperiments%2F26')
+        result = self.ptmscoutapp.get('/login?origin=%2Fexperiments%2F26')
         result.form.set( 'username', self.bot.username )
         result.form.set( 'password', 'nottherightpassword' )
         
@@ -23,6 +23,7 @@ class UserLoginViewIntegration(IntegrationTestCase):
         result.form.set( 'password', self.bot.password )
         
         result = result.form.submit()
+#        result.showbrowser()
         result.mustcontain('<meta http-equiv="refresh" content="3; url=http://localhost/experiments/26" />')
 
     def test_login_expired_account(self):
@@ -30,7 +31,7 @@ class UserLoginViewIntegration(IntegrationTestCase):
         self.bot.user.saveUser()
         self.bot.logout()
         
-        result = self.ptmscoutapp.get('/login?redirect=%2Fexperiments%2F26')
+        result = self.ptmscoutapp.get('/login?origin=%2Fexperiments%2F26')
         result.form.set( 'username', self.bot.username )
         result.form.set( 'password', self.bot.password )
         

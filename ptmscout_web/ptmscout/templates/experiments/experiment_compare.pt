@@ -8,9 +8,16 @@
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/experiment_search.js')}" ></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/compare.experiments.js')}" ></script>
 	</metal:slot>
+	<div metal:fill-slot="nav">
+    <div metal:use-macro="experiment_header"></div>
+  </div>
+  <div metal:fill-slot="subnav">
+  </div>
+	
 	<div metal:fill-slot="content">
-        <div metal:use-macro="experiment_header"></div>
-
+    <div class="grid_12">
+      <h3>Comparisions</h3>
+      
         <div id="comparison_actions">
             <form method="POST" action="" >
                 <input type="hidden" name="submitted" value="all" />
@@ -83,15 +90,16 @@
 
             </div>
         </div>
-
-        <div id="comparison_results" tal:condition="results != None">
-
-            <div class="compare_result experiment_result" tal:repeat="exp_id results['by_experiment']" tal:attributes="id 'e%d' % (exp_id)">
-                <div>Common sites with
+      </div>
+      <div class="grid_12" tal:condition="results != None" style="margin-top:1em">
+        <h3>Comparison Results</h3>
+        <div id="comparison_results">
+          
+            <h4>Common Sites</h4>
+            <div style="margin-left:1em;margin-bottom:1em" class="compare_result experiment_result" tal:repeat="exp_id results['by_experiment']" tal:attributes="id 'e%d' % (exp_id)">
+                <div><span tal:content="len( results['by_experiment'][exp_id] )"></span> with: 
                     <a tal:condition="results['experiment_info'][exp_id]['export'] == 1" tal:attributes="href '%s/experiments/%d' % (request.application_url, exp_id)" tal:content="results['experiment_info'][exp_id]['name']"></a>
                     <span tal:condition="results['experiment_info'][exp_id]['export'] == 0" tal:content="results['experiment_info'][exp_id]['name']"></span>
-                    :
-                    (<span tal:content="len( results['by_experiment'][exp_id] )"></span>)
                     <button tal:condition="len(results['by_experiment'][exp_id]) > 0" class="show_results">Show</button>
                 </div>
                 <table class="protein_list hidden" style="display:none">
@@ -123,12 +131,10 @@
                 </table>
             </div>
 
+            <h4>Novel Sites (<tal:empty tal:content="len(results['novel'])"></tal:empty>)</h4>
             <div class="compare_result">
                 <table class="protein_list">
                     <thead>
-                        <tr>
-                            <th colspan="7">Novel Sites (<tal:empty tal:content="len(results['novel'])"></tal:empty>)</th>
-                        </tr>
                         <tr>
                             <th>MS id</th>
                             <th>Gene</th>
@@ -153,13 +159,11 @@
                 </table>
             </div>
 
+            <h4>Ambiguous Sites  (<tal:empty tal:content="len(results['ambiguous'])"></tal:empty>)</h4
             <div class="compare_result">
                 <table class="protein_list">
                     <thead>
-                            <tr>
-                                <th colspan="7">Ambiguous Sites (<tal:empty tal:content="len(results['ambiguous'])"></tal:empty>)</th>
-                            </tr>
-                            <tr>
+                          <tr>
                             <th>MS id</th>
                             <th>Gene</th>
                             <th>Protein</th>
@@ -184,5 +188,6 @@
             </div>
         </div>
     </div>
+  </div>
 </div>
 	

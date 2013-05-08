@@ -1,12 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" metal:define-macro="layout">
-    <head profile="http://www.w3.org/2005/10/profile">
+<div metal:use-macro="layout">
+    <metal:slot metal:fill-slot="header">
         <?python import ptmscout.config as config; ?>
         <link rel="icon" type="image/png" href="${request.static_url('ptmscout:static/images/ptmscoutMagGlass.png')}">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>PTMScout Portal</title>
-        <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/ptmscout.css')}" />
-        <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/jquery-ui-1.9.1.custom.css')}" />
 
         <script type="text/javascript" src="${request.static_url('ptmscout:static/js/jquery-1.9.0.min.js')}" ></script>
         <script type="text/javascript" src="${request.static_url('ptmscout:static/js/jquery-ui-1.9.2.min.js')}"></script>
@@ -22,82 +19,54 @@
                         }
                 });
         </script>
-    </head>
-    <body>
+    </metal:slot>
+
+    <div metal:fill-slot="content">
         <div id="iewarn" title="Warning!" style="display: none;">
             Warning! We have detected that your browser does not support Scalable Vector Graphics. We recommend viewing this site using the most recent versions of Chrome, Opera, or Firefox. We recommend Chrome for the best performance. Using Internet Explorer or any legacy browser will not allow you to use many graphical features of PTMScout.
         </div>
 
-        <div id="menu">
-            <div style="float:right;text-align:right">
-			    <span tal:condition="request.user == None">
-			    	<a href="${request.route_url('login')}">Login</a>
-			    </span>
-			    <span tal:condition="request.user != None">
-			    	<a href="${request.route_url('account_management')}">Account: ${request.username}</a> |
-			    	<a href="${request.route_url('my_experiments')}">My Experiments</a> |
-				    <a href="${request.route_url('logout')}">Logout</a>
-			    </span>
-            </div>
-        </div>
-        <div class="split"></div>
         <div id="splash">
-            <img src="${request.static_url('ptmscout:static/images/ptmscout_logo.png')}" />
 
-            <div id="portal">
-                <div class="menusplash">
-                    <img src="${request.static_url('ptmscout:static/images/ptmscout_splash.png')}" />
-                </div>
-                <a href="${request.route_url('protein_search')}">
-                    <div class="menuitem" style="top:70px; left:255px;">
-                        <span>Browse<br>Proteins</span>
-                    </div>
-                </a>
-                <a href="${request.route_url('upload')}">
-                    <div class="menuitem" style="top:70px; right:255px;">
-                        <span>Upload<br>Dataset</span>
-                    </div>
-                </a>
-
-                <a href="${request.route_url('experiments')}">
-                    <div class="menuitem" style="top:200px; left:160px;">
-                        <span>Browse<br>Experiments</span>
-                    </div>
-                </a>
-
-                <a href="${request.route_url('dataset_upload')}">
-                    <div class="menuitem" style="top:200px; right:160px;">
-                        <span>Annotate<br>Peptides</span>
-                    </div>
-                </a>
-
-                <a href="${documentationUrl}title=Main_Page">
-                    <div class="menuitem" style="top:345px; left:195px;">
-                        <span>Documentation</span>
-                    </div>
-                </a>
-                <a href="${naegleUrl}">
-                    <div class="menuitem" style="top:345px; right:195px;">
-                        <span>The Naegle Lab</span>
-                    </div>
-                </a>
+          <div id="portal">
+            <div class="menusplash">
+              <img src="${request.static_url('ptmscout:static/images/ptmscout_splash.png')}" style="margin-left:-85px" />
             </div>
-        </div>
 
-	  <div id="footer">Questions or comments? <br/>Email ${adminEmail}
-        <div id="footerLicense">
-          <p class="box">
-            <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">
-                <img alt="Creative Commons License" style="border-width:0" src="${request.static_url('ptmscout:static/images/cc_license.png')}" />
+            <a href="${request.route_url('protein_search')}">
+                <div class="menuitem" style="top:70px; left:325px;">
+                    <span>Browse<br>Proteins</span>
+                </div>
             </a>
-            <br />
-            <span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">PTMScout</span>
-            is licensed under a
-            <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.
-		    <br />
-		    <a rel="terms" href="${request.route_url('terms')}">Terms of Use</a>
-		  </p>
-	    </div>
-      </div>
-    </body>
-</html>
+            <a href="${request.route_url('upload')}">
+                <div class="menuitem" style="top:70px; right:325px;">
+                    <span>Upload<br>Dataset</span>
+                </div>
+            </a>
+
+            <a href="${request.route_url('experiments')}">
+                <div class="menuitem" style="top:200px; left:230px;">
+                    <span>Browse<br>Experiments</span>
+                </div>
+            </a>
+
+            <a href="${request.route_url('dataset_upload')}">
+                <div class="menuitem" style="top:200px; right:230px;">
+                    <span>Annotate<br>Peptides</span>
+                </div>
+            </a>
+
+            <a href="${documentationUrl}title=Main_Page">
+                <div class="menuitem" style="top:345px; left:275px;">
+                    <span>Documentation</span>
+                </div>
+            </a>
+            <a href="${naegleUrl}">
+                <div class="menuitem" style="top:345px; right:275px;">
+                    <span>The Naegle Lab</span>
+                </div>
+            </a>
+          </div> <!-- portal -->
+       </div> <!-- splash -->
+    </div>
+</div>

@@ -1,0 +1,32 @@
+<div metal:define-macro="experiment_info">
+	<div id="experimentInfo" class="grid_12" style="padding-left:1em">
+	  
+	  <h2>Experiment</h2>
+	  <div class="body">
+	    <div style="margin-bottom:1em">
+  	    <label for="name">Name:</label>
+  	    <br />
+     		<a href="${experiment.getUrl()}" tal:condition="experiment.getUrl() != None">${experiment.name}</a>
+     		<tal:expname tal:condition="experiment.getUrl() == None">${experiment.name}</tal:expname><br />
+   		</div>
+   		<div style="margin-bottom:1em">
+   		  <label for="citation">Citation:</label>
+   		  <br />
+		    <tal:expcitation tal:content="structure experiment.getLongCitationString()"></tal:expcitation><br />
+		  </div>
+		  <div style="margin-bottom:1em">
+		    <label for="description">Description:</label>
+	      <br />
+	      ${experiment.description}
+	    </div>
+	    <div style="margin-bottom:1em">
+	      <label for="loaded">Loaded:</label>
+	      <br />
+	      ${experiment.date}
+	    </div>
+	    
+    </div>
+    
+  </div>  
+    
+</div>

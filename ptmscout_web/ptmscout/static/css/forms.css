@@ -40,6 +40,7 @@ td.fieldname {
 .errorbox {
 	background:#FF3333;
 	padding:10px;
+	margin-bottom:1em;
 }
 
 .errortext {
@@ -72,4 +73,35 @@ td.fieldname {
     padding:10px;
     border: solid 1px black;
     background:#FF88AA;
+}
+
+form.newform {
+  margin-left: auto;
+  margin-right: auto;
+  border: 2px solid #333;
+  border-radius: 5px;
+  padding-bottom: 1em;
+}
+
+form.newform label {
+  text-align: right ;
+}
+
+form.newform .formfields {
+  display: block;
+  height: 2em;
+}
+
+form.newform .formfields:first-child {
+  margin-top: 1em;
+}
+
+form.newform input[type='text'], form.newform input[type='password'] ,form.newform textarea {
+  border: 1px solid #333;
+  border-radius: 2px;
+  padding-top:2px;
+  padding-bottom: 2px;
+}
+.right-align {
+  text-align:right;
 }

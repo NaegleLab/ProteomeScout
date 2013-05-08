@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" metal:define-macro="layout">
-  <head profile="http://www.w3.org/2005/10/profile">
+  <head>
   	<?python import urllib; ?>
     <?python import ptmscout.config as config; ?>
 
@@ -8,6 +8,10 @@
     <title>${pageTitle}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta tal:condition="redirect != None" http-equiv="refresh" content="3; url=${redirect}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/reset.css')}" />
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/text.css')}" />
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/960.css')}" />
+		
     <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/ptmscout.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/jquery-ui-1.9.1.custom.css')}" />
 
@@ -23,65 +27,85 @@
     <metal:slot metal:define-slot="header"></metal:slot>
   </head>
   <body>
-	<div id="menu">
-        <div style="float:left; text-align:left">
-	    <a href="${request.application_url}">Portal</a> |
-	    <a href="${request.route_url('experiments')}">Browse Experiments</a> |
-        <a href="${request.route_url('protein_search')}">Browse Proteins</a> |
-	    <span tal:condition="request.user != None">
-            <a href="${request.route_url('dataset_upload')}">Annotate Datasets</a> |
-            <a href="${request.route_url('upload')}">Upload Data</a> |
-            <a href="${request.route_url('compendia')}">Downloads</a> |
-        </span>
-	    <a target='_blank' href="${documentationUrl}title=Main_Page">Documentation</a> |
-	    <a href="${request.route_url('about')}">About</a>
-	  </div>
-	  <div style="float:right;text-align:right">
-	    <span tal:condition="request.user == None">
-	    	<a href="${request.route_url('login')}">Login</a>
-	    </span>
-	    <span tal:condition="request.user != None">
-	    	<a href="${request.route_url('account_management')}">Account: ${request.username}</a> |
-	    	<a href="${request.route_url('my_experiments')}">My Experiments</a> |
-		    <a href="${request.route_url('logout')}">Logout</a>
-	    </span>
-      </div>
-	</div>
+  <div id="wrapper">
+  	<div id="menu">
+  	  <div class="container_12">
+    	  <div class="grid_6" style="text-align:left">
+    	    <ul class="link_menu">
+    	      <li>
+      	        <a href="${request.application_url}">
+          	      <img alt="PTMScout" src="${request.static_url('ptmscout:static/images/ptmscout_logoHalf.png')}" title="Home" />    	      
+      	        </a>
+      	      </li>
+              <li><a href="${request.route_url('experiments')}">Experiments</a></li>
+              <li><a href="${request.route_url('protein_search')}">Proteins</a></li>
+    	      <li tal:condition="request.user != None">
+                <a href="${request.route_url('dataset_upload')}">Annotate Datasets</a>
+              </li>
+    	      <li tal:condition="request.user != None">
+                <a href="${request.route_url('upload')}">Upload Data</a>
+              </li>
+    	      <li><a target='_blank' href="${documentationUrl}title=Main_Page">Documentation</a></li>
+              <li><a href="${request.route_url('about')}">About</a></li>
+    	  </div>
+    	  <div class="grid_6" style="text-align:right">
+    	    <ul class="link_menu" tal:condition="request.user == None" style="float:right;">
+    	      <li>
+                <a href="${request.route_url('login')}">Login</a>
+      	      </li>
+      	    </ul>
+    	    <ul class="link_menu" tal:condition="request.user != None" style="float:right;">
+              <li><a href="${request.route_url('account_management')}">Account: ${request.username}</a></li>
+              <li><a href="${request.route_url('my_experiments')}">My Experiments</a></li>
+              <li><a href="${request.route_url('logout')}">Logout</a></li>
+            </ul>
+        </div> <!-- grid_6 -->
+      </div> <!-- container_12 -->
+  	</div> <!-- menu -->
 
-	<div id="page">
+  	<div id="wrapper_container">
+    	<div id="nav_wrapper">
+    	  <div class="container_12">
+  	       <div metal:define-slot="nav"></div>
+    	  </div>
+    	</div>
+    	<div id="subnav_wrapper">
+    	  <div class="container_12">
+  	       <div metal:define-slot="subnav"></div>
+    	  </div>
+    	</div>
+
+        <div id="page">
 	
-	  <div id="header"><a href="${request.application_url}/"><img alt="PTMScout logo" src="${request.static_url('ptmscout:static/images/ptmscout_logo.png')}" title="Home" /></a></div>
+	      <div id="breadcrumb">
+    	    <div class="container_12">
+    	      <div style="margin-left:10px;margin-right:10px">
+        	  	<tal:none tal:condition="parent_link != None">
+        	  		<a tal:attributes="href parent_link" tal:content="parent_page"></a>&gt;
+        	  	</tal:none>
+        	  	${pageTitle}
+        	  </div>
+      	  </div>
+    	  </div> <!-- breadcrumb -->
 	
-	  <div id="breadcrumb">
-	  	<tal:none tal:condition="parent_link != None">
-	  		<a tal:attributes="href parent_link" tal:content="parent_page"></a>&gt;
-	  	</tal:none>
-	  	${pageTitle}
-	  </div>
-	
-	  <div id="content" metal:define-slot="content"></div>
-	
-	  <div id="footer">Questions or comments? <br/>Email ${adminEmail}
-        <div id="footerLicense">
-          <p class="box">
-            <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">
-                <img alt="Creative Commons License" style="border-width:0" src="${request.static_url('ptmscout:static/images/cc_license.png')}" />
-            </a>
-            <br />
-            <span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">PTMScout</span>
-            is licensed under a
-            <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.
-		    <br />
-		    <a rel="terms" href="${request.route_url('terms')}">Terms of Use</a>
-		  </p>
-	    </div>
-      </div>
-	</div>
+    	  <div id="content">
+    	    <div class="container_12">
+    	       <div metal:define-slot="content"></div>
+    	    </div>
+    	  </div> <!-- content -->
+    	</div> <!-- page -->
 	
     <div id="webservice_url" style="display:none;">${request.application_url}/webservice</div>
     <div style="display:none" id="graph_css_export_url">${request.static_url('ptmscout:static/css/graphs.css')}</div>
     <div class="waiting-modal"><!-- Place at bottom of page -->
         <img style="position:fixed; top:50%; left:50%;" src="${request.static_url('ptmscout:static/images/ajax-loader.gif')}" />
     </div>
+      <div id="push">
+      </div>
+    </div> <!-- wrapper_container -->
+  </div> <!-- wraper -->
+  
+  <div metal:use-macro="footer"></div>
+
   </body>
 </html>

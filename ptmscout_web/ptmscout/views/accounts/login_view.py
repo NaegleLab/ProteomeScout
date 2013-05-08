@@ -13,8 +13,8 @@ import urllib
 def user_login(request):
     username = webutils.get(request, 'username', "")
     reason = webutils.get(request, 'reason', None)
-    redirect = webutils.get(request, 'redirect', None)
-    
+    redirect = webutils.get(request, 'origin', None)
+
     return {
             'username': username,
             'reason':reason,
@@ -42,7 +42,7 @@ def user_login_success(request):
                 }
     else:
         if redirect != None:
-            result['redirect'] = redirect
+            result['origin'] = redirect
         raise HTTPFound(request.application_url+"/login?"+urllib.urlencode(result))
 
 @view_config(route_name='logout', renderer='ptmscout:templates/info/information.pt')

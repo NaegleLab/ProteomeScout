@@ -228,3 +228,8 @@ $(function(){
         $(this).autocomplete({ source: values });
     });
 });
+
+
+$(function(){
+  $('#nav .link_menu a, #subnav .link_menu a, #menu .link_menu a').each( function(index, link) { if ( $(link).attr('href') == window.location.href ) { $(link).addClass('nav_active'); } } );
+});

@@ -6,7 +6,7 @@
     <div metal:fill-slot="content">
         <div class="experiment-group">
             <div class="group-title">Compendia:</div>
-            <table class = "experimenttable">
+            <table class = "experimenttable drop-shadow">
                 <thead>
                     <tr>
                         <th></th>
@@ -31,7 +31,7 @@
         </div>
         <div class="experiment-group">
             <div class="group-title">Experiments:</div>
-            <table class = "experimenttable">
+            <table class = "experimenttable drop-shadow">
                 <thead>
                     <tr>
                         <th></th>

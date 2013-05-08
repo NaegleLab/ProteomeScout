@@ -2,54 +2,63 @@
 	<div metal:fill-slot="header">
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/proteins.css')}" />
 	</div>
+	<div metal:fill-slot="nav">
+	  <div metal:use-macro="protein_nav"></div>
+	</div>
+	
 	<div metal:fill-slot="content">
 		<div metal:use-macro="protein_header"></div>
 
-		<div class="section">
-			<div class="section">
-				<div style="margin-bottom: 1em">
-                    <a target="_blank" href="http://ptmscout.mit.edu/docs/index.php?title=References_to_Data_Sources#Gene_Ontology">Gene Ontologies (GO)</a> 
-                    <a target="_blank" class="help" href="http://ptmscout.mit.edu/docs/index.php?title=References_to_Data_Sources#Gene_Ontology">
-                        <img class="help" border="0" alt="help" width="20" src="${request.static_url('ptmscout:static/images/help.jpg')}">
-                    </a> <br>
-					<font size="3">Version 1.2 10-11-2011</font><br>
-				</div>
-				<table cellspacing="0" cellpadding="0" id="gene_ontology_breakdown">
-					<tbody>
-						<tr>
-							<th>Molecular Functions</th>
-							<th>Cellular Components</th>
-							<th>Biological Process</th>
-						</tr>
-						<tr>
-							<td valign="top">
-								<ul class="no_bullet GO_list">
-									<li tal:repeat="GO F_terms">
-										<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + GO[0]"
-											target="_blank" tal:content="GO[0]"></a><span class="GO_term" tal:content="GO[1]"></span>
-									</li>
-								</ul>
-							</td>
-							<td valign="top">
-								<ul class="no_bullet GO_list">
-									<li tal:repeat="GO C_terms">
-										<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + GO[0]"
-											target="_blank" tal:content="GO[0]"></a><span class="GO_term" tal:content="GO[1]"></span>
-									</li>
-								</ul>
-							</td>
-							<td valign="top">
-								<ul class="no_bullet GO_list">
-									<li tal:repeat="GO P_terms">
-										<a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + GO[0]"
-											target="_blank" tal:content="GO[0]"></a><span class="GO_term" tal:content="GO[1]"></span>
-									</li>
-								</ul>
-							</td>
-						</tr>
-					</tbody>
-				</table>
+		<div class="body">
+			
+			<div style="margin-bottom: 1em">
+				<a target="_blank"
+					href="http://ptmscout.mit.edu/docs/index.php?title=References_to_Data_Sources#Gene_Ontology">Gene
+					Ontologies (GO)</a> 
+				<a target="_blank" class="help"
+					href="http://ptmscout.mit.edu/docs/index.php?title=References_to_Data_Sources#Gene_Ontology"><img
+					class="help" border="0" alt="help" width="20"
+					src="http://ptmscout.mit.edu/images/help.jpg"></a>
+				<br />
+				<font size="3">Version 1.2 10-11-2011</font>
+                <br />
 			</div>
+
+            <table cellspacing="0" cellpadding="0" id="gene_ontology_breakdown">
+                <tbody>
+                    <tr>
+                        <th>Molecular Functions</th>
+                        <th>Cellular Components</th>
+                        <th>Biological Process</th>
+                    </tr>
+                    <tr>
+                        <td valign="top">
+                            <ul class="no_bullet GO_list">
+                                <li tal:repeat="GO F_terms">
+                                    <a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + GO[0]"
+                                        target="_blank" tal:content="GO[0]"></a><span class="GO_term" tal:content="GO[1]"></span>
+                                </li>
+                            </ul>
+                        </td>
+                        <td valign="top">
+                            <ul class="no_bullet GO_list">
+                                <li tal:repeat="GO C_terms">
+                                    <a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + GO[0]"
+                                        target="_blank" tal:content="GO[0]"></a><span class="GO_term" tal:content="GO[1]"></span>
+                                </li>
+                            </ul>
+                        </td>
+                        <td valign="top">
+                            <ul class="no_bullet GO_list">
+                                <li tal:repeat="GO P_terms">
+                                    <a class="GO_id" tal:attributes="href 'http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=' + GO[0]"
+                                        target="_blank" tal:content="GO[0]"></a><span class="GO_term" tal:content="GO[1]"></span>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 		</div>
 	</div>
 </div>

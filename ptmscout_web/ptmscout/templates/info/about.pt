@@ -3,145 +3,161 @@
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/about.css')}"/>
 	</div>
 	<div metal:fill-slot="content">
-		<br /> <br />
-		<div style="text-align: left; width: 65%">
+	  <div class="grid_12">
+	    <div class="body">
+	      <h1>About</h1>
+
+		<div style="text-align: left; width: 85%">
 			<h2>Attribution Reference</h2>
-			Please cite the following publication when publishing results
-			derived from use of PTMScout:
-			<ul>
-				<li>Naegle KM, Gymrek M, Joughin BA, Wagner JP, Welsch RE,
-					Yaffe MB, Lauffenburger DA, White FM. <i>PTMScout: A web
-						resource for analysis of high-throughput post-translational
-						proteomic studies.</i> Molecular and Cellular Proteomics, 2010.
-				</li>
-			</ul>
-			Please cite the following publication when publishing results derived
-			from use of MCAM:
-			<ul>
-				<li>Naegle KM, Welsch RE, Yaffe MB, White FM, Lauffenburger DA.
-					<i>MCAM: Multiple Clustering Analysis Methodology for Deriving
-						Hypotheses and Insights from High-Throughput Proteomic Datasets.</i>
-					PLoS Comput Biol 7(7), 2011.
-				</li>
-			</ul>
-			<br /> 
+			<div class="body">
+  			Please cite the following publication when publishing results
+  			derived from use of PTMScout:
+  			<ul>
+  				<li>Naegle KM, Gymrek M, Joughin BA, Wagner JP, Welsch RE,
+  					Yaffe MB, Lauffenburger DA, White FM. <i>PTMScout: A web
+  						resource for analysis of high-throughput post-translational
+  						proteomic studies.</i> Molecular and Cellular Proteomics, 2010.
+  				</li>
+  			</ul>
+  			Please cite the following publication when publishing results derived
+  			from use of MCAM:
+  			<ul>
+  				<li>Naegle KM, Welsch RE, Yaffe MB, White FM, Lauffenburger DA.
+  					<i>MCAM: Multiple Clustering Analysis Methodology for Deriving
+  						Hypotheses and Insights from High-Throughput Proteomic Datasets.</i>
+  					PLoS Comput Biol 7(7), 2011.
+  				</li>
+  			</ul>
+  			<br /> 
+  		</div>
+  		
 			<h2>License, Disclaimer	and Terms of Use</h2>
-			<h3>
-				
-				
-				<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode">Licensed
-					under Creative Commons Noncommercial, Share-Alike, Attribution 3.0 Unported</a>
-			</h3>
-
+			<div class="body">
+			  <p>
+  				<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode">Licensed
+  					under Creative Commons Noncommercial, Share-Alike, Attribution 3.0 Unported
+  				</a>
+  			</p>
+      </div>
+      
 			<h3>Disclaimer</h3>
-			<p class="disclaimer">
-				The PTMScout web site (the "Site") is an online, open-content,
-				collaborative project that represents a voluntary association of
-				individuals and groups working to develop a common, educational
-				resource. Use of the site is completely voluntary; and anyone may
-				access the data presented on the Site and/or those with user accounts may upload data to the
-				Site. The Site's content is not uniformly peer reviewed, and,
-				therefore, all of the Site's information is provided without
-				representations or warranties of any kind, express or implied,
-				including, without limitation, warranties of merchantability,
-				fitness for a particular purpose, or noninfringement. None of the
-				administrators, contributors, or anyone else associated with the
-				Site is responsible for the appearance of any inaccurate or
-				libelous information, your use of the information contained on this
-				Site, or modifications made to Site content. The Site's database is
-				stored on a server in the State of Missouri  in the
-				United States of America, and is therefore maintained in reference
-				to the protections afforded under local and federal law. Laws in
-				your country or jurisdiction may not protect or allow the same
-				kind(s) of speech or distribution. The Site does not encourage the
-				violation of any laws, and, therefore, cannot assume responsibility
-				for any violations of such laws attributable to your linking to
-				this domain or using, reproducing, or publishing material contained
-				herein. <br /> <br /> The Site's information is furnished
-				freely, and you are specifically granted a limited license to copy
-				anything from this Site pursuant to a <a
-					href="http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode">"Creative
-					Commons License"</a>. Notwithstanding the benefits provided by this
-				limited license, no agreement or contract is created between you
-				and the Site\'s owners or users; the owners of the servers on which
-				the Site is housed; the individual Site contributors; any Site
-				administrators, system operators; or anyone else connected (in any
-				manner) to this project or sister projects subject to your claims
-				directly. Furthermore, this license neither creates nor implies any
-				contractual relationship or liability on the part of Washington University in St. Louis, its
-				trustees, directors, officers, employees, agents, or associates.
-				Any trademarks, service marks, collective marks, design rights or
-				similar rights that are mentioned, used, or cited on the Site
-				remain the property of their respective owners. Unless otherwise
-				specifically provided, the Site is not endorsed by or affiliated
-				with the holders of any such marks/rights. Any use of the Site's
-				material is completely at your own risk. Thus, users should not
-				rely on any information contained in the Site without independent
-				verification. The Site is a work in progress, so please notify Site
-				administrators of any errors discovered on the Site.
-			</p> 
-			<h3>
-				<a href="http://ptmscout.wustl.edu/cgi-bin/terms.cgi">Terms of Use</a>
-			</h3>
+			<div class="body">
+  			<p class="disclaimer">
+  				The PTMScout web site (the "Site") is an online, open-content,
+  				collaborative project that represents a voluntary association of
+  				individuals and groups working to develop a common, educational
+  				resource. Use of the site is completely voluntary; and anyone may
+  				access the data presented on the Site and/or those with user accounts may upload data to the
+  				Site. The Site's content is not uniformly peer reviewed, and,
+  				therefore, all of the Site's information is provided without
+  				representations or warranties of any kind, express or implied,
+  				including, without limitation, warranties of merchantability,
+  				fitness for a particular purpose, or noninfringement. None of the
+  				administrators, contributors, or anyone else associated with the
+  				Site is responsible for the appearance of any inaccurate or
+  				libelous information, your use of the information contained on this
+  				Site, or modifications made to Site content. The Site's database is
+  				stored on a server in the State of Missouri  in the
+  				United States of America, and is therefore maintained in reference
+  				to the protections afforded under local and federal law. Laws in
+  				your country or jurisdiction may not protect or allow the same
+  				kind(s) of speech or distribution. The Site does not encourage the
+  				violation of any laws, and, therefore, cannot assume responsibility
+  				for any violations of such laws attributable to your linking to
+  				this domain or using, reproducing, or publishing material contained
+  				herein. <br /> <br /> The Site's information is furnished
+  				freely, and you are specifically granted a limited license to copy
+  				anything from this Site pursuant to a <a
+  					href="http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode">"Creative
+  					Commons License"</a>. Notwithstanding the benefits provided by this
+  				limited license, no agreement or contract is created between you
+  				and the Site\'s owners or users; the owners of the servers on which
+  				the Site is housed; the individual Site contributors; any Site
+  				administrators, system operators; or anyone else connected (in any
+  				manner) to this project or sister projects subject to your claims
+  				directly. Furthermore, this license neither creates nor implies any
+  				contractual relationship or liability on the part of Washington University in St. Louis, its
+  				trustees, directors, officers, employees, agents, or associates.
+  				Any trademarks, service marks, collective marks, design rights or
+  				similar rights that are mentioned, used, or cited on the Site
+  				remain the property of their respective owners. Unless otherwise
+  				specifically provided, the Site is not endorsed by or affiliated
+  				with the holders of any such marks/rights. Any use of the Site's
+  				material is completely at your own risk. Thus, users should not
+  				rely on any information contained in the Site without independent
+  				verification. The Site is a work in progress, so please notify Site
+  				administrators of any errors discovered on the Site.
+  			</p> 
+  		</div>
+  		
+			<h3>Terms of Use</h3>
+		  <div class="body">
+		    <p>
+			    <a href="http://ptmscout.wustl.edu/cgi-bin/terms.cgi">View the PTM Scout Terms of Use</a>
+			  </p>
+			</div>
 
-			<hr size=10 color="blue">
-			<br />
 			<h2>
-				<font color="#0000A0">Developers</font> 
+				Developers
 			</h2>
-			<h3> <ul> <li> Matthew Matlock </li> </ul> </h3> 
-			<h3 style="text-indent:20px">
-				PTMScout Version 1:
-			</h3>
-			<ul>
-				<li>Kristen Naegle</li>
-				<li>Melissa Gymrek</li>
-			</ul>
-			<br />
+			<div class="body">
+			  <h4>Version 2</h4>
+  			<ul> 
+  			  <li> Matthew Matlock </li>
+  			</ul> 
+  			<h4>Version 1</h4>
+  			<ul>
+  				<li>Kristen Naegle</li>
+  				<li>Melissa Gymrek</li>
+  			</ul>
+  			<br />
+  		</div>
+  		
 			<h2>
 				Contact Us 
 			</h2>
-			<ul>
-				<li><a href="mailto:${adminEmail}">${adminEmail}</a></li>
-			</ul>
-
+			<div class="body">
+			  <p>
+          <a href="mailto:${adminEmail}">${adminEmail}</a>
+        </p>
+      </div>
 
 			<h2>
 				Download PTMScout 
 			</h2>
-
-			<ul>
-				<li>In order to download your own version of PTMScout software,
+      <div class="body">
+        <p>In order to download your own version of PTMScout software,
 					for analysis of non-public data, please e-mail the administrator at
 					<a href="${adminEmail}">${adminEmail}</a>.
 					The software is distributed under the 
 					<a href="http://creativecommons.org/licenses/by-nc-sa/3.0">Creative
 					Commons Attribution Noncommercial ShareAlike license.</a>
-				</li>
-			</ul>
+				</p>
+			</div>
 
-			<h2>
-				<font color="#0000A0">Download MCAM Matlab Software</font>
-			</h2>
-			
-			<ul>
-				<li><a href="/MCAM_July_2011.zip">MCAM Matlab Code</a></li>
-			</ul>
-
-			<br /> 
+			<h2>Download MCAM Matlab Software</h2>
+			<div class="body">
+  			<ul>
+  				<li><a href="/MCAM_July_2011.zip">MCAM Matlab Code</a></li>
+  			</ul>
+      </div>
+      
 			<h2>Privacy</h2>
-			<ul>
-				<li>Cookies are used on this site only for the collection of
-					anonymous information. The goal of this information is to inform
-					the developers of PTMScout of the usefulness of the tools provided
-					and to aid in the pursuit of funding for maintenance and further
-					development of PTMScout.
-				</li>
-				<li>Data uploaded under private accounts and kept private cannot be seen in any form by users other than those ones with which the data is shared. 
+			<div class="body">
+  			<ul>
+  				<li>Cookies are used on this site only for the collection of
+  					anonymous information. The goal of this information is to inform
+  					the developers of PTMScout of the usefulness of the tools provided
+  					and to aid in the pursuit of funding for maintenance and further
+  					development of PTMScout.
+  				</li>
+  				<li>Data uploaded under private accounts and kept private cannot be seen in any form by users other than those ones with which the data is shared. 
 				
-				</li>
-			</ul>
+  				</li>
+  			</ul>
+  	  </div>
 		</div>
-		<br /> <br /> <br />
+	</div>
+</div>
 	</div>
 </div>

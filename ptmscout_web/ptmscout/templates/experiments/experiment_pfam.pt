@@ -10,20 +10,16 @@
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/table.minimizer.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/make.pies.js')}"></script>
 	</div>
+	<div metal:fill-slot="nav">
+    <div metal:use-macro="experiment_header"></div>
+  </div>
+  <div metal:fill-slot="subnav">
+	  <div metal:use-macro="experiment_summary_menu"></div>  	  
+  </div>
+	
 	<div metal:fill-slot="content">
-		<div metal:use-macro="experiment_header">
-			<div id="experimentSummaryMenu" metal:fill-slot="menu">
-				<a href="${request.application_url}/experiments/${experiment.id}/summary">Summary</a>
-				| <a href="${request.application_url}/experiments/${experiment.id}/GO">GO Terms</a>
-				| <a href="${request.application_url}/experiments/${experiment.id}/pfam">Protein Families</a>
-				| <a href="${request.application_url}/experiments/${experiment.id}/predictions">Scansite Predictions</a>
-				<tal:empty tal:condition="user_owner">| <a href="${request.application_url}/experiments/${experiment.id}/errors">Error Log</a></tal:empty>
-			</div>
-		</div>
-		
-		
-		<div class="section_group">
-			<div class="title">Pfam Sites</div>
+		<div class="grid_12">
+		  <h3>Pfam Sites</h3>  
 			<div class="body">
 				<div class="data_table">
 					<table>
@@ -32,7 +28,7 @@
 							<th>Site</th>
 							<th class="value">Peptides</th>
 						</tr>
-						<tr tal:repeat="entry sites.table">
+                        <tr tal:repeat="(i, entry) enumerate(sites.table)" tal:attributes="class 'even' if i % 2 == 0 else ' odd';">
                             <td tal:condition="entry[0] != 'None'" ><a target="_blank" href="${request.route_url('experiment_subset', id=experiment.id, _query=pfam_site_query(entry[0]) )}"><img height="20" src="${request.static_url('ptmscout:static/images/glass.png')}" /></a></td>
                             <td tal:condition="entry[0] == 'None'" ></td>
 							<td tal:content="entry[0]"></td>
@@ -46,19 +42,16 @@
 				</div>
 				<div class="clear"></div>
 			</div>
-		</div>			
 		
-		<div class="section_group">
-			<div class="title">Pfam Domains</div>
+			<h3>Pfam Domains</h3>
 			<div class="body">
 				<div class="data_table">
 					<table>
 						<tr>
-                            <th></th>
 							<th>Domain</th>
 							<th class="value">Proteins</th>
 						</tr>
-						<tr tal:repeat="entry domains.table">
+						<tr tal:repeat="(i, entry) enumerate(domains.table) " tal:attributes="class 'even' if i % 2 == 0 else ' odd';">
                             <td tal:condition="entry[0] != 'None'" ><a target="_blank" href="${request.route_url('experiment_subset', id=experiment.id, _query=pfam_domain_query(entry[0]) )}"><img height="20" src="${request.static_url('ptmscout:static/images/glass.png')}" /></a></td>
                             <td tal:condition="entry[0] == 'None'" ></td>
 							<td tal:content="entry[0]"></td>
@@ -73,6 +66,5 @@
 				<div class="clear"></div>
 			</div>
 		</div>			
-		
 	</div>
 </div>

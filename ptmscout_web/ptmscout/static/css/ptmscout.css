@@ -1,12 +1,55 @@
-body {
-  margin: 0px;
-  padding: 0px;
-  margin-left: 5em;
-  margin-right: 5em;
-  background-color: white;
-  font-family:sans-serif;
-  font-size:small;
+
+* {
+	margin: 0;
 }
+html, body {
+	height: 100%;
+}
+
+body {
+  font-size:12pt;
+  font-family: helvetica,arial,verdana;
+  height: auto;
+  background-color: #ccc;
+}
+a {
+  color: blue;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+a:visited{
+  color: blue;
+}
+
+
+#wrapper {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -160px; /* the bottom margin is the negative value of the footer's height */
+	background-color:gray;
+	margin-left: auto;
+	margin-right:auto;
+}
+#wrapper_container {
+  width: 960px;
+  background-color: white;
+  margin-left:auto;
+  margin-right:auto;
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  border-left: 2px solid #666;
+  border-right: 2px solid #666;  
+}
+
+#footer, #push {
+  padding-top: 1em;
+	height: 160px; /* .push must be the same height as .footer */
+}
+
 
 table {
     font-size: small;
@@ -25,48 +68,149 @@ table {
 }
 
 
-#page {
-  margin-left: auto;
-  margin-right: auto;
+#page, #wrapper {
+  background-color: #ccc;
+}
+
+#content {
+}
+#content .container_12,
+#breadcrumb .container_12
+{
   background-color: white;
-  border: 1px solid gray;
 }
 
 #menu {
-  background-color: white;
-  color: blue;
-  height: 1.4em;
+  background-color: black;
+  background-image: -ms-linear-gradient(top, #000 0%, #303030 100%);
+  background-image: -moz-linear-gradient(top, #000 0%, #303030 100%);
+  background-image: -o-linear-gradient(top, #000 0%, #303030 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #000), color-stop(1, #303030));
+  background-image: -webkit-linear-gradient(top, #000 0%, #303030 100%);
+  background-image: linear-gradient(to bottom, #000 0%, #303030 100%);
+  
+  color: white;
+  height: 60px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   margin-left: auto;
   margin-right: auto;
 }
 
 #menu a {
+  color: white;
+}
+#menu a:hover {
   color: blue;
-  text-decoration:none;
+}
+#menu a.nav_active {
+  color: #FF0;
 }
 
-.split {
-    width:100%;
-    border:solid 1px black;
+#breadcrumb {
 }
+#breadcrumb .container_12 {
+  text-indent: 0.2em;
+  border-top: 2px solid #666;
+  border-bottom: 2px solid #666;
+  color: #666;
+}
+
+#content { }
+#content .container_12 {
+  bottom: 0;	
+}
+#nav, #subnav {
+  height: 24px;
+  padding-left: 10px;
+}
+#nav {
+  background-color: #777;
+  background-image: -ms-linear-gradient(top, #666 0%, #888 100%);
+  background-image: -moz-linear-gradient(top, #666 0%, #888 100%);
+  background-image: -o-linear-gradient(top, #666 0%, #888 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #666), color-stop(1, #888));
+  background-image: -webkit-linear-gradient(top, #666 0%, #888 100%);
+  background-image: linear-gradient(to bottom, #666 0%, #888 100%);
+}
+#nav a, #subnav a{
+  color: white;
+}
+#nav a:hover, #subnav a:hover {
+  color: blue;
+}
+#nav a.nav_active, #subnav a.nav_active {
+  color: black;
+  font-weight: bold !important;
+}
+#subnav {
+  background-color: #999;
+  background-image: -ms-linear-gradient(top, #888 0%, #AAA 100%);
+  background-image: -moz-linear-gradient(top, #888 0%, #AAA 100%);
+  background-image: -o-linear-gradient(top, #888 0%, #AAA 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #888), color-stop(1, #AAA));
+  background-image: -webkit-linear-gradient(top, #888 0%, #AAA 100%);
+  background-image: linear-gradient(to bottom, #888 0%, #AAA 100%);
+}
+
+#footer {
+  background-image: linear-gradient(bottom, rgb(0,0,0) 25%, rgb(51,51,51) 63%);
+  background-image: -o-linear-gradient(bottom, rgb(0,0,0) 25%, rgb(51,51,51) 63%);
+  background-image: -moz-linear-gradient(bottom, rgb(0,0,0) 25%, rgb(51,51,51) 63%);
+  background-image: -webkit-linear-gradient(bottom, rgb(0,0,0) 25%, rgb(51,51,51) 63%);
+  background-image: -ms-linear-gradient(bottom, rgb(0,0,0) 25%, rgb(51,51,51) 63%);
+
+  background-image: -webkit-gradient(
+  	linear,
+  	left bottom,
+  	left top,
+  	color-stop(0.25, rgb(0,0,0)),
+  	color-stop(0.63, rgb(51,51,51))
+  );
+}
+#footer .container_12 {
+  height: 160px;
+  font-size: 10pt;
+  color: white;
+}
+#footer a {
+  color: #009999;
+}
+#footer li {
+  list-style:none;
+  margin: 0;
+  margin-top: 5px;
+}
+#footer h3{
+  margin-bottom:0;
+  color: #999;
+}
+ul.link_menu
+{
+  display: block;
+  margin-bottom: 0;
+}
+ul.link_menu li
+{
+  margin-left: 1em;
+  float: left;
+  list-style: none outside none;
+}
+ul.link_menu li:first-child {
+  margin-left: 0;
+}
+
 
 #splash {
-    margin-left:auto;
-    margin-right:auto;
     text-align:center;
-    width:800px;
 }
 
 #portal {
-    width:800px;
-    height:700px;
     position:relative;
 }
 
 #portal .menusplash {
-    width:600px;
-    height:600px;
-    margin-left:55px;
+    margin-left:auto;
     margin-right:auto;
     padding-top:20px;
 }
@@ -118,6 +262,7 @@ table {
     line-height: normal;
     vertical-align: middle;
     color:white;
+    margin-top:40px;
 }
 
 .notification {
@@ -146,9 +291,65 @@ table {
    clear: both;
 }
 
-tr th {
- text-align:left;
+.body {
+	margin-left:1em;
+	margin-right: 1em;
 }
+
+
+/* Generic Table Styles */
+
+table {
+  margin-top:1em;
+	border-collapse: collapse;
+	width:90%;
+	margin-left:auto;
+	margin-right:auto;
+	border:solid;
+	border-width:1px;
+	border-color:black;
+}
+
+th, td {
+ padding-left: 0.5em;
+ padding-right: 0.5em;
+}
+
+th {
+  text-align:left;
+  background:#333;
+  color:white;
+  padding-top: 0.3em;
+  padding-bottom:0.3em;
+}
+td {
+	vertical-align:top;
+}
+tr.odd {
+	background:white;
+}
+tr.even {
+	background:#DDD;
+}
+
+/* when you want to lay the headers out vertically, you can use this class on the table */
+table.vertical-headers th {
+  background-color: transparent;
+  color: black;
+  font-weight: bold;
+  padding-top:0;
+  padding-bottom: 0;
+}
+
+.drop-shadow {
+  box-shadow: 10px 10px 5px #888888;
+  margin-bottom: 10px;
+}
+table.vertical-padding th, table.vertical-padding td {
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+}
+/* end of generic table styles */
 a img {
  border:none;
 }
@@ -157,38 +358,14 @@ dd {
   margin-bottom: 1em;
 }
 
-#breadcrumb {
-  text-indent: 0.2em;
-  border-top: 2px solid #333399;
-  border-bottom: 2px solid #333399;
-}
-#experimentMenu {
-  text-indent: 0.2em;
-  border-bottom: 2px solid #333399;
-}
 #experimentInfo {
   margin-top: 1em;
   margin-bottom: 1em;
  
   margin-left:auto;
   margin-right: auto;
-
-  text-align: center;
-}
-#content {
-  bottom: 0;	
-  text-indent: 0.2em;  
 }
 
-#footer {
-  margin-top: 1em;
-  clear: both;
-  width: 100%;
-  text-align: center;
-  font-size: 10pt;
-  background-color:#33CFDB;
-  color: black;
-}
 
 hr { border: 0 }
 
@@ -246,7 +423,10 @@ img.help {
 ul.no_bullet {
   list-style-type: none; 
   padding: 0;
-  margin-left: 0.5em;
+  margin-left: 0;
+}
+ul.no_bullet li {
+  margin-left: 0;
 }
 
 
@@ -263,7 +443,6 @@ table#gene_ontology_breakdown th {
 }
 
 table#gene_ontology_breakdown * {
- text-indent: 0.2em;
 }
 
 
@@ -284,24 +463,8 @@ table#peptide_table {
   max-width: 1024px;
 }
 
-table#peptide_table th {
-  background-color: black;
-  color: white; 
-}
-table#peptide_table th,td {
- padding-left: 0.5em;
- padding-right: 0.5em;
-}
-table#peptide_table td {
- border: 1px solid black;
-}
-
 table#peptide_table li {
   margin-bottom: 0.5em;
-}
-
-table#peptide_table tr.odd {
-  background-color: #DDDDDD;
 }
 
 
@@ -320,3 +483,10 @@ div.section {
 }
 /** End Stuff for drawing sections of a page */
 
+
+/** assign the element a max-width and width and any text that overflows will be replaced with ... */
+.overflow-ellipsis {
+  overflow-x: hidden;
+  white-space: nowrap; 
+  text-overflow: ellipsis;
+}
