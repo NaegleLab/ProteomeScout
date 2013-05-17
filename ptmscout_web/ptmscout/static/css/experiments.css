@@ -3,17 +3,9 @@
 	text-align:center;
 }
 
-.experiment-group .group-title {
-    margin-top:20px;
-    width:90%;
-	margin-left:auto;
-	margin-right:auto;
-    font-size:medium;
-}
-
 .experimenttable {
   margin-top: 1em;
-  width: 100%;
+  width: 98%;
 }
 
 .experimenttable .status {
@@ -34,13 +26,6 @@
 
 .experimenttable td.citation {
 	font-size:16px;
-}
-
-.experimenttable tr.odd {
-	background:white;
-}
-.experimenttable tr.even {
-	background:#9999cc;
 }
 
 .restricted {

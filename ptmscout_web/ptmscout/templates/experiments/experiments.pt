@@ -4,15 +4,16 @@
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/experiments.css')}" />
 	</div>
     <div metal:fill-slot="content">
+      <div class="body">
         <div class="experiment-group">
-            <div class="group-title">Compendia:</div>
+          <h2>Compendia</h2>
             <table class = "experimenttable drop-shadow">
                 <thead>
                     <tr>
                         <th></th>
                         <th>Compendia</th>
                         <th>Description</th>
-                        <th>Author</th>
+                        <th>Authors</th>
                         <th>Journal Info</th>
                     </tr>
                 </thead>
@@ -30,14 +31,14 @@
             </table>
         </div>
         <div class="experiment-group">
-            <div class="group-title">Experiments:</div>
+          <h2>Experiments</h2>
             <table class = "experimenttable drop-shadow">
                 <thead>
                     <tr>
                         <th></th>
                         <th>Experiment</th>
                         <th>Description</th>
-                        <th>Author</th>
+                        <th>Authors</th>
                         <th>Journal Info</th>
                     </tr>
                 </thead>
@@ -54,6 +55,6 @@
                 </tbody>
             </table>
         </div>
-
+      </div>
     </div>
 </div>
