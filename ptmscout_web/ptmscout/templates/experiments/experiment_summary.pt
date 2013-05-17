@@ -22,8 +22,9 @@
 		<div class="grid_12">
 		  <h2>Experiment Data Summary</h2>
 			
+			
 			<div class="body">
-				<table class="summary_quantity">
+				<table class="vertical-headers no-border align-left" style="width:200px">
 					<tr>
 						<th class="field">Proteins</th>
 						<td class="value">${measurement_summary.proteins}</td>
@@ -42,7 +43,7 @@
 					</tr>
 				</table>
 				
-				<table class="experiment_summary">
+				<table class="experiment_summary drop-shadow">
 					<tr>
 						<th>By Residue</th>
 						<th>By Modification Type</th>
@@ -50,25 +51,25 @@
 					</tr>
 					<tr>
 						<td class="listing">
-							<table class="summary_quantity">
+							<table class="vertical-headers no-border align-left">
 								<tr tal:repeat="r measurement_summary.by_residue">
-									<td class="field" tal:content="r"></td>
+									<th class="field" tal:content="r" />
 									<td class="value" tal:content="measurement_summary.by_residue[r]"></td>
 								</tr>
 							</table>
 						</td>
 						<td class="listing">
-							<table class="summary_quantity">
+							<table class="vertical-headers no-border align-left">
 								<tr tal:repeat="t measurement_summary.by_type">
-									<td class="field" tal:content="t"></td>
+									<th class="field" tal:content="t" />
 									<td class="value" tal:content="measurement_summary.by_type[t]"></td>
 								</tr>
 							</table>
 						</td>
 						<td class="listing">
-							<table class="summary_quantity">
+							<table class="vertical-headers no-border align-left">
 								<tr tal:repeat="s measurement_summary.by_species">
-									<td class="field" tal:content="s"></td>
+									<th class="field" tal:content="s" />
 									<td class="value" tal:content="measurement_summary.by_species[s]"></td>
 								</tr>
 							</table>

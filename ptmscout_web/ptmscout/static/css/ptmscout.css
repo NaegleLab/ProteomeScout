@@ -341,6 +341,13 @@ table.vertical-headers th {
   padding-bottom: 0;
 }
 
+table.no-border {
+  border: none;
+}
+table.align-left {
+  margin-left: 0;
+}
+
 .drop-shadow {
   box-shadow: 10px 10px 5px #888888;
   margin-bottom: 10px;

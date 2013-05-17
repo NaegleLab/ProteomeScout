@@ -48,36 +48,15 @@
 	text-align:right;
 }
 
-table.summary_quantity {
-	width:200px;
-	margin-top:10px;
-	margin-bottom:20px;
-}
-
-.summary_quantity .field {
-	float:left;
-	width:150px;
-	font-weight:bold;
-}
-
-.summary_quantity .value {
-	text-align:right;
-}
-
 table.experiment_summary {
   margin: 0;
 	width:600px;
 }
 
-table.experiment_summary th {
-	background:black;
-	color:white;
-}
-
 table.experiment_summary td.listing {
-	vertical-align:top;
-	border-left: solid 1px black;
-	border-right: solid 1px black;
+  vertical-align:top;
+  border-left: solid 1px black;
+  border-right: solid 1px black;
 }
 
 
