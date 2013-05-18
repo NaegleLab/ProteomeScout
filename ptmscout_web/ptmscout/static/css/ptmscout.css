@@ -347,6 +347,9 @@ table.no-border {
 table.align-left {
   margin-left: 0;
 }
+table.wide-table {
+  width: 98%;
+}
 
 .drop-shadow {
   box-shadow: 10px 10px 5px #888888;
@@ -458,16 +461,6 @@ div.protein_navigation {
   width: 95%;
   margin-left: auto;
   margin-right: auto;
-}
-
-table#peptide_table {
-  border-collapse: collapse;
-  margin-left:auto;
-  margin-right:auto;
-  margin-top:1em;
-  width: 95%;
-  border: 1px solid black;   
-  max-width: 1024px;
 }
 
 table#peptide_table li {

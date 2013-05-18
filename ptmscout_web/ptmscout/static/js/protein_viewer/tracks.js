@@ -130,7 +130,8 @@ function build_ptm_table(k, mods, protein_data) {
 
     table =
         d3.select('div.ptm_metadata').append('table')
-                .attr('id', 'peptide_table');
+                .attr('id', 'peptide_table')
+                .attr('class', 'wide-table');
 
     header_row = table.append('tr');
     header_row.append('th')
@@ -160,6 +161,8 @@ function build_ptm_table(k, mods, protein_data) {
                     d3.select(this).append('td')
                         .text(d.mod_type);
                     exp_td = d3.select(this).append('td');
+                    exp_td.attr('class',"overflow-ellipsis");
+                    exp_td.attr('style', "max-width:400px;width:400px");
                     exp_td.append('a')
                         .attr('href', "{0}".format(d.experiment_url))
                         .attr('target', '_blank')
