@@ -15,7 +15,7 @@
                 <div class="formcategory">Dataset</div>
                 <table>
                     <tr>
-                        <td class="fieldname">Upload type:</td>
+                        <th>Upload type:</th>
                         <td>
                             ${formrenderer.render('load_type', id_='new_dataset', tooltip='Create a new dataset')}
                             ${formrenderer.render('load_type', id_='append_dataset', tooltip='Append data to an existing dataset')}

@@ -9,6 +9,7 @@
         <div style="margin-top:1em">
           <a href='${request.application_url}/upload'>Upload Data</a>
         </div>
+        <h2>My Experiments</h2>
       	<table class = "experimenttable">
       		<thead>
       	  		<tr>
@@ -36,7 +37,7 @@
                               </div>
   						</td>
   						<td class="accesscontrol" tal:condition="experiment.public == 0">
-  							<table>
+  							<table class="no-border">
   								<tr>
   									<td>
   										<form tal:attributes="id 'publish'+str(experiment.id);action request.application_url + '/account/experiments/' + str(experiment.id) + '/publish'" method="link">											
@@ -79,6 +80,7 @@
   			</tbody>
   		</table>
 		
+		<h2>My Datasets</h2>
 		<tal:empty tal:condition = "len(datasets) > 0">
 			<table class = "experimenttable">
 	    		<thead>
@@ -159,11 +161,9 @@
 		</tal:empty>
 		
 		<tal:empty tal:condition = "len(jobs) > 0">
+		  <h2>Status of recent and currently active jobs</h2>
 			<table class = "experimenttable">
 	    		<thead>
-	    			<tr>
-	    				<th colspan="5">Status of recent and currently active jobs:</th>
-	    			</tr>
 	    	  		<tr>
 			   			<th>Job Name</th>
 			   			<th>Created</th>

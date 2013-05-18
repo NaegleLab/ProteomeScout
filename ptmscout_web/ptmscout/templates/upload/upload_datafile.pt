@@ -19,46 +19,50 @@
               
               
               <h3>Experiment Upload Type</h3>
-              <table class="vertical-headers vertical-padding drop-shadow" style="width:98%;">
-                <tr>
-                    <td class="fieldname">Upload type:</td>
-                    <td>
-                        ${formrenderer.render('load_type', id_='new_dataset', tooltip='Create a new experiment')}
-                        ${formrenderer.render('load_type', id_='append_dataset', tooltip='Append data to an existing experiment')}
-                        ${formrenderer.render('load_type', id_='reload_dataset', tooltip='Replace an existing experiment with new data')}
-                        ${formrenderer.render('load_type', id_='extend_dataset', tooltip='Create a new experiment using modified data from an existing experiment')}
-                    </td>
-                </tr>
-                <tr id="parent_exp" class="">
-                    <th class="right-align">Parent Experiment</th>
-                    <td>
-                        ${formrenderer.render('parent_experiment', id_='expselect', class_='stretch')}
-                    </td>
-                </tr>
-                  <tr id="change_name" class="">
-                    <th class="right-align">Extension Title</th>
-                    <td>
-                        ${formrenderer.render('change_name')}
-                    </td>
-                </tr>
-                  <tr id="change_desc" class="">
-                    <th class="right-align">Description of Extension</th>
-                    <td>
-                        ${formrenderer.render('change_description')}
-                          <br />
-                    </td>
-                </tr>
-            </table>
-                            
+              <div style='min-height:200px;border:1px solid black' class='drop-shadow'>
+                <table class="vertical-headers vertical-padding no-border" style="width:98%;margin-bottom:2em">
+                  <tr>
+                      <th class='right-align'>Upload type:</th>
+                      <td>
+                          ${formrenderer.render('load_type', id_='new_dataset', tooltip='Create a new experiment')}
+                          ${formrenderer.render('load_type', id_='append_dataset', tooltip='Append data to an existing experiment')}
+                          ${formrenderer.render('load_type', id_='reload_dataset', tooltip='Replace an existing experiment with new data')}
+                          ${formrenderer.render('load_type', id_='extend_dataset', tooltip='Create a new experiment using modified data from an existing experiment')}
+                      </td>
+                  </tr>
+                  <tr id="parent_exp" class="">
+                      <th class="right-align">Parent Experiment</th>
+                      <td>
+                          ${formrenderer.render('parent_experiment', id_='expselect', class_='stretch')}
+                      </td>
+                  </tr>
+                    <tr id="change_name" class="">
+                      <th class="right-align">Extension Title</th>
+                      <td>
+                          ${formrenderer.render('change_name')}
+                      </td>
+                  </tr>
+                    <tr id="change_desc" class="">
+                      <th class="right-align">Description of Extension</th>
+                      <td>
+                          ${formrenderer.render('change_description')}
+                            <br />
+                      </td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">&nbsp;</td>
+                  </tr>
+              </table>
+            </div>
               <h3>Experiment Data</h3>
-              <table class="vertical-headers vertical-padding drop-shadow" style="width:98%">
+              <table class="vertical-headers vertical-padding drop-shawdow" style="width:98%">
                 <tr>
                     <th class="right-align">Data input file</th>
                     <td > ${formrenderer.render('data_file')} </td>
                 </tr>
             </table>
 
-              <div class='right-align'>
+              <div class='right-align' style="margin-top:2em;margin-bottom:1em">
                 <input type="submit" value="Continue" class="longtask" style="width:120px;font-weight:bold" />
               </div>
           </div>

@@ -8,59 +8,64 @@
     </div>
     
     <div metal:fill-slot="content">
-        <?python from ptmscout.config import strings; ?>
-        <fieldset class="configurator-instructions">
-            <legend>Instructions:</legend>
+      <div class="grid-12">
+        <div class="body">
+          <h2>Instructions</h2>
+          <div class="body">
+            <?python from ptmscout.config import strings; ?>
             ${structure:strings.experiment_upload_configure_message}
-        </fieldset>
-        <div class="configurator_app">
+          </div>
+          <h2>Data</h2>
+          <div class="configurator_app">
         	
-            <div class="error_display" tal:condition="len(error) > 0">
-                <ul>
-                    <li tal:repeat="msg error" tal:content="msg"></li>
-                </ul>
-                Warning: Data rows with warnings will not be loaded!
-            </div>
-            <div class="data_display">
-                <form action="" method="post">
-                    <input type="hidden" name="submitted" value="true" />
-                    <div class="data" tal:condition="'units' in data_definitions">
-                        Experiment data units: <input name='units' type="text" size="22" maxlength="20" tal:attributes="value data_definitions['units']"/>                        
-                    </div>
-                    <div class="datatable">
-                        <table>
-                            <tr class="headers">
-                                <td class="header">#</td>
-                                <td tal:repeat="(c, column_name) enumerate(headers)" tal:attributes="class 'header c%d'%(c)">
-                                    <span tal:content="column_name"></span>
-                                </td>
-                            </tr>
-                            <tr class="column_defs">
-                                <td class="header"></td>
-                                <td tal:repeat="c data_definitions['columns']" tal:attributes="id 'c%d' % (c);class 'coldef c%d'%(c)">
-                                    <select tal:attributes="name 'column_%d_type' % (c)">
-                                        <option tal:repeat="val column_values" tal:attributes="value val; selected 'selected' if val==data_definitions['columns'][c]['type'] else default" tal:content="val"></option>
-                                    </select>
-                                    <input class="label" type="text" tal:attributes="name 'column_%d_label' % (c); value data_definitions['columns'][c]['label']"/>
-                                    <input class="expander" style="display:none" tal:attributes="id 'c%d'%(c)" type="button" value="->"/>
-                                </td>
-                            </tr>
-                            <tr tal:repeat="(r, row) enumerate(data_rows)">
-                                <td class="cell header" tal:content="r+1"></td>
-                                <td tal:repeat="(c,cell) enumerate(row)" tal:attributes="class 'cell c%d'%(c)">
-                                    <span  tal:content="cell"></span>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="right">
-                        <span tal:condition="allowoverride">Ignore warnings and continue? <input type="checkbox" name="override" /></span> 
-                        <input type="submit" value="Continue" class="longtask" />
-                        <a tal:attributes="href '%s/upload/%d/cancel' % (request.application_url, session_id)">Cancel</a>
-                    </div>
-                    <div class="clear"></div>
-                </form>
-            </div>
-        </div>
+              <div class="error_display" tal:condition="len(error) > 0">
+                  <ul>
+                      <li tal:repeat="msg error" tal:content="msg"></li>
+                  </ul>
+                  Warning: Data rows with warnings will not be loaded!
+              </div>
+              <div class="data_display">
+                  <form action="" method="post">
+                      <input type="hidden" name="submitted" value="true" />
+                      <div class="data" tal:condition="'units' in data_definitions">
+                          Experiment data units: <input name='units' type="text" size="22" maxlength="20" tal:attributes="value data_definitions['units']"/>                        
+                      </div>
+                      <div class="datatable">
+                          <table>
+                              <tr class="headers">
+                                  <td class="header">#</td>
+                                  <td tal:repeat="(c, column_name) enumerate(headers)" tal:attributes="class 'header c%d'%(c)">
+                                      <span tal:content="column_name"></span>
+                                  </td>
+                              </tr>
+                              <tr class="column_defs">
+                                  <td class="header"></td>
+                                  <td tal:repeat="c data_definitions['columns']" tal:attributes="id 'c%d' % (c);class 'coldef c%d'%(c)">
+                                      <select tal:attributes="name 'column_%d_type' % (c)">
+                                          <option tal:repeat="val column_values" tal:attributes="value val; selected 'selected' if val==data_definitions['columns'][c]['type'] else default" tal:content="val"></option>
+                                      </select>
+                                      <input class="label" type="text" tal:attributes="name 'column_%d_label' % (c); value data_definitions['columns'][c]['label']"/>
+                                      <input class="expander" style="display:none" tal:attributes="id 'c%d'%(c)" type="button" value="->"/>
+                                  </td>
+                              </tr>
+                              <tr tal:repeat="(r, row) enumerate(data_rows)">
+                                  <td class="cell header" tal:content="r+1"></td>
+                                  <td tal:repeat="(c,cell) enumerate(row)" tal:attributes="class 'cell c%d'%(c)">
+                                      <span  tal:content="cell"></span>
+                                  </td>
+                              </tr>
+                          </table>
+                      </div>
+                      <div class="right">
+                          <span tal:condition="allowoverride">Ignore warnings and continue? <input type="checkbox" name="override" /></span> 
+                          <input type="submit" value="Continue" class="longtask" />
+                          <a tal:attributes="href '%s/upload/%d/cancel' % (request.application_url, session_id)">Cancel</a>
+                      </div>
+                      <div class="clear"></div>
+                  </form>
+              </div>
+          </div>
+      </div>
     </div>
+  </div>
 </div>

@@ -94,6 +94,12 @@ form.newform .formfields {
   display: block;
   height: 2em;
 }
+form.newform.noborder {
+  border:none;
+}
+form.newform.align-left {
+  margin-left:1em;
+}
 
 form.newform input[type='text'], form.newform input[type='password'] ,form.newform textarea {
   border: 1px solid #333;
