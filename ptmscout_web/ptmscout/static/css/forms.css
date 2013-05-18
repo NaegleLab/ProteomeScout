@@ -42,7 +42,9 @@ td.fieldname {
 	padding:10px;
 	margin-bottom:1em;
 }
-
+.newform .errorbox {
+  margin-top:-1em;
+}
 .errortext {
 	overflow:visible;
 	white-space:nowrap;
@@ -81,6 +83,7 @@ form.newform {
   border: 2px solid #333;
   border-radius: 5px;
   padding-bottom: 1em;
+  padding-top:1em;
 }
 
 form.newform label {
@@ -90,10 +93,6 @@ form.newform label {
 form.newform .formfields {
   display: block;
   height: 2em;
-}
-
-form.newform .formfields:first-child {
-  margin-top: 1em;
 }
 
 form.newform input[type='text'], form.newform input[type='password'] ,form.newform textarea {
