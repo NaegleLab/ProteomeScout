@@ -22,7 +22,7 @@
               <div style='min-height:200px;border:1px solid black' class='drop-shadow'>
                 <table class="vertical-headers vertical-padding no-border" style="width:98%;margin-bottom:2em">
                   <tr>
-                      <th class='right-align'>Upload type:</th>
+                      <th class='right-align' style="width:160px">Upload type</th>
                       <td>
                           ${formrenderer.render('load_type', id_='new_dataset', tooltip='Create a new experiment')}
                           ${formrenderer.render('load_type', id_='append_dataset', tooltip='Append data to an existing experiment')}
@@ -43,7 +43,7 @@
                       </td>
                   </tr>
                     <tr id="change_desc" class="">
-                      <th class="right-align">Description of Extension</th>
+                      <th class="right-align">Description</th>
                       <td>
                           ${formrenderer.render('change_description')}
                             <br />
