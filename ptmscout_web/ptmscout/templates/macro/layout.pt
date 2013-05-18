@@ -30,7 +30,7 @@
   <div id="wrapper">
   	<div id="menu">
   	  <div class="container_12">
-    	  <div class="grid_6" style="text-align:left">
+    	  <div class="grid_8" style="text-align:left">
     	    <ul class="link_menu">
     	      <li>
       	        <a href="${request.application_url}">
@@ -48,7 +48,7 @@
     	      <li><a target='_blank' href="${documentationUrl}title=Main_Page">Documentation</a></li>
               <li><a href="${request.route_url('about')}">About</a></li>
     	  </div>
-    	  <div class="grid_6" style="text-align:right">
+    	  <div class="grid_4" style="text-align:right">
     	    <ul class="link_menu" tal:condition="request.user == None" style="float:right;">
     	      <li>
                 <a href="${request.route_url('login')}">Login</a>
