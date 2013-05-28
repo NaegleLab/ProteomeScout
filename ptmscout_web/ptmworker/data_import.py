@@ -10,7 +10,6 @@ log = logging.getLogger('ptmscout')
 @upload_helpers.dynamic_transaction_task
 def start_import(exp_id, session_id, job_id, nullmods=False):
     exp = experiment.getExperimentById(exp_id, check_ready=False, secure=False)
-    job = exp.job
     
     log.info("Loading session info...")
     session = upload.getSessionById(session_id, secure=False)
@@ -30,10 +29,7 @@ def start_import(exp_id, session_id, job_id, nullmods=False):
     else:
         headers = upload_helpers.get_series_headers(session)
 
-        job.status = 'running'
-        job.progress = 0
-        job.max_progress = 0
-        job.save()
+        notify_tasks.set_job_status(job_id, 'running')
 
         load_ambiguities = exp.ambiguity == 1
 

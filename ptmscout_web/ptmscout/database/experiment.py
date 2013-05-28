@@ -98,7 +98,7 @@ class Experiment(Base):
     
     public = Column(Integer(1), default=0)
     
-    job_id = Column(Integer(10), ForeignKey('jobs.id'))
+    job_id = Column(Integer(10))
     submitter_id = Column(Integer(10), ForeignKey('users.id'))
 
     modified_residues = Column(VARCHAR(40), default="")
