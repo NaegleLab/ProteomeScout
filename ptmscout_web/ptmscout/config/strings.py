@@ -349,3 +349,8 @@ The PTMScout administrator has been notified of this error. If problems persist 
 failure_reason_account_expired = "This account has expired"
 
 
+mcam_enrichment_page_title = "MCAM Enrichment Analysis Export"
+mcam_enrichment_started_page_title = "MCAM Enrichment Started"
+mcam_enrichment_started_message = \
+"""The MCAM enrichment process was successfully started. An e-mail will be sent to you containing a link to download your enrichment files when the process is complete. Additionally, you may check the status of the enrichment calculation by visiting <a href=\"%s\">this page</a>"""
+

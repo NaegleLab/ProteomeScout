@@ -21,7 +21,7 @@ class Job(Base):
     result_url = Column(VARCHAR(250), nullable=True)
     
     name = Column(VARCHAR(250))
-    type = Column(Enum(['load_experiment','load_annotations','load_dataset']))
+    type = Column(Enum(['load_experiment','load_annotations','load_dataset','mcam_enrichment']))
     
     user_id = Column(Integer(10), ForeignKey('users.id'))
     user = relationship("User", backref='jobs')

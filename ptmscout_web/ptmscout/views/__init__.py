@@ -43,6 +43,10 @@ def add_views(config):
     config.add_route('save_subset', '/webservice/subsets/save')
     config.add_route('fetch_subset', '/webservice/subsets/fetch')
     
+    config.add_route('mcam_enrichment', '/experiments/{id}/mcam_enrichment')
+    config.add_route('mcam_confirm', '/experiments/{id}/mcam_confirm')
+    config.add_route('mcam_download', '/experiments/{id}/mcam_download/{mcam_id}')
+    
     config.add_route('upload', '/upload')
     config.add_route('upload_resume', '/upload/{id}')
     config.add_route('upload_retry', '/upload/{id}/retry')

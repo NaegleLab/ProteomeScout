@@ -45,7 +45,9 @@
     		<fieldset>
     			<legend>View Clustering Results</legend>
     			<span class="condition-title">Cluster Set:</span> <select id="cluster-set"></select> <button id="show-clusters" class="longtask">Show All Clusters From Set</button>
+    			<a href="${request.route_url('mcam_enrichment', id=experiment.id)}"><button id="mcam-enrichment">MCAM Enrichment</button></a>
     		</fieldset>
+
 	    </div>
 
 		<div class="filter-set">

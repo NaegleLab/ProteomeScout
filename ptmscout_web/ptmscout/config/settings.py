@@ -54,3 +54,12 @@ isoform_sequence_diff_pfam_threshold = 50
 experiment_files_prefix = "experiment_data"
 annotation_files_prefix = "annotation_data"
 dataset_files_prefix = "dataset_data"
+
+
+default_mcam_motif_cutoff = 0.01
+default_mcam_scansite_cutoff = 3
+default_mcam_domain_cutoff = 1e-5
+default_mcam_p_cutoff = 0.05
+mcam_file_path = "data/mcam"
+
+

@@ -95,10 +95,6 @@ def get_valid_subset_labels(experiment_id, user):
     
     return sorted(subset_labels)
 
-def get_valid_clusterings(experiment_id, user):
-    return {}
-
-
 def get_user_annotations(exp_id, user, metadata_fields, quantitative_fields, clustering_labels):
     for annotation_set in annotations.getUserAnnotations(exp_id, user):
         values = set()
@@ -121,7 +117,7 @@ def format_explorer_view(experiment_id, measurements, user):
     metadata_fields = {}
     scansite_fields = {}
     
-    cluster_labels = get_valid_clusterings(experiment_id, user)
+    cluster_labels = {}
     subset_labels = get_valid_subset_labels(experiment_id, user)
     
     get_protein_metadata(measurements, metadata_fields, accessions)
