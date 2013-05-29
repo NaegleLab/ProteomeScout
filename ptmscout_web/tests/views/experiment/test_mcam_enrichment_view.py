@@ -23,7 +23,7 @@ class IntegrationTestMCAMEnrichmentView(IntegrationTestCase):
         mcam_id = 1234567890
         exp_id = 26
         
-        mcam_filename = "%d.mcam.%d.%d" % (exp_id, user_id, mcam_id)
+        mcam_filename = "%d.mcam.%d.%d.zip" % (exp_id, user_id, mcam_id)
         mcam_path = os.path.join(settings.ptmscout_path, settings.mcam_file_path, mcam_filename)
         f = open(mcam_path, 'w')
         f.write("These are the file contents")

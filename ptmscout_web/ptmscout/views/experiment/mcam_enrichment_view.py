@@ -11,7 +11,7 @@ import os
 @view_config(route_name='mcam_download', permission='private')
 @decorators.get_experiment('id')
 def download_mcam_file(context, request, experiment):
-    fname = "%s.mcam.%d.%s" % (request.matchdict['id'], request.user.id, request.matchdict['mcam_id'])
+    fname = "%s.mcam.%d.%s.zip" % (request.matchdict['id'], request.user.id, request.matchdict['mcam_id'])
     
     fpath = os.path.join(settings.ptmscout_path, settings.mcam_file_path, fname)
     if not os.path.exists(fpath):
@@ -44,18 +44,18 @@ def get_cluster_type_cnt(experiment, user):
 
 def start_mcam_job(request, schema, experiment, user):
     mcam_id = int(time.clock())
-    mcam_filename = "%d.mcam.%d.%d" % (experiment.id, user.id, mcam_id)
+    mcam_filename_base = "%d.mcam.%d.%d" % (experiment.id, user.id, mcam_id)
     
     mcam_job = jobs.Job()
     mcam_job.name = "Run MCAM Enrichment for Experiment %d" % (experiment.id)
     mcam_job.user = user
-    mcam_job.result_url = request.route_url('mcam_download', id=experiment.id, mcam_id=mcam_filename)
+    mcam_job.result_url = request.route_url('mcam_download', id=experiment.id, mcam_id=mcam_id)
     mcam_job.status_url = request.route_url('my_experiments')
     mcam_job.type = 'mcam_enrichment'
     
     mcam_job.save()
     
-    mcam_tasks.run_mcam_analysis.apply_async((mcam_filename, experiment.id, mcam_job.id))
+    mcam_tasks.run_mcam_analysis.apply_async((mcam_filename_base, experiment.id, mcam_job.id))
 
 def create_schema(request):
     schema = forms.FormSchema()

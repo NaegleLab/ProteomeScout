@@ -354,3 +354,16 @@ mcam_enrichment_started_page_title = "MCAM Enrichment Started"
 mcam_enrichment_started_message = \
 """The MCAM enrichment process was successfully started. An e-mail will be sent to you containing a link to download your enrichment files when the process is complete. Additionally, you may check the status of the enrichment calculation by visiting <a href=\"%s\">this page</a>"""
 
+
+mcam_enrichment_finished_message = \
+"""Processing of your job '%s' succeeded.
+
+You may download the results of this MCAM enrichment analysis <a href="%s">here</a>.
+
+This file will be available for 24 hours.
+
+-The PTMScout Team"""
+mcam_enrichment_finished_subject = "PTMScout MCAM Export Finished"
+
+
+

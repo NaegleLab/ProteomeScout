@@ -4,6 +4,20 @@ from ptmscout.database import experiment, modifications, jobs
 from ptmscout.config import strings, settings
 from ptmscout.utils import mail
 
+
+def finalize_mcam_export_job(job_id):
+    job = jobs.getJobById(job_id)
+    job.finish()
+    job.save()
+    
+    subject = strings.mcam_enrichment_finished_subject
+    message = strings.mcam_enrichment_finished_message % (job.name, job.result_url)
+    
+    for err in errors:
+        message += "%s\n" % ( err.message ) 
+    
+    mail.celery_send_mail([job.user.email], subject, message)
+
 @celery.task
 @upload_helpers.transaction_task
 def finalize_experiment_import(exp_id):
@@ -74,3 +88,5 @@ def set_job_progress(job_id, value, max_value):
     job.progress = value
     job.max_progress = max_value
     job.save()
+
+
