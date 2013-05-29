@@ -267,6 +267,7 @@ failure_reason_experiment_header_multiple_acc_columns = "Data file contained mul
 
 failure_reason_terms_of_use_not_accepted = "You must agree to the terms of use at the bottom of this form before submitting a dataset"
 failure_reason_field_value_not_valid = "Field '%s' has invalid value"
+failure_reason_field_must_be_integer = "Field '%s' must be integer"
 failure_reason_field_must_be_numeric = "Field '%s' must be numeric"
 failure_reason_required_fields_cannot_be_empty = "Required form field '%s' cannot be empty"
 

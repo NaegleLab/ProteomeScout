@@ -4,6 +4,7 @@ import base64
 from ptmscout.database import experiment, annotations
 from ptmscout.utils import protein_utils, motif, fisher
 from ptmscout.config import strings
+from collections import defaultdict
 
 def get_pfam_metadata(measurements, metadata_fields):
     metadata_fields.update({'Pfam-Domain':set(),'Pfam-Site':set(),'Region':set()})
@@ -197,20 +198,17 @@ def get_proteins(measurements):
     return prots
 
 
-def calculate_GO_term_enrichment(foreground, background):
+def calculate_GO_term_enrichment(foreground, background, required_occurences):
     go_term_map = {}
-    represented_go_terms = {}
+    represented_go_terms = defaultdict(lambda: defaultdict(lambda: 0))
     aspect_map = {'C':'GO-Cellular Component', 'P':"GO-Biological Process", 'F': "GO-Molecular Function"}
     enrichment = []
     
     for prot in foreground:
         for entry in prot.GO_terms:
             t = entry.GO_term
-            term_ids = represented_go_terms.get(t.aspect, set())
-            term_ids.add( t.id )
-            
+            represented_go_terms[t.aspect][t.id] += 1
             go_term_map[t.id] = t
-            represented_go_terms[t.aspect] = term_ids
 
     def create_has_go_id(go_id):
         def has_go_id(prot):
@@ -219,19 +217,20 @@ def calculate_GO_term_enrichment(foreground, background):
     
     for aspect in represented_go_terms:
         for go_id in represented_go_terms[aspect]:
-            p_value = calculate_hypergeometric_enrichment(foreground, background, create_has_go_id(go_id))
-            t = go_term_map[go_id]
-            enrichment.append(( aspect_map[t.aspect], t.fullName(), p_value ))
+            if represented_go_terms[aspect][go_id] >= required_occurences:
+                p_value = calculate_hypergeometric_enrichment(foreground, background, create_has_go_id(go_id))
+                t = go_term_map[go_id]
+                enrichment.append(( aspect_map[t.aspect], t.fullName(), p_value ))
             
     return enrichment
 
-def calculate_PfamDomain_enrichment(foreground, background):
+def calculate_PfamDomain_enrichment(foreground, background, required_occurences):
     enrichment = []
-    valid_labels = set()
+    valid_labels = defaultdict(lambda: 0)
     
     for prot in foreground:
         for dom in prot.domains:
-            valid_labels.add(dom.label)
+            valid_labels[dom.label] += 1
             
     def create_has_domain(domain_label):
         def has_domain(prot):
@@ -239,19 +238,20 @@ def calculate_PfamDomain_enrichment(foreground, background):
         return has_domain
     
     for label in valid_labels:
-        p_value = calculate_hypergeometric_enrichment(foreground, background, create_has_domain(label))
-        enrichment.append( ( 'Pfam-Domain', label, p_value ) )
+        if valid_labels[dom.label] >= required_occurences:
+            p_value = calculate_hypergeometric_enrichment(foreground, background, create_has_domain(label))
+            enrichment.append( ( 'Pfam-Domain', label, p_value ) )
     
     return enrichment
 
-def calculate_PfamSite_enrichment(foreground, background):
+def calculate_PfamSite_enrichment(foreground, background, required_occurences):
     enrichment = []
-    valid_labels = set()
+    valid_labels = defaultdict(lambda: 0)
     
     for ms in foreground:
         for modpep in ms.peptides:
             if modpep.peptide.protein_domain:
-                valid_labels.add(modpep.peptide.protein_domain.label)
+                valid_labels[modpep.peptide.protein_domain.label] += 1
                 
     def create_has_domain(domain_label):
         def has_domain(ms):
@@ -259,21 +259,20 @@ def calculate_PfamSite_enrichment(foreground, background):
         return has_domain
     
     for label in valid_labels:
-        p_value = calculate_hypergeometric_enrichment(foreground, background, create_has_domain(label))
-        enrichment.append( ( 'Pfam-Site', label, p_value ))
+        if valid_labels[label] >= required_occurences:
+            p_value = calculate_hypergeometric_enrichment(foreground, background, create_has_domain(label))
+            enrichment.append( ( 'Pfam-Site', label, p_value ))
     
     return enrichment
 
-def calculate_Scansite_enrichment(foreground, background):
+def calculate_Scansite_enrichment(foreground, background, required_occurences):
     enrichment = []
-    valid_labels = {}
+    valid_labels = defaultdict(lambda: defaultdict(lambda: 0))
     source_map = {'scansite_bind': "Scansite-Bind", 'scansite_kinase': "Scansite-Kinase"}
     for ms in foreground:
         for modpep in ms.peptides:
             for prediction in modpep.peptide.predictions:
-                source_labels = valid_labels.get( prediction.source, set()) 
-                source_labels.add(prediction.value)
-                valid_labels[prediction.source] = source_labels
+                valid_labels[prediction.source][prediction.value] += 1
                 
     def create_has_scansite(source, label):
         def has_scansite(ms):
@@ -282,18 +281,19 @@ def calculate_Scansite_enrichment(foreground, background):
         
     for source in valid_labels:
         for label in valid_labels[source]:
-            p_value = calculate_hypergeometric_enrichment(foreground, background, create_has_scansite(source, label))
-            enrichment.append( (source_map[source], label, p_value) )
+            if valid_labels[source][label] >= required_occurences:
+                p_value = calculate_hypergeometric_enrichment(foreground, background, create_has_scansite(source, label))
+                enrichment.append( (source_map[source], label, p_value) )
     
     return enrichment
 
 
-def calculate_Region_enrichment(foreground, background):
+def calculate_Region_enrichment(foreground, background, required_occurences):
     enrichment = []
-    valid_labels = set()
+    valid_labels = defaultdict(lambda: 0)
     for ms in foreground:
         for region in ms.protein.regions:
-            valid_labels.add(region.label)
+            valid_labels[region.label] += 1
             
     def create_has_region(label):
         def has_region(ms):
@@ -301,18 +301,20 @@ def calculate_Region_enrichment(foreground, background):
         return has_region
     
     for label in valid_labels:
-        p_value = calculate_hypergeometric_enrichment(foreground, background, create_has_region(label))
-        enrichment.append( ( 'Region', label, p_value ) )
+        if valid_labels[label] >= required_occurences:
+            p_value = calculate_hypergeometric_enrichment(foreground, background, create_has_region(label))
+            enrichment.append( ( 'Region', label, p_value ) )
     
     return enrichment
 
 
-def calculate_annotation_enrichment(name, foreground, background):
+def calculate_annotation_enrichment(name, foreground, background, required_occurences):
     enrichment = []
-    valid_labels = set()
+    
+    valid_labels = defaultdict(lambda: 0)
     for ms in foreground:
         if name in ms.annotations and ms.annotations[name] != None:
-            valid_labels.add(ms.annotations[name])
+            valid_labels[ms.annotations[name]] += 1
     
     def create_has_annotation(label):
         def has_annotation(ms):
@@ -320,28 +322,29 @@ def calculate_annotation_enrichment(name, foreground, background):
         return has_annotation
     
     for label in valid_labels:
-        p_value = calculate_hypergeometric_enrichment(foreground, background, create_has_annotation(label))
-        enrichment.append( ( "Annotation: %s" % (name), label, p_value ) )
+        if valid_labels[label] >= required_occurences:
+            p_value = calculate_hypergeometric_enrichment(foreground, background, create_has_annotation(label))
+            enrichment.append( ( "Annotation: %s" % (name), label, p_value ) )
     
     return enrichment
 
 
-def calculate_feature_enrichment(foreground, background, annotation_types):
+def calculate_feature_enrichment(foreground, background, annotation_types, required_occurences=1):
     enrichment_table = []
 
     p_foreground = get_proteins(foreground)
     p_background = get_proteins(background)
     
-    enrichment_table += calculate_GO_term_enrichment(p_foreground, p_background)
-    enrichment_table += calculate_PfamDomain_enrichment(p_foreground, p_background)
+    enrichment_table += calculate_GO_term_enrichment(p_foreground, p_background, required_occurences)
+    enrichment_table += calculate_PfamDomain_enrichment(p_foreground, p_background, required_occurences)
     
-    enrichment_table += calculate_PfamSite_enrichment(foreground, background)
-    enrichment_table += calculate_Scansite_enrichment(foreground, background)
-    enrichment_table += calculate_Region_enrichment(foreground, background)
+    enrichment_table += calculate_PfamSite_enrichment(foreground, background, required_occurences)
+    enrichment_table += calculate_Scansite_enrichment(foreground, background, required_occurences)
+    enrichment_table += calculate_Region_enrichment(foreground, background, required_occurences)
     
     for aset in annotation_types:
         if annotation_types[aset] == 'nominative':
-            enrichment_table += calculate_annotation_enrichment(aset, foreground, background)
+            enrichment_table += calculate_annotation_enrichment(aset, foreground, background, required_occurences)
     
     return sorted(enrichment_table, key=lambda item: (item[2], item[0], item[1]) )
 

@@ -55,17 +55,19 @@ def start_mcam_job(request, schema, experiment, user):
     
     mcam_job.save()
     
-    mcam_tasks.run_mcam_analysis.apply_async((mcam_filename_base, experiment.id, mcam_job.id))
+    pvalue_cutoff = float( schema.get_form_value('alpha') )
+    
+    mcam_tasks.run_mcam_analysis.apply_async((mcam_filename_base, pvalue_cutoff, experiment.id, user.id, mcam_job.id))
 
 def create_schema(request):
     schema = forms.FormSchema()
     
     schema.add_radio_field('correction', "Correction Type", [('bh',"BH FDR"),('bon',"Bonferroni")], default='bh')
 
-    schema.add_text_field('motifcutoff', "Motif Cutoff", width=55, default=str(settings.default_mcam_motif_cutoff))
-    schema.add_text_field('scansitecutoff', "Scansite Cutoff", width=55, default=str(settings.default_mcam_scansite_cutoff))
-    schema.add_text_field('domaincutoff', "Domain Cutoff", width=55, default=str(settings.default_mcam_domain_cutoff))
-    schema.add_text_field('alpha', "Alpha P-value", width=55, default=str(settings.default_mcam_p_cutoff))
+    schema.add_decimal_field('motifcutoff', "Motif Cutoff", maxlen=55, default=str(settings.default_mcam_motif_cutoff))
+    schema.add_decimal_field('scansitecutoff', "Scansite Cutoff", maxlen=55, default=str(settings.default_mcam_scansite_cutoff))
+    schema.add_decimal_field('domaincutoff', "Domain Cutoff", maxlen=55, default=str(settings.default_mcam_domain_cutoff))
+    schema.add_decimal_field('alpha', "Alpha P-value", maxlen=55, default=str(settings.default_mcam_p_cutoff))
     
     schema.set_required_field('correction')
     schema.set_required_field('motifcutoff')

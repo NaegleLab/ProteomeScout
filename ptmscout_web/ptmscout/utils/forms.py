@@ -36,7 +36,8 @@ class FormSchema(object):
         self.enum_fields = set()
         self.enum_values = {}
         
-        self.numeric_fields = set()
+        self.integer_fields = set()
+        self.decimal_fields = set()
         self.required_fields = set()
         self.conditional_fields = {}
 
@@ -90,9 +91,19 @@ class FormSchema(object):
         self.field_defaults[ref] = default
         self.field_types[ref] = FormSchema.CHECKBOX
     
-    def add_numeric_field(self, ref, name, maxlen=None, default=None):
+    def add_integer_field(self, ref, name, maxlen=None, default=None):
         self.field_names[ref] = name
-        self.numeric_fields.add(ref)
+        self.integer_fields.add(ref)
+        
+        width=None if maxlen==None else maxlen+1
+        self.field_opts[ref] = (maxlen, width,)
+        
+        self.field_defaults[ref] = default
+        self.field_types[ref] = FormSchema.TEXT
+        
+    def add_decimal_field(self, ref, name, maxlen=None, default=None):
+        self.field_names[ref] = name
+        self.decimal_fields.add(ref)
         
         width=None if maxlen==None else maxlen+1
         self.field_opts[ref] = (maxlen, width,)
@@ -306,9 +317,15 @@ class FormValidator(object):
             if condition(parent_value) and not self.schema.field_was_attempted(field_ref):
                 return strings.failure_reason_required_fields_cannot_be_empty % (proper_name)
         
-        if field_ref in self.schema.numeric_fields and self.schema.field_was_attempted(field_ref):
+        if field_ref in self.schema.integer_fields and self.schema.field_was_attempted(field_ref):
             try:
                 int(field_value)
+            except:
+                return strings.failure_reason_field_must_be_integer % (proper_name)
+            
+        if field_ref in self.schema.decimal_fields and self.schema.field_was_attempted(field_ref):
+            try:
+                float(field_value)
             except:
                 return strings.failure_reason_field_must_be_numeric % (proper_name)
         

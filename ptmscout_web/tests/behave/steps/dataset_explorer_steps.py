@@ -261,3 +261,64 @@ def user_forbidden_comparison_and_ambiguity(context):
     
     context.ptmscoutapp.get('http://localhost/experiments/%d/compare' % (context.exp_id), status=403)
     context.ptmscoutapp.get('http://localhost/experiments/%d/ambiguity' % (context.exp_id), status=403)
+    
+@given(u'a user uploads multiple clusterings for an experiment')
+def user_upload_cluster_file(context):
+    context.active_user.login()
+    
+    result = context.ptmscoutapp.get('/experiments/28/subsets')
+    annote_file = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'test', 'experiment.28.test.clusters.tsv')
+    bot.set_file_form_contents('annotationfile', annote_file, result.forms[1])
+    
+    result = result.forms[1].submit(status=302)
+    result = result.follow(status=200)
+    
+    result = result.form.submit()
+    if result.status != '302 Found':
+        result.form.set('override', 'yes')
+        result = result.form.submit()
+    
+    result = result.follow()
+    
+    result.form.set('terms_of_use', "yes")
+    context.result = result
+
+
+@when(u'the user chooses to export MCAM input files')
+@patch('transaction.abort')
+@patch('transaction.commit')
+@patch('ptmscout.utils.mail.celery_send_mail')
+def user_export_mcam(context, patch_mail, patch_commit, patch_abort):
+    patch_commit.side_effect = bot.session_flush
+    patch_abort.side_effect = bot.log_abort
+    
+    # submit the clusterings
+    context.result.form.submit()
+    
+    # submit the MCAM request
+    result = context.ptmscoutapp.get('/experiments/28/mcam_enrichment')
+    result = result.form.submit()
+    result.follow()
+
+    context.mailargs = str(patch_mail.call_args_list)
+
+
+@then(u'the user should be sent an email with a link to download their analysis')
+def user_receive_email(context):
+    assertContains(context.active_user.user.email, context.mailargs)
+    assertContains(strings.annotation_upload_finished_subject, context.mailargs)
+    assertContains("Annotations Loaded: 871", context.mailargs)
+    assertContains("Errors Encountered: 13", context.mailargs)
+    
+    assertContains(strings.mcam_enrichment_finished_subject, context.mailargs)
+    
+    
+@then(u'the user should be able to download an archive containing the MCAM files')
+def user_download_mcam_files(context):
+    m = re.search(r'<a href="(.*)">here</a>', context.mailargs)
+    assert m != None, "Could not find link to MCAM results in: " + context.mailargs
+    
+    print m.group(1)
+    
+    mcam_file = context.ptmscoutapp.get(m.group(1))
+    print mcam_file.headers
