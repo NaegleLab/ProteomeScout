@@ -74,7 +74,7 @@ def create_schema(request):
     schema.add_textarea_field('description', "Description", 42, 5)
     
     schema.add_select_field('published', 'Published', [('no',"No"), ('yes',"Yes")])
-    schema.add_numeric_field('pmid', 'PubMed Id', maxlen=10)
+    schema.add_integer_field('pmid', 'PubMed Id', maxlen=10)
     
     
     schema.add_text_field('authors', 'Authors', width=55)
@@ -83,9 +83,9 @@ def create_schema(request):
               "may","june","july","august","september",
               "october","november","december"]
     schema.add_select_field('publication_month', 'Publication Month', [(m, m.capitalize()) for m in months])
-    schema.add_numeric_field('publication_year', 'Publication Year', maxlen=4)
+    schema.add_integer_field('publication_year', 'Publication Year', maxlen=4)
     schema.add_text_field('journal', 'Journal', width=55)
-    schema.add_numeric_field('volume', 'Volume', 10)
+    schema.add_integer_field('volume', 'Volume', 10)
     schema.add_text_field('page_start', 'Page Start', maxlen=10, width=11)
     schema.add_text_field('page_end', 'Page End', maxlen=10, width=11)
     

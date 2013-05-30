@@ -11,10 +11,11 @@ class FormUtilsTestCase(unittest.TestCase):
         
         self.form_schema = forms.FormSchema()
         
-        self.form_schema.add_numeric_field('pmid', 'PubMed ID', 10)
+        self.form_schema.add_integer_field('pmid', 'PubMed ID', 10)
+        self.form_schema.add_decimal_field('decimaldata', 'Decimal Data', 1.1)
         self.form_schema.add_text_field('URL', 'URL', 100, 30)
         self.form_schema.add_select_field('published', 'Published', [('no', 'No'),('yes', 'Yes')])
-        self.form_schema.add_numeric_field('publication_year', 'Publication Year', 4)
+        self.form_schema.add_integer_field('publication_year', 'Publication Year', 4)
         self.form_schema.add_password_field('password', 'Password', 20)
         
         self.form_schema.add_textarea_field('description', 'Description', 50, 5)
@@ -36,10 +37,11 @@ class FormUtilsTestCase(unittest.TestCase):
        
     def test_parse_fields_dict_with_non_string_elements_should_convert(self):
         field_dict = {}
-        field_dict['pmid'] = 2000
+        field_dict['pmid'] = "2000"
+        field_dict['decimaldata'] = "2.2"
         field_dict['URL'] = "http://somestuff.com"
         field_dict['published'] = "yes"
-        field_dict['publication_year'] = 1979
+        field_dict['publication_year'] = "1979"
         field_dict['description'] = "stuff"
         field_dict['load_type'] = "reload"
 
@@ -55,6 +57,7 @@ class FormUtilsTestCase(unittest.TestCase):
     def test_add_alternate_validator_should_call_extra_validator(self):
         request = DummyRequest()
         request.POST['pmid'] = "2000"
+        request.POST['decimaldata'] = "2.2"
         request.GET['URL'] = "http://somestuff.com"
         request.POST['published'] = "yes"
         request.POST['publication_year'] = "1979"
@@ -99,6 +102,7 @@ class FormUtilsTestCase(unittest.TestCase):
         request.GET = {}
         
         request.POST['pmid'] = "1234"
+        request.POST['decimaldata'] = "2.2"
         request.GET['URL'] = "http://somestuff.com"
         request.POST['publication_year'] = ""
         request.GET['description'] = "stuff"
@@ -124,6 +128,7 @@ class FormUtilsTestCase(unittest.TestCase):
     def test_check_required_fields_should_fail_on_enum_conflict(self):
         request = DummyRequest()
         request.POST['pmid'] = "1234"
+        request.POST['decimaldata'] = "2.2"
         request.POST['URL'] = "http://somestuff.com"
         request.POST['published'] = "blah"
         request.POST['publication_year'] = "2008"
@@ -132,12 +137,13 @@ class FormUtilsTestCase(unittest.TestCase):
         errors = forms.FormValidator(self.form_schema).validate()
         
         self.assertEqual([strings.failure_reason_field_value_not_valid % "Published"], errors)
-        self.assertEqual({'pmid':"1234", 'password':None, 'description':None, 'load_type':None, 'URL':"http://somestuff.com", 'published':"blah", 'publication_year':"2008"}, self.form_schema.form_values)
+        self.assertEqual({'pmid':"1234", 'decimaldata': "2.2", 'password':None, 'description':None, 'load_type':None, 'URL':"http://somestuff.com", 'published':"blah", 'publication_year':"2008"}, self.form_schema.form_values)
         
 
-    def test_check_required_fields_should_fail_on_numeric_field_format_incorrect(self):
+    def test_check_required_fields_should_fail_on_integer_field_format_incorrect(self):
         request = DummyRequest()
         request.POST['pmid'] = "na1234"
+        request.POST['decimaldata'] = "2.2"
         request.POST['URL'] = "http://somestuff.com"
         request.POST['published'] = "yes"
         request.POST['publication_year'] = "2008"
@@ -145,13 +151,28 @@ class FormUtilsTestCase(unittest.TestCase):
         self.form_schema.parse_fields(request)
         errors = forms.FormValidator(self.form_schema).validate()
         
-        self.assertEqual([strings.failure_reason_field_must_be_numeric % "PubMed ID"], errors)
-        self.assertEqual({'pmid':"na1234", 'password':None, 'description':None, 'load_type':None, 'URL':"http://somestuff.com", 'published':"yes", 'publication_year':"2008"}, self.form_schema.form_values)
+        self.assertEqual([strings.failure_reason_field_must_be_integer % "PubMed ID"], errors)
+        self.assertEqual({'pmid':"na1234", 'decimaldata': "2.2", 'password':None, 'description':None, 'load_type':None, 'URL':"http://somestuff.com", 'published':"yes", 'publication_year':"2008"}, self.form_schema.form_values)
+        
+    def test_check_required_fields_should_fail_on_decimal_field_format_incorrect(self):
+        request = DummyRequest()
+        request.POST['pmid'] = "1234"
+        request.POST['decimaldata'] = "a1.2"
+        request.POST['URL'] = "http://somestuff.com"
+        request.POST['published'] = "yes"
+        request.POST['publication_year'] = "2008"
+        
+        self.form_schema.parse_fields(request)
+        errors = forms.FormValidator(self.form_schema).validate()
+        
+        self.assertEqual([strings.failure_reason_field_must_be_numeric % "Decimal Data"], errors)
+        self.assertEqual({'pmid':"1234", 'decimaldata': "a1.2", 'password':None, 'description':None, 'load_type':None, 'URL':"http://somestuff.com", 'published':"yes", 'publication_year':"2008"}, self.form_schema.form_values)
         
 
     def test_check_required_fields_should_return_false_if_empty(self):
         request = DummyRequest()
         request.POST['pmid'] = "1234"
+        request.POST['decimaldata'] = "1.2"
         request.POST['URL'] = "http://somestuff.com"
         request.POST['published'] = "   "
         
@@ -159,11 +180,12 @@ class FormUtilsTestCase(unittest.TestCase):
         errors = forms.FormValidator(self.form_schema).validate()
         
         self.assertEqual([strings.failure_reason_required_fields_cannot_be_empty % "Published"], errors)
-        self.assertEqual({'pmid':"1234", 'password':None, 'description':None, 'load_type':None, 'publication_year':None, 'URL':"http://somestuff.com", 'published':""}, self.form_schema.form_values)
+        self.assertEqual({'pmid':"1234", 'decimaldata': "1.2", 'password':None, 'description':None, 'load_type':None, 'publication_year':None, 'URL':"http://somestuff.com", 'published':""}, self.form_schema.form_values)
 
     def test_check_required_fields_should_return_true_on_success(self):
         request = DummyRequest()
         request.POST['pmid'] = "1234"
+        request.POST['decimaldata'] = "1.2"
         request.POST['URL'] = "http://somestuff.com"
         request.POST['published'] = "yes"
         request.POST['publication_year'] = "2008"
@@ -172,5 +194,5 @@ class FormUtilsTestCase(unittest.TestCase):
         errors = forms.FormValidator(self.form_schema).validate()
         
         self.assertEqual([], errors)
-        self.assertEqual({'pmid':"1234", 'password':None, 'description':None, 'load_type':None, 'URL':"http://somestuff.com", 'published':"yes", 'publication_year':"2008"}, self.form_schema.form_values)
+        self.assertEqual({'pmid':"1234", 'decimaldata': "1.2", 'password':None, 'description':None, 'load_type':None, 'URL':"http://somestuff.com", 'published':"yes", 'publication_year':"2008"}, self.form_schema.form_values)
         
