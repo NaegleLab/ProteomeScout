@@ -224,7 +224,7 @@ def calculate_GO_term_enrichment(foreground, background, required_occurences):
             
     return enrichment
 
-def calculate_PfamDomain_enrichment(foreground, background, required_occurences):
+def calculate_PfamDomain_enrichment(foreground, background, required_occurences, domain_cutoff):
     enrichment = []
     valid_labels = defaultdict(lambda: 0)
     
@@ -234,7 +234,7 @@ def calculate_PfamDomain_enrichment(foreground, background, required_occurences)
             
     def create_has_domain(domain_label):
         def has_domain(prot):
-            return reduce(bool.__or__, [ dom.label == domain_label for dom in prot.domains ], False)
+            return reduce(bool.__or__, [ dom.label == domain_label and dom.p_value <= domain_cutoff for dom in prot.domains ], False)
         return has_domain
     
     for label in valid_labels:
@@ -244,7 +244,7 @@ def calculate_PfamDomain_enrichment(foreground, background, required_occurences)
     
     return enrichment
 
-def calculate_PfamSite_enrichment(foreground, background, required_occurences):
+def calculate_PfamSite_enrichment(foreground, background, required_occurences, domain_cutoff):
     enrichment = []
     valid_labels = defaultdict(lambda: 0)
     
@@ -255,7 +255,7 @@ def calculate_PfamSite_enrichment(foreground, background, required_occurences):
                 
     def create_has_domain(domain_label):
         def has_domain(ms):
-            return reduce(bool.__or__, [ modpep.peptide.protein_domain != None and modpep.peptide.protein_domain.label == domain_label for modpep in ms.peptides ], False)
+            return reduce(bool.__or__, [ modpep.peptide.protein_domain != None and modpep.peptide.protein_domain.label == domain_label and modpep.peptide.protein_domain.p_value <= domain_cutoff for modpep in ms.peptides ], False)
         return has_domain
     
     for label in valid_labels:
@@ -265,7 +265,7 @@ def calculate_PfamSite_enrichment(foreground, background, required_occurences):
     
     return enrichment
 
-def calculate_Scansite_enrichment(foreground, background, required_occurences):
+def calculate_Scansite_enrichment(foreground, background, required_occurences, scansite_cutoff):
     enrichment = []
     valid_labels = defaultdict(lambda: defaultdict(lambda: 0))
     source_map = {'scansite_bind': "Scansite-Bind", 'scansite_kinase': "Scansite-Kinase"}
@@ -276,7 +276,7 @@ def calculate_Scansite_enrichment(foreground, background, required_occurences):
                 
     def create_has_scansite(source, label):
         def has_scansite(ms):
-            return reduce(bool.__or__, [ prediction.source == source and prediction.value == label for modpep in ms.peptides for prediction in modpep.peptide.predictions ], False)
+            return reduce(bool.__or__, [ prediction.percentile <= scansite_cutoff and prediction.source == source and prediction.value == label for modpep in ms.peptides for prediction in modpep.peptide.predictions ], False)
         return has_scansite        
         
     for source in valid_labels:
@@ -284,7 +284,7 @@ def calculate_Scansite_enrichment(foreground, background, required_occurences):
             if valid_labels[source][label] >= required_occurences:
                 p_value = calculate_hypergeometric_enrichment(foreground, background, create_has_scansite(source, label))
                 enrichment.append( (source_map[source], label, p_value) )
-    
+
     return enrichment
 
 
@@ -329,17 +329,17 @@ def calculate_annotation_enrichment(name, foreground, background, required_occur
     return enrichment
 
 
-def calculate_feature_enrichment(foreground, background, annotation_types, required_occurences=1):
+def calculate_feature_enrichment(foreground, background, annotation_types, required_occurences=1, scansite_cutoff=5, domain_cutoff=1):
     enrichment_table = []
 
     p_foreground = get_proteins(foreground)
     p_background = get_proteins(background)
     
     enrichment_table += calculate_GO_term_enrichment(p_foreground, p_background, required_occurences)
-    enrichment_table += calculate_PfamDomain_enrichment(p_foreground, p_background, required_occurences)
+    enrichment_table += calculate_PfamDomain_enrichment(p_foreground, p_background, required_occurences, domain_cutoff)
     
-    enrichment_table += calculate_PfamSite_enrichment(foreground, background, required_occurences)
-    enrichment_table += calculate_Scansite_enrichment(foreground, background, required_occurences)
+    enrichment_table += calculate_PfamSite_enrichment(foreground, background, required_occurences, domain_cutoff)
+    enrichment_table += calculate_Scansite_enrichment(foreground, background, required_occurences, scansite_cutoff)
     enrichment_table += calculate_Region_enrichment(foreground, background, required_occurences)
     
     for aset in annotation_types:

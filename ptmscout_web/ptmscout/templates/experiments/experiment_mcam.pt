@@ -27,14 +27,6 @@
 	
 	    		<fieldset>
 	    			<legend>MCAM Inputs</legend>
-	    			<div class="formfields">
-		              <div class="grid_3">
-		              	<label>Motif Cutoff</label>
-		              </div>
-		              <div class="grid_4">
-		          	    ${formrenderer.render('motifcutoff', id_='motif-cutoff')} 
-		          	  </div>
-		          	</div>
 		          	<div class="formfields">
 		              <div class="grid_3">
 		              	<label>Scansite Cutoff</label>

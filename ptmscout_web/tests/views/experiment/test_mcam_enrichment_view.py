@@ -30,7 +30,6 @@ class IntegrationTestMCAMEnrichmentView(IntegrationTestCase):
         f.close()
         
         result = self.ptmscoutapp.get("/experiments/%d/mcam_download/%d" % (exp_id, mcam_id))
-        
         result.mustcontain("These are the file contents")
         
         os.remove(mcam_path)

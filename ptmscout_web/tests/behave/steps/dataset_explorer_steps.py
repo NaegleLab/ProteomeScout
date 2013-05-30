@@ -12,6 +12,7 @@ from ptmscout.database import experiment
 import csv
 import zipfile
 import shutil
+from tests.behave.steps import assertions
 
 
 @given(u'a user uploads annotations to an experiment')
@@ -299,6 +300,10 @@ def user_export_mcam(context, patch_mail, patch_commit, patch_abort):
     
     # submit the MCAM request
     result = context.ptmscoutapp.get('/experiments/28/mcam_enrichment')
+    result.form.set('correction', 'fdr')
+    result.form.set('scansitecutoff', "3.0")
+    result.form.set('domaincutoff', "1e-5")
+    result.form.set('alpha', "0.05")
     result = result.form.submit()
     result.follow()
 
@@ -313,16 +318,7 @@ def user_receive_email(context):
     assertContains("Errors Encountered: 13", context.mailargs)
     
     assertContains(strings.mcam_enrichment_finished_subject, context.mailargs)
-    
-def compare_text_files(fn1, fn2):
-    i = 0
-    with open(fn1,'r') as f1:
-        with open(fn2,'r') as f2:
-            for f1l in f1:
-                i += 1
-                f2l = f2.readline()
-                assert f1l == f2l, "Files differ at line: %d" % (i)
-    
+
 @then(u'the user should be able to download an archive containing the MCAM files')
 def user_download_mcam_files(context):
     m = re.search(r'<a href="(.*)">here</a>', context.mailargs)
@@ -346,8 +342,11 @@ def user_download_mcam_files(context):
     
     numStructFilename = os.path.join(zdir, 'numStruct.m')
     enrichBoolFilename = os.path.join(zdir, 'enrichBool.m')
-    compare_text_files(numStructFilename, "tests/behave/data/datasetExplorer_numStruct_expected.txt")
-    compare_text_files(enrichBoolFilename, "tests/behave/data/datasetExplorer_enrichBool_expected.txt")
+    numStructExpFilename = "tests/behave/data/datasetExplorer_numStruct_expected.txt"
+    enrichBoolExpFilename = "tests/behave/data/datasetExplorer_enrichBool_expected.txt"
+
+    assertions.assertTextFilesEqual(numStructFilename, numStructExpFilename)
+    assertions.assertTextFilesEqual(enrichBoolFilename, enrichBoolExpFilename)
     
     os.remove(numStructFilename)
     os.remove(enrichBoolFilename)
