@@ -18,7 +18,7 @@ def download_mcam_file(context, request, experiment):
         raise HTTPNotFound()
 
     response = FileResponse(fpath, request)
-    response.content_type = 'text/tab-separated-values'
+    response.content_type = 'application/zip'
     response.content_disposition = 'attachment; filename="%s"' % (fname)
     return response
 

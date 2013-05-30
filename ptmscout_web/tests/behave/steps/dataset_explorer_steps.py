@@ -10,6 +10,8 @@ import json
 import re
 from ptmscout.database import experiment
 import csv
+import zipfile
+import shutil
 
 
 @given(u'a user uploads annotations to an experiment')
@@ -312,13 +314,42 @@ def user_receive_email(context):
     
     assertContains(strings.mcam_enrichment_finished_subject, context.mailargs)
     
+def compare_text_files(fn1, fn2):
+    i = 0
+    with open(fn1,'r') as f1:
+        with open(fn2,'r') as f2:
+            for f1l in f1:
+                i += 1
+                f2l = f2.readline()
+                assert f1l == f2l, "Files differ at line: %d" % (i)
     
 @then(u'the user should be able to download an archive containing the MCAM files')
 def user_download_mcam_files(context):
     m = re.search(r'<a href="(.*)">here</a>', context.mailargs)
     assert m != None, "Could not find link to MCAM results in: " + context.mailargs
     
-    print m.group(1)
-    
     mcam_file = context.ptmscoutapp.get(m.group(1))
-    print mcam_file.headers
+    
+    headers = str(mcam_file.headers)
+    m = re.search(r'filename="(.*)\.zip"', headers)
+    assert m != None, "No filename found in header: " + headers
+    
+    zdir = m.group(1)
+    zfilename = "%s.zip" % (zdir)
+    
+    tz = open(zdir + ".zip", 'wb')
+    tz.write( mcam_file.body )
+    tz.close()
+    
+    zf = zipfile.ZipFile(open(zfilename, 'r'))
+    zf.extractall()
+    
+    numStructFilename = os.path.join(zdir, 'numStruct.m')
+    enrichBoolFilename = os.path.join(zdir, 'enrichBool.m')
+    compare_text_files(numStructFilename, "tests/behave/data/datasetExplorer_numStruct_expected.txt")
+    compare_text_files(enrichBoolFilename, "tests/behave/data/datasetExplorer_enrichBool_expected.txt")
+    
+    os.remove(numStructFilename)
+    os.remove(enrichBoolFilename)
+    os.removedirs(zdir)
+    os.remove(zfilename)

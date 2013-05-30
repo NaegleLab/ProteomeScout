@@ -7,6 +7,7 @@ from ptmworker import notify_tasks
 from ptmscout.database import experiment, modifications, user
 from ptmscout.views.dataset import dataset_explorer_view
 from collections import defaultdict
+from ptmscout.utils import decorators
 
 def fdrCorrection(enrichment, cluster_sets, enrichment_categories):
     pass
@@ -72,6 +73,7 @@ def calculateEnrichment(exp_id, user_id, job_id):
         
     return cluster_sets, nenrichment, enrichment_categories
 
+@decorators.pushdir(os.path.join(settings.ptmscout_path, settings.mcam_file_path))
 def enrichBool(output_filename, cluster_sets, enrichment, enrichment_categories, pvalue_cutoff):
     
     with open(output_filename, 'w') as ebf:
@@ -90,15 +92,15 @@ def enrichBool(output_filename, cluster_sets, enrichment, enrichment_categories,
             ebf.write("temp.bool = [%s];\n" % (bools))
             
             ebf.write("enrichBool{%d} = temp;\n" % (i+1))
-        ebf.write("clear temp;")
+        ebf.write("clear temp;\n")
                     
-    
+@decorators.pushdir(os.path.join(settings.ptmscout_path, settings.mcam_file_path))
 def numStruct(output_filename, cluster_sets, enrichment, enrichment_categories, pvalue_cutoff):
     with open(output_filename, 'w') as ebf:
         
         sorted_categories = sorted(enrichment_categories.keys())
-        ebf.write("numStruct.type = 'all';")
-        ebf.write("numStruct.labels = {'%s'};" % ("' '".join( sorted_categories )))
+        ebf.write("numStruct.type = 'all';\n")
+        ebf.write("numStruct.labels = {'%s'};\n" % ("' '".join( sorted_categories )))
         
         numStruct = ";".join([ 
                               " ".join([ 
@@ -110,10 +112,11 @@ def numStruct(output_filename, cluster_sets, enrichment, enrichment_categories, 
                                     for cluster_set in cluster_sets 
                                 for clabel in cluster_sets[cluster_set]])
         
-        ebf.write("numStruct.sum = [%s]" % (numStruct))
+        ebf.write("numStruct.sum = [%s];\n" % (numStruct))
 
-def archive(output_path, files):
-    zf = zipfile.ZipFile(output_path, 'w')
+@decorators.pushdir(os.path.join(settings.ptmscout_path, settings.mcam_file_path))
+def archive(output_file, files):
+    zf = zipfile.ZipFile(output_file, 'w')
     for f in files:
         zf.write(f)
     zf.close()
@@ -129,16 +132,16 @@ def run_mcam_analysis(output_filename, pvalue_cutoff, experiment_id, user_id, jo
     
     cluster_sets, enrichment, enrichment_categories = calculateEnrichment(experiment_id, user_id, job_id)
     
-    enrichBoolFilename = os.path.join(root_path, "enrichBool.m") 
-    numStructFilename = os.path.join(root_path, "numStruct.m") 
+    enrichBoolFilename = os.path.join(output_filename, "enrichBool.m") 
+    numStructFilename = os.path.join(output_filename, "numStruct.m") 
     
     notify_tasks.set_job_stage.apply_async((job_id, 'Writing Output', 0))
     
     enrichBool(enrichBoolFilename, cluster_sets, enrichment, enrichment_categories, pvalue_cutoff)
     numStruct(numStructFilename, cluster_sets, enrichment, enrichment_categories, pvalue_cutoff)
     
-    zippath = "%s.zip" % (root_path)
-    archive(zippath, [enrichBoolFilename, numStructFilename])
+    zipfilename = "%s.zip" % (output_filename)
+    archive(zipfilename, [enrichBoolFilename, numStructFilename])
     
     
     notify_tasks.finalize_mcam_export_job.apply_async((job_id,))
