@@ -1,8 +1,8 @@
 <div metal:use-macro="layout">
-	<div metal:fill-slot="header">
+	<metal:slot metal:fill-slot="header">
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/experiments.css')}" />
 		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/forms.css')}" />
-	</div>
+	</metal:slot>
 	<div metal:fill-slot="nav">
     <div metal:use-macro="experiment_header"></div>
   </div>
@@ -10,14 +10,17 @@
   </div>
 	
     <div metal:fill-slot="content">
-    	
-	    <div class="filter-set">
-		    <form method="POST" action="${request.route_url('mcam_enrichment',id=experiment.id)}" target="_blank">
+    <div class="grid_12">
+    	  <h3>MCAM Parameters</h3>
+      <div class="body">
+        <div class="filter-set">
+		    <form method="POST"
+                action="${request.route_url('mcam_enrichment',id=experiment.id)}" target="_blank" class="newform drop-shadow" style="width:600px;margin-left:1em">
 		    	<fieldset>
 		    		<legend>Cluster Information</legend>
 	    		    <div class="formfields">
 		              <div class="grid_3 right-align">
-		                <label>Number of Clusters:</label>
+		                <label>Number of Clusters</label>
 		              </div>
 		              <div class="grid_3">
 		                ${number_of_clusters}
@@ -28,34 +31,34 @@
 	    		<fieldset>
 	    			<legend>MCAM Inputs</legend>
 		          	<div class="formfields">
-		              <div class="grid_3">
+		              <div class="grid_3 right-align">
 		              	<label>Scansite Cutoff</label>
 		              </div>
-		              <div class="grid_4">
+		              <div class="grid_3">
 		          	    ${formrenderer.render('scansitecutoff', id_='scansite-cutoff')} 
 		          	  </div>
 		          	</div>
 		          	<div class="formfields">
-		              <div class="grid_3">
+		              <div class="grid_3 right-align">
 		              	<label>Domain Cutoff</label>
 		              </div>
-		              <div class="grid_4">
+		              <div class="grid_3">
 		          	    ${formrenderer.render('domaincutoff', id_='domain-cutoff')} 
 		          	  </div>
 		          	</div>
 		          	<div class="formfields">
-		              <div class="grid_3">
+		              <div class="grid_3 right-align">
 		              	<label>Alpha P</label>
 		              </div>
-		              <div class="grid_4">
+		              <div class="grid_3">
 		          	    ${formrenderer.render('alpha', id_='alpha')} 
 		          	  </div>
 		          	</div>
 		          	<div class="formfields">
-		              <div class="grid_3">
+		              <div class="grid_3 right-align">
 		              	<label>Correction</label>
 		              </div>
-		              <div class="grid_4">
+		              <div class="grid_3">
 		          	    ${formrenderer.render('correction', id_='fdr-correction', tooltip='Benjamini-Hochberg False Discovery Rate')}
                         ${formrenderer.render('correction', id_='bon-correction')}
 		          	  </div>
@@ -64,11 +67,13 @@
     		
         		<div class="formfields">
 	              <div class="grid_3">&nbsp;</div>
-	              <div class="grid_4">
+	              <div class="grid_3">
 	          	    <input type="submit" value="Login" style="width:120px"/> 
 	          	  </div>
 	          	</div>
 	        </form>
-	    </div>
+        </div>
+        </div>
+        </div>
     </div>
 </div>
