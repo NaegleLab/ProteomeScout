@@ -180,8 +180,8 @@ def run_mcam_analysis(output_filename, scansite_cutoff, domain_cutoff, pvalue_cu
     if correction_type == 'bon':
         bonCorrection(enrichment, cluster_sets, enrichment_categories, test_cnt)
     
-    enrichBoolFilename = os.path.join(output_filename, "enrichBool.m") 
-    numStructFilename = os.path.join(output_filename, "numStruct.m") 
+    enrichBoolFilename = os.path.join(output_filename, "loadEnrichBool.m") 
+    numStructFilename = os.path.join(output_filename, "loadNumStruct.m") 
     
     notify_tasks.set_job_stage.apply_async((job_id, 'Writing Output', 0))
     

@@ -340,8 +340,8 @@ def user_download_mcam_files(context):
     zf = zipfile.ZipFile(open(zfilename, 'r'))
     zf.extractall()
     
-    numStructFilename = os.path.join(zdir, 'numStruct.m')
-    enrichBoolFilename = os.path.join(zdir, 'enrichBool.m')
+    numStructFilename = os.path.join(zdir, 'loadNumStruct.m')
+    enrichBoolFilename = os.path.join(zdir, 'loadEnrichBool.m')
     numStructExpFilename = "tests/behave/data/datasetExplorer_numStruct_expected.txt"
     enrichBoolExpFilename = "tests/behave/data/datasetExplorer_enrichBool_expected.txt"
 
