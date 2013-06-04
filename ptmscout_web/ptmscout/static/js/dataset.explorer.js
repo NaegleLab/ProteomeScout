@@ -893,12 +893,16 @@ function SubsetSelection(element, webservice_url) {
 	
 	
 	this.clusterSelection = $("#cluster-set");
+	this.mcamEnrichment = $("#mcam-enrichment");
 	
 	$('<option />').appendTo(this.clusterSelection);
 	for(var i in this.field_data.clustering_sets){
 		var label = this.field_data.clustering_sets[i];
 		$('<option />', {'value': label, 'text': label}).appendTo(this.clusterSelection);
 	}
+    if(this.field_data.clustering_sets.length == 0){
+        this.mcamEnrichment.hide();
+    }
 	
 	this.clusterOpen = $("#show-clusters").on('click', function(){
 		selector.openClusters(selector.clusterSelection.val());
