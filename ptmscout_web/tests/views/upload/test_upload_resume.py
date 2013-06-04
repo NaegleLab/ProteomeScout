@@ -51,10 +51,7 @@ class TestUploadResumeView(UnitTestCase):
 
         patch_startUpload.assert_called_once_with((exp.id, session.id, exp.job.id))
         
-        exp_dict = webutils.object_to_dict(exp)
-        exp_dict['url'] = "url"
-        exp_dict['citation'] = "citation"
-        self.assertEqual(exp_dict, result['experiment'])
+        self.assertEqual(exp, result['experiment'])
         
         self.assertEqual(None, result['reason'])
         self.assertEqual(strings.experiment_upload_started_page_title, result['pageTitle'])
