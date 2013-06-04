@@ -127,11 +127,10 @@ def enrichBool(output_filename, cluster_sets, enrichment, enrichment_categories,
             ebf.write("temp.labels = {'%s'};\n" % ("' '".join(sorted_labels)))
             
             bools = ";".join([ 
-                              " ".join([ 
-                                        "1" if label in enrichment[(cluster_set, clabel)][category] and enrichment[(cluster_set, clabel)][category][label] <= pvalue_cutoff else "0" 
+                              " ".join([
+                                        str( sum( 1 if label in enrichment[(cluster_set, clabel)][category] and enrichment[(cluster_set, clabel)][category][label] <= pvalue_cutoff else 0 for clabel in cluster_sets[cluster_set] ) )
                                             for label in sorted_labels ])
-                                        for cluster_set in cluster_sets 
-                                    for clabel in cluster_sets[cluster_set] ])
+                                        for cluster_set in cluster_sets ])
             ebf.write("temp.bool = [%s];\n" % (bools))
             
             ebf.write("enrichBool{%d} = temp;\n" % (i+1))
@@ -145,15 +144,15 @@ def numStruct(output_filename, cluster_sets, enrichment, enrichment_categories, 
         ebf.write("numStruct.type = 'all';\n")
         ebf.write("numStruct.labels = {'%s'};\n" % ("' '".join( sorted_categories )))
         
-        numStruct = ";".join([ 
-                              " ".join([ 
-                                        str( 
-                                            sum([ 1 if label in enrichment[(cluster_set, clabel)][category] and enrichment[(cluster_set,clabel)][category][label] <= pvalue_cutoff else 0
-                                             for label in enrichment_categories[category] ]) 
-                                            )
+        numStruct = ";".join([
+                              " ".join([
+                                        str(
+                                            sum([
+                                                max([ 1 if label in enrichment[(cluster_set, clabel)][category] and enrichment[(cluster_set,clabel)][category][label] <= pvalue_cutoff else 0
+                                                        for clabel in cluster_sets[cluster_set] ])
+                                                 for label in enrichment_categories[category] ]) )
                                         for category in sorted_categories ])
-                                    for cluster_set in cluster_sets 
-                                for clabel in cluster_sets[cluster_set]])
+                                    for cluster_set in cluster_sets ])
         
         ebf.write("numStruct.sum = [%s];\n" % (numStruct))
 
