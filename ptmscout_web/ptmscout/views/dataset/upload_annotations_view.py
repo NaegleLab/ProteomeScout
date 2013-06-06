@@ -4,7 +4,7 @@ from ptmscout.config import settings, strings
 from ptmscout.utils import uploadutils, forms
 from ptmscout.database import experiment, upload
 
-def create_session(experiment_id, annotation_filename, user):
+def create_session(experiment_id, annotation_name, annotation_filename, user):
     session = upload.Session()
     session.data_file = annotation_filename
     session.experiment_id = experiment_id
@@ -13,7 +13,7 @@ def create_session(experiment_id, annotation_filename, user):
     session.load_type = 'new'
     session.stage = 'config'
     session.user_id = user.id
-    session.change_name=''
+    session.change_name=annotation_name
     session.change_description = ""
     
     session.save()
@@ -23,8 +23,10 @@ def create_session(experiment_id, annotation_filename, user):
 def create_schema(request):
     schema = forms.FormSchema()
     
+    schema.add_text_field('annotationname', "Annotation Set Name")
     schema.add_file_upload_field('annotationfile', 'Input Data File')
     schema.set_required_field('annotationfile')
+    schema.set_required_field('annotationnam')
     schema.parse_fields(request)
     
     return schema
@@ -38,8 +40,9 @@ def upload_annotation_file_POST(request):
     errors = forms.FormValidator(schema).validate()
     
     if len(errors) == 0:
+        annot_name = schema.get_form_value('annotationname')
         output_file = uploadutils.save_data_file(request.POST['annotationfile'], settings.annotation_files_prefix)
-        job_id = create_session(experiment_id, output_file, request.user)
+        job_id = create_session(experiment_id, annot_name, output_file, request.user)
         return HTTPFound(request.route_url('configure_annotations', id=experiment_id, sid=job_id))
 
     return {'experiment': exp,

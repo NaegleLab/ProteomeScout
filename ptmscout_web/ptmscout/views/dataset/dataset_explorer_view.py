@@ -88,30 +88,38 @@ def get_modification_metadata(measurements, metadata_fields):
 
 
 
-def get_valid_subset_labels(experiment_id, user):
+def get_valid_subset_labels(experiment_id, annotation_set_id, user):
     subset_labels = []
     
     for subset in annotations.getSubsetsForUser(experiment_id, user):
-        subset_labels.append(subset.name)
+        if subset.annotation_set_id is None or subset.annotation_set_id == annotation_set_id:
+            subset_labels.append(subset.name)
     
     return sorted(subset_labels)
 
-def get_user_annotations(exp_id, user, metadata_fields, quantitative_fields, clustering_labels):
-    for annotation_set in annotations.getUserAnnotations(exp_id, user):
+def get_user_annotations(annotation_set, metadata_fields, quantitative_fields, clustering_labels):
+    for annotation_type in annotation_set.annotation_types:
         values = set()
-        for annotation in annotation_set.annotations:
+        for annotation in annotation_type.annotations:
             if annotation.value:
                 values.add(annotation.value)
-        values = sorted( list(values) ) 
-        
-        if annotation_set.type == 'cluster':
-            clustering_labels[annotation_set.name] = values
-        if annotation_set.type == 'nominative':
-            metadata_fields[annotation_set.name] = values
-        if annotation_set.type == 'numeric':
-            quantitative_fields.add(annotation_set.name)
+        values = sorted( list(values) )
+    
+        if annotation_type.type == 'cluster':
+            clustering_labels[annotation_type.name] = values
+        if annotation_type.type == 'nominative':
+            metadata_fields[annotation_type.name] = values
+        if annotation_type.type == 'numeric':
+            quantitative_fields.add(annotation_type.name)
 
-def format_explorer_view(experiment_id, measurements, user):
+def get_user_annotation_dict(annotation_sets):
+    annotation_dict = {}
+    for annotation_set in annotation_sets:
+        annotation_dict[annotation_set.id] = annotation_set.name
+
+    return annotation_dict
+
+def format_explorer_view(experiment_id, annotation_set_id, measurements, user):
     quantitative_fields = set()
     
     accessions = []
@@ -119,7 +127,7 @@ def format_explorer_view(experiment_id, measurements, user):
     scansite_fields = {}
     
     cluster_labels = {}
-    subset_labels = get_valid_subset_labels(experiment_id, user)
+    subset_labels = get_valid_subset_labels(experiment_id, annotation_set_id, user)
     
     get_protein_metadata(measurements, metadata_fields, accessions)
     get_pfam_metadata(measurements, metadata_fields)
@@ -136,9 +144,16 @@ def format_explorer_view(experiment_id, measurements, user):
     
     for field in metadata_fields.keys():
         metadata_fields[field] = sorted( list(metadata_fields[field]) )
+
+    annotation_sets = annotations.getUserAnnotationSets(experiment_id, user)
+    annotation_dict = get_user_annotation_dict(annotation_sets)
+    for annotation_set in annotation_sets:
+        if annotation_set.id == annotation_set_id:
+            get_user_annotations(annotation_set, metadata_fields, quantitative_fields, cluster_labels)
+            break
+
     
-    get_user_annotations(experiment_id, user, metadata_fields, quantitative_fields, cluster_labels)
-    
+
     field_data = {'experiment_id': experiment_id,
                   'quantitative_fields': sorted( list(quantitative_fields) ),
                   'accessions': accessions,
@@ -148,9 +163,11 @@ def format_explorer_view(experiment_id, measurements, user):
                   'metadata_keys': sorted( metadata_fields.keys() ),
                   'clustering_sets': sorted( list(cluster_labels.keys()) ),
                   'clustering_labels': cluster_labels,
-                  'subset_labels': subset_labels}
+                  'subset_labels': subset_labels,
+                  'annotation_set': annotation_set_id}
     
-    return {'field_data': base64.b64encode( json.dumps(field_data) )}
+    return { 'field_data': base64.b64encode( json.dumps(field_data) ),
+             'annotation_sets': annotation_dict }
 
 class QueryError(Exception):
     pass
@@ -705,8 +722,8 @@ def format_measurement_data(measurements):
         
     return experiment_data
 
-def compute_annotations(exp, user, measurements):
-    annotation_sets = annotations.getUserAnnotations(exp.id, user)
+def compute_annotations(annotation_set_id, exp, user, measurements):
+    annotation_set = annotations.getUserAnnotations(annotation_set_id, exp.id, user)
     annotation_types = {}
     ms_map = {}
     for ms in measurements:
@@ -714,7 +731,7 @@ def compute_annotations(exp, user, measurements):
         ms.annotations = {}
         ms.annotation_types = {}
     
-    for aset in annotation_sets:
+    for aset in annotation_set.annotation_types:
         annotation_types[aset.name] = aset.type
         for annotation in aset.annotations:
             ms = ms_map[annotation.MS_id]
@@ -723,9 +740,13 @@ def compute_annotations(exp, user, measurements):
             
     return annotation_types
 
-def compute_subset_enrichment(request, exp, user, subset_name, foreground_exp, background_exp):
+def compute_subset_enrichment(request, annotation_set_id, exp, user, subset_name, foreground_exp, background_exp):
     measurements = exp.measurements
-    annotation_types = compute_annotations(exp, user, measurements)
+
+    if annotation_set_id != None:
+        annotation_types = compute_annotations(annotation_set_id, exp, user, measurements)
+    else:
+        annotation_types = {}
     
     foreground_decision_func = parse_query_expression(foreground_exp, exp.id, user, annotation_types)
     background_decision_func = parse_query_expression(background_exp, exp.id, user, annotation_types)
@@ -785,12 +806,16 @@ def perform_subset_enrichment(request):
     query_expression = json.loads(request.body, encoding=request.charset)
     exp_id = int(query_expression['experiment'])
     exp = experiment.getExperimentById(exp_id, request.user)
+    try:
+        annotation_set_id = int(query_expression['annotation_set_id'])
+    except:
+        annotation_set_id = None
     
     subset_name = query_expression['name']
     foreground_exp = query_expression['foreground']
     background_exp = query_expression['background']
     
-    return compute_subset_enrichment(request, exp, request.user, subset_name, foreground_exp, background_exp)
+    return compute_subset_enrichment(request, annotation_set_id, exp, request.user, subset_name, foreground_exp, background_exp)
     
 
 @view_config(route_name='save_subset', request_method='POST', renderer='json', permission='private')
@@ -802,8 +827,15 @@ def save_subset(request):
     subset_name = query_expression['name']
     foreground_exp = query_expression['foreground']
     background_exp = query_expression['background']
-    
-    annotation_types = compute_annotations(exp, request.user, exp.measurements)
+    try:
+        annotation_set_id = int(query_expression['annotation_set_id'])
+    except:
+        annotation_set_id = None
+   
+    annotation_types = {}
+    if annotation_set_id != None:
+        annotation_types = compute_annotations(annotation_set_id, exp, request.user, exp.measurements)
+
     parse_query_expression(foreground_exp, exp_id, request.user, annotation_types)
     parse_query_expression(background_exp, exp_id, request.user, annotation_types)
     
@@ -815,6 +847,7 @@ def save_subset(request):
     subset.name = subset_name
     subset.experiment_id = exp_id
     subset.owner_id = request.user.id
+    subset.annotation_set_id = annotation_set_id
     subset.foreground_query = foreground_exp
     subset.background_query = background_exp
     subset.save()
@@ -828,7 +861,11 @@ def fetch_subset(request):
     query_expression = json.loads(request.body, encoding=request.charset)
     exp_id = int(query_expression['experiment'])
     exp = experiment.getExperimentById(exp_id, request.user)
-    
+    try:
+        annotation_set_id = int(query_expression['annotation_set_id'])
+    except:
+        annotation_set_id = None
+
     subset = None
     if 'id' in query_expression:
         subset = annotations.getSubsetById(int(query_expression['id']), exp_id)
@@ -838,8 +875,10 @@ def fetch_subset(request):
     if None == subset:
         return {'status':"error",
                 'message':strings.error_message_subset_name_does_not_exist}
+    if annotation_set_id and annotation_set_id != subset.annotation_set_id:
+        return {'status':"error",
+                'message':strings.error_message_subset_name_does_not_exist}
     
-    
-    result = compute_subset_enrichment(request, exp, request.user, subset.name, subset.foreground_query, subset.background_query)
+    result = compute_subset_enrichment(request, annotation_set_id, exp, request.user, subset.name, subset.foreground_query, subset.background_query)
     result['id'] = subset.id
     return result

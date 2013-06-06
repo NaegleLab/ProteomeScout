@@ -2,17 +2,26 @@ from mock import patch
 from ptmscout.config import strings, settings
 from tests.PTMScoutTestCase import IntegrationTestCase
 import os
+from ptmscout.database import annotations
         
 class IntegrationTestMCAMEnrichmentView(IntegrationTestCase):
     @patch('ptmworker.mcam_tasks.run_mcam_analysis.apply_async')
     def test_view_integration(self, patch_run_mcam):
+        annotation_set = annotations.AnnotationSet()
+        annotation_set.name = 'Some Annotations'
+        annotation_set.owner_id = self.bot.user.id
+        annotation_set.experiment_id = 26
+        annotation_set.save()
+
         result = self.ptmscoutapp.get("/experiments/26/mcam_enrichment", status=200)
         result.mustcontain(strings.mcam_enrichment_page_title)
-        
-        d = result.pyquery
-        self.assertIn("Number of Clusters: 0", d('.grid_3').text())
-        
-        result = result.form.submit().follow()
+
+        print annotation_set.id
+        print result.form['annotationset'].value
+
+        result.form['annotationset'] = str(annotation_set.id)
+        result = result.form.submit()
+        result = result.follow()
         result.mustcontain(strings.mcam_enrichment_started_page_title)
         
         self.assertTrue( patch_run_mcam.called )

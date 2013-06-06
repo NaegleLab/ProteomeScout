@@ -91,13 +91,14 @@ class Bot(object):
         form.set('change_description', change_description)
         return form.submit()
     
-    def query_dataset_explorer(self, exp_id, fq, bq = 'experiment'):
+    def query_dataset_explorer(self, exp_id, annotation_set_id, fq, bq = 'experiment'):
         self.numqueries+=1
         query_expression = {
                             'experiment': exp_id,
                             'name': 'Subset %d' % (self.numqueries),
                             'background': bq,
-                            'foreground': fq}
+                            'foreground': fq,
+                            'annotation_set_id': annotation_set_id }
         
         result = self.app.post_json("http://localhost/webservice/subsets/query", params=query_expression, status=200)
         return result.json

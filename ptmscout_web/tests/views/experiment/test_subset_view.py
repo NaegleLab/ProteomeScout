@@ -25,10 +25,11 @@ class ExperimentSubsetViewTests(UnitTestCase):
         request = DummyRequest()
         request.user = None
         request.matchdict['id'] = '1'
+        request.GET['annotation_set'] = '30'
         
         parameters = subset_view.view_experiment_subset(request)
 
-        patch_format_explorer.assert_called_once_with(1, mock_experiment.measurements, request.user)
+        patch_format_explorer.assert_called_once_with(1, 30, mock_experiment.measurements, request.user)
         patch_getExperiment.assert_called_once_with(1, request.user)
         self.assertEqual(mock_experiment, parameters['experiment'])
         self.assertEqual(strings.experiment_subset_page_title, parameters['pageTitle'])

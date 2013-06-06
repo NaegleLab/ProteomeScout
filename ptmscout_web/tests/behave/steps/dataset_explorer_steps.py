@@ -60,6 +60,12 @@ def user_receives_email(context, patch_mail, patch_commit, patch_abort):
 @then(u'the user should be able to see their annotations in the dataset explorer')
 def user_views_dataset_explorer(context):
     result = context.ptmscoutapp.get("/experiments/28/subsets")
+
+    annotation_form = result.forms['select-annotation']
+    context.annotation_set_id = int(annotation_form['annotation_set'].options[1][0])
+    annotation_form['annotation_set'] = str(context.annotation_set_id)
+
+    result = annotation_form.submit()
     
     d = result.pyquery
     
@@ -80,7 +86,7 @@ def user_should_be_able_to_query_clusters(context):
         fq = [ 
               ['nop', ['cluster', 'Random', 'eq', str(i)]], 
              ]
-        result = context.active_user.query_dataset_explorer(28, fq)
+        result = context.active_user.query_dataset_explorer(28, context.annotation_set_id, fq)
         assert 9 <= result['foreground']['peptides']
 
 @then(u'the user should be able to filter by numerical data')
@@ -89,7 +95,7 @@ def filter_ms_with_greater_than_annotated_value(context):
           ['nop', ['quantitative', 'Interestingness', 'gt', '0.5']]
          ]
     
-    result = context.active_user.query_dataset_explorer( 28, fq )
+    result = context.active_user.query_dataset_explorer( 28, context.annotation_set_id, fq )
     assertEqual( 26, result['foreground']['peptides'] )
     
     context.result = result
@@ -99,7 +105,7 @@ def filter_nominative_fun(context):
     fq = [ 
           ['nop', ['metadata', 'Fun', 'eq', 'fun']], 
          ]
-    result = context.active_user.query_dataset_explorer(28, fq)
+    result = context.active_user.query_dataset_explorer(28, context.annotation_set_id, fq)
     assertEqual(6, result['foreground']['peptides'])
 
     
@@ -251,7 +257,7 @@ def show_explorer(context):
           ['nop', ['quantitative', 'average:data:10', 'gt', '2']]
          ]
     
-    result = context.active_user.query_dataset_explorer( context.exp_id, fq )
+    result = context.active_user.query_dataset_explorer( context.exp_id, None, fq )
     assertEqual( 5, result['foreground']['peptides'] )
     
     context.result = result
@@ -300,6 +306,7 @@ def user_export_mcam(context, patch_mail, patch_commit, patch_abort):
     
     # submit the MCAM request
     result = context.ptmscoutapp.get('/experiments/28/mcam_enrichment')
+    result.form['annotationset'] = result.form['annotationset'].options[1][0]
     result.form.set('correction', 'fdr')
     result.form.set('scansitecutoff', "3.0")
     result.form.set('domaincutoff', "1e-5")

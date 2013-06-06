@@ -14,7 +14,7 @@ class TestAnnotateView(UnitTestCase):
         session_obj = patch_session.return_value
         user = createMockUser()
         
-        upload_annotations_view.create_session(12, 'filename', user)
+        upload_annotations_view.create_session(12, 'name', 'filename', user)
         
         self.assertEqual('filename', session_obj.data_file)
         self.assertEqual(12, session_obj.experiment_id)
@@ -22,7 +22,7 @@ class TestAnnotateView(UnitTestCase):
         self.assertEqual('new', session_obj.load_type)
         self.assertEqual('annotations', session_obj.resource_type)
         self.assertEqual('config', session_obj.stage)
-        self.assertEqual('', session_obj.change_name)
+        self.assertEqual('name', session_obj.change_name)
         self.assertEqual('', session_obj.change_description)
         
         session_obj.save.assert_called_once_with()
@@ -34,6 +34,7 @@ class TestAnnotateView(UnitTestCase):
     @patch('ptmscout.views.dataset.upload_annotations_view.create_schema')
     def test_view_should_handle_form_submission_redirect_on_success(self, patch_create_schema, patch_validator, patch_getExp, patch_save, patch_create_session):
         request = DummyRequest()
+        request.POST['annotationname'] = 'some name'
         request.POST['annotationfile'] = 'some annotation file field'
         request.matchdict['id'] = '11'
         request.route_url = Mock()
@@ -44,7 +45,10 @@ class TestAnnotateView(UnitTestCase):
         
         patch_getExp.return_value = exp
         validator = patch_validator.return_value
-        patch_create_schema.return_value = Mock(spec=forms.FormSchema())
+        mock_schema = Mock(spec=forms.FormSchema())
+        patch_create_schema.return_value = mock_schema
+        mock_schema.get_form_value.return_value = 'some name'
+
         validator.validate.return_value = []
 
         patch_save.return_value = "filename"
@@ -56,7 +60,7 @@ class TestAnnotateView(UnitTestCase):
         request.route_url.assert_called_once_with('configure_annotations', id=11, sid=111)
 
         patch_save.assert_called_once_with('some annotation file field', settings.annotation_files_prefix)
-        patch_create_session.assert_called_once_with(11, "filename", request.user)
+        patch_create_session.assert_called_once_with(11, "some name", "filename", request.user)
         
         validator.validate.assert_called_once_with()
         patch_getExp.assert_called_once_with(exp.id, request.user)
@@ -120,5 +124,6 @@ class IntegrationTestAnnotateView(IntegrationTestCase):
         f = open(filename, 'rb')
         filecontents = f.read()
         
+        form.set('annotationname', "some name")
         form.set('annotationfile', (filename, filecontents))
         form.submit(status=302)

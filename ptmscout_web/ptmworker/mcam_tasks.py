@@ -50,12 +50,12 @@ def bonCorrection(enrichment, cluster_sets, enrichment_categories, test_cnt):
                         enrichment[(cluster_set, clabel)][category][label] *= test_cnt[category]
 
 
-def calculateEnrichment(scansite_cutoff, domain_cutoff, exp_id, user_id, job_id):
+def calculateEnrichment(scansite_cutoff, domain_cutoff, annotation_set_id, exp_id, user_id, job_id):
     measurements = modifications.getMeasuredPeptidesByExperiment(exp_id, secure=False)
     exp = experiment.getExperimentById(exp_id, secure=False)
     ptm_user = user.getUserById(user_id)
     
-    annotation_types = dataset_explorer_view.compute_annotations(exp, ptm_user, measurements)
+    annotation_types = dataset_explorer_view.compute_annotations(annotation_set_id, exp, ptm_user, measurements)
     
     cluster_sets = {}
     
@@ -166,13 +166,13 @@ def archive(output_file, files):
 @celery.task
 @upload_helpers.notify_job_failed
 @upload_helpers.logged_task
-def run_mcam_analysis(output_filename, scansite_cutoff, domain_cutoff, pvalue_cutoff, correction_type, experiment_id, user_id, job_id):
+def run_mcam_analysis(output_filename, scansite_cutoff, domain_cutoff, pvalue_cutoff, correction_type, annotation_set_id, experiment_id, user_id, job_id):
     root_path = os.path.join(settings.ptmscout_path, settings.mcam_file_path, output_filename)
     os.mkdir(root_path)
     
     notify_tasks.set_job_status.apply_async((job_id, 'running'))
     
-    cluster_sets, enrichment, enrichment_categories, test_cnt = calculateEnrichment(scansite_cutoff, domain_cutoff, experiment_id, user_id, job_id)
+    cluster_sets, enrichment, enrichment_categories, test_cnt = calculateEnrichment(scansite_cutoff, domain_cutoff, annotation_set_id, experiment_id, user_id, job_id)
     
     if correction_type == 'fdr':
         fdrCorrection(pvalue_cutoff, enrichment, cluster_sets, enrichment_categories)

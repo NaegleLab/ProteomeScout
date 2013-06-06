@@ -13,17 +13,21 @@
     <div class="grid_12">
     	  <h3>MCAM Parameters</h3>
       <div class="body">
+        <div class="error_display" tal:condition="len(errors)>0">
+            <ul>
+                <li tal:repeat="error errors" tal:content="error"></li>
+            </ul>
+        </div>
         <div class="filter-set">
-		    <form method="POST"
-                action="${request.route_url('mcam_enrichment',id=experiment.id)}" target="_blank" class="newform drop-shadow" style="width:600px;margin-left:1em">
+		    <form method="POST" action="${request.route_url('mcam_enrichment',id=experiment.id)}" target="_blank" class="newform drop-shadow" style="width:600px;margin-left:1em">
 		    	<fieldset>
 		    		<legend>Cluster Information</legend>
 	    		    <div class="formfields">
 		              <div class="grid_3 right-align">
-		                <label>Number of Clusters</label>
+		                <label>Annotation Set</label>
 		              </div>
 		              <div class="grid_3">
-		                ${number_of_clusters}
+		                ${formrenderer.render('annotationset')}
 		              </div>
 		            </div>
 		    	</fieldset>

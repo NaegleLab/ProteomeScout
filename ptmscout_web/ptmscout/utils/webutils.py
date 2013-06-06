@@ -1,3 +1,11 @@
+def get_field_as_int(request, field_name, default):
+    field_val = get(request, field_name, default)
+    try:
+        field_val = int(field_val)
+    except:
+        field_val = default
+    return field_val
+
 def get(request, var, default):
     return __check_array(request.GET, var, default)
     

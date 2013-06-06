@@ -7,6 +7,8 @@ from ptmscout.utils import webutils
 @view_config(route_name='experiment_subset', renderer='ptmscout:templates/experiments/experiment_subset.pt', permission='private')
 def view_experiment_subset(request):
     experiment_id = int(request.matchdict['id'])
+    annotation_set_id = webutils.get_field_as_int(request, 'annotation_set', None)
+
     ptm_exp = experiment.getExperimentById(experiment_id, request.user)
     
     initial_query = webutils.get(request, 'query', "")
@@ -14,6 +16,6 @@ def view_experiment_subset(request):
     result = { 'pageTitle': strings.experiment_subset_page_title,
                'experiment': ptm_exp,
                'initial_query': initial_query }
-    result.update( dataset_explorer_view.format_explorer_view( experiment_id, ptm_exp.measurements, request.user ) )
+    result.update( dataset_explorer_view.format_explorer_view( experiment_id, annotation_set_id, ptm_exp.measurements, request.user ) )
     
     return result

@@ -14,6 +14,10 @@
                 
                 <div class="formcategory">Experiment Annotations</div>
                 <table>
+
+                    <tr>
+                        <td class="fieldname">Annotation Name: </td>
+                        <td > ${formrenderer.render('annotationname')} </td>
                     <tr>
                         <td class="fieldname">Annotation File: </td>
                         <td > ${formrenderer.render('annotationfile')} </td>

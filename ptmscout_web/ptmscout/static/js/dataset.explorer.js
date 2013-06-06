@@ -948,7 +948,8 @@ SubsetSelection.prototype.openExistingSubset = function(name) {
 	}else{
 		var query_url = this.webservice_url + '/subsets/fetch';
 		var subset_fetch_query = {	'name': name,
-									'experiment': this.experiment_id 
+									'experiment': this.experiment_id,
+                                    'annotation_set_id': this.field_data.annotation_set
 				 					}
 		
 		$.ajax({
@@ -990,7 +991,8 @@ SubsetSelection.prototype.saveSubset = function(tabElement, name, foreground, ba
 		var subset_save_query = {'name': name,
 								 'experiment': this.experiment_id,
 								 'foreground': foreground,
-								 'background': background}		
+								 'background': background,
+                                 'annotation_set_id': this.field_data.annotation_set}		
 		
 		$.ajax({
 			url: query_url,
@@ -1111,7 +1113,8 @@ SubsetSelection.prototype.submitQuery = function() {
 			'type': 'create',
 			'name': 'Subset {0}'.format(this.query_num),
 			'background': background,
-			'foreground': expression
+			'foreground': expression,
+            'annotation_set_id': this.field_data.annotation_set
 	};
     console.log(subset_query);
 	
@@ -1151,7 +1154,8 @@ SubsetSelection.prototype.submitQueryFromString = function(qstring) {
 			'type': 'create',
 			'name': 'Subset {0}'.format(this.query_num),
 			'background': background,
-			'foreground': foreground
+			'foreground': foreground,
+            'annotation_set_id': this.field_data.annotation_set
 	};
 	
 	var query_url = this.webservice_url + '/subsets/query';
