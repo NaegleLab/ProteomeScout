@@ -38,8 +38,8 @@
 	    	<form method="POST" action="${request.route_url('experiment_annotate', id=experiment.id)}" enctype="multipart/form-data" >
 		    	<fieldset>
                     <legend>Import Annotation File</legend>
-                    Name: <input type="text" name="annotationname" /> <br />
-	   				File: <input type="file" name="annotationfile" /> <br />
+                    <span class="condition-title">Name:</span> <input type="text" name="annotationname" /> <br />
+                    <span class="condition-title">File:</span> <input type="file" name="annotationfile" /> <br />
 		        	<input type="Submit" id="upload-annotations" class="longtask" value="Import Annotations" />
 		        </fieldset>
             </form>
