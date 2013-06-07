@@ -9,7 +9,7 @@ from ptmscout.utils import protein_utils
 def format_protein_accessions(accessions, query_accessions):
     accessions = [ acc.value for acc in sorted(accessions, key=lambda acc: acc.value) if protein_utils.get_accession_type( acc.value ) in protein_utils.get_valid_accession_types() ]
     accessions = sorted(accessions, key=lambda item: (0 if item in query_accessions else 1, item))
-    return accessions
+    return "; ".join(accessions)
 
 def check_modtype_filter(mod, modtype_filter):
     if modtype_filter == None:
