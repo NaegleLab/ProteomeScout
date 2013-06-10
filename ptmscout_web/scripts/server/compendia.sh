@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+source /data/pyramid/bin/activate
+
 cd /data/ptmscout/ptmscout_web
 python scripts/export/export_compendia.py > data/export/ptmscout_everything.tsv
 python scripts/export/export_compendia.py --species "vertebrata" > data/export/ptmscout_vertebrata.tsv
