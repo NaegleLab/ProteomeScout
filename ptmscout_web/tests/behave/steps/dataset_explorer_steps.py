@@ -21,8 +21,8 @@ def user_upload_annotations(context):
     
     result = context.ptmscoutapp.get('/experiments/28/subsets')
     annote_file = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'test', 'experiment.28.test.annotations.tsv')
+    result.forms[1].set('annotationname', "Annotation Set 1")
     bot.set_file_form_contents('annotationfile', annote_file, result.forms[1])
-    
     
     result = result.forms[1].submit(status=302)
     result = result.follow(status=200)
@@ -277,6 +277,7 @@ def user_upload_cluster_file(context):
     
     result = context.ptmscoutapp.get('/experiments/28/subsets')
     annote_file = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, 'test', 'experiment.28.test.clusters.tsv')
+    result.forms[1].set('annotationname', "Annotation Set 1")
     bot.set_file_form_contents('annotationfile', annote_file, result.forms[1])
     
     result = result.forms[1].submit(status=302)
