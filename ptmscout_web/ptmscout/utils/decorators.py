@@ -19,6 +19,22 @@ def get_session(match_field, resource_type):
         return wrapper
     return do_wrap
 
+def get_protein(match_field):
+    def do_wrap(fn):
+        from ptmscout.database import protein
+        
+        def wrapper(*args):
+            request = args[1]
+            pid = int(request.matchdict[match_field])
+            prot = protein.getProteinById(pid)
+            
+            nargs = tuple( list(args) + [prot] )
+            
+            return fn(*nargs)
+        
+        return wrapper
+    return do_wrap
+ 
 
 def get_experiment(match_field, types=set(['experiment','dataset','compendia']), owner_required=False):
     def do_wrap(fn):
