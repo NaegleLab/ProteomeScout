@@ -1,0 +1,34 @@
+<div metal:use-macro="layout">
+	<div metal:fill-slot="header">
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/proteins.css')}" />
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/expression.js')}" ></script>
+	</div>
+	<div metal:fill-slot="nav">
+	  <div metal:use-macro="protein_nav"></div>
+	</div>
+	
+	<div metal:fill-slot="content">
+		<div metal:use-macro="protein_header"></div>
+
+            <fieldset class="object-info">
+                <legend>Protein</legend>
+                <div>
+                    <label>Name:</label> ${protein.name}
+                </div>
+                <div>
+                    <label>Species:</label> ${protein.species.name}
+                </div>
+                <div> 
+                <label>Accessions:</label>
+                <ul>
+                    <li tal:repeat="acc protein.accessions">
+                        <span class="acc_type" tal:content="structure acc.getType()"></span>:
+                        <a class="acc_id" tal:condition="acc.getURL() != None" tal:attributes="href acc.getURL()" target="_blank" tal:content="acc.getAccessionName()" ></a>
+                        <span class="acc_id" tal:condition="acc.getURL() == None" tal:content="acc.getAccessionName()"></span>
+                    </li>
+                </ul>
+                </div>
+          </fieldset>
+      </div>
+  </div>
+
