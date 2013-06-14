@@ -18,7 +18,6 @@ def add_path_definitions(event):
     event['experiment_summary_menu'] = experiment_summary_template()    
     event['protein_header'] = protein_template()
     event['protein_list'] = protein_list_template()
-    event['protein_info'] = protein_info_template()
     event['protein_nav'] = protein_nav_template()
     event['protein_search_form'] = protein_search_form()
     
@@ -56,11 +55,6 @@ def protein_template():
 def protein_list_template():
     renderer = get_renderer("ptmscout:templates/macro/protein_list.pt")
     legend = renderer.implementation().macros['protein_list']
-    return legend
-
-def protein_info_template():
-    renderer = get_renderer("ptmscout:templates/macro/protein_info.pt")
-    legend = renderer.implementation().macros['protein_info']
     return legend
 
 def protein_search_form():

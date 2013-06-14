@@ -207,6 +207,7 @@ privatize_experiment_confirm_message = "Are you sure you want to make this data 
 privatize_experiment_success_message = "You have successfully made this experiment private."
 privatize_experiment_already_message = "Experiment has already been made private."
 
+protein_summary_page_title = "Protein Accessions"
 protein_data_page_title = "Experiment Measurements"
 protein_ontology_page_title = "Gene Ontologies"
 protein_expression_page_title = "Protein Expression"
