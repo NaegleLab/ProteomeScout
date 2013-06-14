@@ -31,8 +31,8 @@
   						<td class="citation" tal:content="experiment.getCitationString()"></td>
   						<td>
                               <div class="status">
-                                  <div tal:condition="experiment.status == 'running'" tal:content="'loading: see jobs below'"></div>
-                                  <div tal:condition="experiment.status != 'running'" tal:content="experiment.status"></div>
+                                  <div tal:condition="experiment.status == 'started'" tal:content="'loading: see jobs below'"></div>
+                                  <div tal:condition="experiment.status != 'started'" tal:content="experiment.status"></div>
                                   <a tal:condition="experiment.status == 'error'" tal:attributes="href '%s/upload/%d/retry' % (request.application_url, experiments['sessions'][experiment.id])">retry</a>
                               </div>
   						</td>
@@ -97,8 +97,8 @@
 							<td><a tal:attributes="href request.application_url + '/experiments/' + str(experiment.id)" tal:content="experiment.name"></td>
 							<td>
 	                            <div class="status">
-	                                <div tal:condition="experiment.status == 'running'" tal:content="'loading: see jobs below'"></div>
-	                                <div tal:condition="experiment.status != 'running'" tal:content="experiment.status"></div>
+	                                <div tal:condition="experiment.status == 'started'" tal:content="'loading: see jobs below'"></div>
+	                                <div tal:condition="experiment.status != 'started'" tal:content="experiment.status"></div>
 	                                <a tal:condition="experiment.status == 'error'" tal:attributes="href request.route_url('dataset_upload_retry', id=datasets['sessions'][experiment.id])">retry</a>
 	                            </div>
 							</td>
@@ -182,10 +182,10 @@
 							<td tal:content="job.finished_time()"></td>
 							<td>
 	                            <div class="status">
-	                                <div tal:condition="job.status == 'running'" tal:content="'processing: ' + job.stage"></div>
-	                                <div tal:condition="job.status != 'running'" tal:content="job.status"></div>
+	                                <div tal:condition="job.status == 'started'" tal:content="'processing: ' + job.stage"></div>
+	                                <div tal:condition="job.status != 'started'" tal:content="job.status"></div>
 	                            </div>
-	                            <div class="progress" tal:condition="job.status == 'running'" tal:content="'%d / %d' % (job.progress, job.max_progress)"></div>
+	                            <div class="progress" tal:condition="job.status == 'started'" tal:content="'%d / %d' % (job.progress, job.max_progress)"></div>
 	   						</td>
 						</tr>
 					</tal:experiments>
