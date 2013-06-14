@@ -83,6 +83,7 @@ class FormSchema(object):
         self.conditional_fields[ref] = (parent, condition)
     
     def set_required_field(self, ref):
+        assert ref in self.field_types, "Field: %s is not valid" % (ref)
         self.required_fields.add(ref)
     
     
