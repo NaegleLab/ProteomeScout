@@ -11,7 +11,7 @@ def format_scansite_predictions(prot):
     for pred in prot.scansite:
         ss = { 'source': pred.source,
                'value': pred.value,
-               'score': pred.percentile
+               'score': "%.2f%%" % (pred.percentile)
                }
         formatted_scansite[pred.site_pos].append( ss )
 

@@ -674,8 +674,8 @@ function ScansiteTrack(name, track_viewer, protein_data){
 
 }
 
-function get_scansite_tooltip(d){
-    var tooltip_text = ""
+ScansiteTrack.prototype.get_scansite_tooltip = function(d){
+    var tooltip_text = "Residue: {0}{1}<br>".format(this.protein_data.seq[d.key-1], d.key)
 
     var i = 0
     while(i < d.value.length){
@@ -695,7 +695,7 @@ ScansiteTrack.prototype.create = function(axis, viewer_width, show_residues) {
     }
     this.raxis.range([residue_max_width/2, residue_max_width]);
     var raxis = this.raxis;
-
+    var track = this;
     this.show_residues = show_residues;
 
     this.g.append('line')
@@ -712,7 +712,7 @@ ScansiteTrack.prototype.create = function(axis, viewer_width, show_residues) {
                 .attr('cx', function(d) { return axis(parseInt(d.key) - 0.5); })
                 .attr('cy', this.height / 2 )
                 .attr('r', function(d) { return raxis(d.value.length); })
-                .attr('title', function(d) { return get_scansite_tooltip(d); })
+                .attr('title', function(d) { return track.get_scansite_tooltip(d); })
                 .style('fill', '#6495ED' )
                 .on('mouseover', function() { d3.select(this).style('fill', 'black'); })
                 .on('mouseout', function() { d3.select(this).style('fill', '#6495ED'); });
