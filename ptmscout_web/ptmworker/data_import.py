@@ -30,7 +30,7 @@ def start_import(exp_id, session_id, job_id, nullmods=False):
         headers = upload_helpers.get_series_headers(session)
 
         load_ambiguities = exp.ambiguity == 1
-        notify_tasks.set_job_status.apply_async((job_id, 'running'))
+        notify_tasks.set_job_status.apply_async((job_id, 'started'))
 
         query_task = protein_tasks.get_proteins_from_external_databases.s(accessions, line_mapping, exp_id, job_id)
         proteins_task = protein_tasks.query_protein_metadata.s(accessions, line_mapping, exp_id, job_id)
