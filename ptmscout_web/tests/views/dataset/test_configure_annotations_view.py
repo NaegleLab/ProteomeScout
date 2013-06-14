@@ -3,6 +3,24 @@ from ptmscout.database import upload
 from ptmscout.config import strings
 
 class IntegrationTestConfigureAnnotationUploadView(IntegrationTestCase):
+
+    def test_view_should_show_errors_when_wrong_project(self):
+        session = upload.Session()
+        session.user_id = self.bot.user.id
+        session.change_name=''
+        session.change_description = ""
+        session.data_file = 'test/experiment.28.test.annotations.tsv'
+        session.resource_type = 'annotations'
+        session.load_type = 'new'
+        session.stage='config'
+        session.save()
+        
+        result = self.ptmscoutapp.get("/experiments/26/annotate/%d/configure" % (session.id), status=200)
+        result = result.form.submit()
+        
+        result.mustcontain(strings.experiment_upload_error_ms_id_not_found % (399204))
+ 
+
     def test_view_should_show_errors_when_missing_columns(self):
         session = upload.Session()
         session.user_id = self.bot.user.id

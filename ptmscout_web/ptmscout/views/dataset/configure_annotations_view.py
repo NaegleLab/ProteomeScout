@@ -1,7 +1,7 @@
 from pyramid.view import view_config
 from ptmscout.config import strings
 from ptmscout.utils import uploadutils, webutils, decorators
-from ptmscout.database import upload, experiment
+from ptmscout.database import upload, experiment, modifications
 import re
 from pyramid.httpexceptions import HTTPFound
 
@@ -12,7 +12,7 @@ def check_is_type(val, tp):
     except:
         return False
 
-def verify_dataset(session, data_rows):
+def verify_dataset(session, data_rows, valid_MS_ids):
     errors = []
     
     for i, row in enumerate(data_rows):
@@ -23,6 +23,9 @@ def verify_dataset(session, data_rows):
                 
             elif sc.type == 'MS_id' and not check_is_type(row[sc.column_number], int):
                 pe = uploadutils.ParseError(i+1, sc.column_number, strings.experiment_upload_warning_columns_values_should_be % ("integer"))
+
+            elif sc.type == 'MS_id' and not int(row[sc.column_number]) in valid_MS_ids:
+                pe = uploadutils.ParseError(i+1, sc.column_number, strings.experiment_upload_error_ms_id_not_found % int(row[sc.column_number]))
 
             elif sc.type == 'numeric' and not check_is_type(row[sc.column_number], float):
                 pe = uploadutils.ParseError(i+1, sc.column_number, strings.experiment_upload_warning_columns_values_should_be % ("numeric"))
@@ -85,7 +88,9 @@ def parse_column_assignments(request, session, headers):
 
 def configure_annotations_POST(request, experiment, session):
     force = webutils.post(request, 'override', "false") != "false"
-    
+    measurements = modifications.getMeasuredPeptidesByExperiment(experiment.id, request.user)
+    valid_MS_ids = set([ms.id for ms in measurements])
+
     headers, data_rows = uploadutils.load_header_and_data_rows(session.data_file, N=100)
     errors = parse_column_assignments(request, session, headers)
     if len(errors) > 0:
@@ -93,7 +98,7 @@ def configure_annotations_POST(request, experiment, session):
         result['error'] = errors
         return result
         
-    errors = verify_dataset(session, data_rows)    
+    errors = verify_dataset(session, data_rows, valid_MS_ids)
     
     if len(errors) > 0 and not force:
         result = configure_annotations_GET(request, experiment, session)
