@@ -26,7 +26,7 @@ def create_schema(request):
     schema.add_text_field('annotationname', "Annotation Set Name")
     schema.add_file_upload_field('annotationfile', 'Input Data File')
     schema.set_required_field('annotationfile')
-    schema.set_required_field('annotationnam')
+    schema.set_required_field('annotationname')
     schema.parse_fields(request)
     
     return schema
