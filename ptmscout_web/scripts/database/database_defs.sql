@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.29, for debian-linux-gnu (i686)
+-- MySQL dump 10.13  Distrib 5.5.29, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: ptmscout_test
+-- Host: localhost    Database: ptmscout
 -- ------------------------------------------------------
--- Server version	5.5.29-0ubuntu0.12.04.2
+-- Server version	5.5.29-0ubuntu0.12.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -32,7 +32,7 @@ CREATE TABLE `GO` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniqueEntry` (`aspect`,`GO`),
   KEY `GO` (`GO`)
-) ENGINE=InnoDB AUTO_INCREMENT=45442 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=138304 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,7 +70,7 @@ CREATE TABLE `MS` (
   KEY `FK_MS_protein` (`protein_id`),
   CONSTRAINT `FK_MS_protein` FOREIGN KEY (`protein_id`) REFERENCES `protein` (`id`),
   CONSTRAINT `MS_ibfk_1` FOREIGN KEY (`experiment_id`) REFERENCES `experiment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=399282 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=1249284 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -89,7 +89,7 @@ CREATE TABLE `MS_ambiguity` (
   UNIQUE KEY `uniqueConstraint_key` (`alt_accession`,`ms_id`),
   KEY `FK_MS` (`ms_id`),
   CONSTRAINT `MS_ambiguity_ibfk_1` FOREIGN KEY (`ms_id`) REFERENCES `MS` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6691 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=116327 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,13 +102,15 @@ DROP TABLE IF EXISTS `MS_annotations`;
 CREATE TABLE `MS_annotations` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `MS_id` int(10) unsigned NOT NULL,
-  `set_id` int(10) unsigned NOT NULL,
+  `type_id` int(10) unsigned NOT NULL,
   `value` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `MS_id` (`MS_id`),
   KEY `label` (`value`),
-  KEY `set_id` (`set_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  KEY `set_id` (`type_id`),
+  CONSTRAINT `MS_annotations_ibfk_2` FOREIGN KEY (`type_id`) REFERENCES `annotations` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `MS_annotations_ibfk_1` FOREIGN KEY (`MS_id`) REFERENCES `MS` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=22201 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -130,7 +132,7 @@ CREATE TABLE `MS_data` (
   PRIMARY KEY (`id`),
   KEY `FK_data_MS` (`MS_id`),
   CONSTRAINT `MS_data_ibfk_1` FOREIGN KEY (`MS_id`) REFERENCES `MS` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=94197 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=252655 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -144,14 +146,14 @@ CREATE TABLE `MS_modifications` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `MS_id` int(10) unsigned NOT NULL DEFAULT '0',
   `peptide_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `modification_id` int(10) unsigned NOT NULL,
+  `modification_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_phosphopep_id` (`peptide_id`),
   KEY `FK_MS_id` (`MS_id`),
   KEY `modification_id` (`modification_id`),
   CONSTRAINT `MS_modifications_ibfk_1` FOREIGN KEY (`MS_id`) REFERENCES `MS` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `MS_modifications_ibfk_2` FOREIGN KEY (`modification_id`) REFERENCES `PTM` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=611165 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1788634 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -174,7 +176,7 @@ CREATE TABLE `PTM` (
   UNIQUE KEY `name` (`name`,`accession`),
   KEY `parent_id` (`parent_id`),
   CONSTRAINT `PTM_ibfk_3` FOREIGN KEY (`parent_id`) REFERENCES `PTM` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4707 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4710 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -192,7 +194,7 @@ CREATE TABLE `PTM_keywords` (
   UNIQUE KEY `PTM_id_2` (`PTM_id`,`keyword`),
   KEY `PTM_id` (`PTM_id`),
   CONSTRAINT `PTM_keywords_ibfk_1` FOREIGN KEY (`PTM_id`) REFERENCES `PTM` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2646 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2645 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -213,6 +215,26 @@ CREATE TABLE `PTM_taxonomy` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `annotation_sets`
+--
+
+DROP TABLE IF EXISTS `annotation_sets`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `annotation_sets` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `owner_id` int(10) unsigned NOT NULL,
+  `experiment_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `owner_id` (`owner_id`),
+  KEY `experiment_id` (`experiment_id`),
+  CONSTRAINT `annotation_sets_ibfk_2` FOREIGN KEY (`experiment_id`) REFERENCES `experiment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `annotation_sets_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `annotations`
 --
 
@@ -221,14 +243,14 @@ DROP TABLE IF EXISTS `annotations`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `annotations` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `owner_id` int(10) unsigned NOT NULL,
-  `experiment_id` int(10) unsigned NOT NULL,
+  `set_id` int(10) unsigned NOT NULL,
   `type` enum('cluster','numeric','nominative') NOT NULL,
   `name` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`owner_id`),
-  KEY `experiment_id` (`experiment_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  UNIQUE KEY `one_name_per_set` (`set_id`,`name`),
+  KEY `set_id` (`set_id`),
+  CONSTRAINT `annotations_ibfk_1` FOREIGN KEY (`set_id`) REFERENCES `annotation_sets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1312 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -249,7 +271,6 @@ CREATE TABLE `experiment` (
   `URL` text,
   `published` tinyint(1) NOT NULL DEFAULT '0',
   `ambiguity` tinyint(1) NOT NULL DEFAULT '0',
-  `export` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `experiment_id` int(10) unsigned DEFAULT NULL,
   `dataset` text NOT NULL,
   `volume` int(11) DEFAULT NULL,
@@ -262,15 +283,16 @@ CREATE TABLE `experiment` (
   `job_id` int(10) unsigned DEFAULT NULL,
   `submitter_id` int(10) unsigned DEFAULT NULL,
   `modified_residues` varchar(26) NOT NULL,
+  `type` enum('compendia','experiment','dataset') NOT NULL DEFAULT 'experiment',
   PRIMARY KEY (`id`),
   KEY `public` (`public`),
   KEY `submitter_id` (`submitter_id`),
   KEY `experiment_id` (`experiment_id`),
   KEY `modified_residues` (`modified_residues`),
-  KEY `job_id` (`job_id`),
+  KEY `type` (`type`),
   CONSTRAINT `experiment_ibfk_2` FOREIGN KEY (`submitter_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `experiment_ibfk_3` FOREIGN KEY (`experiment_id`) REFERENCES `experiment` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1004 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1419 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -285,11 +307,12 @@ CREATE TABLE `experiment_PTM` (
   `experiment_id` int(10) unsigned NOT NULL,
   `PTM_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `experiment_id_2` (`experiment_id`,`PTM_id`),
   KEY `experiment_id` (`experiment_id`),
   KEY `PTM_id` (`PTM_id`),
   CONSTRAINT `experiment_PTM_ibfk_1` FOREIGN KEY (`experiment_id`) REFERENCES `experiment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `experiment_PTM_ibfk_2` FOREIGN KEY (`PTM_id`) REFERENCES `PTM` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=580 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -307,7 +330,7 @@ CREATE TABLE `experiment_condition` (
   PRIMARY KEY (`id`),
   KEY `experiment_id` (`experiment_id`),
   CONSTRAINT `experiment_condition_ibfk_1` FOREIGN KEY (`experiment_id`) REFERENCES `experiment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=29510 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=29594 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -327,7 +350,7 @@ CREATE TABLE `experiment_error` (
   PRIMARY KEY (`id`),
   KEY `experiment_id` (`experiment_id`),
   CONSTRAINT `experiment_error_ibfk_1` FOREIGN KEY (`experiment_id`) REFERENCES `experiment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=284490 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -341,6 +364,7 @@ CREATE TABLE `experiment_subsets` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `owner_id` int(10) unsigned NOT NULL,
   `experiment_id` int(10) unsigned NOT NULL,
+  `annotation_set_id` int(10) unsigned NOT NULL,
   `name` varchar(100) NOT NULL,
   `foreground_query` blob NOT NULL,
   `background_query` blob NOT NULL,
@@ -348,9 +372,11 @@ CREATE TABLE `experiment_subsets` (
   KEY `name` (`name`),
   KEY `owner_id` (`owner_id`),
   KEY `experiment_id` (`experiment_id`),
+  KEY `annotation_set_id` (`annotation_set_id`),
+  CONSTRAINT `experiment_subsets_ibfk_3` FOREIGN KEY (`annotation_set_id`) REFERENCES `annotation_sets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `experiment_subsets_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `experiment_subsets_ibfk_2` FOREIGN KEY (`experiment_id`) REFERENCES `experiment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -488,8 +514,9 @@ CREATE TABLE `jobs` (
   `restarted` datetime DEFAULT NULL,
   `finished` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `jobs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -501,39 +528,19 @@ DROP TABLE IF EXISTS `peptide`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `peptide` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `scansite_date` datetime DEFAULT NULL,
   `pep_aligned` varchar(15) CHARACTER SET latin1 NOT NULL DEFAULT '',
   `site_pos` int(10) unsigned NOT NULL DEFAULT '0',
   `site_type` char(1) CHARACTER SET latin1 NOT NULL DEFAULT '',
   `protein_domain_id` int(10) unsigned DEFAULT NULL,
   `protein_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `scansite_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `site_pos` (`site_pos`,`protein_id`),
   KEY `FK_peptide_protein` (`protein_id`),
   KEY `protein_domain_id` (`protein_domain_id`),
   CONSTRAINT `peptide_ibfk_3` FOREIGN KEY (`protein_domain_id`) REFERENCES `protein_domain` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `peptide_ibfk_4` FOREIGN KEY (`protein_id`) REFERENCES `protein` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=224969 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `peptide_predictions`
---
-
-DROP TABLE IF EXISTS `peptide_predictions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `peptide_predictions` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `source` varchar(40) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT 'scansite',
-  `value` varchar(20) NOT NULL DEFAULT '',
-  `score` float DEFAULT '0',
-  `percentile` float NOT NULL DEFAULT '0',
-  `peptide_id` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQUE_pepId_source_value` (`peptide_id`,`source`,`value`),
-  KEY `FK_peptide_prediction` (`peptide_id`),
-  CONSTRAINT `peptide_predictions_ibfk_1` FOREIGN KEY (`peptide_id`) REFERENCES `peptide` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=493548 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3417481 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -569,11 +576,12 @@ CREATE TABLE `protein` (
   `locus` varchar(30) NOT NULL DEFAULT '',
   `name` varchar(300) NOT NULL DEFAULT '',
   `date` datetime NOT NULL,
+  `remove` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `species_id` (`species_id`),
   KEY `sequence` (`sequence`(20)),
   CONSTRAINT `protein_ibfk_1` FOREIGN KEY (`species_id`) REFERENCES `species` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=35607 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=151050 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -593,7 +601,7 @@ CREATE TABLE `protein_GO` (
   KEY `GO_id` (`GO_id`),
   CONSTRAINT `protein_GO_ibfk_1` FOREIGN KEY (`protein_id`) REFERENCES `protein` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `protein_GO_ibfk_2` FOREIGN KEY (`GO_id`) REFERENCES `GO` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=833393 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1256727 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -613,7 +621,7 @@ CREATE TABLE `protein_acc` (
   UNIQUE KEY `UNIQUE_Entry_forProtein` (`protein_id`,`value`,`type`) USING BTREE,
   KEY `FK_acc_protein` (`protein_id`),
   CONSTRAINT `protein_acc_ibfk_1` FOREIGN KEY (`protein_id`) REFERENCES `protein` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=225668 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=839261 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -636,7 +644,7 @@ CREATE TABLE `protein_domain` (
   PRIMARY KEY (`id`),
   KEY `FK_pfam_protein` (`protein_id`),
   CONSTRAINT `protein_domain_ibfk_1` FOREIGN KEY (`protein_id`) REFERENCES `protein` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=105326 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=245470 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -656,7 +664,7 @@ CREATE TABLE `protein_expression` (
   KEY `FK_protein_expression_ann` (`probeset_id`),
   CONSTRAINT `FK_protein_expression_ann` FOREIGN KEY (`probeset_id`) REFERENCES `expression` (`probeset_id`),
   CONSTRAINT `protein_expression_ibfk_1` FOREIGN KEY (`protein_id`) REFERENCES `protein` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=31248 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=118718 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -679,7 +687,7 @@ CREATE TABLE `protein_mutations` (
   PRIMARY KEY (`id`),
   KEY `protein_FK` (`protein_id`),
   CONSTRAINT `protein_mutations_ibfk_1` FOREIGN KEY (`protein_id`) REFERENCES `protein` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=38051 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=98209 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -699,7 +707,29 @@ CREATE TABLE `protein_regions` (
   PRIMARY KEY (`id`),
   KEY `protein_id` (`protein_id`),
   CONSTRAINT `protein_regions_ibfk_1` FOREIGN KEY (`protein_id`) REFERENCES `protein` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1062 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2018 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `protein_scansite`
+--
+
+DROP TABLE IF EXISTS `protein_scansite`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `protein_scansite` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `source` varchar(40) NOT NULL DEFAULT 'scansite',
+  `value` varchar(20) NOT NULL,
+  `score` float NOT NULL,
+  `percentile` float NOT NULL,
+  `site_pos` int(10) unsigned NOT NULL,
+  `protein_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `source` (`source`,`value`,`site_pos`,`protein_id`),
+  KEY `protein_id` (`protein_id`),
+  CONSTRAINT `protein_scansite_ibfk_1` FOREIGN KEY (`protein_id`) REFERENCES `protein` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5747591 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -713,12 +743,13 @@ CREATE TABLE `session` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL,
   `data_file` varchar(100) NOT NULL,
+  `resource_type` enum('experiment','annotations','dataset') NOT NULL DEFAULT 'experiment',
   `load_type` enum('new','reload','append','extension') NOT NULL,
   `parent_experiment` int(10) unsigned DEFAULT NULL,
   `change_name` text NOT NULL,
   `change_description` text NOT NULL,
   `units` varchar(20) NOT NULL,
-  `stage` enum('config','metadata','confirm','complete') NOT NULL DEFAULT 'config',
+  `stage` enum('config','metadata','condition','confirm','complete') NOT NULL DEFAULT 'config',
   `experiment_id` int(10) unsigned DEFAULT NULL,
   `date` datetime NOT NULL,
   PRIMARY KEY (`id`),
@@ -726,7 +757,7 @@ CREATE TABLE `session` (
   KEY `experiment_id` (`experiment_id`),
   CONSTRAINT `session_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `session_ibfk_2` FOREIGN KEY (`experiment_id`) REFERENCES `experiment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=705 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -739,13 +770,13 @@ DROP TABLE IF EXISTS `session_columns`;
 CREATE TABLE `session_columns` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `session_id` int(10) unsigned NOT NULL,
-  `type` enum('hidden','data','stddev','accession','peptide','species','modification','run','none','numeric','nominative','cluster','MS_id') NOT NULL DEFAULT 'none',
+  `type` enum('hidden','data','stddev','accession','peptide','sites','species','modification','run','none','cluster','numeric','nominative','MS_id') NOT NULL DEFAULT 'none',
   `label` varchar(45) NOT NULL,
   `column_number` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `session_id` (`session_id`),
   CONSTRAINT `session_columns_ibfk_1` FOREIGN KEY (`session_id`) REFERENCES `session` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=173 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15032 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -763,7 +794,7 @@ CREATE TABLE `species` (
   UNIQUE KEY `name` (`name`),
   KEY `taxon_id` (`taxon_id`),
   CONSTRAINT `species_ibfk_2` FOREIGN KEY (`taxon_id`) REFERENCES `taxonomy` (`node_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1700 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -782,6 +813,7 @@ CREATE TABLE `taxonomy` (
   PRIMARY KEY (`node_id`),
   KEY `kingdom` (`kingdom`),
   KEY `parent_id` (`parent_id`),
+  KEY `name_index` (`name`),
   CONSTRAINT `taxonomy_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `taxonomy` (`node_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -828,7 +860,7 @@ CREATE TABLE `users` (
   `expiration` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`,`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=270 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2485 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -840,4 +872,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-03-27 17:08:13
+-- Dump completed on 2013-06-14 15:16:45
