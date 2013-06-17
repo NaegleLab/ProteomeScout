@@ -66,7 +66,7 @@ def internal_experiment_comparison_view(request, exp):
         experiment_list = set([int(exp.id) for exp.id in request.POST.getall('experiment')])
         results = compare_to_all(exp, request.user, experiment_list)
 
-    return {'pageTitle': strings.experiment_compare_page_title,
+    return {'pageTitle': strings.experiment_compare_page_title % (exp.name),
             'experiment': exp,
             'results': results}
 

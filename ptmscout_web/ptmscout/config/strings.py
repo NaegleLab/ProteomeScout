@@ -51,11 +51,11 @@ dataset_upload_configure_page_title = "Configure Data Fields"
 experiment_ambiguity_page_title = "Ambiguous Peptide Assignment Tool"
 experiment_ambiguity_error_no_change = "No peptide assignments were changed from the current assignments"
 
-experiment_compare_page_title = "Compare Datasets"
+experiment_compare_page_title = "Compare Datasets: %s"
 
-experiment_subset_page_title = "Dataset Explorer"
+experiment_subset_page_title = "Dataset Explorer: %s"
 
-experiment_errors_page_title = "Experiment Data Upload Errors"
+experiment_errors_page_title = "Experiment Data Upload Errors: %s"
 
 experiments_page_title = "Home - Experiments"
 experiment_page_title = "Experiment: %s"

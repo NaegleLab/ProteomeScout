@@ -32,7 +32,7 @@ class ExperimentSubsetViewTests(UnitTestCase):
         patch_format_explorer.assert_called_once_with(1, 30, mock_experiment.measurements, request.user)
         patch_getExperiment.assert_called_once_with(1, request.user)
         self.assertEqual(mock_experiment, parameters['experiment'])
-        self.assertEqual(strings.experiment_subset_page_title, parameters['pageTitle'])
+        self.assertEqual(strings.experiment_subset_page_title % (mock_experiment.name), parameters['pageTitle'])
         self.assertEqual("map", parameters['some'])
         self.assertEqual("data", parameters['of'])
 

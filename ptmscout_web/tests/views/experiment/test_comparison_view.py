@@ -36,7 +36,7 @@ class ComparisonViewTests(UnitTestCase):
 
         self.assertEqual({"Expected":"Results"}, result['results'])
         self.assertEqual(exp, result['experiment'])
-        self.assertEqual(strings.experiment_compare_page_title, result['pageTitle'])
+        self.assertEqual(strings.experiment_compare_page_title % (exp.name), result['pageTitle'])
 
     @patch('ptmscout.views.experiment.comparison_view.compare_to_all')
     def test_comparison_view_submitted_all(self, patch_compare):
@@ -53,7 +53,7 @@ class ComparisonViewTests(UnitTestCase):
 
         self.assertEqual({"Expected":"Results"}, result['results'])
         self.assertEqual(exp, result['experiment'])
-        self.assertEqual(strings.experiment_compare_page_title, result['pageTitle'])
+        self.assertEqual(strings.experiment_compare_page_title % (exp.name), result['pageTitle'])
 
     def test_comparison_view(self):
         request = DummyRequest()
@@ -66,4 +66,4 @@ class ComparisonViewTests(UnitTestCase):
 
         self.assertEqual(exp, result['experiment'])
         self.assertEqual(None, result['results'])
-        self.assertEqual(strings.experiment_compare_page_title, result['pageTitle'])
+        self.assertEqual(strings.experiment_compare_page_title % (exp.name), result['pageTitle'])
