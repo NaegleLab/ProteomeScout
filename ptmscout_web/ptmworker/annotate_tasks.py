@@ -125,6 +125,7 @@ def start_annotation_import(session_id, job_id):
         used_labels.add(col.label)
         total_annotations += len(ms_annotations)
         i+=1
-        notify_tasks.set_job_progress.apply_async((job_id, i, len(annotation_cols)))
+        if i % 10 == 0:
+            notify_tasks.set_job_progress.apply_async((job_id, i, len(annotation_cols)))
     
     notify_tasks.finalize_annotation_upload_job.apply_async((job_id, total_annotations, errors))
