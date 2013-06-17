@@ -327,8 +327,8 @@ SubsetTab.prototype.init = function(query_response) {
 
 	this.enrichmentTable = new EnrichmentTable(this.enrichment, query_response.enrichment)
 	
-	createSeqlogo(d3.select("#{0}".format(this.tabId)).select(".foreground-seqlogo".format(this.tabId)), query_response.foreground.seqlogo, 500, 400);
-	createSeqlogo(d3.select("#{0}".format(this.tabId)).select(".background-seqlogo".format(this.tabId)), query_response.background.seqlogo, 500, 400);
+	createSeqlogo(d3.select("#{0}".format(this.tabId)).select(".foreground-seqlogo".format(this.tabId)), query_response.foreground.seqlogo, 350, 270);
+	createSeqlogo(d3.select("#{0}".format(this.tabId)).select(".background-seqlogo".format(this.tabId)), query_response.background.seqlogo, 350, 270);
 	
 	this.motifTable = new MotifTable(this.motif, query_response.motif.results, query_response.motif.tests)
 	this.formatPeptides(query_response.peptides);
