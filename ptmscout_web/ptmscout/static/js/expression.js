@@ -75,7 +75,7 @@ function genCharts() {
 	parseData();
 	d3.selectAll(".expression_chart td").remove();
 	
-	var cols = 3;
+	var cols = 2;
 	
 	var probeId = $("#expression_probeid :selected").attr("value");
 	var collection = $("#expression_collection :selected").attr("value");
