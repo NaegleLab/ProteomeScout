@@ -170,7 +170,7 @@ def run_mcam_analysis(output_filename, scansite_cutoff, domain_cutoff, pvalue_cu
     root_path = os.path.join(settings.ptmscout_path, settings.mcam_file_path, output_filename)
     os.mkdir(root_path)
     
-    notify_tasks.set_job_status.apply_async((job_id, 'running'))
+    notify_tasks.set_job_status.apply_async((job_id, 'started'))
     
     cluster_sets, enrichment, enrichment_categories, test_cnt = calculateEnrichment(scansite_cutoff, domain_cutoff, annotation_set_id, experiment_id, user_id, job_id)
     

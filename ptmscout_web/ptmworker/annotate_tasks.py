@@ -87,7 +87,7 @@ def get_valid_msids(job, session):
 @upload_helpers.transaction_task
 @upload_helpers.notify_job_failed
 def start_annotation_import(session_id, job_id):
-    notify_tasks.set_job_status.apply_async((job_id, 'running'))
+    notify_tasks.set_job_status.apply_async((job_id, 'started'))
     
     job = jobs.getJobById(job_id)
     session = upload.getSessionById(session_id, job.user)
