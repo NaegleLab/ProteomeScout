@@ -35,7 +35,7 @@ class TestProteinDataViews(UnitTestCase):
         patch_formatProteinData.return_value = formatted_experiment_data
         patch_filterMods.return_value = filtered_measurements
         
-        result = protein_experiment_data_view(request)
+        result = protein_experiment_data_view(None, request)
 
         patch_filterMods.assert_called_once_with(measurements, site_pos)
         patch_formatProteinData.assert_called_once_with(filtered_measurements)
@@ -69,7 +69,7 @@ class TestProteinDataViews(UnitTestCase):
         patch_getMods.return_value = measurements
         patch_formatProteinData.return_value = formatted_experiment_data
         
-        result = protein_experiment_data_view(request)
+        result = protein_experiment_data_view(None, request)
         
         patch_formatProteinData.assert_called_once_with(measurements)
         patch_getProtein.assert_called_once_with(mock_prot.id)
@@ -98,7 +98,7 @@ class TestProteinDataViews(UnitTestCase):
         patch_getMods.return_value = measurements
         patch_formatProteinData.return_value = formatted_experiment_data
         
-        result = protein_experiment_data_view(request)
+        result = protein_experiment_data_view(None, request)
         
         patch_formatProteinData.assert_called_once_with(measurements)
         patch_getProtein.assert_called_once_with(mock_prot.id)

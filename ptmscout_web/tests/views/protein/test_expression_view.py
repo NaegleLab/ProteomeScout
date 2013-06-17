@@ -37,7 +37,7 @@ class TestProteinExpressionViews(unittest.TestCase):
         
         probe.samples = [s1,s2,s3,s4]
         
-        result = protein_expression_view(request)
+        result = protein_expression_view(None, request)
         
         patch_getProtein.assert_called_with(mock_prot.id)
         

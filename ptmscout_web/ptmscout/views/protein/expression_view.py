@@ -6,7 +6,7 @@ from ptmscout.views.protein import decorators
 
 @view_config(route_name='protein_expression', renderer='ptmscout:templates/proteins/protein_expression.pt')
 @decorators.experiment_filter
-def protein_expression_view(request):
+def protein_expression_view(context, request):
     pid = int(request.matchdict['id'])
     prot = protein.getProteinById(pid)
     

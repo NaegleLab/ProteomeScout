@@ -52,7 +52,7 @@ def format_protein_data(mods):
 
 @view_config(route_name='protein_data', renderer='ptmscout:templates/proteins/protein_data.pt')
 @decorators.experiment_filter
-def protein_experiment_data_view(request):
+def protein_experiment_data_view(context, request):
     pid = int(request.matchdict['id'])
     prot = protein.getProteinById(pid)
     

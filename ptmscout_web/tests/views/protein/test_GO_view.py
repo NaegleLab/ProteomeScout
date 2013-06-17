@@ -40,7 +40,7 @@ class TestProteinGOViews(unittest.TestCase):
         mock_prot.GO_terms.append(createMockGOE(mock_prot.id, createMockGO('C')))
         mock_prot.GO_terms.append(createMockGOE(mock_prot.id, createMockGO('F')))
         
-        result = protein_gene_ontology_view(request)
+        result = protein_gene_ontology_view(None, request)
         
         patch_getProtein.assert_called_with(mock_prot.id)
         

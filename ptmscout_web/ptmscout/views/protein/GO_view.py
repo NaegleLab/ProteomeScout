@@ -6,7 +6,7 @@ from ptmscout.views.protein import decorators
 
 @view_config(route_name='protein_GO', renderer='ptmscout:templates/proteins/protein_ontology.pt')
 @decorators.experiment_filter
-def protein_gene_ontology_view(request):
+def protein_gene_ontology_view(context, request):
     pid = int(request.matchdict['id'])
     prot = protein.getProteinById(pid)
     

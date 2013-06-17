@@ -143,7 +143,7 @@ class TestProteinStructureViews(UnitTestCase):
         patch_formatMutations.return_value = formatted_muts
         patch_formatScansite.return_value = formatted_scansite
 
-        result = protein_structure_viewer(request)
+        result = protein_structure_viewer(None, request)
 
         patch_getMods.assert_called_once_with(prot.id, request.user)
         patch_getProtein.assert_called_once_with(35546)

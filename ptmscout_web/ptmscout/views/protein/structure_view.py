@@ -103,7 +103,7 @@ def format_protein_modifications(request, prot, mod_sites):
 
 @view_config(route_name='protein_viewer', renderer='ptmscout:templates/proteins/protein_viewer.pt')
 @decorators.experiment_filter
-def protein_structure_viewer(request):
+def protein_structure_viewer(context, request):
     protein_id = int(request.matchdict['id'])
     prot = protein.getProteinById(protein_id)
 

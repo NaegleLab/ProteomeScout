@@ -53,9 +53,9 @@ class TestProteinModificationViews(unittest.TestCase):
         p1.getPeptide.return_value = "mock_peptide"
         
         mod_list = [mock_mod, mock_mod2]
-        patch_getMods.return_value = mod_list 
+        patch_getMods.return_value = mod_list
         
-        result = protein_modifications_view(request)
+        result = protein_modifications_view(None, request)
         
         patch_getProtein.assert_called_with(mock_prot.id)
         patch_getMods.assert_called_with(mock_prot.id, mock_user)
