@@ -377,7 +377,7 @@ class TestDatasetExplorerView(UnitTestCase):
 class IntegrationTestDatasetExplorerView(IntegrationTestCase):
     def test_view_enrichment_page(self):
         result = self.ptmscoutapp.get("/experiments/28/subsets", status=200)
-        result.mustcontain('Evaluate Subsets')
+        result.mustcontain('Subsets')
         
     def perform_subset_fetch_test(self, exp_id, foreground_query, background_query = 'experiment'):
         query_expression = {

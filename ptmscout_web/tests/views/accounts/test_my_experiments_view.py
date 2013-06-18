@@ -18,7 +18,7 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         
         exp = experiment.getExperimentById(26, None, False)
         exp.type='dataset'
-        exp.job.status = 'running'
+        exp.job.status = 'started'
         exp.job.stage = 'proteins'
         exp.job.progress = 1000
         exp.job.max_progress = 10000
@@ -28,7 +28,7 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
 
         exp2 = experiment.getExperimentById(25, None, False)
         exp2.type='dataset'
-        exp2.job.status = 'running'
+        exp2.job.status = 'started'
         exp2.job.stage = 'GO terms'
         exp2.job.progress = 0
         exp2.job.max_progress = 0
@@ -92,7 +92,7 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         from ptmscout.database import experiment
         
         exp = experiment.getExperimentById(26, None, False)
-        exp.job.status = 'running'
+        exp.job.status = 'started'
         exp.job.stage = 'proteins'
         exp.job.progress = 1000
         exp.job.max_progress = 10000
@@ -101,7 +101,7 @@ class MyExperimentsViewIntegrationTests(IntegrationTestCase):
         exp.saveExperiment()
 
         exp2 = experiment.getExperimentById(25, None, False)
-        exp2.job.status = 'running'
+        exp2.job.status = 'started'
         exp2.job.stage = 'GO terms'
         exp2.job.progress = 0
         exp2.job.max_progress = 0
@@ -578,7 +578,7 @@ class MyExperimentsViewTests(UnitTestCase):
         exp3 = createMockExperiment(3, 0)
         exp4 = createMockExperiment(4, 0)
         exp1.status=  'finished'
-        exp2.status = 'running'
+        exp2.status = 'started'
         exp3.status = 'configuration'
         exp4.status = 'error'
         

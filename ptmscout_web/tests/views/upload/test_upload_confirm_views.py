@@ -5,9 +5,9 @@ from ptmscout.views.upload.upload_confirm import upload_confirm,\
     UploadAlreadyStarted, prepare_experiment
 from tests.views.mocking import createMockExperiment, createMockUser,\
     createMockSession
-from mock import patch
+from mock import patch, Mock
 from ptmscout.database import upload
-from ptmscout.utils import webutils
+from ptmscout.utils import webutils, wizard
 
 class TestUploadStatusView(UnitTestCase):
     
@@ -155,7 +155,8 @@ class TestUploadStatusView(UnitTestCase):
         self.assertEqual(True, result['confirm'])
         
     @patch('ptmscout.database.experiment.getExperimentById')
-    def test_start_upload_view_should_fail_if_terms_not_accepted(self, patch_getExperiment):
+    @patch('ptmscout.views.upload.upload_confirm.create_nav_wizard')
+    def test_start_upload_view_should_fail_if_terms_not_accepted(self, patch_navWizard, patch_getExperiment):
         request = DummyRequest()
         request.user = createMockUser() 
         request.POST['confirm'] = "true"
@@ -164,6 +165,7 @@ class TestUploadStatusView(UnitTestCase):
         exp = createMockExperiment(26, 0, None, 'in queue')
         
         patch_getExperiment.return_value = exp
+        patch_navWizard.return_value = Mock(spec=wizard.WizardNavigation)
         exp.getUrl.return_value = "url"
         exp.getLongCitationString.return_value = "citation"
         
@@ -172,7 +174,7 @@ class TestUploadStatusView(UnitTestCase):
         patch_getExperiment.assert_called_once_with(26, request.user, False)
         
         self.assertEqual(exp, result['experiment'])
-        
+        self.assertEqual(patch_navWizard.return_value, result['navigation'])
         self.assertEqual(strings.failure_reason_terms_of_use_not_accepted, result['reason'])
         self.assertEqual(strings.experiment_upload_confirm_page_title, result['pageTitle'])
         self.assertEqual(strings.experiment_upload_confirm_message, result['message'])
@@ -180,7 +182,8 @@ class TestUploadStatusView(UnitTestCase):
         self.assertEqual(False, result['confirm'])
     
     @patch('ptmscout.database.experiment.getExperimentById')
-    def test_start_upload_view_should_get_confirmation(self, patch_getExperiment):
+    @patch('ptmscout.views.upload.upload_confirm.create_nav_wizard')
+    def test_start_upload_view_should_get_confirmation(self, patch_navWizard, patch_getExperiment):
         request = DummyRequest()
         request.user = createMockUser() 
         
@@ -188,6 +191,7 @@ class TestUploadStatusView(UnitTestCase):
         exp = createMockExperiment(26, 0, None, 'in queue')
         
         patch_getExperiment.return_value = exp
+        patch_navWizard.return_value = Mock(spec=wizard.WizardNavigation)
         exp.getUrl.return_value = "url"
         exp.getLongCitationString.return_value = "citation"
         
@@ -196,7 +200,7 @@ class TestUploadStatusView(UnitTestCase):
         patch_getExperiment.assert_called_once_with(26, request.user, False)
         
         self.assertEqual(exp, result['experiment'])
-        
+        self.assertEqual(patch_navWizard.return_value, result['navigation'])
         self.assertEqual(None, result['reason'])
         self.assertEqual(strings.experiment_upload_confirm_page_title, result['pageTitle'])
         self.assertEqual(strings.experiment_upload_confirm_message, result['message'])

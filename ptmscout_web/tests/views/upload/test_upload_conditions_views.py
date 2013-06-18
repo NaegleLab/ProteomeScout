@@ -1,7 +1,7 @@
 from tests.PTMScoutTestCase import IntegrationTestCase, UnitTestCase
 from ptmscout.database import upload
 from ptmscout.config import strings
-from ptmscout.utils import forms
+from ptmscout.utils import forms, wizard
 from mock import Mock, patch
 from pyramid.testing import DummyRequest
 from tests.views.mocking import createMockSession, createMockUser,\
@@ -147,12 +147,14 @@ class TestUploadConditionsView(UnitTestCase):
     @patch('ptmscout.views.upload.upload_conditions.save_form_data')
     @patch('ptmscout.utils.forms.FormValidator')
     @patch('ptmscout.views.upload.upload_conditions.get_form_schema')
-    def test_view_should_validate_on_submission_store_experiment_conditions(self, patch_getSchema, patch_validator, patch_save_form_data, patch_getExperiment):
+    @patch('ptmscout.views.upload.upload_conditions.create_nav_wizard')
+    def test_view_should_validate_on_submission_store_experiment_conditions(self, patch_navWizard, patch_getSchema, patch_validator, patch_save_form_data, patch_getExperiment):
         mockValidator = patch_validator.return_value
         mockValidator.validate.return_value = [] 
         
         mockSchema = Mock(spec=forms.FormSchema)
         patch_getSchema.return_value = mockSchema, set([1,2,3])
+        patch_navWizard.return_value = Mock(spec=wizard.WizardNavigation)
         
         user = createMockUser()
         exp = createMockExperiment()
@@ -184,12 +186,14 @@ class TestUploadConditionsView(UnitTestCase):
     @patch('ptmscout.database.experiment.getExperimentById')
     @patch('ptmscout.utils.forms.FormValidator')    
     @patch('ptmscout.views.upload.upload_conditions.get_form_schema')
-    def test_view_should_validate_on_submission_show_errors(self, patch_getSchema, patch_validator, patch_getExperiment):
+    @patch('ptmscout.views.upload.upload_conditions.create_nav_wizard')
+    def test_view_should_validate_on_submission_show_errors(self, patch_navWizard, patch_getSchema, patch_validator, patch_getExperiment):
         mockValidator = patch_validator.return_value
         mockValidator.validate.return_value = ["some errors"]
         
         mockSchema = Mock(spec=forms.FormSchema)
         patch_getSchema.return_value = mockSchema, set([1,2,3])
+        patch_navWizard.return_value = Mock(spec=wizard.WizardNavigation)
         
         user = createMockUser()
         exp = createMockExperiment()
@@ -212,13 +216,16 @@ class TestUploadConditionsView(UnitTestCase):
         self.assertEqual(strings.experiment_upload_conditions_page_title, result['pageTitle'])
         self.assertEqual(strings.experiment_upload_conditions_page_title, result['header'])
         self.assertEqual(mockSchema, result['formrenderer'].schema)
+        self.assertEqual(patch_navWizard.return_value, result['navigation'])
         
         
     @patch('ptmscout.database.experiment.getExperimentById')
     @patch('ptmscout.views.upload.upload_conditions.get_form_schema')    
-    def test_view_should_show_form(self, patch_getSchema, patch_getExperiment):
+    @patch('ptmscout.views.upload.upload_conditions.create_nav_wizard')
+    def test_view_should_show_form(self, patch_navWizard, patch_getSchema, patch_getExperiment):
         mockSchema = Mock(spec=forms.FormSchema)
         patch_getSchema.return_value = mockSchema, set()
+        patch_navWizard.return_value = Mock(spec=wizard.WizardNavigation)
         
         user = createMockUser()
         exp = createMockExperiment()
@@ -241,6 +248,7 @@ class TestUploadConditionsView(UnitTestCase):
         self.assertEqual(strings.experiment_upload_conditions_page_title, result['pageTitle'])
         self.assertEqual(strings.experiment_upload_conditions_page_title, result['header'])
         self.assertEqual(mockSchema, result['formrenderer'].schema)
+        self.assertEqual(patch_navWizard.return_value, result['navigation'])
         
         
         
@@ -264,7 +272,7 @@ class IntegrationTestUploadConditionsView(IntegrationTestCase):
         
         result = self.ptmscoutapp.get("/upload/%d/conditions" % session.id, status=200)
         result.mustcontain(strings.experiment_upload_conditions_page_title)
-       
+
         result.form.set('0_type', 'cell')
         result.form.set('0_value', 'HELLA')
         result.form.set('1_type', 'drug')

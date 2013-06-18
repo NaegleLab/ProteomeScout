@@ -1,6 +1,6 @@
 from pyramid.view import view_config
 from ptmscout.config import strings
-from ptmscout.utils import uploadutils, webutils, decorators
+from ptmscout.utils import uploadutils, webutils, decorators, wizard
 from ptmscout.database import upload, experiment, modifications
 import re
 from pyramid.httpexceptions import HTTPFound
@@ -135,6 +135,14 @@ def get_columns_from_header(h):
     return col
 
 
+def create_nav_wizard(request, experiment, session):
+    navigation = wizard.WizardNavigation(request)
+
+    navigation.add_page('configure_annotations', "Configure Annotation File", True, id=experiment.id, sid=session.id)
+    navigation.add_page('confirm_annotations', "Confirm Upload", False, id=experiment.id, sid=session.id)
+    navigation.set_page('configure_annotations')
+
+    return navigation
 
 def configure_annotations_GET(request, experiment, session):
     headers, data_rows = uploadutils.load_header_and_data_rows(session.data_file, N=100, truncate=30)
@@ -148,6 +156,7 @@ def configure_annotations_GET(request, experiment, session):
     return {
             'session_id': session.id,
             'pageTitle':strings.upload_configure_annotations_page_title,
+            'navigation':create_nav_wizard(request, experiment, session),
             'error':[],
             'headers':headers,
             'data_rows':data_rows,

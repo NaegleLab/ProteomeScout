@@ -6,9 +6,11 @@
 	</div>
     <div metal:fill-slot="content">
       
-    	<div metal:use-macro="experiment_info" />
-    	<div class="grid_12">
-      	<div class = "infobox" tal:condition="not confirm">
+    <div metal:use-macro="experiment_info" />
+        <div class="grid_12">
+        <tal:empty tal:condition="not confirm">
+        <div>${navigation.nav_crumb()}</div>
+      	<div class = "infobox">
       		<div class = "infoheader">Confirm</div>
       		<p class = "infotext">${message}</p>
       		<form id="confirm" method="post" action="">
@@ -26,7 +28,8 @@
   		    		<div class="clear"></div>
   		    	</div>
          		</form>
-      	</div>
+            </div>
+        </tal:empty>
       	<div class = "infobox" tal:condition="confirm">
       		<div class = "infoheader">Upload Started</div>
       		<p class = "infotext" tal:content="structure message"></p>

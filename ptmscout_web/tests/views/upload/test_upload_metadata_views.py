@@ -8,7 +8,7 @@ from tests.views.mocking import createMockUser, createMockExperiment,\
     createMockSession
 from mock import patch, Mock
 from ptmscout.database import upload
-from ptmscout.utils import forms
+from ptmscout.utils import forms, wizard
 
 class TestUploadView(UnitTestCase):
     
@@ -177,11 +177,13 @@ class TestUploadView(UnitTestCase):
         
     @patch('ptmscout.utils.forms.FormValidator')
     @patch('ptmscout.views.upload.upload_metadata.create_schema')
-    def test_view_should_handle_form_submission_fail_on_check(self,  patch_create_schema, patch_validator):
+    @patch('ptmscout.views.upload.upload_metadata.create_nav_wizard')
+    def test_view_should_handle_form_submission_fail_on_check(self, patch_navWizard, patch_create_schema, patch_validator):
         request = DummyRequest()
         
         schema = Mock(spec=forms.FormSchema)
         patch_create_schema.return_value = schema
+        patch_navWizard.return_value = Mock(spec=wizard.WizardNavigation)
         validator = patch_validator.return_value
         
         session_id = 10
@@ -196,6 +198,7 @@ class TestUploadView(UnitTestCase):
         
         result = upload_metadata(request, session)
 
+        self.assertEqual(patch_navWizard.return_value, result['navigation'])
         self.assertEqual([strings.failure_reason_required_fields_cannot_be_empty], result['errors'])
         self.assertEqual(schema, result['formrenderer'].schema)
         
@@ -343,7 +346,8 @@ class TestUploadView(UnitTestCase):
 
     @patch('ptmscout.views.upload.upload_metadata.create_schema')
     @patch('ptmscout.views.upload.upload_metadata.populate_schema_from_experiment')
-    def test_view_should_populate_field_if_parent_experiment_avaiable(self, patch_prepopulate, patch_create_schema):
+    @patch('ptmscout.views.upload.upload_metadata.create_nav_wizard')
+    def test_view_should_populate_field_if_parent_experiment_avaiable(self, patch_navWizard, patch_prepopulate, patch_create_schema):
         request = DummyRequest()
         session_id = 10
         request.matchdict['id'] = session_id
@@ -351,6 +355,7 @@ class TestUploadView(UnitTestCase):
         
         schema = Mock(spec=forms.FormSchema)
         patch_create_schema.return_value = schema
+        patch_navWizard.return_value = Mock(spec=wizard.WizardNavigation)
         
         session = createMockSession(sid=session_id, user=request.user)
         session.parent_experiment = 100
@@ -359,6 +364,7 @@ class TestUploadView(UnitTestCase):
         
         patch_prepopulate.assert_called_once_with(schema, session, request.user)
         
+        self.assertEqual(patch_navWizard.return_value, result['navigation'])
         self.assertEqual(session_id, result['session_id'])
         self.assertEqual(strings.upload_page_title, result['pageTitle'])
         self.assertEqual([], result['errors'])

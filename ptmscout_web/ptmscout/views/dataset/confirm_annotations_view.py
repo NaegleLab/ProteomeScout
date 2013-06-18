@@ -1,7 +1,7 @@
 from pyramid.view import view_config
 from ptmscout.database import experiment, upload, jobs
 from ptmscout.config import strings
-from ptmscout.utils import webutils, decorators
+from ptmscout.utils import webutils, decorators, wizard
 from ptmworker import annotate_tasks
 
 class AnnotationUploadAlreadyStarted(Exception):
@@ -27,6 +27,17 @@ def create_dataset_job(session, request):
     job.save()
     
     annotate_tasks.start_annotation_import.apply_async((session.id, job.id))
+
+
+def create_nav_wizard(request, exp, session):
+    navigation = wizard.WizardNavigation(request)
+
+    navigation.add_page('configure_annotations', "Configure Annotation File", True, id=exp.id, sid=session.id)
+    navigation.add_page('confirm_annotations', "Confirm Upload", True, id=exp.id, sid=session.id)
+    navigation.set_page('confirm_annotations')
+
+    return navigation
+
 
 def upload_confirm(request, exp, session):
     confirm = webutils.post(request, "confirm", "false") == "true"
@@ -54,6 +65,7 @@ def upload_confirm(request, exp, session):
     
     return {'pageTitle': strings.annotation_upload_confirm_page_title,
             'message': strings.annotation_upload_confirm_message,
+            'navigation':create_nav_wizard(request, exp, session),
             'experiment': exp,
             'session_id': session.id,
             'reason':reason,

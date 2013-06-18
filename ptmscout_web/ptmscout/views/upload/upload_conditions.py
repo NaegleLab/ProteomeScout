@@ -3,6 +3,7 @@ from ptmscout.config import strings
 from ptmscout.utils import forms, webutils, decorators
 from ptmscout.database import upload, experiment
 from pyramid.httpexceptions import HTTPFound
+from ptmscout.utils import wizard
 
 MAX_VALUES=100
 CONDITION_TYPES = \
@@ -57,6 +58,18 @@ def mark_status(session):
     session.stage='confirm'
     session.save()
 
+
+def create_nav_wizard(request, session):
+    navigation = wizard.WizardNavigation(request)
+
+    navigation.add_page('upload_config', "Configure Datafile", True, id=session.id)
+    navigation.add_page('upload_metadata', "Add Metadata", True, id=session.id)
+    navigation.add_page('upload_conditions', "Describe Conditions", True, id=session.id)
+    navigation.add_page('upload_confirm', "Confirm Upload", False, id=session.id)
+    navigation.set_page('upload_conditions')
+
+    return navigation
+
 def upload_conditions(request, session):
     submitted = webutils.post(request, 'submitted', False) == "true"
     
@@ -66,6 +79,7 @@ def upload_conditions(request, session):
     if session.parent_experiment != None:
         parent_exp = experiment.getExperimentById(session.parent_experiment, request.user, False)
     
+    navigation = create_nav_wizard(request, session)
     schema, added_fields = get_form_schema(exp, parent_exp, request)
     renderer = forms.FormRenderer(schema)
     
@@ -79,6 +93,7 @@ def upload_conditions(request, session):
             return HTTPFound(request.application_url + "/upload/%d/confirm" % (session.id))
     
     return {'formrenderer':renderer,
+            'navigation':navigation,
             'pageTitle': strings.experiment_upload_conditions_page_title,
             'header': strings.experiment_upload_conditions_page_title,
             'errors':errors,

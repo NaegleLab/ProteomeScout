@@ -3,7 +3,7 @@ from pyramid.view import view_config
 from ptmscout.database import upload
 from ptmscout.utils import webutils, decorators
 from pyramid.httpexceptions import HTTPFound
-from ptmscout.utils import uploadutils
+from ptmscout.utils import uploadutils, wizard
 import re
 
 
@@ -66,7 +66,7 @@ def parse_user_input(session, request):
     return {'columns':columns,'units':units}, [ uploadutils.ColumnError(e) for e in errors ]
 
 
-def upload_config_handler(request, session, pageTitle, nextPage, mod_required=True, nextStage='metadata'):
+def upload_config_handler(request, session, pageTitle, navWizard, mod_required=True, nextStage='metadata'):
     submitted = webutils.post(request, 'submitted', "false") == "true"
     force = webutils.post(request, 'override', "false") != "false"
     
@@ -92,13 +92,14 @@ def upload_config_handler(request, session, pageTitle, nextPage, mod_required=Tr
         if commit:
             session.stage = nextStage
             session.save()
-            return HTTPFound(nextPage)
+            return HTTPFound(navWizard.next_page_url())
     else:
         column_defs = uploadutils.assign_column_defaults(session)
     
     headers, data_rows = uploadutils.load_header_and_data_rows(session.data_file, uploadutils.MAX_ROW_CHECK)
     
     return {'allowoverride': allowoverride,
+            'navigation': navWizard,
             'headers': headers,
             'data_rows': data_rows,
             'error': errors,
@@ -107,8 +108,20 @@ def upload_config_handler(request, session, pageTitle, nextPage, mod_required=Tr
             'column_values': ['none','hidden','data','stddev','accession','peptide','sites','species','modification','run'],
             'pageTitle': pageTitle}
 
+def create_nav_wizard(request, session):
+    navigation = wizard.WizardNavigation(request)
+
+    navigation.add_page('upload_config', "Configure Datafile", True, id=session.id)
+    navigation.add_page('upload_metadata', "Add Metadata", False, id=session.id)
+    navigation.add_page('upload_conditions', "Describe Conditions", False, id=session.id)
+    navigation.add_page('upload_confirm', "Confirm Upload", False, id=session.id)
+    navigation.set_page('upload_config')
+
+    return navigation
+
+
 def upload_config(request, session):
-    return upload_config_handler( request, session, strings.experiment_upload_configure_page_title, request.route_url('upload_metadata', id=session.id) )
+    return upload_config_handler( request, session, strings.experiment_upload_configure_page_title, create_nav_wizard(request, session) )
 
 @view_config(route_name='upload_config', renderer='ptmscout:/templates/upload/upload_config.pt')
 @decorators.get_session('id','experiment')

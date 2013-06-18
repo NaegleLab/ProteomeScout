@@ -7,6 +7,7 @@ from ptmscout.config import strings, settings
 import os
 from pyramid.httpexceptions import HTTPFound
 from ptmscout.utils.uploadutils import ColumnError, ErrorList
+from ptmscout.utils import wizard
 from ptmscout.views.upload.upload_configure import upload_config,\
     parse_user_input
 
@@ -154,14 +155,14 @@ class TestUploadConfigureView(UnitTestCase):
         
         
     @patch('ptmscout.views.upload.upload_configure.parse_user_input')
-    def test_view_should_stop_and_show_errors_disallow_force_if_error_in_form_input(self, patch_parse):
+    @patch('ptmscout.views.upload.upload_configure.create_nav_wizard')
+    def test_view_should_stop_and_show_errors_disallow_force_if_error_in_form_input(self, patch_navWizard, patch_parse):
         request = DummyRequest()
         request.matchdict['id'] = '234'
         request.POST['submitted'] = "true"
         request.POST['override'] = "true"
         request.user = createMockUser()
-        request.route_url = Mock()
-        request.route_url.return_value = 'some_url'
+        patch_navWizard.return_value = Mock(wizard.WizardNavigation)
         
         session = createMockSession(request.user, sid=234)
         session.data_file = 'test/test_dataset_formatted.txt'
@@ -192,13 +193,13 @@ class TestUploadConfigureView(UnitTestCase):
 
     @patch('ptmscout.views.upload.upload_configure.parse_user_input')
     @patch('ptmscout.utils.uploadutils.check_data_column_assignments')
-    def test_view_should_stop_and_show_errors_disallow_override_if_critical_error(self, patch_check, patch_parse):
+    @patch('ptmscout.views.upload.upload_configure.create_nav_wizard')
+    def test_view_should_stop_and_show_errors_disallow_override_if_critical_error(self, patch_navWizard, patch_check, patch_parse):
         request = DummyRequest()
         request.matchdict['id'] = '234'
         request.POST['submitted'] = "true"
         request.user = createMockUser()
-        request.route_url = Mock()
-        request.route_url.return_value = 'some_url'
+        patch_navWizard.return_value = Mock(wizard.WizardNavigation)
         
         session = createMockSession(request.user, sid=234)
         session.data_file = 'test/test_dataset_formatted.txt'
@@ -231,13 +232,13 @@ class TestUploadConfigureView(UnitTestCase):
     
     @patch('ptmscout.views.upload.upload_configure.parse_user_input')
     @patch('ptmscout.utils.uploadutils.check_data_column_assignments')
-    def test_view_should_stop_and_show_errors(self, patch_check, patch_parse):
+    @patch('ptmscout.views.upload.upload_configure.create_nav_wizard')
+    def test_view_should_stop_and_show_errors(self, patch_navWizard, patch_check, patch_parse):
         request = DummyRequest()
         request.matchdict['id'] = '234'
         request.POST['submitted'] = "true"
         request.user = createMockUser()
-        request.route_url = Mock()
-        request.route_url.return_value = 'some_url'
+        patch_navWizard.return_value = Mock(wizard.WizardNavigation)
         
         session = createMockSession(request.user, sid=234)
         session.data_file = 'test/test_dataset_formatted.txt'
@@ -269,14 +270,15 @@ class TestUploadConfigureView(UnitTestCase):
 
     @patch('ptmscout.views.upload.upload_configure.parse_user_input')
     @patch('ptmscout.utils.uploadutils.check_data_column_assignments')
-    def test_view_should_configure_session_and_forward_to_metadata_even_with_errors_if_forced(self, patch_check, patch_parse):
+    @patch('ptmscout.views.upload.upload_configure.create_nav_wizard')
+    def test_view_should_configure_session_and_forward_to_metadata_even_with_errors_if_forced(self, patch_navWizard, patch_check, patch_parse):
         request = DummyRequest()
         request.matchdict['id'] = '234'
         request.POST['submitted'] = "true"
         request.POST['override'] = "true"
         request.user = createMockUser()
-        request.route_url = Mock()
-        request.route_url.return_value = 'some_url'
+        patch_navWizard.return_value = Mock(wizard.WizardNavigation)
+        patch_navWizard.return_value.next_page_url.return_value = 'some_url'
         
         session = createMockSession(request.user, sid=234)
         session.data_file = 'test/test_dataset_formatted.txt'
@@ -293,7 +295,7 @@ class TestUploadConfigureView(UnitTestCase):
         assert isinstance(f, HTTPFound)
         self.assertEqual('some_url', f.location)
         
-        request.route_url.assert_called_once_with('upload_metadata',id=session.id)
+        patch_navWizard.assert_called_once_with(request, session)
 
         self.assertEqual('metadata', session.stage)
         session.save.assert_called_once_with()
@@ -302,14 +304,15 @@ class TestUploadConfigureView(UnitTestCase):
     
     @patch('ptmscout.views.upload.upload_configure.parse_user_input')
     @patch('ptmscout.utils.uploadutils.check_data_column_assignments')
-    def test_view_should_configure_session_and_forward_to_metadata(self,  patch_check, patch_parse):
+    @patch('ptmscout.views.upload.upload_configure.create_nav_wizard')
+    def test_view_should_configure_session_and_forward_to_metadata(self,  patch_navWizard, patch_check, patch_parse):
         request = DummyRequest()
         request.matchdict['id'] = '234'
         request.POST['submitted'] = "true"
         request.user = createMockUser()
-        request.route_url = Mock()
-        request.route_url.return_value = 'some_url'
-        
+        patch_navWizard.return_value = Mock(wizard.WizardNavigation)
+        patch_navWizard.return_value.next_page_url.return_value = 'some_url'
+
         session = createMockSession(request.user, sid=234)
         session.data_file = 'test/test_dataset_formatted.txt'
         session.load_type = 'new'
@@ -321,7 +324,7 @@ class TestUploadConfigureView(UnitTestCase):
         
         assert isinstance(f, HTTPFound)
         self.assertEqual('some_url', f.location)
-        request.route_url.assert_called_once_with('upload_metadata',id=session.id)
+        patch_navWizard.assert_called_once_with(request, session)
 
         patch_parse.assert_called_once_with(session, request)
         patch_check.assert_called_once_with(session, True)
@@ -329,12 +332,12 @@ class TestUploadConfigureView(UnitTestCase):
         session.save.assert_called_once_with()
     
     @patch('ptmscout.utils.uploadutils.assign_column_defaults')
-    def test_view_should_get_session_and_initialize_data(self, patch_column_defaults):
+    @patch('ptmscout.views.upload.upload_configure.create_nav_wizard')
+    def test_view_should_get_session_and_initialize_data(self, patch_navWizard, patch_column_defaults):
         request = DummyRequest()
         request.matchdict['id'] = '234'
         request.user = createMockUser()
-        request.route_url = Mock()
-        request.route_url.return_value = 'some_url'
+        patch_navWizard.return_value = Mock(wizard.WizardNavigation)
         
         session = createMockSession(request.user, sid=234)
         session.data_file = 'test/test_dataset_formatted.txt'

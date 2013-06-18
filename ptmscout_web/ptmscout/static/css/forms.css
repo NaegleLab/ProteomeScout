@@ -1,3 +1,85 @@
+.wizard-breadcrumb {
+    list-style: none;
+    overflow: hidden;
+    font: 14px Helvetica,font Arial, Sans-Serif;
+}
+
+.wizard-breadcrumb li {
+    float: left;
+    background: #009CA9;
+    color: white;
+}
+
+.wizard-breadcrumb li:first-child a, .breadcrumb li:first-child span {
+    padding-left: 10px;
+}
+
+.wizard-breadcrumb li.current {
+    float: left;
+    background: #A3A510;
+    color: white;
+}
+
+.wizard-breadcrumb li.future {
+    float: left;
+    background: black;
+    color: #D3D3D3;
+}
+
+.wizard-breadcrumb li span, .wizard-breadcrumb li a {
+    color: white;
+    text-decoration: none;
+    padding: 5px 0 5px 35px;
+    position: relative;
+    display: block;
+    float: left;
+}
+
+.wizard-breadcrumb li span:after, .wizard-breadcrumb li a:after {
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 50px solid transparent;
+    border-bottom: 50px solid transparent;
+    border-left: 30px solid #009CA9;
+    position: absolute;
+    top: 50%;
+    margin-top: -50px;
+    left: 100%;
+    z-index: 2;
+}
+
+.wizard-breadcrumb li.current span:after {
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 50px solid transparent;
+    border-bottom: 50px solid transparent;
+    border-left: 30px solid #A3A510;
+    position: absolute;
+    top: 50%;
+    margin-top: -50px;
+    left: 100%;
+    z-index: 2;
+}
+
+.wizard-breadcrumb li.future span:after {
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 50px solid transparent;
+    border-bottom: 50px solid transparent;
+    border-left: 30px solid black;
+    position: absolute;
+    top: 50%;
+    margin-top: -50px;
+    left: 100%;
+    z-index: 2;
+}
+
 .loginform, .wideform {
 	margin-top:20px;
 	margin-bottom:20px;

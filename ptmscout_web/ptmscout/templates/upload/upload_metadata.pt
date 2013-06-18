@@ -8,6 +8,7 @@
     </div>
     <div metal:fill-slot="content">
       <div class="grid_12">
+        <div>${navigation.nav_crumb()}</div>
         <form action="" method="post" class="newform dropshadow align-left noborder" style="width:600px">
             <div class="hidden" id="pubmed_query_url">${request.application_url}/webservice/pubmed/</div>
             <input type="hidden" value="true" name="submitted" />

@@ -1,6 +1,6 @@
 from pyramid.view import view_config
 from ptmscout.config import strings
-from ptmscout.utils import webutils, forms, decorators
+from ptmscout.utils import webutils, forms, decorators, wizard
 from pyramid.httpexceptions import HTTPFound
 from ptmscout.database import experiment, upload
 
@@ -159,6 +159,16 @@ def populate_schema_from_experiment(schema, session, user):
     if field_dict != None:
         schema.parse_fields_dict(field_dict)
 
+def create_nav_wizard(request, session):
+    navigation = wizard.WizardNavigation(request)
+
+    navigation.add_page('upload_config', "Configure Datafile", True, id=session.id)
+    navigation.add_page('upload_metadata', "Add Metadata", True, id=session.id)
+    navigation.add_page('upload_conditions', "Describe Conditions", False, id=session.id)
+    navigation.add_page('upload_confirm', "Confirm Upload", False, id=session.id)
+    navigation.set_page('upload_metadata')
+
+    return navigation
 
 def upload_metadata(request, session):
     submitted = webutils.post(request,'submitted',"false")
@@ -179,6 +189,7 @@ def upload_metadata(request, session):
         populate_schema_from_experiment(schema, session, request.user)
         
     return {'pageTitle': strings.upload_page_title,
+            'navigation': create_nav_wizard(request, session),
             'errors':errors,
             'session_id': session.id,
             'formrenderer':forms.FormRenderer(schema)}

@@ -1,7 +1,7 @@
 from pyramid.view import view_config
 from ptmscout.database import experiment, jobs, modifications
 from ptmscout.config import strings
-from ptmscout.utils import webutils, decorators
+from ptmscout.utils import webutils, decorators, wizard
 from ptmworker import data_import
 
 class DatasetUploadAlreadyStarted(Exception):
@@ -52,6 +52,15 @@ def create_dataset_job(exp, session, request):
         
     data_import.start_import.apply_async((exp.id, session.id, job.id, True))
 
+def create_nav_wizard(request, session):
+    navigation = wizard.WizardNavigation(request)
+
+    navigation.add_page('dataset_configure', "Configure Dataset", True, id=session.id)
+    navigation.add_page('dataset_confirm', "Confirm Upload", True, id=session.id)
+    navigation.set_page('dataset_confirm')
+
+    return navigation
+
 def upload_confirm(request, session):
     exp = experiment.getExperimentById(session.experiment_id, request.user, False)
     
@@ -81,6 +90,7 @@ def upload_confirm(request, session):
     
     return {'pageTitle': strings.dataset_upload_confirm_page_title,
             'message': strings.dataset_upload_confirm_message,
+            'navigation': create_nav_wizard(request, session),
             'experiment': exp,
             'session_id': session.id,
             'reason':reason,

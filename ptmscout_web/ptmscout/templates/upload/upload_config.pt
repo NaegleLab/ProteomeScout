@@ -1,6 +1,7 @@
 <div metal:use-macro="layout">
     <div metal:fill-slot="header">
         <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/upload_manager.css')}" />
+        <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/forms.css')}" />
         
         <script type="text/javascript" src="${request.static_url('ptmscout:static/js/utils.js')}" ></script>
         <script type="text/javascript" src="${request.static_url('ptmscout:static/js/base64.js')}"></script>
@@ -9,6 +10,7 @@
     
     <div metal:fill-slot="content">
       <div class="grid-12">
+        <div>${navigation.nav_crumb()}</div>
         <div class="body">
           <h2>Instructions</h2>
           <div class="body">

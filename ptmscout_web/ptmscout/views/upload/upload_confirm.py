@@ -1,7 +1,7 @@
 from pyramid.view import view_config
 from ptmscout.database import experiment, upload, modifications, jobs
 from ptmscout.config import strings
-from ptmscout.utils import webutils, decorators
+from ptmscout.utils import webutils, decorators, wizard
 from ptmworker import data_import
 
 class UploadAlreadyStarted(Exception):
@@ -55,6 +55,17 @@ def create_job(request, exp, session, user):
     
     return job.id
 
+def create_nav_wizard(request, session):
+    navigation = wizard.WizardNavigation(request)
+
+    navigation.add_page('upload_config', "Configure Datafile", True, id=session.id)
+    navigation.add_page('upload_metadata', "Add Metadata", True, id=session.id)
+    navigation.add_page('upload_conditions', "Describe Conditions", True, id=session.id)
+    navigation.add_page('upload_confirm', "Confirm Upload", True, id=session.id)
+    navigation.set_page('upload_confirm')
+
+    return navigation
+
 def upload_confirm(request, session):
     confirm = webutils.post(request, "confirm", "false") == "true"
     terms_of_use_accepted = 'terms_of_use' in request.POST
@@ -84,6 +95,7 @@ def upload_confirm(request, session):
     
     return {'pageTitle': strings.experiment_upload_confirm_page_title,
             'message': strings.experiment_upload_confirm_message,
+            'navigation': create_nav_wizard(request, session),
             'experiment': exp,
             'session_id': session.id,
             'reason':reason,
