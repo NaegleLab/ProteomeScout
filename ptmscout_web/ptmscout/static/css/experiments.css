@@ -19,9 +19,6 @@
 
 .experimenttable .accesscontrol {
 	text-align:center;
-	border-left-style:solid;
-	border-left-width:1px;
-	border-left-color:black;
 }
 
 .experimenttable td.citation {
