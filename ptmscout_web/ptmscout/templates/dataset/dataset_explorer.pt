@@ -11,6 +11,7 @@
 	
 	<div id="subset-select">
 	
+    <h1>Dataset Explorer</h1>
 		Use the search form below to perform the following tasks:
 		<ul>
 			<li>Explore a smaller portion of a large dataset based on a common feature</li>
@@ -21,10 +22,12 @@
 		<div id="field-data" style="display:none;" tal:content="field_data"></div>
 		<div id="initial-query" style="display:none;" tal:content="initial_query"></div>
 
-	    <div class="filter-set">
-		    <form method="GET" action="${request.application_url}/experiments/${experiment.id}/export" target="_blank">
-		    	<fieldset>
-		    		<legend>Export Experiment for Analysis</legend>
+    <h2>Input and Output</h2>
+    <div class="body">
+	    <div class="filter-set" style="padding-bottom:30px">
+	      <h4>Export Experiment for Analysis</h4>
+		      <div class="body">
+    		    <form method="GET" action="${request.application_url}/experiments/${experiment.id}/export" target="_blank">
 		    		<div>
 		    			<span class="condition-title">Annotate:</span>
 		    			<select name="annotate">
@@ -33,45 +36,55 @@
 		    			</select>
 		    		</div>
 		    		<input type="Submit" id="export-experiment" value="Export Experiment" />
-		    	</fieldset>
-	    	</form>
-	    	<form method="POST" action="${request.route_url('experiment_annotate', id=experiment.id)}" enctype="multipart/form-data" >
-		    	<fieldset>
-		    		<legend>Import Annotation File</legend>
+  	    	</form>
+	    	</div>
+	    	
+    		<h4>Import Annotation File</h4>
+	    		<div class="body">
+    	    	<form method="POST" action="${request.route_url('experiment_annotate', id=experiment.id)}" enctype="multipart/form-data" >
 	   				<input type="file" name="annotationfile" /> <br />
 		        	<input type="Submit" id="upload-annotations" class="longtask" value="Import Annotations" />
-		        </fieldset>
-	        </form>
-    		<fieldset>
-    			<legend>View Clustering Results</legend>
+  	        </form>
+	        </div>
+	
+	      <h4>View Clustering Results</h4>
+	      <div class="body">
     			<span class="condition-title">Cluster Set:</span> <select id="cluster-set"></select> <button id="show-clusters" class="longtask">Show All Clusters From Set</button>
     			<a href="${request.route_url('mcam_enrichment', id=experiment.id)}"><button id="mcam-enrichment">MCAM Enrichment</button></a>
-    		</fieldset>
-
+    		</div>
 	    </div>
-
-		<div class="filter-set">
-			<fieldset>
-				<legend>Open Saved Subsets</legend>
-				<div> <span class="condition-title">Subset:</span> <select id="saved-subset-select"> <option/> </select> <button class="longtask" id="open-saved-subset">View Subset</button> </div>
-			</fieldset>
-			<fieldset id="filter-conditions">
-				<legend>Subset Filter Conditions</legend>
-				<div> <span class="condition-title">Background:</span> <select id="background-select"><option value="experiment">Entire Experiment</option></select></div>
-			</fieldset>
-			<button id="add-condition">Add Condition</button>
-			<button id="remove-condition">Remove Condition</button>
+    </div>
+    <h2>Subset Selection</h2>
+    <div class="body">
+  		<div class="filter-set">
+  				<h4>Open Saved Subsets</h4>
+  				<div class="body">
+  				<div> <span class="condition-title">Subset:</span> <select id="saved-subset-select"> <option/> </select> <button class="longtask" id="open-saved-subset">View Subset</button> </div>
+  			</div>
+  				<h4>Subset Filter Conditions</h4>
+  				<div class="body" id="filter-conditions">
+  				<div> 
+  				  <span class="condition-title">Background:</span> 
+  				  <select id="background-select"><option value="experiment">Entire Experiment</option></select>
+  				</div>
+  			</div>
+  			<button id="add-condition">Add Condition</button>
+  			<button id="remove-condition">Remove Condition</button>
 			
-		    <div class="formsubmission">
-		        <button id="compute-subset" class="longtask">Compute Subset</button>
-		        <button id="clear-form">Clear</button>
-		    </div>
-		    <div class="clear"></div>
+  		    <div class="formsubmission">
+  		        <button id="compute-subset" class="longtask">Compute Subset</button>
+  		        <button id="clear-form">Clear</button>
+  		    </div>
+  		    <div class="clear"></div>
 		    
-	    </div>
+  	    </div>
+  	  </div>
 	    
-		<div id="open-subsets">
-			<ul></ul>
-		</div>
+	  <h2>Open Subsets</h2>
+	  <div class="body">
+  		<div id="open-subsets">
+  			<ul></ul>
+  		</div>
+  	</div>
 	</div>
 </div>

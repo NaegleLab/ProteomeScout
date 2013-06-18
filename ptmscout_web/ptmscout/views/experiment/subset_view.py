@@ -11,7 +11,7 @@ def view_experiment_subset(request):
     
     initial_query = webutils.get(request, 'query', "")
     
-    result = { 'pageTitle': strings.experiment_subset_page_title,
+    result = { 'pageTitle': strings.experiment_subset_page_title % (ptm_exp.name),
                'experiment': ptm_exp,
                'initial_query': initial_query }
     result.update( dataset_explorer_view.format_explorer_view( experiment_id, ptm_exp.measurements, request.user ) )

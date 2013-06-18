@@ -53,7 +53,7 @@ experiment_ambiguity_error_no_change = "No peptide assignments were changed from
 
 experiment_compare_page_title = "Compare Datasets"
 
-experiment_subset_page_title = "Dataset Explorer"
+experiment_subset_page_title = "Dataset Explorer: %s"
 
 experiment_errors_page_title = "Experiment Data Upload Errors"
 
