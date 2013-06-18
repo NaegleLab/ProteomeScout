@@ -11,6 +11,30 @@ from tests.views.mocking import createMockProtein, createMockUser, \
 import json, base64
 
 class TestProteinStructureViewIntegration(IntegrationTestCase):
+    def test_default_page_is_structure_view(self):
+        result = self.ptmscoutapp.get('/proteins/35546')
+        d = result.pyquery
+        encoded_data = d(".protein_viewer .data").text()
+
+        protein_data = json.loads( base64.b64decode( encoded_data ))
+
+        self.assertEqual(
+            {'25': "Quantitative analysis of EGFRvIII cellular signaling networks reveals a combinatorial therapeutic strategy for glioblastoma.",
+             '26': "Time-resolved mass spectrometry of tyrosine phosphorylation sites in the epidermal growth factor receptor signaling network reveals dynamic modules.",
+             '28': "Effects of HER2 overexpression on cell signaling networks governing proliferation and migration." },
+            protein_data['exps'])
+
+        self.assertEqual(2, len(protein_data['domains']))
+        self.assertEqual(['Phosphotyrosine'], protein_data['mod_types'])
+        self.assertEqual(3, len(protein_data['mods']))
+        self.assertEqual(1, len( protein_data['mods']['518']['mods']['Phosphotyrosine']))
+        self.assertEqual(3, len( protein_data['mods']['857']['mods']['Phosphotyrosine']))
+        self.assertEqual(1, len( protein_data['mods']['858']['mods']['Phosphotyrosine']))
+        self.assertEqual(protein_data['seq'], "MQPEEGTGWLLELLSEVQLQQYFLRLRDDLNVTRLSHFEYVKNEDLEKIGMGRPGQRRLWEAVKRRKALCKRKSWMSKVFSGKRLEAEFPPHHSQSTFRKTSPAPGGPAGEGPLQSLTCLIGEKDLRLLEKLGDGSFGVVRRGEWDAPSGKTVSVAVKCLKPDVLSQPEAMDDFIREVNAMHSLDHRNLIRLYGVVLTPPMKMVTELAPLGSLLDRLRKHQGHFLLGTLSRYAVQVAEGMGYLESKRFIHRDLAARNLLLATRDLVKIGDFGLMRALPQNDDHYVMQEHRKVPFAWCAPESLKTRTFSHASDTWMFGVTLWEMFTYGQEPWIGLNGSQILHKIDKEGERLPRPEDCPQDIYNVMVQCWAHKPEDRPTFVALRDFLLEAQPTDMRALQDFEEPDKLHIQMNDVITVIEGRAENYWWRGQNTRTLCVGPFPRNVVTSVAGLSAQDISQPLQNSFIHTGHGDSDPRHCWGFPDRIDELYLGNPMDPPDLLSVELSTSRPPQHLGGVKKPTYDPVSEDQDPLSSDFKRLGLRKPGLPRGLWLAKPSARVPGTKASRGSGAEVTLIDFGEEPVVPALRPCPPSLAQLAMDACSLLDETPPQSPTRALPRPLHPTPVVDWDARPLPPPPAYDDVAQDEDDFEICSINSTLVGAGVPAGPSQGQTNYAFVPEQARPPPPLEDNLFLPPQGGGKPPSSAQTAEIFQALQQECMRQLQAPGSPAPSPSPGGDDKPQVPPRVPIPPRPTRPHVQLSPAPPGEEETSQWPGPASPPRVPPREPLSPQGSRTPSPLVPPGSSPLPPRLSSSPGKTMPTTQSFASDPKYATPQVIQAPGAGGPCILPIVRDGKKVSSTHYYLLPERPSYLERYQRFLREAQSPEEPTPLPVPLLLPPPSTPAPAAPTATVRPMPQAALDPKANFSTNNSNPGARPPPPRATARLPQRGCPGDGPEAGRPADKIQMAMVHGVTTEECQAALQCHGWSVQRAAQYLKVEQLFGLGLRPRGECHKVLEMFDWNLEQAGCHLLGSWGPAHHKR")
+
+
+
+
     def test_integration(self):
         result = self.ptmscoutapp.get('/proteins/35546/sequence')
         d = result.pyquery
