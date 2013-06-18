@@ -4,16 +4,16 @@
         <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/forms.css')}" />
     </metal:slot>
     <div metal:fill-slot="content">
-        <form action="" method="post" enctype="multipart/form-data">
-            <input type="hidden" value="true" name="submitted" />
-            <div class="wideform">
-                <div class="error_display" tal:condition="len(errors)>0">
+      <div class="body">
+        <h2>Upload Dataset for Exploration</h2>
+          <form action="" method="post" enctype="multipart/form-data" class="newform drop-shadow" style="width:600px;margin-left:1em">
+              <input type="hidden" value="true" name="submitted" />
+                <div class="errorbox" tal:condition="len(errors)>0">
                     <ul>
                         <li tal:repeat="error errors" tal:content="error"></li>
                     </ul>
                 </div>
-                <div class="formcategory">Dataset</div>
-                <table>
+                <table class="vertical-headers vertical-padding" style="width:98%">
                     <tr>
                         <th>Upload type:</th>
                         <td>
@@ -23,24 +23,26 @@
                         </td>
                     </tr>
                     <tr id="parent_exp">
-                        <td class="fieldname">Source Dataset:</td>
+                        <th class="fieldname">Source Dataset:</th>
                         <td>
                             ${formrenderer.render('source_dataset', id_='expselect', class_='stretch')}
                         </td>
                     </tr>
                     <tr id="datasetname">
-                        <td class="fieldname">Dataset Name: </td>
+                        <th class="fieldname">Dataset Name: </th>
                         <td > ${formrenderer.render('datasetname')} </td>
                     </tr>
                     <tr>
-                        <td class="fieldname">Dataset File: </td>
+                        <th class="fieldname">Dataset File: </th>
                         <td > ${formrenderer.render('datasetfile')} </td>
                     </tr>
                 </table>
 
-                <div class="formsubmission"><input type="submit" value="Continue" class="longtask" /></div>
+                <div class="formsubmission" style="margin-right:1em">
+                  <input type="submit" value="Continue" class="longtask" />
+                </div>
                 <div class="clear"></div>               
-            </div>
-        </form>
+          </form>
+      </div>
     </div>
 </div>

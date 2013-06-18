@@ -1,15 +1,15 @@
 <div id="nav" metal:define-macro="experiment_header">
   <ul class='link_menu'>
     <li><a href="${request.route_url('experiment', id=experiment.id)}">Experiment Home</a></li>
-    <li><a href="${request.route_url('experiment_summary', id=experiment.id)}">Summary</a></li>
-    <li><a href="${request.route_url('experiment_browse', id=experiment.id)}">Browse Dataset</a></li>
-    <li><a href="${request.route_url('experiment_subset', id=experiment.id)}">Evaluate Subsets</a></li>
+    <li><a href="${request.route_url('experiment_summary', id=experiment.id)}" title='Summary of Modifications'>Summary</a></li>
+    <li><a href="${request.route_url('experiment_browse', id=experiment.id)}" title="Explore experiment's individual proteins and peptides">Browse</a></li>
+    <li><a href="${request.route_url('experiment_subset', id=experiment.id)}" title='Look for enrichments in subsets'>Evaluate</a></li>
 
     <tal:empty tal:condition="experiment.type=='experiment'">
-        <li><a href="${request.route_url('experiment_compare', id=experiment.id)}">Compare Datasets</a></li>
+        <li><a href="${request.route_url('experiment_compare', id=experiment.id)}" title='Compare overlap with other datasets'>Compare</a></li>
           
         <tal:empty tal:condition="experiment.ambiguity == 1">
-          <li><a href="${request.route_url('experiment_ambiguity', id=experiment.id)}">Report Ambiguity</a></li>
+          <li><a href="${request.route_url('experiment_ambiguity', id=experiment.id)}" title='View ambiguiously assigned peptides'>Ambiguity</a></li>
         </tal:empty>
     </tal:empty>
    </ul>
