@@ -123,6 +123,7 @@ def get_experiment_data(exp, data_labels):
 @upload_helpers.logged_task
 def run_experiment_export_job(annotate, export_id, exp_id, user_id, job_id):
     notify_tasks.set_job_status.apply_async((job_id, 'started'))
+    notify_tasks.set_job_stage.apply_async((job_id, 'exporting', 0))
 
     exp_filename = 'experiment.%d.%d.%d.tsv' % (exp_id, user_id, export_id)
     exp_path = os.path.join(settings.ptmscout_path, settings.annotation_export_file_path, exp_filename)
