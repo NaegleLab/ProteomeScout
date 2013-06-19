@@ -2,12 +2,28 @@ from scripts.DB_init import DatabaseInitialization
 from ptmscout.config import settings
 from ptmscout.database import DBSession, experiment, upload
 import datetime
+import time
 import os
 import re
 import traceback
 import shutil
 
-SESSION_EXPIRATION_TIME = 86400
+DOWNLOAD_EXPIRATION_TIME = 60*60*24
+SESSION_EXPIRATION_TIME = 60*60*24
+
+def clean_old_files(now, path):
+    for fn in os.listdir(path):
+        fpath = os.path.join(path, fn)
+        if os.path.isdir(fpath):
+            clean_old_files( now, fpath )
+            if os.listdir( fpath ) == []:
+                print "Removing Dir:  " + fpath
+                os.rmdir( fpath )
+        else:
+            ctime = os.path.getctime( fpath )
+            if now - ctime > DOWNLOAD_EXPIRATION_TIME:
+                print "Removing File: " + fpath
+                os.remove( fpath )
 
 if __name__ == "__main__":
     try:
@@ -78,6 +94,11 @@ if __name__ == "__main__":
                 if exp_id not in known_experiments:
                     print dn
                     shutil.rmtree(dp)
+
+        now = time.time()
+        print "Cleaning exported MCAM and experiment files"
+        clean_old_files( now, os.path.join(settings.ptmscout_path, settings.annotation_export_file_path) )
+        clean_old_files( now, os.path.join(settings.ptmscout_path, settings.mcam_file_path) )
 
         DBSession.flush()
     except Exception, e:
