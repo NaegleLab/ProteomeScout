@@ -7,7 +7,7 @@ from pyramid.httpexceptions import HTTPForbidden
 from ptmscout.utils import uploadutils
 from ptmscout.config import strings
 from ptmscout.database import experiment
-import os
+import os, re
 from tests.PTMScoutTestCase import UnitTestCase, IntegrationTestCase
 
 class TestExperimentDownloadView(UnitTestCase):
@@ -144,34 +144,70 @@ class IntegrationTestExperimentDownloadView(IntegrationTestCase):
         self.bot.logout()
         result = self.ptmscoutapp.get("/experiments/28/export", status=403)
         result.mustcontain("forbidden")
-        
-    def test_export_view_should_have_default_columns(self):
+
+    def log_abort(self):
+        import logging 
+        logging.getLogger('ptmscout').debug("Transaction aborted")
+        raise Exception()
+
+    def session_flush(self):
+        import logging
+        from ptmscout.database import DBSession
+        DBSession.flush()
+        logging.getLogger('ptmscout').debug("Transaction committed")
+
+    @patch('transaction.abort')
+    @patch('transaction.commit')
+    @patch('ptmscout.utils.mail.celery_send_mail')
+    def test_export_view_should_have_default_columns(self, patch_mail, patch_commit, patch_abort):
         self.bot.login()
+        patch_commit.side_effect = self.session_flush
+        patch_abort.side_effect = self.log_abort
+
         result = self.ptmscoutapp.get("/experiments/28/export?annotate=no")
-        
+        result.mustcontain(strings.experiment_export_started_page_title)
+
+        m = re.search(r'<a href="(.*)">here</a>', str(patch_mail.call_args_list))
+
+        download_url = m.group(1)
+        last_path_seg = download_url[download_url.rfind('/')+1:]
+        result = self.ptmscoutapp.get(download_url)
+                
         exp_header = 'MS_id    query_accession    acc_gene	locus protein_name    species    peptide    mod_sites    gene_site    aligned_peptides    modification_types    24H_EGF:data:time:0    24H_EGF:data:time:5    24H_EGF:data:time:10    24H_EGF:data:time:30    24H_EGF:stddev:time:0    24H_EGF:stddev:time:10    24H_EGF:stddev:time:30    24H_HRG:data:time:0    24H_HRG:data:time:5    24H_HRG:data:time:10    24H_HRG:data:time:30    24H_HRG:stddev:time:0    24H_HRG:stddev:time:10    24H_HRG:stddev:time:30    P_EGF:data:time:0    P_EGF:data:time:5    P_EGF:data:time:10    P_EGF:data:time:30    P_EGF:stddev:time:0    P_EGF:stddev:time:10    P_EGF:stddev:time:30    P_HRG:data:time:0    P_HRG:data:time:5    P_HRG:data:time:10    P_HRG:data:time:30    P_HRG:stddev:time:0    P_HRG:stddev:time:10    P_HRG:stddev:time:30'.replace('    ', '\t')
         exp_header = exp_header.split()
         
         lines = str(result).split("\n")
         self.assertEqual('Response: 200 OK', lines[0])
-        self.assertEqual('Content-Disposition: attachment; filename="experiment.28.export.tsv"', lines[1])
+        self.assertEqual('Content-Disposition: attachment; filename="experiment.28.%d.%s.tsv"' % (self.bot.user.id, last_path_seg), lines[1])
         self.assertEqual('Content-Type: text/tab-separated-values; charset=UTF-8', lines[2])
         
         for line in lines[3:]:
             row = line.split("\t")
             self.assertEqual(len(exp_header), len(row))
  
-
-    def test_export_view_should_annotate_experiment(self):
+    @patch('transaction.abort')
+    @patch('transaction.commit')
+    @patch('ptmscout.utils.mail.celery_send_mail')
+    def test_export_view_should_annotate_experiment(self, patch_mail, patch_commit, patch_abort):
         self.bot.login()
+        patch_commit.side_effect = self.session_flush
+        patch_abort.side_effect = self.log_abort
+
         result = self.ptmscoutapp.get("/experiments/28/export?annotate=yes")
+        result.mustcontain(strings.experiment_export_started_page_title)
+
+        m = re.search(r'<a href="(.*)">here</a>', str(patch_mail.call_args_list))
         
+        download_url = m.group(1)
+        last_path_seg = download_url[download_url.rfind('/')+1:]
+        result = self.ptmscoutapp.get(download_url)
+         
         exp_header = 'MS_id    query_accession 	acc_gene	locus protein_name    species    peptide    mod_sites    gene_site    aligned_peptides    modification_types    24H_EGF:data:time:0    24H_EGF:data:time:5    24H_EGF:data:time:10    24H_EGF:data:time:30    24H_EGF:stddev:time:0    24H_EGF:stddev:time:10    24H_EGF:stddev:time:30    24H_HRG:data:time:0    24H_HRG:data:time:5    24H_HRG:data:time:10    24H_HRG:data:time:30    24H_HRG:stddev:time:0    24H_HRG:stddev:time:10    24H_HRG:stddev:time:30    P_EGF:data:time:0    P_EGF:data:time:5    P_EGF:data:time:10    P_EGF:data:time:30    P_EGF:stddev:time:0    P_EGF:stddev:time:10    P_EGF:stddev:time:30    P_HRG:data:time:0    P_HRG:data:time:5    P_HRG:data:time:10    P_HRG:data:time:30    P_HRG:stddev:time:0    P_HRG:stddev:time:10    P_HRG:stddev:time:30    scansite_bind    scansite_kinase    nearby_modifications    nearby_mutations    site_domains    site_regions    protein_domains    protein_GO_BP    protein_GO_CC    protein_GO_MF'.replace('    ', '\t')
         exp_header = exp_header.split()
         
         lines = str(result).split("\n")
         self.assertEqual('Response: 200 OK', lines[0])
-        self.assertEqual('Content-Disposition: attachment; filename="experiment.28.annotated.tsv"', lines[1])
+        self.assertEqual('Content-Disposition: attachment; filename="experiment.28.%d.%s.tsv"' % (self.bot.user.id, last_path_seg), lines[1])
         self.assertEqual('Content-Type: text/tab-separated-values; charset=UTF-8', lines[2])
         
         for line in lines[3:]:

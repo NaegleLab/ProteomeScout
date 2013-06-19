@@ -8,7 +8,7 @@ from ptmscout.utils import downloadutils
 from ptmscout.config import strings, settings
 from ptmworker import export_tasks
 import time
-import os
+import os, csv
 
 @view_config(route_name='experiment_download', renderer='tsv', permission='private')
 def download_experiment(request):
@@ -30,7 +30,7 @@ def download_experiment(request):
     return { 'header': header, 'data': rows }
 
 
-@view_config(route_name='export_download', permission='private')
+@view_config(route_name='export_download', renderer='tsv', permission='private')
 @decorators.get_experiment('id')
 def download_export_file(context, request, exp):
     fname = "experiment.%d.%d.%s.tsv" % (exp.id, request.user.id, request.matchdict['export_id'])
@@ -39,10 +39,15 @@ def download_export_file(context, request, exp):
     if not os.path.exists(fpath):
         raise HTTPNotFound()
 
-    response = FileResponse(fpath, request)
+    rows = []
+    with open(fpath, 'r') as ifile:
+        dr = csv.reader(ifile, dialect='excel-tab')
+        for row in dr:
+            rows.append(row)
+
     request.response.content_type = 'text/tab-separated-values'
     request.response.content_disposition = 'attachment; filename="%s"' % (fname)
-    return response
+    return { 'header': rows[0], 'data': rows[1:] }
 
 
 def create_annotate_export_job(request, export_id, exp_id, user_id):
