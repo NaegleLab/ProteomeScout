@@ -35,7 +35,7 @@ def get_annotation_sets(experiment, user):
     return annotation_sets
 
 def start_mcam_job(request, schema, experiment, user):
-    mcam_id = int(time.clock())
+    mcam_id = int(time.time())
     mcam_filename_base = "%d.mcam.%d.%d" % (experiment.id, user.id, mcam_id)
     
     mcam_job = jobs.Job()
@@ -43,6 +43,7 @@ def start_mcam_job(request, schema, experiment, user):
     mcam_job.user = user
     mcam_job.result_url = request.route_url('mcam_download', id=experiment.id, mcam_id=mcam_id)
     mcam_job.status_url = request.route_url('my_experiments')
+    mcam_job.status = 'in queue'
     mcam_job.type = 'mcam_enrichment'
     
     mcam_job.save()

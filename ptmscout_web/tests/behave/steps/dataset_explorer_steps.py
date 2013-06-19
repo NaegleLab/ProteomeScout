@@ -218,8 +218,22 @@ def experiment_uploaded_check_email(context, patch_mail, patch_commit, patch_abo
     context.result = result
 
 @then(u'the user should be able to export their dataset with additional annotations')
-def download_annotated_experiment_and_check_fields(context):
+@patch('transaction.abort')
+@patch('transaction.commit')
+@patch('ptmscout.utils.mail.celery_send_mail')
+def download_annotated_experiment_and_check_fields(context, patch_mail, patch_commit, patch_abort):
+    patch_commit.side_effect = bot.session_flush
+    patch_abort.side_effect = bot.log_abort
+
     result = context.ptmscoutapp.get('http://localhost/experiments/%d/export?annotate=yes' % (context.exp_id))
+    result.mustcontain(strings.experiment_export_started_page_title)
+
+
+    context.mailargs = str(patch_mail.call_args_list)
+    m = re.search(r'<a href="(.*)">here</a>', context.mailargs)
+
+    download_url = m.group(1)
+    result = context.ptmscoutapp.get(download_url)
 
     for row in context.table:
         field = row['field']

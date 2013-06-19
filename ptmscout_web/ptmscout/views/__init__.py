@@ -46,6 +46,8 @@ def add_views(config):
     config.add_route('mcam_enrichment', '/experiments/{id}/mcam_enrichment')
     config.add_route('mcam_confirm', '/experiments/{id}/mcam_confirm')
     config.add_route('mcam_download', '/experiments/{id}/mcam_download/{mcam_id}')
+
+    config.add_route('export_download', '/experiments/{id}/export_download/{export_id}')
     
     config.add_route('upload', '/upload')
     config.add_route('upload_resume', '/upload/{id}')

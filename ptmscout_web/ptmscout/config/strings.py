@@ -171,6 +171,22 @@ dataset_upload_started_message = \
 """Dataset upload process successfully started. An e-mail will be sent to you when the dataset upload is complete. Additionally, you may check the status of the upload by visiting <a href=\"%s\">this page</a>"""
 
 
+experiment_export_started_page_title = "Export Started"
+experiment_export_started_message = \
+"""Experiment export process successfully started. An e-mail will be sent to you when the experiment export is complete. Additionally, you may check the status of the export by visiting <a href=\"%s\">this page</a>"""
+
+experiment_export_finished_message = \
+"""Processing of your job '%s' succeeded.
+
+You may download the results of this export <a href="%s">here</a>.
+
+This file will be available for 24 hours.
+
+-The PTMScout Team"""
+experiment_export_finished_subject = "PTMScout Experiment Export Finished"
+
+
+
 forgotten_password_page_title = "Forgotten Password Retrieval"
 forgotten_password_success_header = "Password Reset Success"
 forgotten_password_success_message = "Your username and a temporary password have been sent to your e-mail address"
