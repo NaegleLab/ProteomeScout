@@ -163,6 +163,21 @@ def archive(output_file, files):
         zf.write(f)
     zf.close()
 
+def filterUnenriched(cluster_sets, enrichment, enrichment_categories, pvalue_cutoff):
+
+    for category in enrichment_categories:
+        remove_labels = set()
+        for label in enrichment_categories[category]:
+            has_enriched = False
+            for cluster_set in cluster_sets:
+                for clabel in cluster_sets[cluster_set]:
+                    has_enriched |= ( label in enrichment[(cluster_set, clabel)][category] and enrichment[(cluster_set,clabel)][category][label] <= pvalue_cutoff )
+            if not has_enriched:
+                remove_labels.add(label)
+
+        for label in remove_labels:
+            enrichment_categories[category].remove(label)
+
 @celery.task
 @upload_helpers.notify_job_failed
 @upload_helpers.logged_task
@@ -178,7 +193,9 @@ def run_mcam_analysis(output_filename, scansite_cutoff, domain_cutoff, pvalue_cu
         fdrCorrection(pvalue_cutoff, enrichment, cluster_sets, enrichment_categories)
     if correction_type == 'bon':
         bonCorrection(enrichment, cluster_sets, enrichment_categories, test_cnt)
-    
+   
+    filterUnenriched(cluster_sets, enrichment, enrichment_categories, pvalue_cutoff)
+
     enrichBoolFilename = os.path.join(output_filename, "loadEnrichBool.m") 
     numStructFilename = os.path.join(output_filename, "loadNumStruct.m") 
     
