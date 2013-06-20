@@ -317,3 +317,9 @@ def getProteinBySequence(seq, species):
 
 def getProteinsByAccession(accession):
     return DBSession.query(Protein).join(ProteinAccession).filter(ProteinAccession.value == accession).all()
+
+def getAllProteins():
+    return DBSession.query(Protein).all()
+
+def countProteins():
+    return DBSession.query(Protein).count()

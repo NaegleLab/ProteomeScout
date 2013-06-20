@@ -1,0 +1,122 @@
+<div metal:use-macro="layout">
+	<metal:slot metal:fill-slot="header">
+	</metal:slot>
+	<div metal:fill-slot="nav"></div>
+	
+	<div metal:fill-slot="content">
+		<div class="grid_12">
+		  <h2>PTMScout Summary Statistics</h2>
+			
+          <div class="body">
+                <h4>All Data</h4>
+				<table class="vertical-headers no-border align-left" style="width:200px">
+                    <tr>
+						<th class="field">Registered Users</th>
+						<td class="value">${users}</td>
+					</tr>
+					<tr>
+						<th class="field">Experiments</th>
+						<td class="value">${experiments}</td>
+                    </tr>
+                    <tr>
+						<th class="field">Compendia</th>
+						<td class="value">${compendia}</td>
+					</tr>
+                    <tr>
+						<th class="field">Datasets</th>
+						<td class="value">${datasets}</td>
+					</tr>
+                    <tr>
+						<th class="field">Species</th>
+						<td class="value">${species}</td>
+					</tr>
+                    <tr>
+						<th class="field">Proteins</th>
+						<td class="value">${proteins}</td>
+                    </tr>
+                    <tr>
+						<th class="field">Measured Peptides</th>
+						<td class="value">${peps}</td>
+					</tr>
+                    <tr>
+						<th class="field">Modified Residues</th>
+						<td class="value">${mods}</td>
+					</tr>
+                    <tr>
+						<th class="field">Modified Sites</th>
+						<td class="value">${sites}</td>
+					</tr>
+                    <tr>
+						<th class="field">PTM Types</th>
+						<td class="value">${ptms}</td>
+                    </tr>
+				</table>
+
+                <h4>Modified Sites By Grouping</h4>
+				<table class="data_summary drop-shadow">
+					<tr>
+						<th>By Residue</th>
+						<th>By Modification Type (Top 50)</th>
+						<th>By Species (Top 50)</th>
+					</tr>
+					<tr>
+						<td class="listing">
+							<table class="vertical-headers no-border align-left">
+								<tr tal:repeat="r sorted(by_residue.keys())">
+									<th class="field" tal:content="r" />
+									<td class="value" tal:content="by_residue[r]"></td>
+								</tr>
+							</table>
+						</td>
+						<td class="listing">
+							<table class="vertical-headers no-border align-left">
+								<tr tal:repeat="t sorted(by_type.keys(), key=lambda t: int(by_type[t]), reverse=True)[:50]">
+									<th class="field" tal:content="t" />
+									<td class="value" tal:content="by_type[t]"></td>
+								</tr>
+							</table>
+						</td>
+						<td class="listing">
+							<table class="vertical-headers no-border align-left">
+								<tr tal:repeat="s sorted(by_species.keys(), key=lambda s: int(by_species[s]), reverse=True)[:50]">
+									<th class="field" tal:content="s" />
+									<td class="value" tal:content="by_species[s]"></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</div>
+    </div>
+
+		<div class="grid_12" style="margin-top:1em">
+		  <h2>Supported PTM Types</h2>
+            <div class="body">
+                <table class="data_summary drop-shadow">
+                    <tr>
+                        <th>Name</th>
+                        <th>Aliases</th>
+                        <th>Residues</th>
+                        <th>Species</th>
+                        <th>Position</th>
+                        <th>Monoisotopic Mass</th>
+                        <th>Average Mass</th>
+                    </tr>
+                    <tr tal:repeat="(i, ptm) enumerate(ptm_defs)" tal:attributes="class 'even' if i % 2 == 0 else 'odd'">
+                        <td>
+                            <span tal:repeat="i xrange(0, ptm['level'])"
+                                class="child-spacer">+</span>
+                            <span tal:content="ptm['name']"></span>
+                        </td>
+                        <td tal:content="ptm['aliases']"></td>
+                        <td tal:content="ptm['residues']"></td>
+                        <td tal:content="ptm['species']"></td>
+                        <td tal:content="ptm['position']"></td>
+                        <td tal:content="ptm['monomass']"></td>
+                        <td tal:content="ptm['avgmass']"></td>
+                    </tr>
+                </table>
+			</div>
+		</div>	
+	</div>
+</div>

@@ -233,6 +233,8 @@ protein_search_page_title = "Protein Search"
 
 share_experiment_page_title = "Share Experiment"
 
+statistics_page_title = "PTMScout Statistics"
+
 upload_page_title = "Upload"
 upload_page_header = "Data Upload"
 

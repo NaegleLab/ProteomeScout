@@ -28,6 +28,7 @@ experiment_data_file_path = "data/experiments"
 export_file_path = "data/export"
 annotation_export_file_path = "data/annotate"
 pfam_map_file_path = "ptmworker/helpers/pfam.map"
+statistics_file = "data/statistics.pyp"
 ptmscout_path = "/data/ptmscout/ptmscout_web"
 motif_script_path = os.path.join('scripts', 'motif')
 

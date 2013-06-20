@@ -1,7 +1,9 @@
 
 def add_views(config):
     config.add_static_view('static', 'static', cache_max_age=3600)
-    
+   
+    config.add_route('statistics', '/statistics')
+
     config.add_route('about', '/about')
     config.add_route('terms', '/terms')
     

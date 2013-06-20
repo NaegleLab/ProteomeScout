@@ -36,3 +36,7 @@ class InfoFunctionalTests(IntegrationTestCase):
     def test_no_such_protein_should_give_info(self):
         response = self.ptmscoutapp.get('/proteins/20131234234',status=404)
         response.mustcontain(strings.error_resource_not_found_page_title)
+
+    def test_info_statistics_should_show_stats(self):
+        response = self.ptmscoutapp.get('/statistics', status=200)
+        response.mustcontain(strings.statistics_page_title)

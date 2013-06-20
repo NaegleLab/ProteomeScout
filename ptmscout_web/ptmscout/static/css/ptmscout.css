@@ -23,6 +23,13 @@ a:visited{
   color: blue;
 }
 
+span.child-spacer {
+    background: black;
+    color: white;
+    padding-left:5px;
+    padding-right:5px;
+    margin:0px;
+}
 
 #wrapper {
 	min-height: 100%;

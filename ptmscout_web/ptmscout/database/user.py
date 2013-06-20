@@ -141,3 +141,5 @@ def getUserByEmail(email):
     return value
     
     
+def countUsers():
+    return DBSession.query(User).count()

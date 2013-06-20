@@ -33,10 +33,24 @@ class PTM(Base):
     taxons = relationship("Taxonomy", secondary=PTM_taxon)
     keywords = relationship("PTMkeyword")
 
+    def getLevel(self):
+        i = 0
+        p = self
+        while(p.parent is not None):
+            p = p.parent
+            i+=1
+        return i
+
     def getAllParents(self):
         if self.parent:
             return set([self.parent]) | self.parent.getAllParents()
         return set()
+
+    def getTaxons(self):
+        my_taxons = set(t.formatted_name.lower() for t in self.taxons)
+        for c in self.children:
+            my_taxons |= c.getTaxons()
+        return my_taxons
 
     def hasTaxon(self, search_taxons):
         search_taxons = set([t.lower() for t in search_taxons])
@@ -281,3 +295,22 @@ def getExperimentsReportingModifiedPeptide(modified_peptide, other_exps):
             found_exps.append(exp)
 
     return found_exps
+
+def countMeasuredPeptides():
+    return DBSession.query(MeasuredPeptide).count()
+
+def countReportedModifications():
+    return DBSession.query(PeptideModification).count()
+
+def countSitesOfModification():
+    return DBSession.query(Peptide).count()
+
+def countPTMs():
+    return DBSession.query(PTM).count()
+
+def getAllPTMs():
+    return DBSession.query(PTM).all()
+
+def getAllMeasuredPeptides():
+    return DBSession.query(MeasuredPeptide).all()
+

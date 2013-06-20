@@ -462,3 +462,12 @@ def searchExperiments(text_search=None, conditions={}, user=None, page=None):
     fq = DBSession.query(Experiment).join(sq, Experiment.id == sq.c.id)
     return q.count(), fq.all()
 
+def countExperiments():
+    exps = [ exp for exp in DBSession.query(Experiment).all() if exp.ready() ]
+
+    compendia = len([ exp for exp in exps if exp.type == 'compendia' ])
+    experiments = len([ exp for exp in exps if exp.type == 'experiment' ])
+    datasets = len([ exp for exp in exps if exp.type == 'dataset' ])
+
+    return compendia, experiments, datasets
+
