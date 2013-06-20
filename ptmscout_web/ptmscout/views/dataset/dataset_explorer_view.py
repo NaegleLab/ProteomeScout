@@ -747,7 +747,7 @@ def compute_subset_enrichment(request, annotation_set_id, exp, user, subset_name
         annotation_types = compute_annotations(annotation_set_id, exp, user, measurements)
     else:
         annotation_types = {}
-    
+
     foreground_decision_func = parse_query_expression(foreground_exp, exp.id, user, annotation_types)
     background_decision_func = parse_query_expression(background_exp, exp.id, user, annotation_types)
     
@@ -759,7 +759,6 @@ def compute_subset_enrichment(request, annotation_set_id, exp, user, subset_name
                 'message':strings.error_message_subset_empty}
     
     enrichment = calculate_feature_enrichment(foreground, background, annotation_types)
-    
     motif_tests, motif_results = motif.calculate_motif_enrichment(foreground, background)
     
     background_seqlogo = protein_utils.create_sequence_profile(background)
@@ -810,7 +809,7 @@ def perform_subset_enrichment(request):
         annotation_set_id = int(query_expression['annotation_set_id'])
     except:
         annotation_set_id = None
-    
+
     subset_name = query_expression['name']
     foreground_exp = query_expression['foreground']
     background_exp = query_expression['background']

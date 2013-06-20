@@ -885,6 +885,9 @@ function SubsetSelection(element, webservice_url) {
 		var background_label  = '{0}{1}'.format(this.subsetPrefix, label);
 		$('<option />', {'value': background_label, 'text': background_label}).appendTo(this.backgroundSelection);
 	}
+
+    this.selectAnnotation = $("#select-annotation");
+    this.selectAnnotation.val(""+this.field_data.annotation_set);
 	
 	this.subsetOpen = $("#open-saved-subset");
 	this.subsetOpen.on('click', function(){
@@ -1050,7 +1053,8 @@ SubsetSelection.prototype.openClusters = function(cluster_set) {
 					'type': 'create',
 					'name': '{0}:{1}'.format(cluster_set, label),
 					'background': 'experiment',
-					'foreground': expression
+					'foreground': expression,
+                    'annotation_set_id': this.field_data.annotation_set
 			};
 			
 			$.ajax({

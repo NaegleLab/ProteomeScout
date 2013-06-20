@@ -49,8 +49,8 @@
 	        </div>
             <h4>Choose Annotation Set</h4>
 		    	<div class="body">
-		    	<form method="GET" action="" id="select-annotation">
-                    <select name="annotation_set">
+		    	<form method="GET" action="" id="select-annotation-form">
+                    <select name="annotation_set" id="select-annotation">
                         <option></option>
                         <option tal:repeat="set_id annotation_sets" tal:attributes="value set_id" tal:content="annotation_sets[set_id]"></option>
                     </select>
