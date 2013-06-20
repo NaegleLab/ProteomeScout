@@ -14,3 +14,5 @@ python scripts/export/export_compendia.py --modification "UBIQ" > data/export/pt
 python scripts/export/export_compendia.py --modification "Glycosylation" > data/export/ptmscout_glycosylation.tsv
 
 python scripts/export/summarize_compendia.py ptmscout_everything.tsv ptmscout_vertebrata.tsv ptmscout_mammalia.tsv ptmscout_phosphorylation.tsv ptmscout_acetylation.tsv ptmscout_methylation.tsv ptmscout_ubiquitination.tsv ptmscout_glycosylation.tsv > data/export/listing.pyp
+
+python scripts/maintenance/generate_statistics.py
