@@ -40,7 +40,8 @@
         &nbsp;
       </div>
       <div class="grid_3">
-  			<input type="submit" value="Search" class="longtask" style="width:120px" />
+          <input type="submit" value="Search" class="longtask" style="width:120px" />
+          <a href="${request.route_url('batch_search')}">batch&gt;&gt;</a>
       </div>
     </div>
 

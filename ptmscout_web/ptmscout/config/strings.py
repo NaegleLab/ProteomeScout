@@ -80,8 +80,8 @@ You may view the error log for this upload at %s.
 Thanks for using PTMScout,
 -The PTMScout Team"""
 experiment_upload_configure_page_title = "Configure Experiment Data"
-experiment_upload_configure_message = """
-<span>Please verify and assign designations for the column types present in your dataset.</span><br />
+experiment_upload_configure_instructions = """
+<span>Please verify and assign designations for the column types present in your experiment.</span><br />
 <span>Some column types may have been automatically inferred from your headers.</span><br />
 <span>You are required to specify the following columns:</span><br />
 <ul>
@@ -96,6 +96,37 @@ experiment_upload_configure_message = """
     <li>Stddev</li>
 </ul>
 
+"""
+
+annotation_upload_configure_instructions = """
+<span>Please verify and assign designations for the column types present in your annotation file.</span><br />
+<span>Some column types may have been automatically inferred from your headers.</span><br />
+<span>You are required to specify the following columns:</span><br />
+<ul>
+    <li>MS id</li>
+</ul>
+<span>You may optionally have columns from the following categories:</span><br />
+<ul>
+    <li>Numerical</li>
+    <li>Nominative</li>
+    <li>Cluster</li>
+</ul>
+"""
+
+dataset_upload_configure_instructions = """
+<span>Please verify and assign designations for the column types present in your dataset.</span><br />
+<span>Some column types may have been automatically inferred from your headers.</span><br />
+<span>You are required to specify the following columns:</span><br />
+<ul>
+    <li>Accession</li>
+    <li>Peptide or Sites</li>
+</ul>
+<span>You may optionally have columns from the following categories:</span><br />
+<ul>
+    <li>Run</li>
+    <li>Data</li>
+    <li>Stddev</li>
+</ul>
 """
 
 cancel_upload_successful_page_title = "Experiment Upload"
@@ -162,6 +193,10 @@ annotation_upload_confirm_message = "Required annotation information is now comp
 annotation_upload_started_page_title = "Upload Started"
 annotation_upload_started_message = \
 """Annotation upload process successfully started. An e-mail will be sent to you when the annotation upload is complete. Additionally, you may check the status of the upload by visiting <a href=\"%s\">this page</a>"""
+
+protein_batch_search_submitted_page_title = "Batch Search Started"
+protein_batch_search_submitted_message = \
+"""Protein batch annotation process was successfully started. An e-mail will be sent to you when the batch annotation is complete. Additionally, you may check the status of the search by visiting <a href=\"%s\">this page</a>"""
 
 
 dataset_upload_confirm_page_title = "Confirm Submission"
@@ -230,6 +265,7 @@ protein_expression_page_title = "Protein Expression"
 protein_structure_page_title = "Protein Sequence Viewer"
 protein_modification_sites_page_title = "Protein Modification Sites"
 protein_search_page_title = "Protein Search"
+protein_batch_search_page_title = "Protein Batch Search"
 
 share_experiment_page_title = "Share Experiment"
 
@@ -386,5 +422,12 @@ This file will be available for 24 hours.
 -The PTMScout Team"""
 mcam_enrichment_finished_subject = "PTMScout MCAM Export Finished"
 
+batch_annotation_finished_subject = "PTMScout Batch Annotation Finished"
+batch_annotation_finished_message = \
+"""Processing of your job '%s' succeeded.
 
+You may download the results of this batch annotation <a href="%s">here</a>.
 
+This file will be available for 24 hours.
+
+-The PTMScout Team"""

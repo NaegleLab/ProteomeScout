@@ -68,6 +68,9 @@ def add_views(config):
     config.add_route('protein_mod_sites', '/proteins/{id}/modifications')
     config.add_route('protein_main', '/proteins/{id}')
     config.add_route('protein_search', '/proteins')
+    config.add_route('batch_search', '/batch')
+    config.add_route('batch_submit', '/batch/submit')
+    config.add_route('batch_download', '/batch/download/{id}')
     
     config.add_route('login', '/login')
     config.add_route('process_login', '/process_login')

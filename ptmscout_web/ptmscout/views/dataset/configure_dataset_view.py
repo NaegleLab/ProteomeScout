@@ -14,7 +14,9 @@ def create_nav_wizard(request, session):
 
 
 def upload_configure_dataset(request, session):
-    return upload_configure.upload_config_handler( request, session, strings.dataset_upload_configure_page_title, create_nav_wizard(request, session), mod_required=False, nextStage='confirm')
+    rval = upload_configure.upload_config_handler( request, session, strings.dataset_upload_configure_page_title, create_nav_wizard(request, session), mod_required=False, nextStage='confirm')
+    rval['instructions'] = strings.dataset_upload_configure_instructions
+    return rval
 
 @view_config(route_name='dataset_configure', renderer='ptmscout:/templates/upload/upload_config.pt')
 @decorators.get_session('id', 'dataset')

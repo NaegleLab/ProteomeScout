@@ -15,7 +15,7 @@
           <h2>Instructions</h2>
           <div class="body">
             <?python from ptmscout.config import strings; ?>
-            ${structure:strings.experiment_upload_configure_message}
+            ${structure:instructions}
           </div>
           <h2>Data</h2>
           <div class="configurator_app">

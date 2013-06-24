@@ -106,6 +106,7 @@ def upload_config_handler(request, session, pageTitle, navWizard, mod_required=T
             'data_definitions':column_defs,
             'session_id': session.id,
             'column_values': ['none','hidden','data','stddev','accession','peptide','sites','species','modification','run'],
+            'instructions': strings.experiment_upload_configure_instructions,
             'pageTitle': pageTitle}
 
 def create_nav_wizard(request, session):

@@ -162,7 +162,8 @@ def configure_annotations_GET(request, experiment, session):
             'data_rows':data_rows,
             'allowoverride':False,
             'data_definitions': data_definitions,
-            'column_values': ['none','MS_id','cluster','numeric','nominative']
+            'column_values': ['none','MS_id','cluster','numeric','nominative'],
+            'instructions': strings.annotation_upload_configure_instructions
             }
 
 @view_config(route_name='configure_annotations', request_method='GET', renderer='ptmscout:/templates/upload/upload_config.pt', permission='private')

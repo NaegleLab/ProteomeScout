@@ -1,8 +1,9 @@
 from ptmworker.helpers import upload_helpers
 from ptmscout.config import settings, strings
-from ptmscout.database import experiment, modifications, user, modifications
+from ptmscout.database import experiment, modifications, user, modifications, protein
 import celery
-from ptmworker import notify_tasks
+from ptmworker import notify_tasks, protein_tasks
+from ptmscout.utils import export_proteins
 import csv, os
 
 def annotate_experiment(user, exp, header, rows):
@@ -145,3 +146,74 @@ def run_experiment_export_job(annotate, export_id, exp_id, user_id, job_id):
             cw.writerow(row)
 
     notify_tasks.finalize_experiment_export_job.apply_async((job_id,))
+
+@celery.task
+@upload_helpers.notify_job_failed
+def annotate_proteins(protein_result, batch_id, user_id, job_id):
+    protein_map, protein_id_map = protein_result
+
+    print protein_map, protein_id_map
+
+    usr = user.getUserById(user_id)
+    notify_tasks.set_job_stage.apply_async((job_id, 'annotate', len(protein_map)))
+    filename = "batch.%s.%d.tsv" % (batch_id, user_id)
+    batch_filepath = os.path.join(settings.ptmscout_path, settings.annotation_export_file_path, filename)
+
+    header = ['protein_id', 'accessions', 'acc_gene', 'locus', 'protein_name',
+                    'species', 'sequence', 'modifications', 'evidence', 'domains',
+                    'mutations', 'scansite_predictions', 'GO_terms']
+    rows = []
+
+    i = 0
+    for acc in protein_map:
+        pr = protein_map[acc]
+        p = protein.getProteinBySequence( pr.sequence, pr.species )
+        mods = modifications.getMeasuredPeptidesByProtein(p.id, usr)
+
+        qaccs = export_proteins.get_query_accessions(mods)
+        n, fmods, fexps = export_proteins.format_modifications(mods, None)
+
+        row = []
+        row.append( p.id )
+        row.append( export_proteins.format_protein_accessions(p.accessions, qaccs) )
+        row.append( p.acc_gene )
+        row.append( p.locus )
+        row.append( p.name )
+        row.append( p.species.name )
+        row.append( p.sequence )
+        row.append( fmods )
+        row.append( fexps )
+        row.append( export_proteins.format_regions(p.domains) )
+        row.append( export_proteins.format_mutations(p.mutations) )
+        row.append( export_proteins.format_scansite(mods) )
+        row.append( export_proteins.format_GO_terms(p) )
+        rows.append( row )
+
+        i+=1
+        notify_tasks.set_job_progress.apply_async((job_id, i, len(protein_map)))
+
+    with open(batch_filepath, 'w') as bfile:
+        cw = csv.writer(bfile, dialect='excel-tab')
+        cw.writerow(header)
+        for row in rows:
+            cw.writerow(row)
+
+@celery.task
+@upload_helpers.notify_job_failed
+@upload_helpers.dynamic_transaction_task
+def batch_annotate_proteins(accessions, batch_id, user_id, job_id):
+    notify_tasks.set_job_status.apply_async((job_id, 'started'))
+    notify_tasks.set_job_stage.apply_async((job_id, 'initializing', 0))
+
+    accession_dict = {}
+    for i, acc in enumerate(accessions):
+        accession_dict[acc] = i
+
+    get_proteins_task = protein_tasks.get_proteins_from_external_databases.s(accession_dict, None, None, job_id)
+    get_protein_metadata_task = protein_tasks.query_protein_metadata.s(accession_dict, None, None, job_id)
+    annotate_proteins_task = annotate_proteins.s(batch_id, user_id, job_id)
+    notify_task = notify_tasks.finalize_batch_annotate_job.si(job_id)
+
+    load_task = ( get_proteins_task | get_protein_metadata_task | annotate_proteins_task | notify_task )
+
+    return load_task, (None,), None

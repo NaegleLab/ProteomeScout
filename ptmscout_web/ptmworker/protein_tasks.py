@@ -27,6 +27,8 @@ def get_uniprot_proteins(protein_accessions):
 
 def log_errors(query_errors, exp_id, accessions, line_mappings):
     log.info("Detected %d errors", len(query_errors))
+    if(exp_id == None):
+        return
     
     #report errors
     for error in query_errors:
@@ -84,6 +86,9 @@ def report_protein_error(acc, protein_map, accessions, line_mappings, exp_id, me
     log.warning("Failed to create protein: %s -- '%s'", acc, message)
     del protein_map[acc]
 
+    if exp_id == None:
+        return
+
     if acc in accessions:
         for line in accessions[acc]:
             accession, peptide = line_mappings[line]
@@ -133,7 +138,8 @@ def query_protein_metadata(external_db_result, accessions, line_mapping, exp_id,
         if protein.getProteinBySequence(pr.sequence, pr.species) == None:
             missing_proteins.add(acc)
 
-    upload_helpers.store_stage_input(exp_id, 'proteins', external_db_result)
+    if exp_id != None:
+        upload_helpers.store_stage_input(exp_id, 'proteins', external_db_result)
     notify_tasks.set_job_stage.apply_async((job_id, 'proteins', len(missing_proteins)))
 
     return create_missing_proteins(external_db_result, missing_proteins, accessions, line_mapping, exp_id, job_id)
