@@ -2,7 +2,7 @@ import os
 
 documentationUrl="http://ptmscout.mit.edu/docs/index.php?"
 adminEmail = "ptmscout@seas.wustl.edu"
-automailerEmail = "automailer@naegledev.seas.wustl.edu"
+automailerEmail = "no-reply@seas.wustl.edu"
 pubmedUrl = "www.ncbi.nlm.nih.gov/pubmed/%d"
 
 MINIMUM_PASSWORD_LENGTH = 7
