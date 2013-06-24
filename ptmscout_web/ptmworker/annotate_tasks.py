@@ -93,7 +93,10 @@ def start_annotation_import(session_id, job_id):
     session = upload.getSessionById(session_id, job.user)
     
     _, data_rows = uploadutils.load_header_and_data_rows(session.data_file, sys.maxint)
-    ms_col, annotation_cols = parseAnnotationColumns(session.columns)
+
+    sorted_columns = sorted( session.columns, key=lambda col: col.column_number )
+
+    ms_col, annotation_cols = parseAnnotationColumns(sorted_columns)
     valid_msIds = get_valid_msids(job, session)
     
     notify_tasks.set_job_stage.apply_async((job_id, 'annotate', len(annotation_cols)))
@@ -108,12 +111,13 @@ def start_annotation_import(session_id, job_id):
     errors = []
     i = 0
     total_annotations = 0
-    for col in annotation_cols:
+    for i, col in enumerate(annotation_cols):
         if col.label in used_labels:
             raise Exception("Annotation column label '%s' is already in use" % (col.label))
         annotation_type = annotations.AnnotationType()
         annotation_type.name = col.label
         annotation_type.type = col.type
+        annotation_type.order = i
         
         ms_annotations, annot_errors = create_annotation(valid_msIds, ms_col, col, data_rows)
         errors.extend( annot_errors )

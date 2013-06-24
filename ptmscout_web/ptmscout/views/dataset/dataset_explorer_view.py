@@ -725,6 +725,7 @@ def format_measurement_data(measurements):
 def compute_annotations(annotation_set_id, exp, user, measurements):
     annotation_set = annotations.getUserAnnotations(annotation_set_id, exp.id, user)
     annotation_types = {}
+    annotation_order = {}
     ms_map = {}
     for ms in measurements:
         ms_map[ms.id] = ms
@@ -733,18 +734,19 @@ def compute_annotations(annotation_set_id, exp, user, measurements):
     
     for aset in annotation_set.annotation_types:
         annotation_types[aset.name] = aset.type
+        annotation_order[aset.name] = aset.order
         for annotation in aset.annotations:
             ms = ms_map[annotation.MS_id]
             ms.annotations[aset.name] = annotation.value
             ms.annotation_types[aset.name] = aset.type
             
-    return annotation_types
+    return annotation_types, annotation_order
 
 def compute_subset_enrichment(request, annotation_set_id, exp, user, subset_name, foreground_exp, background_exp):
     measurements = exp.measurements
 
     if annotation_set_id != None:
-        annotation_types = compute_annotations(annotation_set_id, exp, user, measurements)
+        annotation_types, _ = compute_annotations(annotation_set_id, exp, user, measurements)
     else:
         annotation_types = {}
 
@@ -833,7 +835,7 @@ def save_subset(request):
    
     annotation_types = {}
     if annotation_set_id != None:
-        annotation_types = compute_annotations(annotation_set_id, exp, request.user, exp.measurements)
+        annotation_types, _ = compute_annotations(annotation_set_id, exp, request.user, exp.measurements)
 
     parse_query_expression(foreground_exp, exp_id, request.user, annotation_types)
     parse_query_expression(background_exp, exp_id, request.user, annotation_types)

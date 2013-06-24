@@ -106,7 +106,10 @@ class Experiment(Base):
     
     def __get_job(self):
         from ptmscout.database import jobs
-        
+
+        if self.job_id == None:
+            return None
+
         if not hasattr(self, '__job_obj'):
             self.__job_obj = jobs.getJobById(self.job_id)
         

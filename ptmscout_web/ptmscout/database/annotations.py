@@ -22,6 +22,8 @@ class AnnotationType(Base):
 
     name = Column(VARCHAR(100), index=True)
     type = Column(Enum(['cluster', 'numeric', 'nominative']))
+
+    order = Column(Integer(10))
     
     annotations = relationship(Annotation)
     

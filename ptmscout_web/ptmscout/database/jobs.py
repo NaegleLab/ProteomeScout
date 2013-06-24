@@ -74,6 +74,16 @@ class Job(Base):
         DBSession.add(self)
         DBSession.flush()
         
-        
+class NoSuchJob(Exception):
+    def __init__(self, jid):
+        self.jid = jid
+
+    def __str__(self):
+        return "No such job: %s" % (str(self.jid))
+
+
 def getJobById(jid):
-    return DBSession.query(Job).filter_by(id=jid).first()
+    job = DBSession.query(Job).filter_by(id=jid).first()
+    if job == None:
+        raise NoSuchJob(jid)
+    return job

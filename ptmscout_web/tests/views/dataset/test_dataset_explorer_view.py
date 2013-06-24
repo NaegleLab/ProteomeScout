@@ -174,7 +174,7 @@ class TestDatasetExplorerView(UnitTestCase):
         def comparison_func(ms):
             return True
         
-        patch_annotate.return_value = {"some": "Annotations"}
+        patch_annotate.return_value = {"some": "Annotations"}, {}
         patch_getExp.return_value = exp
         patch_parse.return_value = comparison_func
         patch_seqlogo.return_value = "a seqlogo"

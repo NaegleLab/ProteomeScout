@@ -55,7 +55,7 @@ def calculateEnrichment(scansite_cutoff, domain_cutoff, annotation_set_id, exp_i
     exp = experiment.getExperimentById(exp_id, secure=False)
     ptm_user = user.getUserById(user_id)
     
-    annotation_types = dataset_explorer_view.compute_annotations(annotation_set_id, exp, ptm_user, measurements)
+    annotation_types, annotation_order = dataset_explorer_view.compute_annotations(annotation_set_id, exp, ptm_user, measurements)
     
     cluster_sets = {}
     
@@ -63,6 +63,7 @@ def calculateEnrichment(scansite_cutoff, domain_cutoff, annotation_set_id, exp_i
         if annotation_types[ann_name] == 'cluster':
             cluster_sets[ann_name] = set()
     
+    sorted_clusters = sorted( cluster_sets.keys(), key=lambda ann_name: annotation_order[ann_name] )
     enrichment = {}
     
     for cluster_set in cluster_sets.keys():
@@ -114,10 +115,10 @@ def calculateEnrichment(scansite_cutoff, domain_cutoff, annotation_set_id, exp_i
         
         nenrichment[(cluster_set, clabel)] = by_category
         
-    return cluster_sets, nenrichment, enrichment_categories, test_cnt
+    return sorted_clusters, cluster_sets, nenrichment, enrichment_categories, test_cnt
 
 @decorators.pushdir(os.path.join(settings.ptmscout_path, settings.mcam_file_path))
-def enrichBool(output_filename, cluster_sets, enrichment, enrichment_categories, pvalue_cutoff):
+def enrichBool(output_filename, sorted_cluster_sets, cluster_sets, enrichment, enrichment_categories, pvalue_cutoff):
     
     with open(output_filename, 'w') as ebf:
         for i, category in enumerate(sorted(enrichment_categories.keys())):
@@ -130,14 +131,14 @@ def enrichBool(output_filename, cluster_sets, enrichment, enrichment_categories,
                               " ".join([
                                         str( sum( 1 if label in enrichment[(cluster_set, clabel)][category] and enrichment[(cluster_set, clabel)][category][label] <= pvalue_cutoff else 0 for clabel in cluster_sets[cluster_set] ) )
                                             for label in sorted_labels ])
-                                        for cluster_set in cluster_sets ])
+                                        for cluster_set in sorted_cluster_sets ])
             ebf.write("temp.bool = [%s];\n" % (bools))
             
             ebf.write("enrichBool{%d} = temp;\n" % (i+1))
         ebf.write("clear temp;\n")
                     
 @decorators.pushdir(os.path.join(settings.ptmscout_path, settings.mcam_file_path))
-def numStruct(output_filename, cluster_sets, enrichment, enrichment_categories, pvalue_cutoff):
+def numStruct(output_filename, sorted_cluster_sets, cluster_sets, enrichment, enrichment_categories, pvalue_cutoff):
     with open(output_filename, 'w') as ebf:
         
         sorted_categories = sorted(enrichment_categories.keys())
@@ -152,7 +153,7 @@ def numStruct(output_filename, cluster_sets, enrichment, enrichment_categories, 
                                                         for clabel in cluster_sets[cluster_set] ])
                                                  for label in enrichment_categories[category] ]) )
                                         for category in sorted_categories ])
-                                    for cluster_set in cluster_sets ])
+                                    for cluster_set in sorted_cluster_sets ])
         
         ebf.write("numStruct.sum = [%s];\n" % (numStruct))
 
@@ -187,7 +188,7 @@ def run_mcam_analysis(output_filename, scansite_cutoff, domain_cutoff, pvalue_cu
     
     notify_tasks.set_job_status.apply_async((job_id, 'started'))
     
-    cluster_sets, enrichment, enrichment_categories, test_cnt = calculateEnrichment(scansite_cutoff, domain_cutoff, annotation_set_id, experiment_id, user_id, job_id)
+    sorted_cluster_sets, cluster_sets, enrichment, enrichment_categories, test_cnt = calculateEnrichment(scansite_cutoff, domain_cutoff, annotation_set_id, experiment_id, user_id, job_id)
     
     if correction_type == 'fdr':
         fdrCorrection(pvalue_cutoff, enrichment, cluster_sets, enrichment_categories)
@@ -201,8 +202,8 @@ def run_mcam_analysis(output_filename, scansite_cutoff, domain_cutoff, pvalue_cu
     
     notify_tasks.set_job_stage.apply_async((job_id, 'Writing Output', 0))
     
-    enrichBool(enrichBoolFilename, cluster_sets, enrichment, enrichment_categories, pvalue_cutoff)
-    numStruct(numStructFilename, cluster_sets, enrichment, enrichment_categories, pvalue_cutoff)
+    enrichBool(enrichBoolFilename, sorted_cluster_sets, cluster_sets, enrichment, enrichment_categories, pvalue_cutoff)
+    numStruct(numStructFilename, sorted_cluster_sets, cluster_sets, enrichment, enrichment_categories, pvalue_cutoff)
     
     zipfilename = "%s.zip" % (output_filename)
     archive(zipfilename, [enrichBoolFilename, numStructFilename])
