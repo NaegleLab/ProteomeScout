@@ -61,7 +61,7 @@ def user_receives_email(context, patch_mail, patch_commit, patch_abort):
 def user_views_dataset_explorer(context):
     result = context.ptmscoutapp.get("/experiments/28/subsets")
 
-    annotation_form = result.forms['select-annotation']
+    annotation_form = result.forms['select-annotation-form']
     context.annotation_set_id = int(annotation_form['annotation_set'].options[1][0])
     annotation_form['annotation_set'] = str(context.annotation_set_id)
 
