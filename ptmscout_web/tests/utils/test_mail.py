@@ -26,5 +26,9 @@ class TestCase(unittest.TestCase):
         self.assertEqual(True, ok)
         self.assertEqual(True, domain_ok)
         
+    def test_email_is_valid_complete_domain(self):
+        ok, domain_ok  = mail.email_is_valid('user@icr.ac.uk')
         
-        
+        self.assertEqual(True, ok)
+        self.assertEqual(True, domain_ok)
+       

@@ -32,7 +32,7 @@ statistics_file = "data/statistics.pyp"
 ptmscout_path = "/data/ptmscout/ptmscout_web"
 motif_script_path = os.path.join('scripts', 'motif')
 
-email_regex = "[a-z0-9\.\-\_]+@[a-z0-9\.\-\_]+\.([a-z]+)$"
+email_regex = r"^[a-zA-Z0-9\.\-\_]+@([a-zA-Z0-9\.\-\_]+\.[a-z]+)$"
 
 DISABLE_PFAM = False
 DISABLE_SCANSITE = False
@@ -46,7 +46,7 @@ REVIEWER_ACCOUNT_EXPIRATION_DAYS = 365
 # rate limits in queries per second
 SCANSITE_RATE_LIMIT = 3
 
-valid_domain_suffixes = set(['edu','gov'])
+valid_domain_suffixes = set([r'.+\.edu',r'.+\.gov', r'icr\.ac\.uk', r'gov\.br'])
 
 
 isoform_sequence_diff_pfam_threshold = 50

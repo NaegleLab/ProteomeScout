@@ -41,9 +41,14 @@ def email_is_valid(email):
     email_regex = re.compile(settings.email_regex, re.I)
     matches = email_regex.match(email)
     
-    domain_suffix = ""
+    domain = ""
     if matches != None:
-        domain_suffix = matches.group(1)
-    
-    return matches != None, domain_suffix.lower() in settings.valid_domain_suffixes
+        domain = matches.group(1)
+
+    domain_match = False
+    for pattern in settings.valid_domain_suffixes:
+        success = re.match(pattern, domain) != None
+        domain_match |= success
+
+    return matches != None, domain_match
     
