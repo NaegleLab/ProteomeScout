@@ -16,7 +16,7 @@
                 </div>
 
                 <h3>Protein Accessions</h3>
-                <textarea rows="50" cols="50" name="accessions"></textarea>
+                <textarea rows="50" cols="50" name="accessions">${accessions}</textarea>
                 <div class="formfields">
                     <input type="checkbox" name="terms_of_use" />
                     I have read and agree to the <a href="${request.application_url}/terms" target="_blank">terms of use</a>

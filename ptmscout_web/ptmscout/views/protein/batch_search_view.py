@@ -75,9 +75,11 @@ def batch_search_view_POST(request):
         return HTTPFound(request.route_url('batch_submit'))
 
     return {'pageTitle': strings.protein_batch_search_page_title,
-            'errors': errors}
+            'errors': errors,
+            'accessions': accessions}
 
 @view_config(route_name='batch_search', renderer='ptmscout:templates/proteins/batch_search.pt', request_method="GET", permission="private")
 def batch_search_view_GET(request):
     return {'pageTitle': strings.protein_batch_search_page_title,
-            'errors': []}
+            'errors': [],
+            'accessions':""}
