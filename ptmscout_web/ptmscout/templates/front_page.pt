@@ -56,7 +56,7 @@
                 </div>
             </a>
 
-            <a href="${documentationUrl}title=Main_Page">
+            <a href="${documentationUrl}">
                 <div class="menuitem" style="top:345px; left:275px;">
                     <span>Documentation</span>
                 </div>

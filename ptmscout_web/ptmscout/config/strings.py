@@ -107,7 +107,7 @@ annotation_upload_configure_instructions = """
 </ul>
 <span>You may optionally have columns from the following categories:</span><br />
 <ul>
-    <li>Numerical</li>
+    <li>Numeric</li>
     <li>Nominative</li>
     <li>Cluster</li>
 </ul>

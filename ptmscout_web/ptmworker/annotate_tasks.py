@@ -83,6 +83,11 @@ def get_valid_msids(job, session):
         ms_set.add(ms.id)
     return ms_set
 
+def uniq(seq):
+    seen = set()
+    seen_add = seen.add
+    return [ x for x in seq if x not in seen and not seen_add(x)]
+
 @celery.task
 @upload_helpers.transaction_task
 @upload_helpers.notify_job_failed
@@ -131,5 +136,6 @@ def start_annotation_import(session_id, job_id):
         i+=1
         if i % 10 == 0:
             notify_tasks.set_job_progress.apply_async((job_id, i, len(annotation_cols)))
-    
+
+    errors = uniq([e.message for e in errors])
     notify_tasks.finalize_annotation_upload_job.apply_async((job_id, total_annotations, errors))

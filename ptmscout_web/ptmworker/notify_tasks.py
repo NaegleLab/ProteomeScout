@@ -70,7 +70,7 @@ def finalize_annotation_upload_job(job_id, total, errors):
     message = strings.annotation_upload_finished_message % (job.name, total, len(errors), job.result_url)
     
     for err in errors:
-        message += "%s\n" % ( err.message ) 
+        message += "%s\n" % ( err )
     
     mail.celery_send_mail([job.user.email], subject, message)
     
