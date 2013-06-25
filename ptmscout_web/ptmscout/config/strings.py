@@ -45,8 +45,8 @@ password: %s<br />
 Anonymous reviewers may login to view your data by visiting the following address in their browser: %s<br />
 """
 
-dataset_upload_page_title = "Upload Dataset for Exploration"
-dataset_upload_configure_page_title = "Configure Data Fields"
+dataset_upload_page_title = "Upload Sites of Interest for Exploration"
+dataset_upload_configure_page_title = "Configure Sites of Interest Fields"
 
 experiment_ambiguity_page_title = "Ambiguous Peptide Assignment Tool"
 experiment_ambiguity_error_no_change = "No peptide assignments were changed from the current assignments"
@@ -136,7 +136,7 @@ cancel_upload_successful_message = "Experiment upload session cancelled"
 cancel_upload_already_started_message = "This experiment upload session has already been completed, you cannot cancel it."
 cancel_upload_already_started_header = "Experiment Upload Could Not Be Cancelled"
 
-delete_experiment_page_title = "Delete Dataset"
+delete_experiment_page_title = "Delete Sites of Interest Set"
 delete_experiment_success_message = "Data associated with this dataset has been purged from the database."
 delete_experiment_confirm_message = "Are you sure you wish to delete this dataset? This action cannot be undone."
 
@@ -203,7 +203,7 @@ dataset_upload_confirm_page_title = "Confirm Submission"
 dataset_upload_confirm_message = "Required dataset information is now complete. Are you sure you wish to proceed with the upload? Please review and accept the terms of use below. Pressing cancel will remove this upload session, you may start a new one later."
 dataset_upload_started_page_title = "Upload Started"
 dataset_upload_started_message = \
-"""Dataset upload process successfully started. An e-mail will be sent to you when the dataset upload is complete. Additionally, you may check the status of the upload by visiting <a href=\"%s\">this page</a>"""
+"""Sites of Interest upload process successfully started. An e-mail will be sent to you when the upload is complete. Additionally, you may check the status of the upload by visiting <a href=\"%s\">this page</a>"""
 
 
 experiment_export_started_page_title = "Export Started"

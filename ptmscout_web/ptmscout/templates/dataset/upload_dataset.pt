@@ -5,7 +5,7 @@
     </metal:slot>
     <div metal:fill-slot="content">
       <div class="body">
-        <h2>Upload Dataset for Exploration</h2>
+        <h2>Upload Sites of Interest for Exploration</h2>
           <form action="" method="post" enctype="multipart/form-data" class="newform drop-shadow" style="width:600px;margin-left:1em">
               <input type="hidden" value="true" name="submitted" />
                 <div class="errorbox" tal:condition="len(errors)>0">
@@ -17,23 +17,23 @@
                     <tr>
                         <th>Upload type:</th>
                         <td>
-                            ${formrenderer.render('load_type', id_='new_dataset', tooltip='Create a new dataset')}
-                            ${formrenderer.render('load_type', id_='append_dataset', tooltip='Append data to an existing dataset')}
-                            ${formrenderer.render('load_type', id_='reload_dataset', tooltip='Replace an existing dataset with new data')}
+                            ${formrenderer.render('load_type', id_='new_dataset', tooltip='Create a new sites of interest set')}
+                            ${formrenderer.render('load_type', id_='append_dataset', tooltip='Append sites to an existing site set')}
+                            ${formrenderer.render('load_type', id_='reload_dataset', tooltip='Replace an existing site set with new sites')}
                         </td>
                     </tr>
                     <tr id="parent_exp">
-                        <th class="fieldname">Source Dataset:</th>
+                        <th class="fieldname">Source Sites of Interest Set:</th>
                         <td>
                             ${formrenderer.render('source_dataset', id_='expselect', class_='stretch')}
                         </td>
                     </tr>
                     <tr id="datasetname">
-                        <th class="fieldname">Dataset Name: </th>
+                        <th class="fieldname">Sites of Interest Set Name: </th>
                         <td > ${formrenderer.render('datasetname')} </td>
                     </tr>
                     <tr>
-                        <th class="fieldname">Dataset File: </th>
+                        <th class="fieldname">Sites of Interest File: </th>
                         <td > ${formrenderer.render('datasetfile')} </td>
                     </tr>
                 </table>

@@ -237,6 +237,7 @@ ul.link_menu li:first-child {
     position:absolute;
     line-height: 120px;
     cursor:pointer;
+    display:table;
 }
 
 #portal .inactive {
@@ -252,6 +253,7 @@ ul.link_menu li:first-child {
 	background-color:gray; 
 	border: solid 5px gray; 
 	cursor: default;
+    display:table;
 }
 
 #portal a:active, #portal a:visited, #portal a:hover, #portal a:link {
@@ -268,7 +270,7 @@ ul.link_menu li:first-child {
 }
 
 #portal .menuitem span, #portal .inactive span {
-    display: inline-block;
+    display: table-cell;
     line-height: normal;
     vertical-align: middle;
     color:white;

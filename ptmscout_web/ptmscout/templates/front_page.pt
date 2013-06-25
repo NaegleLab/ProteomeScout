@@ -52,7 +52,7 @@
 
             <a href="${request.route_url('dataset_upload')}">
                 <div class="menuitem" style="top:200px; right:230px;">
-                    <span>Annotate<br>Peptides</span>
+                    <span>Annotate<br>Sites</span>
                 </div>
             </a>
 
