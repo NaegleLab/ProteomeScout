@@ -337,7 +337,7 @@ def user_receive_email(context):
     assertContains(context.active_user.user.email, context.mailargs)
     assertContains(strings.annotation_upload_finished_subject, context.mailargs)
     assertContains("Annotations Loaded: 871", context.mailargs)
-    assertContains("Errors Encountered: 13", context.mailargs)
+    assertContains("Errors Encountered: 1", context.mailargs)
     
     assertContains(strings.mcam_enrichment_finished_subject, context.mailargs)
 
