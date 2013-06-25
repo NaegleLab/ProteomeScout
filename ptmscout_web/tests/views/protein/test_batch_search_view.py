@@ -26,8 +26,10 @@ class TestProteinSearchViewIntegration(IntegrationTestCase):
         result = self.ptmscoutapp.get('/batch', status=200)
         result.mustcontain( strings.protein_batch_search_page_title )
 
+        acc_list = ['P00533', 'P04626', 'P53663']
+
         result.form.set('terms_of_use', True)
-        result.form.set('accessions', 'P00533\nP04626')
+        result.form.set('accessions', '\n'.join(acc_list))
         result = result.form.submit().follow()
         result.mustcontain( strings.protein_batch_search_submitted_page_title )
 
@@ -35,11 +37,18 @@ class TestProteinSearchViewIntegration(IntegrationTestCase):
         m = re.search(r'<a href="(.*)">here</a>', email)
         assert m != None, "Download link not found in email: " + email
 
+        assert 'Errors Encountered: 1' in email, email
+        assert 'Proteins Loaded: 2' in email, email
+
         result = self.ptmscoutapp.get(m.group(1), status=200)
 
         f = StringIO.StringIO(result.body)
         dr = csv.DictReader(f, dialect='excel-tab')
 
+        error_cnt = 0
         for row in dr:
-            accs = set(row['accessions'].split("; "))
-            assert accs & set(['P00533', 'P04626']) != set(), str(accs)
+            assert row['query_accession'] in acc_list
+            if 'ERRORS' in row['protein_id']:
+                error_cnt += 1
+
+        assert error_cnt == 1

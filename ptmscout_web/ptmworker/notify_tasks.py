@@ -6,13 +6,14 @@ from ptmscout.utils import mail
 
 @celery.task
 @upload_helpers.transaction_task
-def finalize_batch_annotate_job(job_id):
+def finalize_batch_annotate_job(stats, job_id):
+    protein_cnt, error_cnt = stats
     job = jobs.getJobById(job_id)
     job.finish()
     job.save()
     
     subject = strings.batch_annotation_finished_subject
-    message = strings.batch_annotation_finished_message % (job.name, job.result_url)
+    message = strings.batch_annotation_finished_message % (job.name, protein_cnt, error_cnt, job.result_url)
     
     mail.celery_send_mail([job.user.email], subject, message)
 

@@ -432,6 +432,9 @@ def createExperimentError(exp_id, line, accession, peptide, message):
     
     DBSession.add(err)
 
+def errorsForAccession(exp_id, accession):
+    return DBSession.query(ExperimentError).filter_by(experiment_id=exp_id, accession=accession).all()
+
 def searchExperiments(text_search=None, conditions={}, user=None, page=None):
     q = DBSession.query(Experiment.id).outerjoin(Experiment.conditions).outerjoin(Experiment.permissions)
 

@@ -426,6 +426,9 @@ batch_annotation_finished_subject = "PTMScout Batch Annotation Finished"
 batch_annotation_finished_message = \
 """Processing of your job '%s' succeeded.
 
+Proteins Loaded: %d
+Errors Encountered: %d
+
 You may download the results of this batch annotation <a href="%s">here</a>.
 
 This file will be available for 24 hours.
