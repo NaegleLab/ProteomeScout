@@ -27,8 +27,8 @@
     <metal:slot metal:define-slot="header"></metal:slot>
   </head>
   <body>
-  <div id="wrapper">
-  	<div id="menu">
+  <div id="menu_wrapper">
+    <div id="menu">
   	  <div class="container_12">
     	  <div class="grid_8" style="text-align:left">
     	    <ul class="link_menu">
@@ -66,8 +66,10 @@
         </div> <!-- grid_6 -->
       </div> <!-- container_12 -->
   	</div> <!-- menu -->
+	</div> <!-- menu_wrapper -->
+  <div id="wrapper">
 
-  	<div id="wrapper_container">
+
     	<div id="nav_wrapper">
     	  <div class="container_12">
   	       <div metal:define-slot="nav"></div>
@@ -79,8 +81,7 @@
     	  </div>
     	</div>
 
-        <div id="page">
-	
+      <div id="page">	
 	      <div id="breadcrumb">
     	    <div class="container_12">
     	      <div style="margin-left:10px;margin-right:10px">
@@ -91,7 +92,7 @@
         	  </div>
       	  </div>
     	  </div> <!-- breadcrumb -->
-	
+
     	  <div id="content">
     	    <div class="container_12">
     	       <div metal:define-slot="content"></div>
@@ -104,9 +105,8 @@
     <div class="waiting-modal"><!-- Place at bottom of page -->
         <img style="position:fixed; top:50%; left:50%;" src="${request.static_url('ptmscout:static/images/ajax-loader.gif')}" />
     </div>
-      <div id="push">
-      </div>
-    </div> <!-- wrapper_container -->
+    <div id="push">
+    </div>
   </div> <!-- wraper -->
   
   <div metal:use-macro="footer"></div>

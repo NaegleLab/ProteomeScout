@@ -9,8 +9,8 @@ html, body {
 body {
   font-size:12pt;
   font-family: helvetica,arial,verdana;
-  height: auto;
   background-color: #ccc;
+	
 }
 a {
   color: blue;
@@ -35,12 +35,7 @@ span.child-spacer {
 	min-height: 100%;
 	height: auto !important;
 	height: 100%;
-	margin: 0 auto -160px; /* the bottom margin is the negative value of the footer's height */
-	background-color:gray;
-	margin-left: auto;
-	margin-right:auto;
-}
-#wrapper_container {
+	margin: 66px auto -160px; /* the bottom margin is the negative value of the footer's height */
   width: 960px;
   background-color: white;
   margin-left:auto;
@@ -54,7 +49,8 @@ span.child-spacer {
 
 #footer, #push {
   padding-top: 1em;
-	height: 160px; /* .push must be the same height as .footer */
+	height: 160px; /* .push must be the same height as ` */
+	clear: both;
 }
 
 
@@ -75,10 +71,6 @@ table {
 }
 
 
-#page, #wrapper {
-  background-color: #ccc;
-}
-
 #content {
 }
 #content .container_12,
@@ -87,7 +79,7 @@ table {
   background-color: white;
 }
 
-#menu {
+#menu, #menu_wrapper {
   background-color: black;
   background-image: -ms-linear-gradient(top, #000 0%, #303030 100%);
   background-image: -moz-linear-gradient(top, #000 0%, #303030 100%);
@@ -95,7 +87,18 @@ table {
   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #000), color-stop(1, #303030));
   background-image: -webkit-linear-gradient(top, #000 0%, #303030 100%);
   background-image: linear-gradient(to bottom, #000 0%, #303030 100%);
-  
+}
+#menu_wrapper {
+  position: absolute;
+  height:66px;  
+  top:0;
+  left:0;
+  width:100%;
+  background-color:black;
+}
+
+#menu {
+  width:964px; /* +4 px for borders on the body */
   color: white;
   height: 60px;
   padding-top: 4px;
