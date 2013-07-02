@@ -53,13 +53,12 @@ def create_schema(request, users_datasets):
     
     schema.add_text_field('datasetname', 'Dataset Name', width=55)
     schema.add_file_upload_field('datasetfile', 'Input Data File')
-    schema.set_required_field('datasetname')
     
     schema.set_required_field('load_type')
+    schema.set_required_field('datasetfile')
     schema.set_field_required_condition('datasetname', 'load_type', lambda pval: pval == "new")
     schema.set_field_required_condition('source_dataset', 'load_type', lambda pval: pval != "new")
     
-    schema.set_required_field('datasetfile')
     schema.parse_fields(request)
     
     return schema
