@@ -91,17 +91,6 @@ def notify_job_failed(fn):
             raise
     return ttask
 
-def logged_task(fn):
-    @wraps(fn)
-    def ttask(*args, **kwargs):
-        log.debug("Running task: %s", fn.__name__)
-        try:
-            return fn(*args, **kwargs)
-        except:
-            log.error(traceback.format_exc())
-            raise
-    return ttask
-
 def transaction_task(fn):
 
     @wraps(fn)

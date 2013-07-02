@@ -181,7 +181,7 @@ def filterUnenriched(cluster_sets, enrichment, enrichment_categories, pvalue_cut
 
 @celery.task
 @upload_helpers.notify_job_failed
-@upload_helpers.logged_task
+@upload_helpers.transaction_task
 def run_mcam_analysis(output_filename, scansite_cutoff, domain_cutoff, pvalue_cutoff, correction_type, annotation_set_id, experiment_id, user_id, job_id):
     root_path = os.path.join(settings.ptmscout_path, settings.mcam_file_path, output_filename)
     os.mkdir(root_path)
