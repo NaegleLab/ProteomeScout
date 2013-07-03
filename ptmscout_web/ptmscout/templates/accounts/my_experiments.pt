@@ -116,7 +116,7 @@
 											</form>
 										</td>
 										<td>
-											<a id="delete-dataset" href="${request.route_url('delete_experiment')">
+											<a tal:attributes="id 'delete-dataset-' + str(i);href request.route_url('delete_experiment', id=experiment.id)">
 												<button>Delete</button>
 											</a>
 										</td>
@@ -132,7 +132,7 @@
 											</form>
 										</td>
 										<td>
-											<a id="delete-dataset" href="${request.route_url('delete_experiment')">
+											<a tal:attributes="id 'delete-dataset-' + str(i);href request.route_url('delete_experiment', id=experiment.id)">
 												<button>Delete</button>
 											</a>
 										</td>
