@@ -284,7 +284,20 @@ def user_forbidden_comparison_and_ambiguity(context):
     
     context.ptmscoutapp.get('http://localhost/experiments/%d/compare' % (context.exp_id), status=403)
     context.ptmscoutapp.get('http://localhost/experiments/%d/ambiguity' % (context.exp_id), status=403)
-    
+   
+@then(u'the user should be able to delete the dataset if needed')
+def user_delete_dataset(context):
+    result = context.ptmscoutapp.get('http://localhost/account/experiments')
+
+    result = result.click(linkid='delete-dataset')
+    result.mustcontain(strings.delete_experiment_confirm_message)
+
+    result = result.form.submit()
+    result.mustcontain(strings.delete_experiment_success_message)
+
+    result = context.ptmscoutapp.get('http://localhost/experiments/%d' % (context.exp_id), status=404)
+
+
 @given(u'a user uploads multiple clusterings for an experiment')
 def user_upload_cluster_file(context):
     context.active_user.login()

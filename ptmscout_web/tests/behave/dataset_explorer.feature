@@ -13,6 +13,7 @@ Feature: Dataset Explorer
           And the user should be able to filter by numerical data
           And the user should be able to view nominative features in the enrichment data
 
+    @runme
 	Scenario: Load residues of interest from a dataset and annotate them
 		Given a user uploads a file containing non-mass spec experimental data
 		Then the user should be sent an email with a link to the dataset which contains:
@@ -31,9 +32,9 @@ Feature: Dataset Explorer
 		  | protein_GO_CC        | 55       |
 		And the user should be able to view summary data
 		And the user should be able to use the dataset explorer
-		And the user should not be able to use other experiment specific tools
+        And the user should not be able to use other experiment specific tools
+        And the user should be able to delete the dataset if needed
 
-    @runme
     Scenario: Export matlab files for MCAM analysis
     	Given a user uploads multiple clusterings for an experiment
     	When the user chooses to export MCAM input files
