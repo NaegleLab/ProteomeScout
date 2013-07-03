@@ -289,7 +289,7 @@ def user_forbidden_comparison_and_ambiguity(context):
 def user_delete_dataset(context):
     result = context.ptmscoutapp.get('http://localhost/account/experiments')
 
-    result = result.click(linkid='delete-dataset')
+    result = result.click(linkid='delete-dataset-1')
     result.mustcontain(strings.delete_experiment_confirm_message)
 
     result = result.form.submit()
