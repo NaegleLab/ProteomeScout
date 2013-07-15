@@ -71,10 +71,12 @@ def calculateEnrichment(scansite_cutoff, domain_cutoff, annotation_set_id, exp_i
             if cluster_set in ms.annotations:
                 cluster_sets[cluster_set].add( ms.annotations[cluster_set] )
             
+    max_progress = 0
     for cluster_set in cluster_sets.keys():
-        cluster_sets[cluster_set] = sorted( list( cluster_sets[cluster_set] ) ) 
-        
-    notify_tasks.set_job_stage.apply_async((job_id, 'Calculating Enrichment', len(cluster_sets)))
+        cluster_sets[cluster_set] = sorted( list( cluster_sets[cluster_set] ) )
+        max_progress += len(cluster_sets[cluster_set])
+
+    notify_tasks.set_job_stage.apply_async((job_id, 'Calculating Enrichment', max_progress))
     
     test_cnt = defaultdict(lambda: 0)
     
@@ -90,10 +92,10 @@ def calculateEnrichment(scansite_cutoff, domain_cutoff, annotation_set_id, exp_i
             enrichment[(cluster_set, clabel)] += [('motif', pep, pv) for pep, _fg, _bg, pv in motif_results]
             
             test_cnt['motif'] += motif_cnt
+            i+=1
+            notify_tasks.set_job_progress.apply_async((job_id, i, max_progress))
+                
             
-            
-        i+=1
-        notify_tasks.set_job_progress.apply_async((job_id, i, len(cluster_sets)))
         
     enrichment_categories = defaultdict(set)
     
