@@ -108,7 +108,7 @@ def start_annotation_import(session_id, job_id):
     
     annotation_set = annotations.AnnotationSet()
     annotation_set.name = session.change_name
-    annotation_set.owner_id = job.user.id
+    annotation_set.owner_id = job.user_id
     annotation_set.experiment_id = session.experiment_id
     annotation_set.save()
 
