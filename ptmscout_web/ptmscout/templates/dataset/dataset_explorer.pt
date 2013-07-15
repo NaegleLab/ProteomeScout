@@ -61,8 +61,12 @@
 	      <h4>View Clustering Results</h4>
 	      <div class="body">
     			<span class="condition-title">Cluster Set:</span> <select id="cluster-set"></select> <button id="show-clusters" class="longtask">Show All Clusters From Set</button>
-    			<a href="${request.route_url('mcam_enrichment', id=experiment.id)}"><button id="mcam-enrichment">MCAM Enrichment</button></a>
-    		</div>
+            </div>
+
+            <h4>MCAM Enrichment</h4>
+            <div class="body">
+    			<a href="${request.route_url('mcam_enrichment', id=experiment.id)}"><button id="mcam-enrichment">Run MCAM</button></a>
+            </div>
 	    </div>
     </div>
     <h2>Subset Selection</h2>
