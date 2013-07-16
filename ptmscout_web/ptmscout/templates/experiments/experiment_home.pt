@@ -21,7 +21,7 @@
                 <dt><a href="${request.route_url('experiment_browse', id=experiment.id)}">Browse Dataset</a></dt>
                 <dd>View sites and proteins in the experiment</dd>
         
-                <dt><a href="${request.route_url('experiment_subset', id=experiment.id)}">Evaluate Subsets</a></dt>
+                <dt><a class="longtask" href="${request.route_url('experiment_subset', id=experiment.id)}">Evaluate Subsets</a></dt>
                 <dd>Select a foreground from data or metadata, view composition and evaluate enrichment</dd>
 
                 <tal:empty tal:condition="experiment.type=='experiment'">

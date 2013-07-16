@@ -3,7 +3,7 @@
     <li><a href="${request.route_url('experiment', id=experiment.id)}">Experiment Home</a></li>
     <li><a href="${request.route_url('experiment_summary', id=experiment.id)}" title='Summary of Modifications'>Summary</a></li>
     <li><a href="${request.route_url('experiment_browse', id=experiment.id)}" title="Explore experiment's individual proteins and peptides">Browse</a></li>
-    <li><a href="${request.route_url('experiment_subset', id=experiment.id)}" title='Look for enrichments in subsets'>Evaluate</a></li>
+    <li><a class="longtask" href="${request.route_url('experiment_subset', id=experiment.id)}" title='Look for enrichments in subsets'>Evaluate</a></li>
 
     <tal:empty tal:condition="experiment.type=='experiment'">
         <li><a href="${request.route_url('experiment_compare', id=experiment.id)}" title='Compare overlap with other datasets'>Compare</a></li>
