@@ -10,6 +10,8 @@ from collections import defaultdict
 from ptmscout.utils import decorators, motif
 import cProfile
 
+MCAM_SUBPROCESSES = 5
+
 def fdrCorrection(pvalue_cutoff, enrichment, cluster_sets, enrichment_categories):
     test_category_pvalues = {}
 
@@ -50,6 +52,42 @@ def bonCorrection(enrichment, cluster_sets, enrichment_categories, test_cnt):
                     if label in enrichment[(cluster_set, clabel)][category]: 
                         enrichment[(cluster_set, clabel)][category][label] *= test_cnt[category]
 
+@celery.task
+@upload_helpers.transaction_task
+def calculate_feature_enrichment(cluster_set_list, cluster_sets, annotation_types, scansite_cutoff, domain_cutoff, exp_id, job_id):
+    measurements = modifications.getMeasuredPeptidesByExperiment(exp_id, secure=False)
+    test_cnt = defaultdict(lambda: 0)
+    label_cache = {'proteins': defaultdict(dict), 'peptides': defaultdict(dict)}
+    enrichment = {}
+
+    for cluster_set in cluster_set_list:
+        for clabel in cluster_sets[cluster_set]:
+            foreground = [ ms for ms in measurements if cluster_set in ms.annotations and ms.annotations[cluster_set] == clabel ]
+            enrichment[(cluster_set, clabel)] = \
+                dataset_explorer_view.calculate_feature_enrichment(foreground, measurements, annotation_types,
+                                                                   required_occurences=2,
+                                                                   scansite_cutoff=scansite_cutoff,
+                                                                   domain_cutoff=domain_cutoff,
+                                                                   cache_table = label_cache)
+            
+            motif_cnt, motif_results = motif.calculate_motif_enrichment(foreground, measurements)
+            enrichment[(cluster_set, clabel)] += [('motif', pep, pv) for pep, _fg, _bg, pv in motif_results]
+            
+            test_cnt['motif'] += motif_cnt
+            notify_tasks.increment_job_progress.apply_async((job_id,))
+
+    return enrichment, test_cnt
+
+def aggregate_results(result):
+    aggregate_enrichment = {}
+    aggregate_test_cnt = defaultdict(lambda: 0)
+
+    for enrichment, test_cnt in result.join():
+        aggregate_enrichment.update(enrichment)
+        for category in test_cnt:
+            aggregate_test_cnt[category] += test_cnt[category]
+
+    return aggregate_enrichment, aggregate_test_cnt
 
 def calculateEnrichment(scansite_cutoff, domain_cutoff, annotation_set_id, exp_id, user_id, job_id):
     measurements = modifications.getMeasuredPeptidesByExperiment(exp_id, secure=False)
@@ -65,7 +103,6 @@ def calculateEnrichment(scansite_cutoff, domain_cutoff, annotation_set_id, exp_i
             cluster_sets[ann_name] = set()
     
     sorted_clusters = sorted( cluster_sets.keys(), key=lambda ann_name: annotation_order[ann_name] )
-    enrichment = {}
     
     for cluster_set in cluster_sets.keys():
         for ms in measurements:
@@ -79,31 +116,14 @@ def calculateEnrichment(scansite_cutoff, domain_cutoff, annotation_set_id, exp_i
 
     notify_tasks.set_job_stage.apply_async((job_id, 'Calculating Enrichment', max_progress))
     
-    test_cnt = defaultdict(lambda: 0)
-    label_cache = {'proteins': defaultdict(dict), 'peptides': defaultdict(dict)}
-
-    i = 0
-    for cluster_set in cluster_sets.keys():
-        for clabel in cluster_sets[cluster_set]:
-            foreground = [ ms for ms in measurements if cluster_set in ms.annotations and ms.annotations[cluster_set] == clabel ]
-            enrichment[(cluster_set, clabel)] = \
-                dataset_explorer_view.calculate_feature_enrichment(foreground, measurements, annotation_types,
-                                                                   required_occurences=2,
-                                                                   scansite_cutoff=scansite_cutoff,
-                                                                   domain_cutoff=domain_cutoff,
-                                                                   cache_table = label_cache)
-            
-            motif_cnt, motif_results = motif.calculate_motif_enrichment(foreground, measurements)
-            enrichment[(cluster_set, clabel)] += [('motif', pep, pv) for pep, _fg, _bg, pv in motif_results]
-            
-            test_cnt['motif'] += motif_cnt
-            i+=1
-            notify_tasks.set_job_progress.apply_async((job_id, i, max_progress))
-                
-            
-        
-    enrichment_categories = defaultdict(set)
+    cluster_chunks = upload_helpers.create_chunked_tasks( cluster_sets.keys(), len(cluster_sets.keys()) / MCAM_SUBPROCESSES )
     
+    cluster_enrichment_jobs = celery.group([ calculate_feature_enrichment.s(cluster_chunk, cluster_sets, annotation_types, scansite_cutoff, domain_cutoff, exp_id, job_id) for cluster_chunk in cluster_chunks ])
+
+    result = cluster_enrichment_jobs.apply_async()
+    enrichment, test_cnt = aggregate_results(result)
+
+    enrichment_categories = defaultdict(set)
     for (cluster_set, clabel) in enrichment:
         for source, label, p_value in enrichment[(cluster_set, clabel)]:
             enrichment_categories[source].add(label)
@@ -118,7 +138,8 @@ def calculateEnrichment(scansite_cutoff, domain_cutoff, annotation_set_id, exp_i
         table = enrichment[(cluster_set, clabel)]
         for source, label, p_value in table:
             by_category[source][label] = p_value
-            test_cnt[source] += 1
+            if source != 'motif':
+                test_cnt[source] += 1
         
         nenrichment[(cluster_set, clabel)] = by_category
         

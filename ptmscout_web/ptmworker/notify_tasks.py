@@ -101,6 +101,7 @@ def set_job_status(job_id, status):
 def set_job_stage(job_id, stage, max_value):
     job = jobs.getJobById(job_id)
     job.stage = stage
+    job.progress = 0
     job.max_progress = max_value
     job.save()
 
@@ -112,4 +113,10 @@ def set_job_progress(job_id, value, max_value):
     job.max_progress = max_value
     job.save()
 
+@celery.task
+@upload_helpers.transaction_task
+def increment_job_progress(job_id):
+    job = jobs.getJobById(job_id)
+    job.progress = job.progress+1
+    job.save()
 
