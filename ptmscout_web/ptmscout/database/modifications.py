@@ -1,4 +1,5 @@
-from ptmscout.database import Base, DBSession, protein
+from ptmscout.database import Base, DBSession
+from ptmscout.database import protein as protein_mod
 from sqlalchemy.schema import Column, ForeignKey, Table, UniqueConstraint
 from sqlalchemy.types import Integer, VARCHAR, CHAR, Float, Enum, DateTime
 from sqlalchemy.orm import relationship
@@ -112,10 +113,10 @@ class Peptide(Base):
     protein = relationship("Protein")
     protein_domain = relationship("ProteinDomain")
     
-    def __get_predictions(self):
-        return [ p for p in self.protein.scansite if p.site_pos == self.site_pos ]
-    
-    predictions = property(__get_predictions)
+    predictions = relationship("ProteinScansite",
+            primaryjoin="and_(Peptide.site_pos==ProteinScansite.site_pos, Peptide.protein_id==ProteinScansite.protein_id)",
+            foreign_keys=[ protein_mod.ProteinScansite.__table__.c.site_pos, protein_mod.ProteinScansite.__table__.c.protein_id ],
+            lazy='joined')
     
     def getPeptide(self):
         return self.pep_aligned
@@ -241,7 +242,7 @@ def countMeasuredPeptidesForExperiment(eid):
     return DBSession.query(MeasuredPeptide).filter_by(experiment_id=eid).count()
 
 def countProteinsForExperiment(eid):
-    return DBSession.query(protein.Protein.id).join(MeasuredPeptide).filter(MeasuredPeptide.experiment_id==eid).distinct().count()
+    return DBSession.query(protein_mod.Protein.id).join(MeasuredPeptide).filter(MeasuredPeptide.experiment_id==eid).distinct().count()
 
 def getPeptideBySite(pep_site, pep_type, prot_id):
     mod = DBSession.query(Peptide).filter_by(site_pos=pep_site, site_type=pep_type, protein_id=prot_id).first()

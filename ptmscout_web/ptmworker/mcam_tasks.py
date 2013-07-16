@@ -8,6 +8,7 @@ from ptmscout.database import experiment, modifications, user
 from ptmscout.views.dataset import dataset_explorer_view
 from collections import defaultdict
 from ptmscout.utils import decorators, motif
+import cProfile
 
 def fdrCorrection(pvalue_cutoff, enrichment, cluster_sets, enrichment_categories):
     test_category_pvalues = {}
@@ -79,14 +80,18 @@ def calculateEnrichment(scansite_cutoff, domain_cutoff, annotation_set_id, exp_i
     notify_tasks.set_job_stage.apply_async((job_id, 'Calculating Enrichment', max_progress))
     
     test_cnt = defaultdict(lambda: 0)
-    
+    label_cache = {'proteins': defaultdict(dict), 'peptides': defaultdict(dict)}
+
     i = 0
     for cluster_set in cluster_sets.keys():
         for clabel in cluster_sets[cluster_set]:
             foreground = [ ms for ms in measurements if cluster_set in ms.annotations and ms.annotations[cluster_set] == clabel ]
             enrichment[(cluster_set, clabel)] = \
-                dataset_explorer_view.calculate_feature_enrichment(foreground, measurements, annotation_types, 
-                                                                   required_occurences=2, scansite_cutoff=scansite_cutoff, domain_cutoff=domain_cutoff )
+                dataset_explorer_view.calculate_feature_enrichment(foreground, measurements, annotation_types,
+                                                                   required_occurences=2,
+                                                                   scansite_cutoff=scansite_cutoff,
+                                                                   domain_cutoff=domain_cutoff,
+                                                                   cache_table = label_cache)
             
             motif_cnt, motif_results = motif.calculate_motif_enrichment(foreground, measurements)
             enrichment[(cluster_set, clabel)] += [('motif', pep, pv) for pep, _fg, _bg, pv in motif_results]

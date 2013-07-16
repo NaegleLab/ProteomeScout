@@ -215,7 +215,7 @@ def get_proteins(measurements):
     return prots
 
 
-def calculate_GO_term_enrichment(foreground, background, required_occurences):
+def calculate_GO_term_enrichment(foreground, background, required_occurences, cache_table):
     go_term_map = {}
     represented_go_terms = defaultdict(lambda: defaultdict(lambda: 0))
     aspect_map = {'C':'GO-Cellular Component', 'P':"GO-Biological Process", 'F': "GO-Molecular Function"}
@@ -228,10 +228,17 @@ def calculate_GO_term_enrichment(foreground, background, required_occurences):
             go_term_map[t.id] = t
 
     def create_has_go_id(go_id):
+        label = 'GO:%d' % (go_id)
         def has_go_id(prot):
-            return reduce(bool.__or__, [ entry.GO_term.id == go_id for entry in prot.GO_terms ], False)
+            if prot.id in cache_table['proteins'][label]:
+                return cache_table['proteins'][label][prot.id]
+
+            rval = reduce(bool.__or__, [ entry.GO_id == go_id for entry in prot.GO_terms ], False)
+            cache_table['proteins'][label][prot.id] = rval
+            return rval
+
         return has_go_id
-    
+
     for aspect in represented_go_terms:
         for go_id in represented_go_terms[aspect]:
             if represented_go_terms[aspect][go_id] >= required_occurences:
@@ -241,7 +248,7 @@ def calculate_GO_term_enrichment(foreground, background, required_occurences):
             
     return enrichment
 
-def calculate_PfamDomain_enrichment(foreground, background, required_occurences, domain_cutoff):
+def calculate_PfamDomain_enrichment(foreground, background, required_occurences, domain_cutoff, cache_table):
     enrichment = []
     valid_labels = defaultdict(lambda: 0)
     
@@ -250,8 +257,14 @@ def calculate_PfamDomain_enrichment(foreground, background, required_occurences,
             valid_labels[dom.label] += 1
             
     def create_has_domain(domain_label):
+        label = 'PfamDomain:%s' % (domain_label)
         def has_domain(prot):
-            return reduce(bool.__or__, [ dom.label == domain_label and dom.p_value <= domain_cutoff for dom in prot.domains ], False)
+            if prot.id in cache_table['proteins'][label]:
+                return cache_table['proteins'][label][prot.id]
+
+            rval = reduce(bool.__or__, [ dom.label == domain_label and dom.p_value <= domain_cutoff for dom in prot.domains ], False)
+            cache_table['proteins'][label][prot.id] = rval
+            return rval
         return has_domain
     
     for label in valid_labels:
@@ -261,7 +274,7 @@ def calculate_PfamDomain_enrichment(foreground, background, required_occurences,
     
     return enrichment
 
-def calculate_PfamSite_enrichment(foreground, background, required_occurences, domain_cutoff):
+def calculate_PfamSite_enrichment(foreground, background, required_occurences, domain_cutoff, cache_table):
     enrichment = []
     valid_labels = defaultdict(lambda: 0)
     
@@ -271,8 +284,14 @@ def calculate_PfamSite_enrichment(foreground, background, required_occurences, d
                 valid_labels[modpep.peptide.protein_domain.label] += 1
                 
     def create_has_domain(domain_label):
+        label = 'PfamSite:%s' % (domain_label)
         def has_domain(ms):
-            return reduce(bool.__or__, [ modpep.peptide.protein_domain != None and modpep.peptide.protein_domain.label == domain_label and modpep.peptide.protein_domain.p_value <= domain_cutoff for modpep in ms.peptides ], False)
+            if ms.id in cache_table['peptides'][label]:
+                return cache_table['peptides'][label][ms.id]
+
+            rval = reduce(bool.__or__, [ modpep.peptide.protein_domain != None and modpep.peptide.protein_domain.label == domain_label and modpep.peptide.protein_domain.p_value <= domain_cutoff for modpep in ms.peptides ], False)
+            cache_table['peptides'][label][ms.id] = rval
+            return rval
         return has_domain
     
     for label in valid_labels:
@@ -282,7 +301,7 @@ def calculate_PfamSite_enrichment(foreground, background, required_occurences, d
     
     return enrichment
 
-def calculate_Scansite_enrichment(foreground, background, required_occurences, scansite_cutoff):
+def calculate_Scansite_enrichment(foreground, background, required_occurences, scansite_cutoff, cache_table):
     enrichment = []
     valid_labels = defaultdict(lambda: defaultdict(lambda: 0))
     source_map = {'scansite_bind': "Scansite-Bind", 'scansite_kinase': "Scansite-Kinase"}
@@ -292,9 +311,16 @@ def calculate_Scansite_enrichment(foreground, background, required_occurences, s
                 valid_labels[prediction.source][prediction.value] += 1
                 
     def create_has_scansite(source, label):
+        attr_label = 'scansite-%s-%s' % (source,label)
         def has_scansite(ms):
-            return reduce(bool.__or__, [ prediction.percentile <= scansite_cutoff and prediction.source == source and prediction.value == label for modpep in ms.peptides for prediction in modpep.peptide.predictions ], False)
-        return has_scansite        
+            if ms.id in cache_table['peptides'][attr_label]:
+                return cache_table['peptides'][attr_label][ms.id]
+
+            rval = reduce(bool.__or__, [ prediction.percentile <= scansite_cutoff and prediction.source == source and prediction.value == label for modpep in ms.peptides for prediction in modpep.peptide.predictions ], False)
+            cache_table['peptides'][attr_label][ms.id] = rval
+            return rval
+
+        return has_scansite
         
     for source in valid_labels:
         for label in valid_labels[source]:
@@ -305,7 +331,7 @@ def calculate_Scansite_enrichment(foreground, background, required_occurences, s
     return enrichment
 
 
-def calculate_Region_enrichment(foreground, background, required_occurences):
+def calculate_Region_enrichment(foreground, background, required_occurences, cache_table):
     enrichment = []
     valid_labels = defaultdict(lambda: 0)
     for ms in foreground:
@@ -313,8 +339,15 @@ def calculate_Region_enrichment(foreground, background, required_occurences):
             valid_labels[region.label] += 1
             
     def create_has_region(label):
+        attr_label = 'region:%s' % (label)
         def has_region(ms):
-            return reduce(bool.__or__, [ region.hasSite( modpep.peptide.site_pos ) for region in ms.protein.regions for modpep in ms.peptides ], False)
+            if ms.id in cache_table['peptides'][attr_label]:
+                return cache_table['peptides'][attr_label][ms.id]
+        
+            rval = reduce(bool.__or__, [ region.hasSite( modpep.peptide.site_pos ) for region in ms.protein.regions for modpep in ms.peptides ], False)
+            cache_table['peptides'][attr_label][ms.id] = rval
+            return rval
+
         return has_region
     
     for label in valid_labels:
@@ -325,7 +358,7 @@ def calculate_Region_enrichment(foreground, background, required_occurences):
     return enrichment
 
 
-def calculate_annotation_enrichment(name, foreground, background, required_occurences):
+def calculate_annotation_enrichment(name, foreground, background, required_occurences, cache_table):
     enrichment = []
     
     valid_labels = defaultdict(lambda: 0)
@@ -334,8 +367,14 @@ def calculate_annotation_enrichment(name, foreground, background, required_occur
             valid_labels[ms.annotations[name]] += 1
     
     def create_has_annotation(label):
+        attr_label = "annotation:%s" % (label)
         def has_annotation(ms):
-            return name in ms.annotations and ms.annotations[name] == label
+            if ms.id in cache_table['peptides'][attr_label]:
+                return cache_table['peptides'][attr_label][ms.id]
+
+            rval = name in ms.annotations and ms.annotations[name] == label
+            cache_table['peptides'][attr_label][ms.id] = rval
+            return rval
         return has_annotation
     
     for label in valid_labels:
@@ -346,22 +385,25 @@ def calculate_annotation_enrichment(name, foreground, background, required_occur
     return enrichment
 
 
-def calculate_feature_enrichment(foreground, background, annotation_types, required_occurences=1, scansite_cutoff=5, domain_cutoff=1):
+def calculate_feature_enrichment(foreground, background, annotation_types, required_occurences=1, scansite_cutoff=5, domain_cutoff=1, cache_table=None):
+    if cache_table == None:
+        cache_table = {'proteins': defaultdict(dict), 'peptides': defaultdict(dict)}
+
     enrichment_table = []
 
     p_foreground = get_proteins(foreground)
     p_background = get_proteins(background)
     
-    enrichment_table += calculate_GO_term_enrichment(p_foreground, p_background, required_occurences)
-    enrichment_table += calculate_PfamDomain_enrichment(p_foreground, p_background, required_occurences, domain_cutoff)
+    enrichment_table += calculate_GO_term_enrichment(p_foreground, p_background, required_occurences, cache_table)
+    enrichment_table += calculate_PfamDomain_enrichment(p_foreground, p_background, required_occurences, domain_cutoff, cache_table)
     
-    enrichment_table += calculate_PfamSite_enrichment(foreground, background, required_occurences, domain_cutoff)
-    enrichment_table += calculate_Scansite_enrichment(foreground, background, required_occurences, scansite_cutoff)
-    enrichment_table += calculate_Region_enrichment(foreground, background, required_occurences)
+    enrichment_table += calculate_PfamSite_enrichment(foreground, background, required_occurences, domain_cutoff, cache_table)
+    enrichment_table += calculate_Scansite_enrichment(foreground, background, required_occurences, scansite_cutoff, cache_table)
+    enrichment_table += calculate_Region_enrichment(foreground, background, required_occurences, cache_table)
     
     for aset in annotation_types:
         if annotation_types[aset] == 'nominative':
-            enrichment_table += calculate_annotation_enrichment(aset, foreground, background, required_occurences)
+            enrichment_table += calculate_annotation_enrichment(aset, foreground, background, required_occurences, cache_table)
     
     return sorted(enrichment_table, key=lambda item: (item[2], item[0], item[1]) )
 

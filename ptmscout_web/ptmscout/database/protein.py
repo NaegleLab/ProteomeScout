@@ -58,7 +58,7 @@ class GeneOntologyEntry(Base):
     GO_id = Column(Integer(10), ForeignKey('GO.id'))
     date = Column(DateTime)
     
-    GO_term = relationship("GeneOntology")
+    GO_term = relationship("GeneOntology", lazy='joined')
 
 class ProteinScansite(Base):
     __tablename__='protein_scansite'
@@ -146,7 +146,7 @@ class Protein(Base):
     domains = relationship("ProteinDomain")
     
     species = relationship("Species")
-    GO_terms = relationship("GeneOntologyEntry")
+    GO_terms = relationship("GeneOntologyEntry", lazy='joined')
     expression_probes = relationship("ExpressionProbeset", secondary=expression_association_table)
     mutations = relationship("Mutation", cascade="all,delete-orphan")
     regions = relationship("ProteinRegion")
