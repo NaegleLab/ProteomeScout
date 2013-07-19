@@ -3,6 +3,7 @@ use strict;
 #use Math::Counting ':long';
 use POSIX;
 use Getopt::Long;
+use Memory::Usage;
 $| = 1;
 
 my $foreground;
@@ -12,39 +13,36 @@ my $cutoff;
 my $numpept;
 my $binomial = 0;
 my $DEBUG = 0;
-my $length = 5;
+
+my $mu = Memory::Usage->new();
+$mu->record('starting work');
 
 GetOptions('foreground=s' => \$foreground,
 	   'background=s' => \$background,
 	   'pattern:s'    => \$pattern,
 	   'cutoff:f'     => \$cutoff,
-       'debug:i'       => \$DEBUG,
-       'length:i'       => \$length,
 	   'numpept:i'    => \$numpept,
+       'debug'        => \$DEBUG,
 	   'binomial'     => \$binomial); 
 
 if (! -e $foreground || ! -e $background) {
-    print "Usage: ./c_stat_sig_protein_singles.pl --foreground FILE --background FILE [--pattern PATTERN] [--cutoff CUTOFF] [--numpept NUMPEPT] [--binomial] [--debug DEBUG] [--length LENGTH]\n";
+    print "Usage: ./c_stat_sig_protein_singles.pl --foreground FILE --background FILE [--debug DEBUG] [--pattern PATTERN] [--cutoff CUTOFF] [--numpept NUMPEPT] [--binomial]\n";
     print "       PATTERN = pos1.aa1.pos2.aa2...\n";
+    print "       DEBUG = 1 if want print to screen";
     print "       CUTOFF  = p-value required to forward to recursion.\n";
     print "       NUMPEPT = Number of peptides required to forward to recursion.\n";
     print "       If the binomial flag is used, a binomial distribution is used to calculate \n";
     print "        significance.  By default, hypergeometric is used.\n";
     print "       Work directory requires a file named conversion that includes amino acid list.\n";    print "        See ./sample_conversion\n";
-    print "       DEBUG = 1 if you wish to print statements, 0 by default \n";
-    print "       LENGTH = flanking side depth to test, 5 by default\n";
     exit;
 }
 
 if (! defined $cutoff) {$cutoff = 1e-2;}
 if (! defined $numpept) {$numpept = 0;}
 
-#check the size of the foreground/background to match position size
-my $fullLength = 2*$length +1;
-
 # Read in the foreground and background.
-my @foreground = &read_peptides($foreground, $fullLength);
-my @background = &read_peptides($background, $fullLength);
+my @foreground = &read_peptides($foreground);
+my @background = &read_peptides($background);
 
 my $froot = $foreground;
 my $broot = $background;
@@ -63,8 +61,7 @@ my @for_doubles;
 my @for_next_doubles;
 my %fg_by_pattern;
 my %bg_by_pattern;
-#my $pos = 14;
-my $pos = $fullLength - 1;
+my $pos = 14;
 
 # Read in the conversion file.
 my @aa;  my %aa_multi;  my %multi_aa;  my %aa_pattern;
@@ -82,27 +79,27 @@ my $fail_ancestry = 0;
 my $fail_checkpat = 0;
 my $num_tests_for_kristen = 0;
 my $succeed = 0;
-
+$mu->record('Starting motif algorithm');
 # I need to recurse the fg and bg to eliminate failed matches.
 my %checked_pat;
 # KMN Changes 3/1/2013 -- Parsing the foreground and initiating the pattern based on the presence of any amino acid in the central position occuring more than twice
 my %patHash;
+my $centralResidue; 
 foreach my $pep (@foreground){
-    my $centralResidue = substr($pep, $length, 1);
+    $centralResidue = substr($pep, 7, 1);
     if(not defined $patHash{$centralResidue}){
-	$patHash{$centralResidue} = 0;
+        $patHash{$centralResidue} = 0;
     }
     $patHash{$centralResidue} += 1;
 
 }
+my $str;
 foreach my $res (keys %patHash){
     if($patHash{$res} >= 2){
-        #my $str = ".......".$res.".......";
-        my $pad = '.' x $length;
-        my $str = $pad.$res.$pad;
-        if($DEBUG){
-            print "DEBUG: adding patternin $str\n";
-        }
+	$str = ".......".$res.".......";
+    if($DEBUG){
+        print "DEBUG: adding pattern in $str\n";
+    }
 	push @for_singles, $str;
     push @for_doubles, $str;
     &init_refhash($str, \@foreground, \%fg_by_pattern);
@@ -113,11 +110,10 @@ foreach my $res (keys %patHash){
 
 
 undef @foreground;  undef @background;
-if($DEBUG){
-    print join(" ", sort @for_singles) . "\n";
 
-    print "Initializing with " . scalar(@for_singles) . " patterns.\n";
-}
+print join(" ", sort @for_singles) . "\n";
+
+print "Initializing with " . scalar(@for_singles) . " patterns.\n";
 # Run on the initialized singles and doubles.
 foreach my $pat (sort @for_singles) {
     &singles($pat, $Nf, $Nb);
@@ -137,7 +133,10 @@ print "FAIL_CHECKPAT $fail_checkpat\n";
 print "SUCCEED $succeed\n";
 print "NUM_TESTS_FOR_KRISTEN $num_tests_for_kristen\n";
 print "MEM: " . `ps -o rss,vsz $$`;
+$mu->record('finished work');
+$mu->dump();
 exit;
+
 
 ################################################################
 # Given a source array of scalar peptides and a pattern, add references
@@ -167,106 +166,116 @@ sub singles {
     my $parent = $pattern;
 
     # Iterate over positions and amino acids.
-    foreach my $p (0..$pos){
-	if ($pattern[$p] ne ".") {next;} 
-	foreach my $aa (@aa){
-	    $pattern[$p] = $aa;
-	    $pattern = join("", @pattern);
-        if($DEBUG){
-            print "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-            print $pattern . " singles";
+    my $aa;
+    my $c_xj;
+    my $m;
+    my $D;
+    my $p_xj;
+    my $sig;
+    my $p;
+    foreach $p (0..$pos){
+        if ($pattern[$p] ne ".") {next;} 
+
+        foreach $aa (@aa){
+            $pattern[$p] = $aa;
+            $pattern = join("", @pattern);
+
+            if($DEBUG){
+                print "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+                print $pattern . " singles";
+            }
+            if (defined($checked_pat{$pattern})) {
+                $pattern[$p] = ".";
+                $pattern = join("", @pattern);
+                $fail_checkpat++;
+                next; 
+            }	
+            $checked_pat{$pattern} = 1;
+
+            # Skip this pattern if it's been done before successfully..
+            if (defined($done{$pattern})) { 
+                $pattern[$p] = ".";
+                $pattern = join("", @pattern);
+                $fail_done++;
+                next; 
+            }
+
+            $m = $Nf;
+
+            # Count pattern in foreground, making an entry in the hash of refs.
+        
+            $c_xj = &count_occurences($pattern, $parent, \%fg_by_pattern);
+	    
+            # Skip this pattern if too few peptides contain it in the foreground.
+            if ($c_xj < $numpept) {
+                delete $fg_by_pattern{$pattern};
+                $pattern[$p] = ".";
+                $pattern = join("", @pattern);
+                $fail_count++;
+                next; 
+            }
+
+            # If any parent of this pattern other than the one we are here from 
+            # is successfully done, this pattern's been checked (and failed).  Skip it.
+            if (&check_ancestry($pattern, $parent)) {
+                $pattern[$p] = ".";
+                $pattern = join("", @pattern);
+                $fail_ancestry++;
+                next;
+            }
+
+            # Test a lower bound on score.  If it fails, skip it.
+            if (&hypergeometric2($Nf, $Nb, $c_xj, $c_xj) > $cutoff) {
+                delete $fg_by_pattern{$pattern};
+                $pattern[$p] = ".";
+                $pattern = join("", @pattern);
+                $fail_bestsig++;
+                next;
+            }
+
+            # Test if this motif is a submotif of a previously done motif, with
+            # the same membership.
+            if (&is_a_submotif_with_same_size($pattern, \%done, $c_xj, \%aa_multi)) { 
+                delete $fg_by_pattern{$pattern};
+                $pattern[$p] = ".";
+                $pattern = join("", @pattern);
+                $fail_sub++;
+                next; 
+            }
+	    
+            # Only if all of the above checks out is it acceptable to count the background.
+            # THIS IS THE SLOW STEP!
+            $D = &count_occurences($pattern, $parent, \%bg_by_pattern);
+            $p_xj = $D / $Nb;
+            $sig;
+            
+            if ($binomial == 1){
+                $sig = &binomial($m, $c_xj, $p_xj);
+            }
+            else {
+                $num_tests_for_kristen++;
+                $sig = &hypergeometric2($Nf, $Nb, $c_xj, $D);
+            }
+            
+                # If the significance is there, do all singles by depth, and pairs on the way back up.
+            if ($sig <= $cutoff) {
+            $done{$pattern} = $c_xj;
+            #push @for_doubles, $pattern;
+            printf LOG "| $pattern | %5d / %5d | %5d / %5d | %4.2E |\n", $c_xj, $Nf, $D, $Nb, $sig;
+            &singles("$pattern", $Nf, $Nb);
+            &search_paironce($pattern);
+            delete $fg_by_pattern{$pattern};
+            delete $bg_by_pattern{$pattern};
+            $succeed++;
+            }
+            else {
+            delete $fg_by_pattern{$pattern};
+            delete $bg_by_pattern{$pattern};
+            $fail_sig++;
+            }
+            $pattern[$p] = ".";
+            $pattern = join("", @pattern);
         }
-	    if (defined($checked_pat{$pattern})) {
-		$pattern[$p] = ".";
-		$pattern = join("", @pattern);
-		$fail_checkpat++;
-		next; 
-	    }	
-	    $checked_pat{$pattern} = 1;
-
-	    # Skip this pattern if it's been done before successfully..
-	    if (defined($done{$pattern})) { 
-		$pattern[$p] = ".";
-		$pattern = join("", @pattern);
-		$fail_done++;
-		next; 
-	    }
-
-	    my $m = $Nf;
-
-	    # Count pattern in foreground, making an entry in the hash of refs.
-	    my $c_xj = &count_occurences($pattern, $parent, \%fg_by_pattern);
-	    
-	    # Skip this pattern if too few peptides contain it in the foreground.
-	    if ($c_xj < $numpept) {
-		delete $fg_by_pattern{$pattern};
-		$pattern[$p] = ".";
-		$pattern = join("", @pattern);
-		$fail_count++;
-		next; 
-	    }
-
-	    # If any parent of this pattern other than the one we are here from 
-	    # is successfully done, this pattern's been checked (and failed).  Skip it.
-	    if (&check_ancestry($pattern, $parent)) {
-		$pattern[$p] = ".";
-		$pattern = join("", @pattern);
-		$fail_ancestry++;
-		next;
-	    }
-
-	    # Test a lower bound on score.  If it fails, skip it.
-	    if (&hypergeometric2($Nf, $Nb, $c_xj, $c_xj) > $cutoff) {
-		delete $fg_by_pattern{$pattern};
-		$pattern[$p] = ".";
-		$pattern = join("", @pattern);
-		$fail_bestsig++;
-		next;
-	    }
-
-	    # Test if this motif is a submotif of a previously done motif, with
-	    # the same membership.
-	    if (&is_a_submotif_with_same_size($pattern, \%done, $c_xj, \%aa_multi)) { 
-		delete $fg_by_pattern{$pattern};
-		$pattern[$p] = ".";
-		$pattern = join("", @pattern);
-		$fail_sub++;
-		next; 
-	    }
-	    
-	    # Only if all of the above checks out is it acceptable to count the background.
-	    # THIS IS THE SLOW STEP!
-	    my $D = &count_occurences($pattern, $parent, \%bg_by_pattern);
-	    my $p_xj = $D / $Nb;
-	    my $sig;
-	    
-	    if ($binomial == 1){
-		$sig = &binomial($m, $c_xj, $p_xj);
-	    }
-	    else {
-		$num_tests_for_kristen++;
-		$sig = &hypergeometric2($Nf, $Nb, $c_xj, $D);
-	    }
-	    
-	    # If the significance is there, do all singles by depth, and pairs on the way back up.
-	    if ($sig <= $cutoff) {
-		$done{$pattern} = $c_xj;
-		#push @for_doubles, $pattern;
-		printf LOG "| $pattern | %5d / %5d | %5d / %5d | %4.2E |\n", $c_xj, $Nf, $D, $Nb, $sig;
-		&singles("$pattern", $Nf, $Nb);
-		&search_paironce($pattern);
-		delete $fg_by_pattern{$pattern};
-		delete $bg_by_pattern{$pattern};
-		$succeed++;
-	    }
-	    else {
-		delete $fg_by_pattern{$pattern};
-		delete $bg_by_pattern{$pattern};
-		$fail_sig++;
-	    }
-	    $pattern[$p] = ".";
-	    $pattern = join("", @pattern);
-	}
     }
 }
 
@@ -277,7 +286,8 @@ sub search_paironce {
     my $pattern = shift;
     my $code = &pattern_to_regex($pattern);
     
-    foreach my $peptide (@{$fg_by_pattern{$pattern}}){
+    my $peptide;
+    foreach $peptide (@{$fg_by_pattern{$pattern}}){
 	if ($$peptide =~ /^$code$/) {
 	    &pairs_informed($pattern, $$peptide);
 	}
@@ -297,14 +307,23 @@ sub pairs_informed {
     my @peptide = split("", $peptide);
 
     my $parent = $pattern;
-    foreach my $p (0..$pos-1){
+    my $p;
+    my $aa;
+    my $aa2;
+    my $p2;
+    my $c_xj;
+    my $p_xj;
+    my $D;
+    my $sig;
+    my $m;
+    foreach $p (0..$pos-1){
         if($pattern[$p] ne ".") {next;}
-        foreach my $p2 ($p+1..$pos){
-            if($pattern[$p2] ne ".") {next;}
-            foreach my $aa (keys %{$multi_aa{$peptide[$p]}}){
+	foreach $p2 ($p+1..$pos){
+	    if($pattern[$p2] ne ".") {next;}
+            foreach $aa (keys %{$multi_aa{$peptide[$p]}}){
             $pattern[$p] = $aa;
             $pattern = join("", @pattern);
-            foreach my $aa2 (keys %{$multi_aa{$peptide[$p2]}}){
+            foreach $aa2 (keys %{$multi_aa{$peptide[$p2]}}){
                 $pattern[$p2] = $aa2;
                 $pattern = join("", @pattern);
                 if($DEBUG){
@@ -326,39 +345,39 @@ sub pairs_informed {
                 $fail_done++;
                 next; 
                 }
-                my $m = $Nf;
+                $m = $Nf;
 
                 # Count pattern in foreground, making an entry in the hash of refs.
-		    my $c_xj = &count_occurences($pattern, $parent, \%fg_by_pattern);
+		    $c_xj = &count_occurences($pattern, $parent, \%fg_by_pattern);
 	    
 		    # Skip this pattern if too few peptides contain it in the foreground.
 	    	    if ($c_xj < $numpept) {
-			delete $fg_by_pattern{$pattern};
-			$pattern[$p2] = ".";
-			$pattern = join("", @pattern);
-			$fail_count++;
-			next; 
-		    }
+                    delete $fg_by_pattern{$pattern};
+                    $pattern[$p2] = ".";
+                    $pattern = join("", @pattern);
+                    $fail_count++;
+                    next; 
+                }
 
-		    # If any parent of this pattern other than the one we are here from 
+                    # If any parent of this pattern other than the one we are here from 
 		    # is successfully done, this pattern's been checked (and failed).  Skip it.
 		    if (&check_ancestry($pattern, $parent)) {
-			$pattern[$p2] = ".";
-			$pattern = join("", @pattern);
-			$fail_ancestry++;
-			next;
+                $pattern[$p2] = ".";
+                $pattern = join("", @pattern);
+                $fail_ancestry++;
+                next;
 		    }
 
 	    	    # Test a lower bound on score.  If it fails, skip it.
 		    if (&hypergeometric2($Nf, $Nb, $c_xj, $c_xj) > $cutoff) {
-			delete $fg_by_pattern{$pattern};
-			$pattern[$p2] = ".";
-			$pattern = join("", @pattern);
-			$fail_bestsig++;
-			next;
-		    }
-	    
-		    # Test if this motif is a submotif of a previously done motif, with
+                delete $fg_by_pattern{$pattern};
+                $pattern[$p2] = ".";
+                $pattern = join("", @pattern);
+                $fail_bestsig++;
+                next;
+            }
+            
+                # Test if this motif is a submotif of a previously done motif, with
 		    # the same membership.
 		    if (&is_a_submotif_with_same_size($pattern, \%done, $c_xj, \%aa_multi)) { 
 			delete $fg_by_pattern{$pattern};
@@ -370,9 +389,9 @@ sub pairs_informed {
 
 		    # Only if all of the above checks out is it acceptable to count the background.
 		    # THIS IS THE SLOW STEP!
-		    my $D = &count_occurences($pattern, $parent, \%bg_by_pattern);
-		    my $p_xj = $D / $Nb;
-		    my $sig;
+		    $D = &count_occurences($pattern, $parent, \%bg_by_pattern);
+		    $p_xj = $D / $Nb;
+		    $sig;
 	    
 		    if ($binomial == 1){
 			$sig = &binomial($m, $c_xj, $p_xj);
@@ -416,22 +435,27 @@ sub is_a_submotif_with_same_size(){
     my $motifs = shift;
     my $size = shift;
     my $multis = shift;
-    foreach my $motif (keys %{$motifs}){
-	if ($size != $motifs->{$motif}){ next; }
-	my $result = 1;
-	my @submotif = split('', $submotif);
-	my @motif = split('', $motif);
-	foreach my $i (0..$#motif){
-	    if ($submotif[$i] eq ".") { next;}
-	    else {
-		if ($motif[$i] eq $submotif[$i]) { next;}
-		else {
-		    if (defined($multis->{$submotif[$i]}->{$motif[$i]})){ next; }
-		    else{ $result = 0; last; }
-		}
-	    }
-	}
-	if ($result) { return 1;}
+    my $motif;
+    my $i;
+    my $result;
+    my @submotif; 
+    my @motif;
+    foreach $motif (keys %{$motifs}){
+        if ($size != $motifs->{$motif}){ next; }
+        $result = 1;
+        @submotif = split('', $submotif);
+        @motif = split('', $motif);
+        foreach $i (0..$#motif){
+            if ($submotif[$i] eq ".") { next;}
+            else {
+            if ($motif[$i] eq $submotif[$i]) { next;}
+            else {
+                if (defined($multis->{$submotif[$i]}->{$motif[$i]})){ next; }
+                else{ $result = 0; last; }
+                }
+            }
+        }
+        if ($result) { return 1;}
     }
     return 0;
 }
@@ -448,7 +472,8 @@ sub count_occurences(){
 
     $hash->{$pattern} = ();
     
-    foreach my $peptide (@{$hash->{$parent}}) {
+    my $peptide;
+    foreach $peptide (@{$hash->{$parent}}) {
 	if ($$peptide =~ /$regex/) {
 	    $count++;
 	    push @{$hash->{$pattern}}, $peptide;
@@ -465,7 +490,8 @@ sub make_pattern(){
 
     my @p_arr = split('', $scalar);
     my $pattern = "";
-    foreach my $p (@p_arr){
+    my $p;
+    foreach $p (@p_arr){
 	if (defined($aa->{$p})){
 	    $pattern .= $aa->{$p};
 	}
@@ -482,7 +508,8 @@ sub binomial(){
     my $p_xj = shift;  # Probability of hit in unselected data;
     my $sum = 0;
 
-    foreach my $i ($c_xj..$m){
+    my $i;
+    foreach $i ($c_xj..$m){
         $sum += (combination($m, $i)) * ($p_xj**$i) * (1-$p_xj)**($m-$i);
     }
     return $sum;
@@ -495,23 +522,26 @@ sub hypergeometric(){
     my $k = shift;     # Number of hits in selected data.
     my $D = shift;     # Number of hits in unselected data.
     my $sum = 0;
+    my $i;
+    my $index;
+    my $log;
     
     if ( ($k == 0) ) { return 1; }
     if ( ($n == $k) && ($N == $D) ) { return 1; }
     my $max = $n;
     if ($D < $n) { $max = $D; }
-    foreach my $i ($k..$max){
-	my $log = 0;
-	foreach my $index (0..$i-1){
-	    $log += (log10($D-$index) - log10($i-$index));
-	}
-	foreach my $index (0..$n-$i-1) {
-	    $log += (log10($N-$D-$index) - log10($n-$i-$index));
-	}
-	foreach my $index (0..$n-1){
-	    $log -= (log10($N-$index) - log10($n-$index));
-	}
-	$sum += 10**$log;
+    foreach $i ($k..$max){
+        $log = 0;
+        foreach $index (0..$i-1){
+            $log += (log10($D-$index) - log10($i-$index));
+        }
+        foreach $index (0..$n-$i-1) {
+            $log += (log10($N-$D-$index) - log10($n-$i-$index));
+        }
+        foreach $index (0..$n-1){
+            $log -= (log10($N-$index) - log10($n-$index));
+        }
+        $sum += 10**$log;
     }
 
     return $sum;
@@ -532,13 +562,15 @@ sub hypergeometric2(){
     if ( ($n == $k) && ($N == $D) ) { return 1; }
     my $max = $n;
     if ($D < $n) { $max = $D; }
-    foreach my $i ($k..$max){
-	my $log = 0;
-	$log += &factln($D) - &factln($i) - &factln($D-$i);
-	$log += &factln($N-$D) - &factln($n-$i) - &factln($N-$D-$n+$i);
-	$log -= &factln($N) - &factln($n) - &factln($N-$n);
+    my $i;
+    my $log;
+    foreach $i ($k..$max){
+        $log = 0;
+        $log += &factln($D) - &factln($i) - &factln($D-$i);
+        $log += &factln($N-$D) - &factln($n-$i) - &factln($N-$D-$n+$i);
+        $log -= &factln($N) - &factln($n) - &factln($N-$n);
 	
-	$sum += exp($log);
+        $sum += exp($log);
     }
 
     return $sum;
@@ -561,35 +593,16 @@ sub factln {
 ##############################################################
 sub read_peptides {
     my $input = shift;
-    my $lengthDesired = shift;
     my @array;
+    my $line; 
     open(IN, $input) or die "Can't read $input";
-    my $CHECKED = 0;
-    my $diff = 0;
-    while(defined(my $line = <IN>)){
+    while(defined($line = <IN>)){
         chomp $line;
-        if(length($line)<$lengthDesired){
-            print "ERROR: Size of peptides don't match desired length $length\n";
-            exit;
-        }
-        elsif(length($line)>$lengthDesired and !$CHECKED){
-            #how many chars to chop?
-            $diff = (length($line)-$lengthDesired)/2;
-            $CHECKED = 1; #only want to do this math once
-        }
-        if($diff){
-           $line = substr($line, $diff, $lengthDesired); 
-           if($DEBUG){
-            print "New line: $line\n";
-           }
-        }
-
-       
         push @array, $line;
-        }
-        close IN;
-        return @array;
     }
+    close IN;
+    return @array;
+}
 ##############################################################
 sub read_conversion {
     my $aa = shift;
@@ -598,33 +611,38 @@ sub read_conversion {
     my $aa_pattern = shift;
 
     open(IN, "conversion") or die "Can't read conversion";
-    while(defined(my $line = <IN>)){
-	my @line = split(' ', $line);
-	push @{$aa}, $line[0];
-	$aa_pattern->{$line[0]} = $line[1];
-	if ($line[1] !~ /\[/){
-	    if (!defined $multi_aa->{$line[1]}){
-		$multi_aa->{$line[1]} = {};
-	    }
-	    $multi_aa->{$line[1]}->{$line[0]} = 1;
-	    if (!defined $aa_multi->{$line[0]}){
-		$aa_multi->{$line[0]} = {};
-	    }
+    my $line;
+    my @line;
+    my @multi;
+    my $line;
+    my $i;
+    while(defined($line = <IN>)){
+        @line = split(' ', $line);
+        push @{$aa}, $line[0];
+        $aa_pattern->{$line[0]} = $line[1];
+        if ($line[1] !~ /\[/){
+            if (!defined $multi_aa->{$line[1]}){
+                $multi_aa->{$line[1]} = {};
+            }
+            $multi_aa->{$line[1]}->{$line[0]} = 1;
+            if (!defined $aa_multi->{$line[0]}){
+                $aa_multi->{$line[0]} = {};
+            }
 	    $aa_multi->{$line[0]}->{$line[1]} = 1;
-	}
-	else {
-	    my @multi = split("", $line[1]);
-	    foreach my $i (1..$#multi-1){
-		if (!defined $multi_aa->{$multi[$i]}){
-		    $multi_aa->{$multi[$i]} = {};
-		}
-		$multi_aa->{$multi[$i]}->{$line[0]} = 1;
-		if (!defined $aa_multi->{$line[0]}){
-		    $aa_multi->{$line[0]} = {};
-		}
-		$aa_multi->{$line[0]}->{$multi[$i]} = 1;
-	    }
-	}
+        }
+        else {
+            @multi = split("", $line[1]);
+            foreach $i (1..$#multi-1){
+            if (!defined $multi_aa->{$multi[$i]}){
+                $multi_aa->{$multi[$i]} = {};
+            }
+            $multi_aa->{$multi[$i]}->{$line[0]} = 1;
+            if (!defined $aa_multi->{$line[0]}){
+                $aa_multi->{$line[0]} = {};
+            }
+            $aa_multi->{$line[0]}->{$multi[$i]} = 1;
+            }
+        }
     }
     close IN;
 }
@@ -632,7 +650,8 @@ sub read_conversion {
 sub pattern_to_regex(){
     my $pattern = shift;
     my @pattern = split('', $pattern);
-    foreach my $i (0..$#pattern){
+    my $i;
+    foreach $i (0..$#pattern){
 	if ($pattern[$i] eq ".") {next;}
 	$pattern[$i] = $aa_pattern{$pattern[$i]};
     }
@@ -645,17 +664,20 @@ sub check_ancestry(){
 #    my $grandparent = shift;
     my @pattern = split('', $pattern);
     my $good_parent = 0;
-    foreach my $p1 (0..$#pattern) {
-	if ($p1 == 7) {next;}
-	if ($pattern[$p1] eq "."){ next; }
-	my $p1_orig = $pattern[$p1];
-	$pattern[$p1] = ".";
-	my $newp = join("", @pattern);
-	if (defined($done{$newp})) {
-	    if (($newp ne $parent)) {
-		$good_parent = 1; last;
-	    }
-	}
+    my $p1;
+    my $p1_orig; 
+    my $newp;
+    foreach $p1 (0..$#pattern) {
+        if ($p1 == 7) {next;}
+        if ($pattern[$p1] eq "."){ next; }
+        $p1_orig = $pattern[$p1];
+        $pattern[$p1] = ".";
+        $newp = join("", @pattern);
+        if (defined($done{$newp})) {
+            if (($newp ne $parent)) {
+            $good_parent = 1; last;
+            }
+        }
 
 	$pattern[$p1] = $p1_orig;
 	
