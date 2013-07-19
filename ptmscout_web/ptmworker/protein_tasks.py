@@ -138,17 +138,14 @@ def query_protein_metadata(external_db_result, accessions, line_mapping, exp_id,
 
     return create_missing_proteins(external_db_result, missing_proteins, accessions, line_mapping, exp_id, job_id)
 
-@celery.task
-@upload_helpers.notify_job_failed
-@upload_helpers.transaction_task
-def get_proteins_from_external_databases(ignored, accessions, line_mapping, exp_id, job_id):
-    uniprot_ids, other_ids = upload_helpers.extract_uniprot_accessions(accessions.keys())
 
+def get_proteins_by_accession(accessions, start_callback, notify_callback):
+    uniprot_ids, other_ids = upload_helpers.extract_uniprot_accessions(accessions.keys())
     uniprot_tasks = upload_helpers.create_chunked_tasks_preserve_groups(sorted(uniprot_ids), MAX_UNIPROT_BATCH_SIZE)
     ncbi_tasks = upload_helpers.create_chunked_tasks(sorted(other_ids), MAX_NCBI_BATCH_SIZE)
     total_task_cnt = len(uniprot_tasks) + len(ncbi_tasks)
-
-    notify_tasks.set_job_stage.apply_async((job_id, 'query', total_task_cnt))
+    
+    start_callback(total_task_cnt)
 
     i = 0
     protein_map = {}
@@ -157,18 +154,28 @@ def get_proteins_from_external_databases(ignored, accessions, line_mapping, exp_
         result, errors = entrez_tools.get_proteins_from_ncbi(ncbi_accessions)
         protein_map.update(result)
 
-        log_errors(errors, exp_id, accessions, line_mapping)
-
         i+=1
-        notify_tasks.set_job_progress.apply_async((job_id, i, total_task_cnt))
+        notify_callback(i, total_task_cnt, errors)
 
     for uniprot_accessions in uniprot_tasks:
+        log.info("Getting Uniprot records for %d accessions", len(uniprot_accessions))
         result, errors = get_uniprot_proteins(uniprot_accessions)
         protein_map.update(result)
 
-        log_errors(errors, exp_id, accessions, line_mapping)
-
         i+=1
-        notify_tasks.set_job_progress.apply_async((job_id, i, total_task_cnt))
+        notify_callback(i, total_task_cnt, errors)
 
     return protein_map
+
+
+@celery.task
+@upload_helpers.notify_job_failed
+@upload_helpers.transaction_task
+def get_proteins_from_external_databases(ignored, accessions, line_mapping, exp_id, job_id):
+    def start_callback(total_task_cnt):
+        notify_tasks.set_job_stage.apply_async((job_id, 'query', total_task_cnt))
+    def notify_callback(i, total_task_cnt, errors):
+        log_errors(errors, exp_id, accessions, line_mapping)
+        notify_tasks.set_job_progress.apply_async((job_id, i, total_task_cnt))
+
+    return get_proteins_by_accession(accessions, start_callback, notify_callback)
