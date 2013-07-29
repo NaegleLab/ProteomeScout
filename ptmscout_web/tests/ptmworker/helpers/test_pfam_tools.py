@@ -155,7 +155,7 @@ class IntegrationTestPFamQuery(IntegrationTestCase):
         self.assertEqual(('ABC_tran', 1372, 1516), (d.label, d.start, d.stop))
 
     @patch('ptmworker.helpers.pfam_tools.get_computed_pfam_domains')
-    def test_parse_or_query_domains_should_query_if_domains_empty(self, patch_query):
+    def test_parse_or_query_domains_should_run_HMM(self, patch_query):
         d1 = pfam_tools.PFamDomain()
         d1.p_value = 0.01
         d1.start = 100
@@ -166,7 +166,7 @@ class IntegrationTestPFamQuery(IntegrationTestCase):
         prot = protein.Protein()
         patch_query.return_value = [d1]
 
-        pfam_tools.parse_or_query_domains(prot, [], 'NP_005772')
+        pfam_tools.parse_or_query_domains(prot, 'NP_005772')
         result = prot.domains
 
         self.assertEqual(1, len(result))
@@ -812,27 +812,6 @@ class IntegrationTestPFamQuery(IntegrationTestCase):
             self.assertEqual("Protein sequence from PFam did not match provided sequence for accession '%s'" % (uniprot_acc), e.msg)
         else:
             self.fail("Expected PFamError")
-
-    def test_parse_or_query_domains_should_not_query_if_domains_provided(self):
-        d1 = pfam_tools.PFamDomain()
-        d1.p_value = 0.01
-        d1.start = 100
-        d1.stop = 200
-        d1.release = 23
-        d1.label = 'Domain'
-
-        prot = protein.Protein()
-
-        pfam_tools.parse_or_query_domains(prot, [d1], 'NP_005722')
-        result = prot.domains
-
-        self.assertEqual(1, len(result))
-        self.assertEqual(0.01, result[0].p_value)
-        self.assertEqual("PARSED PFAM", result[0].source)
-        self.assertEqual(100, result[0].start)
-        self.assertEqual(200, result[0].stop)
-        self.assertEqual('Domain', result[0].label)
-        self.assertEqual(23, result[0].version)
 
 #    def test_get_computed_pfam_domains_2(self):
 #        prot_seq = "MKKFFDSRREQGGSGLGSGSSGGGGSTSGLGSGYIGRVFGIGRQQVTVDEVLAEGGFAIVFLVRTSNGMKCALKRMFVNNEHDLQVCKREIQIMRDLSGHKNIVGYIDSSINNVSSGDVWEVLILMDFCRGGQVVNLMNQRLQTGFTENEVLQIFCDTCEAVARLHQCKTPIIHRDLKVENILLHDRGHYVLCDFGSATNKFQNPQTEGVNAVEDEIKKYTTLSYRAPEMVNLYSGKIITTKADIWALGCLLYKLCYFTLPFGESQVAICDGNFTIPDNSRYSQDMHCLIRYMLEPDPDKRPDIYQVSYFSFKLLKKECPIPNVQNSPIPAKLPEPVKASEAAAKKTQPKARLTDPIPTTETSIAPRQRPKAGQTQPNPGILPIQPALTPRKRATVQPPPQAAGSSNQPGLLASVPQPKPQAPPSQPLPQTQAKQPQAPPTPQQTPSTQAQGLPAQAQATPQHQQQLFLKQQQQQQQPPPAQQQPAGTFYQQQQAQTQQFQAVHPATQKPAIAQFPVVSQGGSQQQLMQNFYQQQQQQQQQQQQQQLATALHQQQLMTQQAALQQKPTMAAGQQPQPQPAAAPQPAPAQEPAIQAPVRQQPKVQTTPPPAVQGQKVGSLTPPSSPKTQRAGHRRILSDVTHSAVFGVPASKSTQLLQAAAAEASLNKSKSATTTPSGSPRTSQQNVYNPSEGSTWNPFDDDNFSKLTAEELLNKDFAKLGEGKHPEKLGGSAESLIPGFQSTQGDAFATTSFSAGTAEKRKGGQTVDSGLPLLSVSDPFIPLQVPDAPEKLIEGLKSPDTSLLLPDLLPMTDPFGSTSDAVIEKADVAVESLIPGLEPPVPQRLPSQTESVTSNRTDSLTGEDSLLDCSLLSNPTTDLLEEFAPTAISAPVHKAAEDSNLISGFDVPEGSDKVAEDEFDPIPVLITKNPQGGHSRNSSGSSESSLPNLARSLLLVDQLIDL"

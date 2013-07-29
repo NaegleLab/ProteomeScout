@@ -78,21 +78,39 @@ def map_domain_to_sequence(seq1, domain, seq2):
     return new_domain
 
 
-def parse_pfam_domains(pfam_domains):
+def parse_loc(loc):
+    m = re.match(r"([0-9]+)\.\.([0-9]+)", loc)
+    if m:
+        return int(m.group(1)), int(m.group(2))
+    
+    m = re.match(r"([0-9]+)", loc)
+    if m:
+        return int(m.group(1)), None
+
+    return 0, None
+
+def parse_protein_features(pxml):
+    accepted_features = set(['Region'])
+    ignored_names = set(['Splicing variant', 'Variant', 'Mature chain', 'Conflict'])
     parsed_features = []
-    for pfd in pfam_domains:
-        domain = pfam_tools.PFamDomain()
-        domain.significant = 1
-        domain.release = 0
-        domain.p_value = -1
-        domain.label = pfd['label']
-        domain.accession = pfd['accession']
-        domain.start = pfd['start']
-        domain.stop = pfd['stop']
-        domain.class_ = "Domain"
-        
-        parsed_features.append(domain)
-        
+    for feature in pxml['GBSeq_feature-table']:
+        if feature['GBFeature_key'] in accepted_features:
+            type = feature['GBFeature_key']
+            source = 'ncbi'
+            name = get_qualifier('region_name', feature)['GBQualifier_value']
+
+            note_qual = get_qualifier('note', feature)
+            if note_qual != None and note_qual['GBQualifier_value'].find('domain') >= 0:
+                type = 'Domain'
+            if note_qual != None and note_qual['GBQualifier_value'].find('pfam') >= 0:
+                continue
+
+            loc = feature['GBFeature_location']
+            start, stop = parse_loc(loc)
+            if name not in ignored_names:
+                f = upload_helpers.ProteinFeature(type, name, start, stop, source)
+                parsed_features.append(f)
+
     return parsed_features
 
 def get_feature(name, table):
@@ -168,7 +186,7 @@ def get_protein_information(pm, acc):
     prot_accessions = pm.get_other_accessions(acc)
     prot_accessions = filter_update_other_accessions(prot_accessions)
 
-    prot_domains = parse_pfam_domains(pm.get_domains(acc))
+    prot_features = parse_protein_features(pm.get_raw_xml(acc))
     prot_mutations = upload_helpers.parse_variants(acc, seq, pm.get_variants(acc))
 
     host_organism = None
@@ -178,7 +196,7 @@ def get_protein_information(pm, acc):
         pass
 
     pr = upload_helpers.ProteinRecord(name, gene, locus, taxonomy, species,
-            None, acc, prot_accessions, prot_domains, prot_mutations, seq)
+            None, acc, prot_accessions, prot_features, prot_mutations, seq)
     pr.set_host_organism(host_organism)
 
     return pr

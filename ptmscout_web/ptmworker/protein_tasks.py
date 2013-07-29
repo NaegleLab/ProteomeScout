@@ -10,7 +10,7 @@ from sqlalchemy.exc import DBAPIError, SQLAlchemyError
 
 log = logging.getLogger('ptmscout')
 
-MAX_NCBI_BATCH_SIZE = 500
+MAX_NCBI_BATCH_SIZE = 400
 MAX_UNIPROT_BATCH_SIZE = 200
 
 def get_uniprot_proteins(protein_accessions):
@@ -46,6 +46,12 @@ def load_scansite(prot, taxonomy):
     if motif_class != None:
         upload_helpers.query_protein_scansite(prot, motif_class)
 
+def parse_region_tracks(prot, features):
+    for f in features:
+        pr = protein.ProteinRegion(f.type, f.name, f.source, f.start, f.stop)
+        if not prot.hasRegion(pr):
+            prot.regions.append(pr)
+
 def load_new_protein(accession, protein_record):
     created = False
     prot = protein.getProteinBySequence(protein_record.sequence, protein_record.species)
@@ -63,10 +69,12 @@ def load_new_protein(accession, protein_record):
     other_accessions = picr_tools.get_picr(accession, prot.species.taxon_id)
     added_accessions = upload_helpers.create_accession_for_protein(prot, protein_record.other_accessions + other_accessions)
 
+    parse_region_tracks(prot, protein_record.features)
+
     upload_helpers.map_expression_probesets(prot)
 
     if created:
-        pfam_tools.parse_or_query_domains(prot, protein_record.domains, accession)
+        pfam_tools.parse_or_query_domains(prot, accession)
         upload_helpers.find_activation_loops(prot)
         load_scansite( prot, protein_record.full_taxonomy )
         

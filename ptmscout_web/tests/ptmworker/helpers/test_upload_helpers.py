@@ -46,10 +46,10 @@ IHHTDVNILV DTVWALSYLT DAGNEQIQMV IDSGIVPHLV PLLSHQEVKV
 
         upload_helpers.find_activation_loops( prot )
 
-        created_regions = [ ( r.label, r.source, r.start, r.stop ) for r in prot.regions ]
+        created_regions = [ ( r.type, r.label, r.source, r.start, r.stop ) for r in prot.regions ]
 
-        exp_regions = [( 'Kinase Activation Loop', 'predicted', 13, 53 ),
-                       ( 'Possible Kinase Activation Loop', 'predicted', 108, 149 )]
+        exp_regions = [( 'Activation Loop', 'Kinase Activation Loop', 'predicted', 13, 53 ),
+                       ( 'Activation Loop', 'Possible Kinase Activation Loop', 'predicted', 108, 149 )]
 
         self.assertEqual( exp_regions, created_regions )
 

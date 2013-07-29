@@ -236,9 +236,12 @@ def get_stored_pfam_domains(uniprot_acc, prot_sequence):
 
     raise PFamError("Unable to query PFam")
 
-def parse_or_query_domains(prot, domains, query_accession):
+def parse_or_query_domains(prot, query_accession):
+    domains = []
 
-    if len(domains) == 0 and protein_utils.get_accession_type(query_accession) == 'swissprot':
+    source = "PARSED PFAM"
+    params = "ALL"
+    if protein_utils.get_accession_type(query_accession) == 'swissprot':
         try:
             domains = get_stored_pfam_domains(query_accession, prot.sequence)
         except PFamError:
@@ -249,9 +252,6 @@ def parse_or_query_domains(prot, domains, query_accession):
 
         source = "COMPUTED PFAM"
         params = "pval=%f" % (PFAM_DEFAULT_CUTOFF)
-    else:
-        source = "PARSED PFAM"
-        params = "ALL"
 
     for domain in domains:
         dbdomain = protein.ProteinDomain()

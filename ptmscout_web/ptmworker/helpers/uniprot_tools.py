@@ -145,10 +145,26 @@ def read_variants(features):
                                     'notes':annotation} )
     return variant_list
 
+def parse_features(features):
+    ignored_features = set(['chain', 'modified residue', 'splice variant', 'mutagenesis site', 'sequence conflict', ])
+    parsed = []
+    for feature in features:
+        if feature.type in ignored_features:
+            continue
+
+        name = ""
+        if 'description' in feature.qualifiers:
+            name = feature.qualifiers['description']
+        f = upload_helpers.ProteinFeature( feature.type, name, feature.location.start.real + 1, feature.location.end.real, 'uniprot' )
+        parsed.append(f)
+    return parsed
+
 def parse_xml(xml):
     name = xml.description
     gene = None
-    
+
+    features = parse_features(xml.features)
+
     if 'gene_name_primary' in xml.annotations:
         gene = xml.annotations['gene_name_primary']
 
@@ -170,7 +186,6 @@ def parse_xml(xml):
             if rec not in other_accessions:
                 other_accessions.append(rec)
 
-    domains = []
     seq = str(xml.seq).strip().upper()
 
     mutations = upload_helpers.parse_variants( xml.id, seq, read_variants(xml.features) )
@@ -181,7 +196,7 @@ def parse_xml(xml):
         host_organism = xml.annotations['organism_host'][0].strip()
 
     pr = upload_helpers.ProteinRecord(name, gene, locus, taxons, species,
-            None, xml.id, other_accessions, domains, mutations, seq)
+            None, xml.id, other_accessions, features, mutations, seq)
 
     pr.set_host_organism(host_organism, host_organism_taxon_id)
 

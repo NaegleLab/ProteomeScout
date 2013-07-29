@@ -6,6 +6,20 @@ import os
 class TestUniprotQuery(IntegrationTestCase):
 #'annotations', 'dbxrefs', 'description', 'features', 'format', 'id', 'letter_annotations', 'lower', 'name', 'reverse_complement', 'seq', 'upper'
 
+    def test_uniprot_region_parse(self):
+        result_xml = open(os.path.join(settings.ptmscout_path, 'tests','ptmworker','helpers','uniprot_result.xml'), 'r')
+        rval = uniprot_tools.handle_result(result_xml)
+
+        pr = rval['Q91ZU6']
+
+        parsed_features = []
+        for f in pr.features:
+            parsed_features.append((f.type, f.name, f.source, f.start, f.stop))
+
+        self.assertEqual(('domain', 'Actin-binding', 'uniprot', 35, 252,), parsed_features[0])
+        self.assertEqual(('domain', 'SH3', 'uniprot', 889, 941,), parsed_features[4])
+        self.assertEqual(('repeat', 'Plectin 5', 'uniprot', 1848, 1889,), parsed_features[9])
+
     def test_uniprot_handle_result(self):
         result_xml = open(os.path.join(settings.ptmscout_path, 'tests','ptmworker','helpers','uniprot_result.xml'), 'r')
         rval = uniprot_tools.handle_result(result_xml)
@@ -15,7 +29,6 @@ class TestUniprotQuery(IntegrationTestCase):
         self.assertEqual('Q91ZU6', pr.query_accession)
         self.assertEqual(12, len( pr.other_accessions ))
         self.assertEqual('Mus musculus', pr.species)
-        self.assertEqual(0, len(pr.domains))
         self.assertEqual(0, len(pr.mutations))
         self.assertEqual(None, pr.host_organism)
 

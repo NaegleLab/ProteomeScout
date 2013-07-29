@@ -20,9 +20,16 @@ class TaxonError(Exception):
     def __repr__(self):
         return "Unable to locate taxon node: %s" % (self.taxon)
 
+class ProteinFeature(object):
+    def __init__(self, tp, name, start, stop, source):
+        self.type = tp
+        self.name = name
+        self.start = start
+        self.stop = stop
+        self.source = source
 
 class ProteinRecord(object):
-    def __init__(self, name, gene, locus, taxonomy, species, taxon_id, query_accession, other_accessions, domains, mutations, sequence):
+    def __init__(self, name, gene, locus, taxonomy, species, taxon_id, query_accession, other_accessions, features, mutations, sequence):
         self.name = name
         self.gene = gene
         self.locus = locus
@@ -33,16 +40,13 @@ class ProteinRecord(object):
 
         self.query_accession = query_accession
         self.other_accessions = other_accessions
-        self.domains = domains
+        self.features = features
         self.mutations = mutations
         self.sequence = sequence
 
         self.host_organism = None
         self.host_taxon_id = None
         self.host_taxonomy = []
-
-    def has_domains(self):
-        return len(self.domains) > 0
 
     def set_host_organism(self, host_species, taxon_id=None):
         self.host_organism = host_species
@@ -69,7 +73,7 @@ class ProteinRecord(object):
     def copy(self):
         pr = ProteinRecord(self.name, self.gene, self.locus, self.species,
                 self.taxon_id, self.query_accession, self.other_accessions[:],
-                self.domains[:], self.mutations[:], self.sequence)
+                self.features, self.mutations[:], self.sequence)
 
         pr.host_organism = self.host_organism
         pr.host_taxon_id = self.host_taxon_id
@@ -170,7 +174,7 @@ def find_activation_loops(prot):
 
         label = strings.kinase_loop_name if len(domain_seq) <= cutoff_loop_size else strings.possible_kinase_name
         source = 'predicted'
-        region = protein.ProteinRegion(label, source, loop_start, loop_end)
+        region = protein.ProteinRegion('Activation Loop', label, source, loop_start, loop_end)
 
         i+=1
         prot.regions.append(region)
