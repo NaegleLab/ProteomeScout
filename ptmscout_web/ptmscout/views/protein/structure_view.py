@@ -33,19 +33,61 @@ def format_protein_mutations(prot):
 
     return formatted_mutations
 
-
-def format_protein_regions(prot):
+def get_activation_loops(prot):
     formatted_regions = []
     for d in prot.regions:
-        region_dict = {}
-        region_dict['label'] = d.label
-        region_dict['source'] = d.source
-        region_dict['start'] = d.start
-        region_dict['stop'] = d.stop
+        if d.type == 'Activation Loop':
+            region_dict = {}
+            region_dict['type'] = d.type
+            region_dict['label'] = d.label
+            region_dict['source'] = d.source
+            region_dict['start'] = d.start
+            region_dict['stop'] = d.stop
 
-        formatted_regions.append(region_dict)
+            formatted_regions.append(region_dict)
 
     return sorted(formatted_regions, key=lambda d: d['start'])
+
+def get_uniprot_domains(prot):
+    formatted_regions = []
+
+    for d in prot.regions:
+        if d.type == 'domain' and d.source == 'uniprot':
+            region_dict = {}
+            region_dict['type'] = d.type
+            region_dict['label'] = d.label
+            region_dict['source'] = d.source
+            region_dict['start'] = d.start
+            region_dict['stop'] = d.stop
+
+            formatted_regions.append(region_dict)
+
+    return sorted(formatted_regions, key=lambda d: d['start'])
+
+def get_ncbi_domains(prot):
+    formatted_regions = []
+
+    for d in prot.regions:
+        if d.type == 'Domain' and d.source == 'ncbi':
+            region_dict = {}
+            region_dict['type'] = d.type
+            region_dict['label'] = d.label
+            region_dict['source'] = d.source
+            region_dict['start'] = d.start
+            region_dict['stop'] = d.stop
+
+            formatted_regions.append(region_dict)
+
+    return sorted(formatted_regions, key=lambda d: d['start'])
+
+def format_protein_regions(prot):
+    formatted_regions = {}
+
+    formatted_regions['activation_loops'] = get_activation_loops(prot)
+    formatted_regions['uniprot_domains'] = get_uniprot_domains(prot)
+    formatted_regions['ncbi_domains'] = get_ncbi_domains(prot)
+
+    return formatted_regions
 
 def format_protein_domains(prot):
     formatted_domains = []
@@ -132,5 +174,5 @@ def protein_structure_viewer(context, request):
             'protein': prot,
             'experiments': formatted_exps,
             'mod_types': formatted_mod_types,
-            'tracks': ["Domains", "PTMs", "Regions", "Mutations", "Scansite"],
+            'tracks': ["PFam Domains", "PTMs", "Activation Loops", "Uniprot Domains", "Entrez Domains", "Mutations", "Scansite"],
             'data':encoded_data}
