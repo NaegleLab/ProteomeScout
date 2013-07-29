@@ -58,7 +58,7 @@ class TestExperimentErrorsView(UnitTestCase):
         expected_errors = [(1, 'acc', 'pep2',"Error 1"),
                            (4, 'acc3', 'pep4',"Error 2")]
         
-        self.assertEqual(strings.experiment_errors_page_title, result['pageTitle'])
+        self.assertEqual(strings.experiment_errors_page_title % (exp.name), result['pageTitle'])
         self.assertEqual(exp, result['experiment'])
         self.assertEqual(expected_errors,result['errors'])
         self.assertEqual(2,result['error_count'])

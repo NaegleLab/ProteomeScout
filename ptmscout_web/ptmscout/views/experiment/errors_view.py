@@ -18,7 +18,7 @@ def experiment_errors_view(request):
     
     return {'user_owner': user_owner,
             'errors':sorted( error_list, key=lambda item: item[0] ),
-            'pageTitle': strings.experiment_errors_page_title,
+            'pageTitle': strings.experiment_errors_page_title % (exp.name),
             'experiment':exp,
             'rejected_peptides': rejected,
             'error_count': len(error_list)}
