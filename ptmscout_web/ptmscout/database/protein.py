@@ -110,13 +110,15 @@ class ProteinDomain(Base):
 class ProteinRegion(Base):
     __tablename__='protein_regions'
     id = Column(Integer(10), primary_key=True, autoincrement=True)
+    type = Column(VARCHAR(20))
     label = Column(VARCHAR(100))
-    source = Column(Enum(['predicted', 'parsed']))
+    source = Column(Enum(['predicted', 'parsed', 'uniprot', 'ncbi']))
     start = Column(Integer(10))
     stop = Column(Integer(10))
     protein_id = Column(Integer(10), ForeignKey('protein.id'))
 
-    def __init__(self, label, source, start, stop, protein_id=None):
+    def __init__(self, type, label, source, start, stop, protein_id=None):
+        self.type = type
         self.label = label
         self.source = source
         self.start = start
@@ -124,10 +126,11 @@ class ProteinRegion(Base):
         self.protein_id = protein_id
 
     def __eq__(self, o):
+        c0 = self.type == o.type
         c1 = self.label == o.label
         c2 = self.start == o.start
         c3 = self.stop == o.stop
-        return c1 and c2 and c3
+        return c0 and c1 and c2 and c3
 
     def hasSite(self, site_pos):
         return self.start <= site_pos and site_pos <= self.stop
@@ -259,17 +262,18 @@ def getProteinsByGene(gene_name, species=None):
     return q.all()
 
 def searchProteins(search=None, species=None, sequence=None, page=None, exp_id=None, includeNames=False):
-    search = ( "%" + search + "%" ) if search else "%"
-
     q = DBSession.query(Protein.id).join(Protein.accessions).join(Protein.species)
 
-    if includeNames:
-        clause = or_(Protein.acc_gene.like(search),
-                ProteinAccession.value.like(search),
-                Protein.name.like(search))
-    else:
-        clause = or_(Protein.acc_gene.like(search),
-                ProteinAccession.value.like(search))
+    clause = "1=1"
+    if search:
+        search = ( "%" + search + "%" ) if search else "%"
+        if includeNames:
+            clause = or_(Protein.acc_gene.like(search),
+                    ProteinAccession.value.like(search),
+                    Protein.name.like(search))
+        else:
+            clause = or_(Protein.acc_gene.like(search),
+                    ProteinAccession.value.like(search))
 
     if sequence:
         seq_search = ( "%" + sequence + "%" ) if sequence else "%"
