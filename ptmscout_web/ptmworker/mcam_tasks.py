@@ -67,10 +67,10 @@ def calculate_feature_enrichment(measurements, annotation_types, cluster_sets, s
                                                                    domain_cutoff=domain_cutoff,
                                                                    cache_table = label_cache)
             
-#            motif_cnt, motif_results = motif.calculate_motif_enrichment(foreground, measurements)
-#            enrichment[(cluster_set, clabel)] += [('motif', pep, pv) for pep, _fg, _bg, pv in motif_results]
+            motif_cnt, motif_results = motif.calculate_motif_enrichment(foreground, measurements)
+            enrichment[(cluster_set, clabel)] += [('motif', pep, pv) for pep, _fg, _bg, pv in motif_results]
             
-#            test_cnt['motif'] += motif_cnt
+            test_cnt['motif'] += motif_cnt
             notify_tasks.increment_job_progress.apply_async((job_id,))
 
     return enrichment, test_cnt
