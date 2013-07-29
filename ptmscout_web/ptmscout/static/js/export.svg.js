@@ -1,7 +1,8 @@
 function displaySVG(id) {
 	var svgml = $(id).html();
+    svgml = svgml.replace("#zoomgrad", "url(#zoomgrad)");
     var b64 = Base64.encode(svgml);
-    window.open("data:image/svg+xml;base64,\n"+b64)
+    window.open("data:image/svg+xml;base64,\n"+b64);
 }
 
 function exportSVG(chart){

@@ -32,21 +32,21 @@ function ZoomWindow(structure_viewer, svg_container, residue, width, height) {
 			.x(function(d) { return d.x } )
 			.y(function(d) { return d.y } )
 
-    var gradient = svg_container.append("svg:defs")
-          .append("svg:linearGradient")
-              .attr("id", "gradient")
+    var gradient = svg_container.append("defs")
+          .append("linearGradient")
+              .attr("id", "zoomgrad")
               .attr("x1", "0%")
               .attr("y1", "0%")
               .attr("x2", "0%")
               .attr("y2", "100%")
               .attr("spreadMethod", "pad");
 
-    gradient.append("svg:stop")
+    gradient.append("stop")
             .attr("offset", "0%")
             .attr("stop-color", "#666")
-            .attr("stop-opacity", 0.3);
+            .attr("stop-opacity", 1.0);
 
-    gradient.append("svg:stop")
+    gradient.append("stop")
             .attr("offset", "100%")
             .attr("stop-color", "#666")
                 .attr("stop-opacity", 0);
@@ -58,15 +58,14 @@ function ZoomWindow(structure_viewer, svg_container, residue, width, height) {
             .enter().insert('path', ":first-child")
                 .attr('class', "expander")
                 .attr('d', this.line)
-                .style("fill", "url(#gradient)");
+                .style("opacity", '0.3')
+                .style("fill", "url(#zoomgrad)");
 }
 
 ZoomWindow.prototype.remove = function() {
     this.zoom_window.remove();
     this.gradient.remove();
     this.expand_gradient.remove();
-    this.left_expander.remove();
-    this.right_expander.remove();
 }
 
 ZoomWindow.prototype.update_window = function(residue, width, axis){

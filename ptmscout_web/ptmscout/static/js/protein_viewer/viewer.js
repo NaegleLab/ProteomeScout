@@ -134,11 +134,19 @@ function StructureViewer(protein_data) {
     this.width = 900;
     this.height = this.default_height;
 
-    this.svg_container =
+    this.svg =
             d3.select('.protein_viewer .viewer')
                 .append('svg')
+                    .attr('version', "1.1")
+                    .attr('xmlns', "http://www.w3.org/2000/svg")
                     .attr('width', this.width)
                     .attr('height', this.height);
+
+    this.svg_container =
+                this.svg.append('g')
+                    .attr('class', 'viewer_svg');
+
+
 
 
     this.axis = d3.scale.linear().domain([0, protein_data.seq.length]).range([0, this.width]);
@@ -255,7 +263,7 @@ function StructureViewer(protein_data) {
             .on("drag", drag_over)
             .on("dragend", drag_end);
 
-    this.svg_container.call(drag_behavior);
+    this.svg.call(drag_behavior);
 };
 
 StructureViewer.prototype.create_ptm_track = function(track_viewer) {
@@ -330,6 +338,27 @@ StructureViewer.prototype.zoom_off = function(){
     }
 }
 
+StructureViewer.prototype.export_svg = function() {
+   var chart = d3.select('.protein_viewer .viewer')
+   var id = "#" + chart.attr('id');
+
+   if($(id + " svg style").size() == 0){
+       css_url = $("#protein_viewer_css_export_url").text()
+
+       $.get(css_url,
+           function(data) {
+               $(id + " svg").append("<style>" + data + "</style>");
+               displaySVG(id);
+           }
+       ).error(function() {
+           alert("Request ERROR: unable to load stylesheet. Please try again.")
+       });
+
+   } else {
+       displaySVG(id);
+   }
+};
+
 StructureViewer.prototype.zoom_on = function() {
     if(!this.zoom_enabled){
         this.zoom_enabled=true;
@@ -377,6 +406,11 @@ StructureViewer.prototype.toggle_track = function(track_name, mode){
 }
 
 $(function(){
+    $('.zoomout-tool').button({ icons: { primary: 'ui-icon-zoomout' }, text:false })
+                      .click(function(){
+                         window.structure_viewer.zoom_off();
+                       });
+
     $('.ptm-tool').button()
                   .click(function(){
                     $('.mods').dialog()
@@ -389,6 +423,11 @@ $(function(){
                   .click(function(){
                     $('.tracks').dialog()
                   });
+
+    $('.svg-tool').button()
+                    .click(function(){
+                        window.structure_viewer.export_svg();
+                    });
 
     $('.mods').toggle();
     $('.exps').toggle();

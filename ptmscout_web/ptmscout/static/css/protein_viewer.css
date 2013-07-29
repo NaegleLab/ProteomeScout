@@ -31,7 +31,7 @@
     margin-right:0px;
 }
 
-.protein_viewer .viewer{
+.protein_viewer .viewer_svg{
     width:900px;
 }
 
@@ -42,7 +42,7 @@
     list-style: none;
 }
 
-.track-label {
+.viewer_svg .track-label {
     fill:#999;
 }
 
@@ -50,89 +50,94 @@
     cursor:text;
 }
 
-.viewer circle {
+.viewer_svg {
+    font-family: helvetica,arial,verdana;
+    font-size:12pt;
+}
+
+.viewer_svg circle {
     cursor:default;
 }
 
-.viewer .strand {
+.viewer_svg .strand {
     stroke:black;
     stroke-width:2px;
     cursor:default;
 }
 
-.viewer .domain {
+.viewer_svg .domain {
     stroke:black;
     stroke-width:1px;
     cursor:pointer;
 }
 
-.viewer text {
+.viewer_svg text {
     cursor:default;
     pointer-events:none;
 }
 
-.viewer text.domain {
+.viewer_svg text.domain {
     stroke:none;
     fill:black;
     font-size: 12pt;
 }
 
-.viewer .region {
+.viewer_svg .region {
     stroke:black;
     stroke-width:1px;
     cursor:default;
 }
 
-.viewer text.region {
+.viewer_svg text.region {
     stroke:none;
     fill:black;
     font-size: 12pt;
 }
 
-.viewer line.tick {
+.viewer_svg line.tick {
     stroke-width:1;
 }
-.viewer line.t5000 {
+.viewer_svg line.t5000 {
     stroke:#000;
 }
-.viewer line.t1000 {
+.viewer_svg line.t1000 {
     stroke:#222;
 }
-.viewer line.t500 {
+.viewer_svg line.t500 {
     stroke:#444;
 }
-.viewer line.t100 {
+.viewer_svg line.t100 {
     stroke:#666;
 }
-.viewer line.t50 {
+.viewer_svg line.t50 {
     stroke:#888;
 }
-.viewer line.t10 {
+.viewer_svg line.t10 {
     stroke:#AAA;
 }
 
-.viewer text.tick {
+.viewer_svg text.tick {
     font-size:8pt;
 }
-.viewer text.t5000 {
+.viewer_svg text.t5000 {
     fill:#000;
 }
-.viewer text.t1000 {
+.viewer_svg text.t1000 {
     fill:#222;
 }
-.viewer text.t500 {
+.viewer_svg text.t500 {
     fill:#444;
 }
-.viewer text.t100 {
+.viewer_svg text.t100 {
     fill:#666;
 }
-.viewer text.t50 {
+.viewer_svg text.t50 {
     fill:#888;
 }
-.viewer text.t10 {
+.viewer_svg text.t10 {
     fill:#AAA;
 }
 
-.viewer text.aminoacid {
+.viewer_svg text.aminoacid {
 }
 

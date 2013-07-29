@@ -23,9 +23,11 @@
         <div class="protein_viewer">
             <div class="data">${data}</div>
             <div class="toolkit">
+                <button class="zoomout-tool">Disable Zoom</button>
                 <button class="ptm-tool">Filter PTMs</button>
                 <button class="exp-tool">Filter Experiments</button>
                 <button class="track-tool">Filter Tracks</button>
+                <button class="svg-tool">Export SVG</button>
 
                 <div title="Modification Types" class="mods">
                     <ul>
@@ -56,9 +58,10 @@
                     </ul>
                 </div>
             </div>
-            <div class="viewer"></div>
+            <div id="pview" class="viewer"></div>
         </div>
         <div class="ptm_metadata"></div>
+        <div id="protein_viewer_css_export_url" style="display:none;" >${request.static_url('ptmscout:static/css/protein_viewer.css')}</div>
       </div>
 	</div>
 </div>	
