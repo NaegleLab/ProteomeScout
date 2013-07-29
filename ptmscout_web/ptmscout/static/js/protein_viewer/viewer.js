@@ -117,16 +117,14 @@ TrackViewer.prototype.toggle_track = function(t, track_name, mode) {
     }
 }
 
-
 function StructureViewer(protein_data) {
     console.log(protein_data)
     this.protein_data = protein_data;
-
     this.show_residues_size_limit = 100;
-    this.default_height = 390;
+    this.default_height = 500;
     this.macro_viewer_position = 0;
-    this.zoom_viewer_position = 390;
-    this.zoom_window_height = 750;
+    this.zoom_viewer_position = 500;
+    this.zoom_window_height = 1000;
 
     this.transition_duration = 250;
 
@@ -158,8 +156,12 @@ function StructureViewer(protein_data) {
     this.create_mutation_track(this.macro_viewer, macro_residues);
     this.create_scansite_track(this.macro_viewer, macro_residues);
 
-    this.create_region_track(this.macro_viewer);
+    this.create_activation_loop_track(this.macro_viewer);
+    this.create_uniprot_domain_track(this.macro_viewer);
+    this.create_ncbi_domain_track(this.macro_viewer);
     this.create_domain_track(this.macro_viewer);
+
+    this.macro_viewer.view_residues(0, protein_data.seq.length);
 
     this.zoom_viewer = new TrackViewer(this, this.svg_container, this.zoom_viewer_position, 'zoom_track_viewer', true);
     this.zoom_viewer.view_residues(this.last_zoom_residue, this.last_zoom_width);
@@ -171,11 +173,89 @@ function StructureViewer(protein_data) {
     this.create_mutation_track(this.zoom_viewer, true);
     this.create_scansite_track(this.zoom_viewer, true);
     
-    this.create_region_track(this.zoom_viewer);
+    this.create_activation_loop_track(this.zoom_viewer);
+    this.create_uniprot_domain_track(this.zoom_viewer);
+    this.create_ncbi_domain_track(this.zoom_viewer);
     this.create_domain_track(this.zoom_viewer);
     this.zoom_viewer.hide();
 
     this.zoom_enabled = false;
+
+
+    var viewer = this;
+    function drag_start() {
+        viewer.zx = null;
+    }
+    function drag_over() {
+        viewer.ox = d3.event.x;
+
+        if(viewer.zx == null){
+            viewer.zx = d3.event.x;
+
+            viewer.zoom_drag = viewer.svg_container.append('rect')
+                .attr('x', viewer.zx)
+                .attr('y', 0)
+                .attr('width', 1)
+                .attr('height', viewer.default_height)
+                .style('fill', '#00ff00')
+                .style('opacity', '0.3');
+
+        }
+        else{
+            if(viewer.ox < viewer.zx){
+                viewer.zoom_drag
+                            .attr('x', viewer.ox)
+                            .attr('width', viewer.zx - viewer.ox);
+            }else{
+                viewer.zoom_drag
+                            .attr('x', viewer.zx)
+                            .attr('width', viewer.ox - viewer.zx);
+            }
+        }
+    }
+    function drag_end() {
+        if(viewer.zx != null) {
+
+            if(viewer.ox < viewer.zx){
+                var tmp = viewer.ox;
+                viewer.ox = viewer.zx;
+                viewer.zx = tmp;
+            }
+
+            var npos = viewer.axis.invert(viewer.zx);
+            var nwidth = viewer.axis.invert(viewer.ox) - npos;
+            if(nwidth < 50){
+                npos -= (50 - nwidth) / 2
+                nwidth = 50;
+            }
+            if(npos < 0){
+                npos = 0;
+            }
+
+            if(npos + nwidth > viewer.protein_data.seq.length){
+                npos = viewer.protein_data.seq.length - nwidth;
+            }
+
+            viewer.last_zoom_residue = npos;
+            viewer.last_zoom_width = nwidth;
+            viewer.zoom_viewer.view_residues(viewer.last_zoom_residue, viewer.last_zoom_width);
+
+            if(!viewer.zoom_enabled)
+                viewer.zoom_on();
+            else
+                viewer.zoom_window.update_window(viewer.last_zoom_residue, viewer.last_zoom_width, viewer.axis);
+
+            viewer.zoom_drag.remove();
+        }
+    }
+
+    drag_behavior =
+        d3.behavior.drag()
+            .on("dragstart", drag_start)
+            .on("drag", drag_over)
+            .on("dragend", drag_end);
+
+    this.svg_container.call(drag_behavior);
 };
 
 StructureViewer.prototype.create_ptm_track = function(track_viewer) {
@@ -202,14 +282,26 @@ StructureViewer.prototype.create_residue_track = function(track_viewer, show_res
     track_viewer.add_track(residue_track);
 };
 
-StructureViewer.prototype.create_region_track = function(track_viewer) {
-    region_track = new RegionTrack('Regions', track_viewer.viewer, this.protein_data);
-    region_track.create(track_viewer.axis, this.width, this.region_colors);
+StructureViewer.prototype.create_activation_loop_track = function(track_viewer) {
+    region_track = new RegionTrack('Activation Loops', track_viewer.viewer, this.protein_data);
+    region_track.create(track_viewer.axis, this.width, this.region_colors, 'activation_loops');
+    track_viewer.add_track(region_track);
+};
+
+StructureViewer.prototype.create_uniprot_domain_track = function(track_viewer) {
+    region_track = new RegionTrack('Uniprot Domains', track_viewer.viewer, this.protein_data);
+    region_track.create(track_viewer.axis, this.width, this.region_colors, 'uniprot_domains');
+    track_viewer.add_track(region_track);
+};
+
+StructureViewer.prototype.create_ncbi_domain_track = function(track_viewer) {
+    region_track = new RegionTrack('Entrez Domains', track_viewer.viewer, this.protein_data);
+    region_track.create(track_viewer.axis, this.width, this.region_colors, 'ncbi_domains');
     track_viewer.add_track(region_track);
 };
 
 StructureViewer.prototype.create_domain_track = function(track_viewer) {
-    domain_track = new DomainTrack('Domains', track_viewer.viewer, this.protein_data);
+    domain_track = new DomainTrack('PFam Domains', track_viewer.viewer, this.protein_data);
     domain_track.create(track_viewer.axis, this.width, this.domain_colors);
     track_viewer.add_track(domain_track);
 };
@@ -243,7 +335,6 @@ StructureViewer.prototype.zoom_on = function() {
         this.zoom_enabled=true;
 
         this.zoom_window = new ZoomWindow(this, this.svg_container, this.last_zoom_residue, this.last_zoom_width, this.zoom_viewer_position - 100);
-        this.zoom_window.set_zoom_viewer(this.zoom_viewer);
         this.zoom_viewer.show();
 
         this.height = this.zoom_window_height;
@@ -286,16 +377,6 @@ StructureViewer.prototype.toggle_track = function(track_name, mode){
 }
 
 $(function(){
-    $('.zoomin-tool').button({ icons: { primary: 'ui-icon-zoomin' }, text:false })
-                     .click(function(){
-                         window.structure_viewer.zoom_on();
-                      });
-
-    $('.zoomout-tool').button({ icons: { primary: 'ui-icon-zoomout' }, text:false })
-                      .click(function(){
-                         window.structure_viewer.zoom_off();
-                       });
-
     $('.ptm-tool').button()
                   .click(function(){
                     $('.mods').dialog()

@@ -46,9 +46,18 @@
     fill:#999;
 }
 
+.viewer {
+    cursor:text;
+}
+
+.viewer circle {
+    cursor:default;
+}
+
 .viewer .strand {
     stroke:black;
     stroke-width:2px;
+    cursor:default;
 }
 
 .viewer .domain {
@@ -57,16 +66,21 @@
     cursor:pointer;
 }
 
+.viewer text {
+    cursor:default;
+    pointer-events:none;
+}
+
 .viewer text.domain {
     stroke:none;
     fill:black;
     font-size: 12pt;
-    cursor:default;
 }
 
 .viewer .region {
     stroke:black;
     stroke-width:1px;
+    cursor:default;
 }
 
 .viewer text.region {
@@ -120,16 +134,5 @@
 }
 
 .viewer text.aminoacid {
-}
-
-.viewer .zoom.window {
-    opacity: 0.3;
-    fill: #666;
-    cursor: move;
-}
-
-.viewer .handle {
-    opacity: 0;
-    cursor: col-resize;
 }
 

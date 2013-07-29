@@ -202,6 +202,7 @@ function build_ptm_table(k, mods, protein_data) {
 
 PTMTrack.prototype.create = function(axis, viewer_width, residue_colors) {
     ptm_viewer = this;
+    this.residue_colors = residue_colors;
 
     this.experiment_display_modes = {};
     for(var exp_id in this.protein_data.exps){
@@ -212,22 +213,6 @@ PTMTrack.prototype.create = function(axis, viewer_width, residue_colors) {
     for (var i in this.protein_data.mod_types){
         this.ptm_display_modes[this.protein_data.mod_types[i]] = true;
     }
-
-    this.g.selectAll('rect.ptm')
-        .data( d3.entries(this.protein_data.mods) )
-            .enter().append('rect')
-                .attr('class', 'ptm')
-                .attr('id', function(d) { return d.value.residue + d.key; })
-                .attr('x', function(d) { return axis(d.key - 1); })
-                .attr('width', function(d) { return Math.max(ptm_viewer.min_barwidth, axis(1) - axis(0)); })
-                .attr('y', function(d) { return ptm_viewer.yaxis( d.value.num_mods ); })
-                .attr('height', function(d) { return ptm_viewer.yaxis( 0 ) - ptm_viewer.yaxis( d.value.num_mods ); })
-                .attr('title', function(d) { return ptm_viewer.get_residue_tooltip_text(d); })
-                .style('fill', function(d) { return residue_colors(d.value.residue); })
-                .style('cursor', 'pointer')
-                .on('mouseover', function() { d3.select(this).style('opacity', 0.8); })
-                .on('mouseout', function() { d3.select(this).style('opacity', 1.0); })
-                .on('click', function(d) { build_ptm_table(d.key, d.value, ptm_viewer.protein_data); });
 };
 
 
@@ -276,12 +261,35 @@ PTMTrack.prototype.update_values = function(transition_duration) {
 }
 
 PTMTrack.prototype.update_display = function(axis, viewer_width) {
-    yaxis = this.yaxis;
+    var start_residue = Math.floor(axis.invert(0));
+    var end_residue = Math.ceil(axis.invert(viewer_width));
+    var ptmviewer = this;
+
+    var filtered_mods = {};
+    for(var k in this.protein_data.mods){
+        index = parseInt(k);
+
+        if( start_residue <= index && index <= end_residue){
+            filtered_mods[index] = this.protein_data.mods[k];
+        }
+    }
+
+    this.g.selectAll('rect.ptm').remove();
     this.g.selectAll('rect.ptm')
-        .attr('x', function(d) { return axis(d.key - 1); })
-        .attr('width', function(d) { return Math.max(ptm_viewer.min_barwidth, axis(1) - axis(0));; })
-        .attr('y', function(d) { return yaxis( d.value.num_mods ); })
-        .attr('height', function(d) { return yaxis(0) - yaxis( d.value.num_mods ); });
+        .data( d3.entries(filtered_mods) )
+            .enter().append('rect')
+                .attr('class', 'ptm')
+                .attr('id', function(d) { return d.value.residue + d.key; })
+                .attr('x', function(d) { return axis(d.key - 1); })
+                .attr('width', function(d) { return Math.max(ptm_viewer.min_barwidth, axis(1) - axis(0)); })
+                .attr('y', function(d) { return ptm_viewer.yaxis( d.value.num_mods ); })
+                .attr('height', function(d) { return ptm_viewer.yaxis( 0 ) - ptm_viewer.yaxis( d.value.num_mods ); })
+                .attr('title', function(d) { return ptm_viewer.get_residue_tooltip_text(d); })
+                .style('fill', function(d) { return ptm_viewer.residue_colors(d.value.residue); })
+                .style('cursor', 'pointer')
+                .on('mouseover', function() { d3.select(this).style('opacity', 0.8); })
+                .on('mouseout', function() { d3.select(this).style('opacity', 1.0); })
+                .on('click', function(d) { build_ptm_table(d.key, d.value, ptm_viewer.protein_data); });
 };
 
 function ResidueTrack(name, track_viewer, protein_data) {
@@ -293,18 +301,7 @@ function ResidueTrack(name, track_viewer, protein_data) {
 
 
     this.tick_levels = [5000,1000,500,100,50,10];
-    ticks = [];
-    for(var t in this.tick_levels)
-        ticks.push([]);
 
-    for(var i = 10; i < this.protein_data.seq.length; i+=10){
-        for(var j in this.tick_levels){
-            if(i % this.tick_levels[j] == 0){
-                ticks[j].push(i);
-                break;
-            }
-        }
-    }
 };
 
 ResidueTrack.prototype.create = function(axis, viewer_width, show_residues) {
@@ -316,29 +313,11 @@ ResidueTrack.prototype.create = function(axis, viewer_width, show_residues) {
             .attr('x2', viewer_width)
             .attr('y1', 0)
             .attr('y2', 0);
-
-    if(show_residues){
-        this.g.selectAll('text.aminoacid')
-                .data(this.protein_data.seq)
-                    .enter().append('text')
-                        .attr('class', 'aminoacid')
-                        .attr('x', function(d,i){ return axis(i+0.5); })
-                        .attr('y', "-0.1em")
-                        .attr('text-anchor', 'middle')
-                        .text(function(d) { return d; })
-                        .style('pointer-events', 'none')
-                        .style('font-size', axis(1) - axis(0));
-    }
-
-    for(var j in this.tick_levels){
-        this.generate_ticks(viewer_width, axis, 5, ticks[j], this.tick_levels[j]);
-    }
-
 };
 
-ResidueTrack.prototype.generate_ticks = function(viewer_width, axis, h, values, size){
-    cls = 't{0}'.format(size);
-    tick_opacity = 0;
+ResidueTrack.prototype.generate_ticks = function(viewer_width, axis, h, values, size, min_residue, max_residue){
+    var cls = 't{0}'.format(size);
+    var tick_opacity = 0;
     if(viewer_width / (axis(size) - axis(0)) < 20){
         tick_opacity = 1;
     }
@@ -364,35 +343,55 @@ ResidueTrack.prototype.generate_ticks = function(viewer_width, axis, h, values, 
                 .attr('y', h)
                 .attr('dy', '1em')
                 .text(function(d) { return "" + d; } )
-                .style('pointer-events', 'none')
                 .style('opacity', tick_opacity);
 };
 
 ResidueTrack.prototype.update_display = function(axis, viewer_width) {
-    for (var i in this.tick_levels){
-        size = this.tick_levels[i];
-        cls = 't{0}'.format(size);
 
-        tick_opacity = 0;
-        if(viewer_width / (axis(size) - axis(0)) < 20){
-            tick_opacity = 1;
+    var start_residue = Math.floor(axis.invert(0));
+    var end_residue = Math.ceil(axis.invert(viewer_width));
+
+    var ticks = [];
+    for(var t in this.tick_levels)
+        ticks.push([]);
+
+    for(var i = 10; i < this.protein_data.seq.length; i+=10){
+        for(var j in this.tick_levels){
+            if(i % this.tick_levels[j] == 0 && i >= start_residue && i <= end_residue){
+                ticks[j].push(i);
+                break;
+            }
         }
+    }
 
-        this.g.selectAll('line.'+cls)
-                .attr('x1', function(d) { return axis(d); })
-                .attr('x2', function(d) { return axis(d); })
-                .style('opacity', tick_opacity);
+    for(var j in this.tick_levels){
+        var size = this.tick_levels[j];
+        var cls = 't{0}'.format(size);
 
-        this.g.selectAll('text.'+cls)
-                .attr('x', function(d) { return axis(d); })
-                .style('opacity', tick_opacity);
+        this.g.selectAll('line.'+cls).remove();
+        this.g.selectAll('text.'+cls).remove();
+        this.generate_ticks(viewer_width, axis, 5, ticks[j], size);
     }
 
     if(this.show_residues){
-        this.g.selectAll('text.aminoacid')
-                    .attr('x', function(d,i){ return axis(i+0.5); })
-                    .style('font-size', Math.min(16, axis(1) - axis(0)));
+        this.g.selectAll('text.aminoacid').remove();
+        var subseq = this.protein_data.seq.substring(start_residue, end_residue+1)
+        var fontsize = axis(1) - axis(0);
+
+        if(fontsize >= 8){
+            this.g.selectAll('text.aminoacid')
+                    .data(subseq)
+                        .enter().append('text')
+                            .attr('class', 'aminoacid')
+                            .attr('x', function(d,i){ return axis(start_residue+i+0.5); })
+                            .attr('y', "-0.1em")
+                            .attr('text-anchor', 'middle')
+                            .text(function(d) { return d; })
+                            .style('pointer-events', 'none')
+                            .style('font-size', Math.min(16, fontsize));
+        }
     }
+
 };
 
 
@@ -416,6 +415,7 @@ function DomainTrack(name, track_viewer, protein_data) {
 DomainTrack.prototype.create = function(axis, viewer_width, domain_colors) {
     var pfam_url = this.protein_data.pfam_url;
     this.protein_domains = $.extend(true, [], this.protein_data.domains);
+    this.domain_colors = domain_colors;
 
     this.g.append('line')
             .attr('class', "strand")
@@ -423,9 +423,30 @@ DomainTrack.prototype.create = function(axis, viewer_width, domain_colors) {
             .attr('x2', viewer_width)
             .attr('y1', 0)
             .attr('y2', 0);
+};
+
+DomainTrack.prototype.update_display = function(axis, viewer_width) {
+    var start_residue = Math.floor(axis.invert(0));
+    var end_residue = Math.ceil(axis.invert(viewer_width));
+    var track = this;
+
+    var filtered_domains = [];
+    for(var i in this.protein_domains){
+        region = this.protein_domains[i];
+        var condition = ( region.start < start_residue && region.stop > end_residue ) ||
+                        ( start_residue <= region.start && region.start <= end_residue ) ||
+                        ( start_residue <= region.stop && region.stop <= end_residue );
+        if(condition){
+            filtered_domains.push(region);
+        }
+    }
+
+
+    this.g.selectAll('rect.domain').remove();
+    this.g.selectAll('text.domain').remove();
 
     this.g.selectAll('rect.domain')
-        .data(this.protein_domains)
+        .data(filtered_domains)
             .enter().append('rect')
                 .attr('class', 'domain')
                 .attr('x', function(d) { return axis(d.start - 1); })
@@ -433,13 +454,13 @@ DomainTrack.prototype.create = function(axis, viewer_width, domain_colors) {
                 .attr('y', 0)
                 .attr('height', this.domain_height)
                 .attr('title', function(d) { return d.label; })
-                .style('fill', function(d) { return domain_colors( d.label ); } )
+                .style('fill', function(d) { return track.domain_colors( d.label ); } )
                 .on('mouseover', function() { d3.select(this).style('opacity', 0.8); })
                 .on('mouseout', function() { d3.select(this).style('opacity', 1.0); })
                 .on('click', function(d) { window.open(pfam_url + d.label, '_blank'); });
 
     this.g.selectAll('text.domain')
-        .data(this.protein_domains)
+        .data(filtered_domains)
             .enter().append('text')
                 .attr('class', 'domain')
                 .attr('x', function(d) { return ( axis(d.start - 1) + axis(d.stop) ) / 2; })
@@ -450,17 +471,7 @@ DomainTrack.prototype.create = function(axis, viewer_width, domain_colors) {
                 .style('opacity', function(d) { return d.show ? 1 : 0; })
                 .text(function(d) { return d.label; });
 
-};
 
-DomainTrack.prototype.update_display = function(axis, viewer_width) {
-    this.g.selectAll('rect.domain')
-                .attr('x', function(d) { return axis(d.start - 1); })
-                .attr('width', function(d) { return axis(d.stop) - axis(d.start - 1); });
-
-    this.g.selectAll('text.domain')
-                .each(function(d) { d.show = axis(d.stop) - axis(d.start - 1) > d.label.length * 8 })
-                .style('opacity', function(d) { return d.show ? 1 : 0; })
-                .attr('x', function(d) { return (axis(d.start - 1) + axis(d.stop)) / 2; });
 };
 
 
@@ -486,54 +497,71 @@ function RegionTrack(name, track_viewer, protein_data) {
     this.height = 40;
     this.region_height = 20;
 
+    this.g.append('text')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('dy', '-0.1em')
+        .attr('text-anchor', 'left')
+        .attr('class', 'track-label')
+        .text(name);
 };
 
-RegionTrack.prototype.create = function(axis, viewer_width, region_colors) {
+RegionTrack.prototype.create = function(axis, viewer_width, region_colors, region_name) {
     var pfam_url = this.protein_data.pfam_url;
-    this.protein_regions = $.extend(true, [], this.protein_data.regions);
+    this.protein_regions = $.extend(true, [], this.protein_data.regions[region_name]);
+    this.region_colors = region_colors;
 
     this.g.append('line')
             .attr('class', "strand")
             .attr('x1', 0)
             .attr('x2', viewer_width)
-            .attr('y1', this.height)
-            .attr('y2', this.height);
+            .attr('y1', 0)
+            .attr('y2', 0);
+};
+
+RegionTrack.prototype.update_display = function(axis, viewer_width) {
+    var start_residue = Math.floor(axis.invert(0));
+    var end_residue = Math.ceil(axis.invert(viewer_width));
+    var track = this;
+
+    var filtered_regions = [];
+    for(var i in this.protein_regions){
+        region = this.protein_regions[i];
+        var condition = ( region.start < start_residue && region.stop > end_residue ) ||
+                        ( start_residue <= region.start && region.start <= end_residue ) ||
+                        ( start_residue <= region.stop && region.stop <= end_residue );
+        if(condition){
+            filtered_regions.push(region);
+        }
+    }
+
+    this.g.selectAll('rect.region').remove();
+    this.g.selectAll('text.region').remove();
 
     this.g.selectAll('rect.region')
-        .data(this.protein_regions)
+        .data(filtered_regions)
             .enter().append('rect')
                 .attr('class', 'region')
                 .attr('x', function(d) { return axis(d.start-1); })
                 .attr('width', function(d) { return axis(d.stop) - axis(d.start-1); })
-                .attr('y', this.height - this.region_height)
+                .attr('y', 0)
                 .attr('height', this.region_height)
                 .attr('title', function(d) { return d.label; })
-                .style('fill', function(d) { return region_colors( d.label ); } )
+                .style('fill', function(d) { return track.region_colors( d.label ); } )
                 .on('mouseover', function() { d3.select(this).style('opacity', 0.8); })
                 .on('mouseout', function() { d3.select(this).style('opacity', 1.0); });
 
     this.g.selectAll('text.region')
-        .data(this.protein_regions)
+        .data(filtered_regions)
             .enter().append('text')
                 .attr('class', 'region')
                 .attr('x', function(d) { return ( axis(d.start-1) + axis(d.stop) ) / 2; })
-                .attr('y', this.height - this.region_height)
-                .attr('dy', "-0.25em")
+                .attr('y', this.region_height)
+                .attr('dy', "1em")
                 .attr('text-anchor', 'middle')
                 .each(function(d) { d.show = ( axis(d.stop) - axis(d.start-1) ) > d.label.length * 8; })
                 .style('opacity', function(d) { return d.show ? 1 : 0; })
                 .text(function(d) { return d.label; });
-};
-
-RegionTrack.prototype.update_display = function(axis, viewer_width) {
-    this.g.selectAll('rect.region')
-                .attr('x', function(d) { return axis(d.start-1); })
-                .attr('width', function(d) { return axis(d.stop) - axis(d.start-1); });
-
-    this.g.selectAll('text.region')
-                .each(function(d) { d.show = axis(d.stop) - axis(d.start-1) > d.label.length * 8 })
-                .style('opacity', function(d) { return d.show ? 1 : 0; })
-                .attr('x', function(d) { return (axis(d.start-1) + axis(d.stop)) / 2; });
 };
 
 function MutationTrack(name, track_viewer, protein_data){
@@ -585,7 +613,6 @@ MutationTrack.prototype.create = function(axis, viewer_width, show_residues) {
         residue_max_width = this.min_mutation_size;
     }
     this.raxis.range([residue_max_width/2, residue_max_width]);
-    var raxis = this.raxis;
 
     this.show_residues = show_residues;
 
@@ -596,8 +623,33 @@ MutationTrack.prototype.create = function(axis, viewer_width, show_residues) {
             .attr('y1', this.height/2)
             .attr('y2', this.height/2);
 
+};
+
+MutationTrack.prototype.update_display = function(axis, viewer_width) {
+    var start_residue = Math.floor(axis.invert(0));
+    var end_residue = Math.ceil(axis.invert(viewer_width));
+
+    var residue_max_width = (axis(1) - axis(0)) * 0.75;
+    if(residue_max_width < this.min_mutation_size){
+        residue_max_width = this.min_mutation_size;
+    }
+    this.raxis.range([residue_max_width/2, residue_max_width]);
+    var raxis = this.raxis;
+
+    var original_residues = {};
+    var filtered_mutations = {};
+    for(var k in this.protein_data.mutations){
+        index = parseInt(k);
+
+        if( start_residue <= index && index <= end_residue){
+            original_residues[index] = this.protein_data.seq[index-1];
+            filtered_mutations[index] = this.protein_data.mutations[index];
+        }
+    }
+
+    this.g.selectAll('circle.mutation').remove();
     this.g.selectAll('circle.mutation')
-        .data(d3.entries( this.protein_data.mutations ))
+        .data(d3.entries( filtered_mutations ))
             .enter().append('circle')
                 .attr('class', 'mutation')
                 .attr('cx', function(d) { return axis(parseInt(d.key) - 0.5); })
@@ -608,43 +660,27 @@ MutationTrack.prototype.create = function(axis, viewer_width, show_residues) {
                 .on('mouseover', function() { d3.select(this).style('fill', 'black'); })
                 .on('mouseout', function() { d3.select(this).style('fill', 'red'); });
 
+
     if(this.show_residues){
-        var original_residues = {};
-        for(var k in this.protein_data.mutations){
-            index = parseInt(k);
-            original_residues[index] = this.protein_data.seq[index-1];
+        this.g.selectAll('text.mutation').remove();
+
+        var fontsize = axis(1) - axis(0);
+        if(fontsize >= 8){
+            this.g.selectAll('text.mutation')
+                .data(d3.entries(original_residues))
+                    .enter().append('text')
+                        .attr('class', 'mutation')
+                        .attr('x', function(d) { return axis(d.key - 0.5); })
+                        .attr('y', this.height/2)
+                        .attr('dy', '0.35em')
+                        .attr('text-anchor', 'middle')
+                        .style('pointer-events', 'none')
+                        .style('fill', 'white')
+                        .style('font-size', Math.min(16, fontsize))
+                        .text(function(d) { return d.value; });
         }
-
-        this.g.selectAll('text.mutation')
-            .data(d3.entries(original_residues))
-                .enter().append('text')
-                    .attr('class', 'mutation')
-                    .attr('x', function(d) { return axis(d.key - 0.5); })
-                    .attr('y', this.height/2)
-                    .attr('dy', '0.35em')
-                    .attr('text-anchor', 'middle')
-                    .style('pointer-events', 'none')
-                    .style('fill', 'white')
-                    .style('font-size', Math.min(16, axis(1) - axis(0)))
-                    .text(function(d) { return d.value; });
     }
-};
 
-MutationTrack.prototype.update_display = function(axis, viewer_width) {
-    var residue_max_width = (axis(1) - axis(0)) * 0.75;
-    if(residue_max_width < this.min_mutation_size){
-        residue_max_width = this.min_mutation_size;
-    }
-    this.raxis.range([residue_max_width/2, residue_max_width]);
-    var raxis = this.raxis;
-
-    this.g.selectAll('circle.mutation')
-                .attr('cx', function(d) { return axis(parseInt(d.key) - 0.5); })
-                .attr('r', function(d) { return raxis(d.value.length); });
-
-    this.g.selectAll('text.mutation')
-                .attr('x', function(d) { return axis(d.key - 0.5); })
-                .style('font-size', Math.min(16, axis(1) - axis(0)));
 };
 
 function ScansiteTrack(name, track_viewer, protein_data){
@@ -694,8 +730,6 @@ ScansiteTrack.prototype.create = function(axis, viewer_width, show_residues) {
         residue_max_width = this.min_scansite_size;
     }
     this.raxis.range([residue_max_width/2, residue_max_width]);
-    var raxis = this.raxis;
-    var track = this;
     this.show_residues = show_residues;
 
     this.g.append('line')
@@ -705,8 +739,39 @@ ScansiteTrack.prototype.create = function(axis, viewer_width, show_residues) {
             .attr('y1', this.height/2)
             .attr('y2', this.height/2);
 
+
+};
+
+ScansiteTrack.prototype.update_display = function(axis, viewer_width) {
+    var track = this;
+
+    var start_residue = Math.floor(axis.invert(0));
+    var end_residue = Math.ceil(axis.invert(viewer_width));
+
+    var residue_max_width = (axis(1) - axis(0)) * 0.75;
+    if(residue_max_width < this.min_scansite_size){
+        residue_max_width = this.min_scansite_size;
+    }
+    this.raxis.range([residue_max_width/2, residue_max_width]);
+    var raxis = this.raxis;
+
+    var original_residues = {};
+    var filtered_scansite = {};
+    for(var k in this.protein_data.scansite){
+        index = parseInt(k);
+
+        if(index >= start_residue && index <= end_residue){
+            filtered_scansite[index] = this.protein_data.scansite[index];
+            original_residues[index] = this.protein_data.seq[index-1];
+        }
+    }
+
+    this.protein_data.scansite
+
+    this.g.selectAll('circle.scansite').remove();
+
     this.g.selectAll('circle.scansite')
-        .data(d3.entries( this.protein_data.scansite ))
+        .data(d3.entries( filtered_scansite ))
             .enter().append('circle')
                 .attr('class', 'scansite')
                 .attr('cx', function(d) { return axis(parseInt(d.key) - 0.5); })
@@ -717,41 +782,26 @@ ScansiteTrack.prototype.create = function(axis, viewer_width, show_residues) {
                 .on('mouseover', function() { d3.select(this).style('fill', 'black'); })
                 .on('mouseout', function() { d3.select(this).style('fill', '#6495ED'); });
 
+
     if(this.show_residues){
-        var original_residues = {};
-        for(var k in this.protein_data.scansite){
-            index = parseInt(k);
-            original_residues[index] = this.protein_data.seq[index-1];
+        this.g.selectAll('text.scansite').remove();
+
+        var fontsize = axis(1) - axis(0);
+        
+        if(fontsize >= 8){
+            this.g.selectAll('text.scansite')
+                .data(d3.entries(original_residues))
+                    .enter().append('text')
+                        .attr('class', 'scansite')
+                        .attr('x', function(d) { return axis(d.key - 0.5); })
+                        .attr('y', this.height/2)
+                        .attr('dy', '0.35em')
+                        .attr('text-anchor', 'middle')
+                        .style('pointer-events', 'none')
+                        .style('fill', 'white')
+                        .style('font-size', Math.min(16, fontsize))
+                        .text(function(d) { return d.value; });
         }
-
-        this.g.selectAll('text.scansite')
-            .data(d3.entries(original_residues))
-                .enter().append('text')
-                    .attr('class', 'scansite')
-                    .attr('x', function(d) { return axis(d.key - 0.5); })
-                    .attr('y', this.height/2)
-                    .attr('dy', '0.35em')
-                    .attr('text-anchor', 'middle')
-                    .style('pointer-events', 'none')
-                    .style('fill', 'white')
-                    .style('font-size', Math.min(16, axis(1) - axis(0)))
-                    .text(function(d) { return d.value; });
     }
-};
 
-ScansiteTrack.prototype.update_display = function(axis, viewer_width) {
-    var residue_max_width = (axis(1) - axis(0)) * 0.75;
-    if(residue_max_width < this.min_scansite_size){
-        residue_max_width = this.min_scansite_size;
-    }
-    this.raxis.range([residue_max_width/2, residue_max_width]);
-    var raxis = this.raxis;
-
-    this.g.selectAll('circle.scansite')
-                .attr('cx', function(d) { return axis(parseInt(d.key) - 0.5); })
-                .attr('r', function(d) { return raxis(d.value.length); });
-
-    this.g.selectAll('text.scansite')
-                .attr('x', function(d) { return axis(d.key - 0.5); })
-                .style('font-size', Math.min(16, axis(1) - axis(0)));
 };

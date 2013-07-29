@@ -23,8 +23,6 @@
         <div class="protein_viewer">
             <div class="data">${data}</div>
             <div class="toolkit">
-                <button class="zoomin-tool">Enable Zoom</button>
-                <button class="zoomout-tool">Disable Zoom</button>
                 <button class="ptm-tool">Filter PTMs</button>
                 <button class="exp-tool">Filter Experiments</button>
                 <button class="track-tool">Filter Tracks</button>
