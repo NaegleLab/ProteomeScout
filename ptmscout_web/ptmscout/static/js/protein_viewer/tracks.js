@@ -399,7 +399,7 @@ function DomainTrack(name, track_viewer, protein_data) {
     init_track(this, name, track_viewer, protein_data);
 
     // configurables
-    this.height = 40;
+    this.height = 60;
     this.domain_height = 20;
 
     this.g.append('text')
@@ -494,7 +494,7 @@ function RegionTrack(name, track_viewer, protein_data) {
     init_track(this, name, track_viewer, protein_data);
 
     // configurables
-    this.height = 40;
+    this.height = 60;
     this.region_height = 20;
 
     this.g.append('text')

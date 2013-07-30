@@ -80,11 +80,99 @@ def get_ncbi_domains(prot):
 
     return sorted(formatted_regions, key=lambda d: d['start'])
 
+def get_uniprot_structure(prot):
+    formatted_regions = []
+    structure_types = set(['helix', 'turn', 'strand'])
+    for d in prot.regions:
+        if d.type in structure_types  and d.source == 'uniprot':
+            region_dict = {}
+            region_dict['type'] = d.type
+            region_dict['label'] = d.type
+            region_dict['source'] = d.source
+            region_dict['start'] = d.start
+            region_dict['stop'] = d.stop
+
+            formatted_regions.append(region_dict)
+
+    return sorted(formatted_regions, key=lambda d: d['start'])
+
+def get_uniprot_sites(prot):
+    formatted_regions = []
+    structure_types = set([
+                        'metal ion-binding site',
+                        'binding site',
+                        'calcium-binding region',
+                        'nucleotide phosphate-binding region',
+                        'lipid moiety-binding region',
+                        'active site',
+                        'DNA-binding region'
+                        ])
+
+    for d in prot.regions:
+        if d.type in structure_types  and d.source == 'uniprot':
+            region_dict = {}
+            region_dict['type'] = d.type
+            region_dict['label'] = d.label
+            region_dict['source'] = d.source
+            region_dict['start'] = d.start
+            region_dict['stop'] = d.stop
+
+            formatted_regions.append(region_dict)
+
+    return sorted(formatted_regions, key=lambda d: d['start'])
+
+def get_uniprot_macro(prot):
+    formatted_regions = []
+    structure_types = set([
+                        'zinc finger region',
+                        'intramembrane region',
+                        'coiled-coil region',
+                        'transmembrane region'
+                        ])
+
+    for d in prot.regions:
+        if d.type in structure_types and d.source == 'uniprot':
+            region_dict = {}
+            region_dict['type'] = d.type
+            label = d.label if d.label != "" else d.type
+            region_dict['label'] = label
+            region_dict['source'] = d.source
+            region_dict['start'] = d.start
+            region_dict['stop'] = d.stop
+
+            formatted_regions.append(region_dict)
+
+    return sorted(formatted_regions, key=lambda d: d['start'])
+
+def get_uniprot_topological(prot):
+    formatted_regions = []
+    structure_types = set([
+                        'topological domain',
+                        ])
+
+    for d in prot.regions:
+        if d.type in structure_types and d.source == 'uniprot':
+            region_dict = {}
+            region_dict['type'] = d.type
+            label = d.label if d.label != "" else d.type
+            region_dict['label'] = label
+            region_dict['source'] = d.source
+            region_dict['start'] = d.start
+            region_dict['stop'] = d.stop
+
+            formatted_regions.append(region_dict)
+
+    return sorted(formatted_regions, key=lambda d: d['start'])
+
 def format_protein_regions(prot):
     formatted_regions = {}
 
     formatted_regions['activation_loops'] = get_activation_loops(prot)
     formatted_regions['uniprot_domains'] = get_uniprot_domains(prot)
+    formatted_regions['uniprot_structure'] = get_uniprot_structure(prot)
+    formatted_regions['uniprot_sites'] = get_uniprot_sites(prot)
+    formatted_regions['uniprot_macro'] = get_uniprot_macro(prot)
+    formatted_regions['uniprot_topological'] = get_uniprot_topological(prot)
     formatted_regions['ncbi_domains'] = get_ncbi_domains(prot)
 
     return formatted_regions
@@ -170,9 +258,23 @@ def protein_structure_viewer(context, request):
             'experiment': request.urlfilter.get_field('experiment_id') }
     encoded_data = base64.b64encode( json.dumps( data ) )
 
+    track_names = [
+                    "PFam Domains",
+                    "PTMs",
+                    "Activation Loops",
+                    "Uniprot Domains",
+                    "Uniprot Structure",
+                    "Uniprot Binding Sites",
+                    "Uniprot Macrostructure",
+                    "Uniprot Topology",
+                    "Entrez Domains",
+                    "Mutations",
+                    "Scansite"
+                ]
+
     return {'pageTitle': strings.protein_structure_page_title,
             'protein': prot,
             'experiments': formatted_exps,
             'mod_types': formatted_mod_types,
-            'tracks': ["PFam Domains", "PTMs", "Activation Loops", "Uniprot Domains", "Entrez Domains", "Mutations", "Scansite"],
+            'tracks': track_names,
             'data':encoded_data}

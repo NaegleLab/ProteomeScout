@@ -9,6 +9,8 @@ function ZoomWindow(structure_viewer, svg_container, residue, width, height) {
     var axis = structure_viewer.axis;
     var zoomer = this;
 
+    this.winselector = "rect.zoom.window";
+    this.expselector = "path.expander";
     this.zoom_window =
         svg_container
                 .insert('rect', ":first-child")
@@ -21,10 +23,10 @@ function ZoomWindow(structure_viewer, svg_container, residue, width, height) {
                     .style('opacity', "0.3");
 
     this.polygon_vertices = 
-            [{"x":axis(this.residue),"y":height+50},
-             {"x":axis(this.residue+width),"y":height+50},
-             {"x":structure_viewer.width,"y":height+150},
-             {"x":0,"y":height+150},
+            [{"x":axis(this.residue),"y":50},
+             {"x":axis(this.residue+width),"y":50},
+             {"x":structure_viewer.width,"y":150},
+             {"x":0,"y":150},
             ];
 
     this.line =
@@ -57,10 +59,24 @@ function ZoomWindow(structure_viewer, svg_container, residue, width, height) {
                 .data([this.polygon_vertices])
             .enter().insert('path', ":first-child")
                 .attr('class', "expander")
+                .attr('transform', 'translate(0,{0})'.format(this.height))
                 .attr('d', this.line)
                 .style("opacity", '0.3')
                 .style("fill", "url(#zoomgrad)");
-}
+};
+
+ZoomWindow.prototype.animate_height = function(t, nheight, timedelay) {
+    this.height=nheight;
+
+    t = t.transition().delay(timedelay);
+
+    t.select(this.winselector)
+                .attrTween('height', d3.tween(this.height+50, d3.interpolate));
+
+    var ntransform = 'translate(0,{0})'.format(this.height)
+    t.select(this.expselector)
+                .attrTween('transform', d3.tween(ntransform, d3.interpolateTransform));
+};
 
 ZoomWindow.prototype.remove = function() {
     this.zoom_window.remove();

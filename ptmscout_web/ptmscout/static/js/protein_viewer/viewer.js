@@ -1,6 +1,7 @@
 function TrackViewer(structure_viewer, svg_container, offset, cls) {
     this.baseline = offset;
     this.structure_viewer = structure_viewer;
+    this.selector = ".{0}".format(cls);
     this.viewer =
             svg_container
                 .append('g')
@@ -9,6 +10,32 @@ function TrackViewer(structure_viewer, svg_container, offset, cls) {
     this.axis = d3.scale.linear().domain(structure_viewer.axis.domain()).range(structure_viewer.axis.range());
 
     this.tracks = [];
+};
+
+TrackViewer.prototype.animate_position = function(t, npos, timedelay) {
+    this.baseline=npos;
+
+    t = t.transition().delay(timedelay);
+
+    var ntransform = 'translate(0,{0})scale(1,1)'.format(this.baseline);
+    t.select(this.selector)
+                .attrTween('transform', d3.tween(ntransform, d3.interpolateTransform));
+};
+
+TrackViewer.prototype.set_position = function(npos) {
+    this.baseline=npos;
+    this.viewer.attr('transform', 'translate(0,{0})scale(1,1)'.format(this.baseline));
+};
+
+TrackViewer.prototype.get_height = function() {
+    var h = 0;
+    for(var i in this.tracks){
+        var tr = this.tracks[i];
+        if(tr.visible) {
+            h += tr.height;
+        }
+    }
+    return h;
 };
 
 TrackViewer.prototype.hide = function() {
@@ -54,7 +81,7 @@ TrackViewer.prototype.get_track = function(track_name) {
 }
 
 TrackViewer.prototype.toggle_track = function(t, track_name, mode) {
-    track = this.get_track(track_name);
+    var track = this.get_track(track_name);
     var track_pos = this.get_track_position(track_name);
     var ntransform;
     var ctransform;
@@ -121,10 +148,7 @@ function StructureViewer(protein_data) {
     console.log(protein_data)
     this.protein_data = protein_data;
     this.show_residues_size_limit = 100;
-    this.default_height = 500;
     this.macro_viewer_position = 0;
-    this.zoom_viewer_position = 500;
-    this.zoom_window_height = 1000;
 
     this.transition_duration = 250;
 
@@ -132,15 +156,13 @@ function StructureViewer(protein_data) {
     this.last_zoom_width = 50;
 
     this.width = 900;
-    this.height = this.default_height;
-
     this.svg =
             d3.select('.protein_viewer .viewer')
                 .append('svg')
                     .attr('version', "1.1")
                     .attr('xmlns', "http://www.w3.org/2000/svg")
                     .attr('width', this.width)
-                    .attr('height', this.height);
+                    .attr('height', 0);
 
     this.svg_container =
                 this.svg.append('g')
@@ -169,9 +191,14 @@ function StructureViewer(protein_data) {
     this.create_ncbi_domain_track(this.macro_viewer);
     this.create_domain_track(this.macro_viewer);
 
+    this.create_region_track(this.macro_viewer, "Uniprot Structure", "uniprot_structure")
+    this.create_region_track(this.macro_viewer, "Uniprot Binding Sites", "uniprot_sites")
+    this.create_region_track(this.macro_viewer, "Uniprot Macrostructure", "uniprot_macro")
+    this.create_region_track(this.macro_viewer, "Uniprot Topology", "uniprot_topological")
+
     this.macro_viewer.view_residues(0, protein_data.seq.length);
 
-    this.zoom_viewer = new TrackViewer(this, this.svg_container, this.zoom_viewer_position, 'zoom_track_viewer', true);
+    this.zoom_viewer = new TrackViewer(this, this.svg_container, 0, 'zoom_track_viewer', true);
     this.zoom_viewer.view_residues(this.last_zoom_residue, this.last_zoom_width);
 
     this.create_empty_track(this.zoom_viewer);
@@ -185,10 +212,16 @@ function StructureViewer(protein_data) {
     this.create_uniprot_domain_track(this.zoom_viewer);
     this.create_ncbi_domain_track(this.zoom_viewer);
     this.create_domain_track(this.zoom_viewer);
-    this.zoom_viewer.hide();
 
+    this.create_region_track(this.zoom_viewer, "Uniprot Structure", "uniprot_structure")
+    this.create_region_track(this.zoom_viewer, "Uniprot Binding Sites", "uniprot_sites")
+    this.create_region_track(this.zoom_viewer, "Uniprot Macrostructure", "uniprot_macro")
+    this.create_region_track(this.zoom_viewer, "Uniprot Topology", "uniprot_topological")
+
+    this.zoom_viewer.hide();
     this.zoom_enabled = false;
 
+    this.set_viewer_height(this.get_current_height(), function() {}, 0);
 
     var viewer = this;
     function drag_start() {
@@ -204,7 +237,7 @@ function StructureViewer(protein_data) {
                 .attr('x', viewer.zx)
                 .attr('y', 0)
                 .attr('width', 1)
-                .attr('height', viewer.default_height)
+                .attr('height', viewer.macro_viewer.get_height())
                 .style('fill', '#00ff00')
                 .style('opacity', '0.3');
 
@@ -266,6 +299,14 @@ function StructureViewer(protein_data) {
     this.svg.call(drag_behavior);
 };
 
+StructureViewer.prototype.get_current_height = function() {
+    var height = this.macro_viewer.get_height();
+    if(this.zoom_enabled){
+        height += this.zoom_viewer.get_height();
+    }
+    return height;
+};
+
 StructureViewer.prototype.create_ptm_track = function(track_viewer) {
     ptm_track = new PTMTrack('PTMs', track_viewer.viewer, this.protein_data);
     ptm_track.create(track_viewer.axis, this.width, this.residue_colors);
@@ -308,6 +349,12 @@ StructureViewer.prototype.create_ncbi_domain_track = function(track_viewer) {
     track_viewer.add_track(region_track);
 };
 
+StructureViewer.prototype.create_region_track = function(track_viewer, name, region_name) {
+    region_track = new RegionTrack(name, track_viewer.viewer, this.protein_data);
+    region_track.create(track_viewer.axis, this.width, this.region_colors, region_name);
+    track_viewer.add_track(region_track);
+};
+
 StructureViewer.prototype.create_domain_track = function(track_viewer) {
     domain_track = new DomainTrack('PFam Domains', track_viewer.viewer, this.protein_data);
     domain_track.create(track_viewer.axis, this.width, this.domain_colors);
@@ -319,6 +366,12 @@ StructureViewer.prototype.create_empty_track = function(track_viewer) {
     track_viewer.add_track(empty_track);
 };
 
+
+
+StructureViewer.prototype.set_viewer_height = function(nheight, callback, delay) {
+    $('.protein_viewer svg').delay(delay).animate({ height: nheight }, 250, callback);
+}
+
 StructureViewer.prototype.zoom_off = function(){
     if(this.zoom_enabled){
         this.zoom_enabled=false;
@@ -326,15 +379,15 @@ StructureViewer.prototype.zoom_off = function(){
         this.last_zoom_residue = this.zoom_window.residue;
         this.last_zoom_width = this.zoom_window.width;
 
-        this.height = this.default_height;
         var viewer = this;
 
-        $('.protein_viewer svg').animate({
-                height: viewer.height
-          }, 750, function() {
-            viewer.zoom_window.remove();
-            viewer.zoom_viewer.hide();
-          });
+
+        this.set_viewer_height(this.get_current_height(),
+                    function() {
+                        viewer.zoom_window.remove();
+                        viewer.zoom_viewer.hide();
+                      }, 0
+                );
     }
 }
 
@@ -363,15 +416,12 @@ StructureViewer.prototype.zoom_on = function() {
     if(!this.zoom_enabled){
         this.zoom_enabled=true;
 
-        this.zoom_window = new ZoomWindow(this, this.svg_container, this.last_zoom_residue, this.last_zoom_width, this.zoom_viewer_position - 100);
+        var mp = this.macro_viewer.get_height();
+        this.zoom_window = new ZoomWindow(this, this.svg_container, this.last_zoom_residue, this.last_zoom_width, mp);
+        this.zoom_viewer.set_position(mp);
         this.zoom_viewer.show();
 
-        this.height = this.zoom_window_height;
-
-        $('.protein_viewer svg').animate({
-                height: this.height
-          }, 750, function() {
-          });
+        this.set_viewer_height(this.get_current_height(), function() { }, 0);
     }
 };
 
@@ -401,9 +451,28 @@ StructureViewer.prototype.toggle_track = function(track_name, mode){
     t = this.svg_container.transition()
               .duration(this.transition_duration);
 
+    var track_height = this.macro_viewer.get_track(track_name).height;
+
     this.macro_viewer.toggle_track(t, track_name, mode);
     this.zoom_viewer.toggle_track(t, track_name, mode);
-}
+
+    var mvh = this.macro_viewer.get_height();
+    var cvh = this.get_current_height();
+    if(mode){
+        this.zoom_viewer.animate_position(t, mvh, 0);
+        this.set_viewer_height(cvh, function(){}, 0);
+
+        if(this.zoom_enabled){
+            this.zoom_window.animate_height(t, mvh, 0);
+        }
+    } else {
+        this.zoom_viewer.animate_position(t, mvh, 500);
+        this.set_viewer_height(cvh, function(){}, 500);
+        if(this.zoom_enabled){
+            this.zoom_window.animate_height(t, mvh, 500);
+        }
+    }
+};
 
 $(function(){
     $('.zoomout-tool').button({ icons: { primary: 'ui-icon-zoomout' }, text:false })

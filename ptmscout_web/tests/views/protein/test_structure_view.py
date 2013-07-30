@@ -194,7 +194,21 @@ class TestProteinStructureViews(UnitTestCase):
                     'experiment':1302
                 }
 
+        exp_tracks = [
+                    'PFam Domains',
+                    'PTMs',
+                    "Activation Loops",
+                    "Uniprot Domains",
+                    "Uniprot Structure",
+                    "Uniprot Binding Sites",
+                    "Uniprot Macrostructure",
+                    "Uniprot Topology",
+                    "Entrez Domains",
+                    'Mutations',
+                    'Scansite',
+                    ]
+
         self.assertEqual(exp_data, decoded_data)
         self.assertEqual(formatted_exps, result['experiments'])
         self.assertEqual(formatted_mod_types, result['mod_types'])
-        self.assertEqual(['PFam Domains', 'PTMs', "Activation Loops", "Uniprot Domains", "Entrez Domains", 'Mutations', 'Scansite'], result['tracks'])
+        self.assertEqual(exp_tracks, result['tracks'])
