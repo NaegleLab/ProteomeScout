@@ -5,8 +5,7 @@ import httplib
 import MultipartPostHandler as post_handler
 from ptmscout.utils import crypto
 import os
-from Bio import SeqIO
-from Bio.SeqFeature import UnknownPosition
+from Bio import SeqIO, SeqFeature
 import re
 import traceback
 import logging
@@ -147,8 +146,10 @@ def read_variants(features):
     return variant_list
 
 def parse_location(location):
-    if isinstance(location, UnknownPosition):
+    if isinstance(location.start, SeqFeature.UnknownPosition):
         return None, None
+    elif isinstance(location.end, SeqFeature.UnknownPosition):
+        return location.start.real + 1, None
     else:
         return location.start.real + 1, location.end.real
 
