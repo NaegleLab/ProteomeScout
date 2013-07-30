@@ -6,6 +6,9 @@ from ptmscout.utils import protein_utils, motif, fisher
 from ptmscout.config import strings
 from collections import defaultdict
 
+def supported_region(region):
+    return region.type in set(['Activation Loop'])
+
 def get_pfam_metadata(measurements, metadata_fields):
     metadata_fields.update({'Pfam-Domain':set(),'Pfam-Site':set(),'Region':set()})
     
@@ -19,7 +22,7 @@ def get_pfam_metadata(measurements, metadata_fields):
             
         for region in ms.protein.regions:
             for modpep in ms.peptides:
-                if region.hasSite(modpep.peptide.site_pos):
+                if supported_region(region) and region.hasSite(modpep.peptide.site_pos):
                     metadata_fields['Region'].add(region.label)
 
 def get_protein_metadata(measurements, metadata_fields, accessions):
@@ -331,12 +334,14 @@ def calculate_Scansite_enrichment(foreground, background, required_occurences, s
     return enrichment
 
 
+
 def calculate_Region_enrichment(foreground, background, required_occurences, cache_table):
     enrichment = []
     valid_labels = defaultdict(lambda: 0)
     for ms in foreground:
         for region in ms.protein.regions:
-            valid_labels[region.label] += 1
+            if supported_region(region):
+                valid_labels[region.label] += 1
             
     def create_has_region(label):
         attr_label = 'region:%s' % (label)
