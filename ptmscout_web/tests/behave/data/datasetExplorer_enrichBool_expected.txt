@@ -34,8 +34,4 @@ temp.type = 'Scansite-Kinase';
 temp.labels = {'ABL1_Y_kin' 'EGFR_Y_kin' 'FGR_Y_kin' 'INSR_Y_kin' 'LCK_Y_kin' 'PDGFRB_Y_kin' 'SRC_Y_kin'};
 temp.bool = [0 1 0 0 0 1 0;0 1 0 0 0 0 0;0 0 1 0 0 0 0;0 0 0 1 0 0 0;0 0 0 1 1 0 0;0 0 0 0 0 0 0;1 0 0 0 0 0 0;0 0 1 0 0 0 0;1 0 0 1 1 0 1;0 2 1 0 0 0 1;0 0 0 0 0 0 0];
 enrichBool{9} = temp;
-temp.type = 'motif';
-temp.labels = {'......Ty..P....' 'G......y.......'};
-temp.bool = [0 0;0 0;0 0;0 0;0 0;0 0;0 0;0 0;0 1;0 0;1 0];
-enrichBool{10} = temp;
 clear temp;
