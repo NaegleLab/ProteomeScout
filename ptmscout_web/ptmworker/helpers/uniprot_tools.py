@@ -154,7 +154,7 @@ def parse_location(location):
         return location.start.real + 1, location.end.real
 
 def parse_features(features):
-    ignored_features = set(['chain', 'modified residue', 'splice variant', 'mutagenesis site', 'sequence conflict', ])
+    ignored_features = set(['chain', 'modified residue', 'splice variant', 'mutagenesis site', 'sequence conflict', 'sequence variant' ])
     parsed = []
     for feature in features:
         if feature.type in ignored_features:
