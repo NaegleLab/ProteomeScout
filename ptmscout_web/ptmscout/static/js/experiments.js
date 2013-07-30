@@ -1,7 +1,7 @@
 function hideAll(element) {
 	var experiment_id = element.attr('id');
     element.hide();
-    element.find('a.expand').text("[+]");
+    element.find('button.expand').text("+");
     $("tr.experiment[parent=\"{0}\"]".format(experiment_id)).each(function(){
         hideAll($(this));
     });
@@ -9,14 +9,14 @@ function hideAll(element) {
 function toggleVisible(element) {
 	var experiment_id = element.attr('id');
     var selector = "tr.experiment[parent=\"{0}\"]".format(experiment_id);
-    var exp_mode = element.find('a.expand').text();
+    var exp_mode = element.find('button.expand').text();
 
-	if(exp_mode === "[+]"){
-		element.find('a.expand').text("[-]");
+	if(exp_mode === "+"){
+		element.find('button.expand').text("-");
         $(selector).show();
     }
 	else{
-		element.find('a.expand').text("[+]");
+		element.find('button.expand').text("+");
         $(selector).each(function(){
             hideAll($(this));
         });
@@ -29,7 +29,7 @@ function timedRefresh(timeoutPeriod) {
 
 $(document).ready(
 	function(){
-		$("a.expand").click(
+		$("button.expand").click(
 				function(){
 					toggleVisible($(this).closest('tr'));
 					return false;

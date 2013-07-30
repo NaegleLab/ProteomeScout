@@ -20,7 +20,7 @@
                 <tbody>
                     <tal:experiments tal:repeat="(i, experiment) enumerate(compendia)">
                         <tr tal:attributes="class 'experiment' + (' even' if i % 2 == 0 else ' odd'); id 'e%d' % (experiment.id)" >
-                            <td class='expander'><a tal:condition="len(experiment.children) > 0" class="expand" href="${request.application_url}/experiments" tal:attributes="id 'e'+str(experiment.id)">[+]</a></td>
+                            <td class='expander'><button tal:condition="len(experiment.children) > 0" class="expand">+</button></td>
                             <td>${structure:experiment.getClickable(request, new_window = True)}</td>
                             <td tal:content="experiment.description"></td>
                             <td tal:content="experiment.author"></td>
@@ -45,7 +45,7 @@
                 <tbody>
                     <tal:experiments tal:repeat="(i, experiment) enumerate(experiments)">
                         <tr tal:attributes="parent 'e%d' % (experiment.experiment_id) if experiment.experiment_id else None; class 'experiment' + (' even' if i % 2 == 0 else ' odd'); id 'e%d' % (experiment.id)" >
-                            <td class='expander'><a tal:condition="len(experiment.children) > 0" class="expand" href="${request.application_url}/experiments">[+]</a></td>
+                            <td class='expander'><button tal:condition="len(experiment.children) > 0" class="expand">+</button></td>
                             <td>${structure:experiment.getClickable(request)}</td>
                             <td tal:content="experiment.description"></td>
                             <td tal:content="experiment.author"></td>
