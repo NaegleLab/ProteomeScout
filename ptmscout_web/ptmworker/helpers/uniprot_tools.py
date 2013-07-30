@@ -6,6 +6,7 @@ import MultipartPostHandler as post_handler
 from ptmscout.utils import crypto
 import os
 from Bio import SeqIO
+from Bio.SeqFeature import UnknownPosition
 import re
 import traceback
 import logging
@@ -145,6 +146,12 @@ def read_variants(features):
                                     'notes':annotation} )
     return variant_list
 
+def parse_location(location):
+    if isinstance(location, UnknownPosition):
+        return None, None
+    else:
+        return location.start.real + 1, location.end.real
+
 def parse_features(features):
     ignored_features = set(['chain', 'modified residue', 'splice variant', 'mutagenesis site', 'sequence conflict', ])
     parsed = []
@@ -155,8 +162,11 @@ def parse_features(features):
         name = ""
         if 'description' in feature.qualifiers:
             name = feature.qualifiers['description']
-        f = upload_helpers.ProteinFeature( feature.type, name, feature.location.start.real + 1, feature.location.end.real, 'uniprot' )
-        parsed.append(f)
+
+        start, end = parse_location(feature.location)
+        if start != None:
+            f = upload_helpers.ProteinFeature( feature.type, name, start, end, 'uniprot' )
+            parsed.append(f)
     return parsed
 
 def parse_xml(xml):
