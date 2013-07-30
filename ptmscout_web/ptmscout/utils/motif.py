@@ -37,12 +37,12 @@ def save_peptides(measurements, filename):
             ff.write("%s\n" % (mspep.peptide.pep_aligned))
     ff.close()
 
-def run_motif_result(foreground_file, background_file, result_file):
-    os.system('%s %s %s %s' % (os.path.join(settings.ptmscout_path, 'scripts', 'motif', 'run_motif_enrichment.sh'), foreground_file, background_file, result_file))
-
+def run_motif_result(foreground_file, background_file, result_file, k):
+    command = '%s %s %s %s --length %d' % (os.path.join(settings.ptmscout_path, 'scripts', 'motif', 'run_motif_enrichment.sh'), foreground_file, background_file, result_file, k)
+    os.system(command)
 
 #@decorators.pushdir( os.path.join(settings.ptmscout_path, settings.motif_script_path) )
-def calculate_motif_enrichment(foreground, background):
+def calculate_motif_enrichment(foreground, background, k = 5):
     postfix = str(time.time())
     random_postfix = random.randint(0,1000000)
     
@@ -58,7 +58,7 @@ def calculate_motif_enrichment(foreground, background):
     save_peptides(foreground, foreground_path)
     save_peptides(background, background_path)
     
-    run_motif_result(foreground_file, background_file, result_file)
+    run_motif_result(foreground_file, background_file, result_file, k)
     test_cnt, results = parse_motif_result(result_file, result_log)
     
     os.remove(foreground_path)

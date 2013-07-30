@@ -8,7 +8,7 @@ class TestMotifWithTestDB(IntegrationTestCase):
         background = modifications.getMeasuredPeptidesByExperiment(28)
         foreground = [ms for ms in background if ms.id in foreground_msids]
 
-        test_cnt, results = motif.calculate_motif_enrichment(foreground, background)
+        test_cnt, results = motif.calculate_motif_enrichment(foreground, background, k=7)
         
         self.assertEqual(38, test_cnt)
         

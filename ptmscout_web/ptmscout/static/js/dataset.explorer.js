@@ -870,7 +870,6 @@ function SubsetSelection(element, webservice_url) {
 	this.subsetPrefix = 'Subset: ';
 	this.field_data = JSON.parse( Base64.decode( element.find("#field-data").text() ) );
 	this.experiment_id = this.field_data.experiment_id;
-	
 
 	this.failure_dialog = $("<div title=\"Error!\"></div>")
 								.dialog( {  autoOpen:false, modal: true, buttons: { "Ok": function(){ $(this).dialog( 'close' ); } } } );
@@ -878,6 +877,7 @@ function SubsetSelection(element, webservice_url) {
 	
 	this.subsetSelection = $("#saved-subset-select");
 	this.backgroundSelection = $("#background-select");
+    this.motifLengthSelection = $("#motif-length-select");
 	
 	for(var i in this.field_data.subset_labels){
 		var label = this.field_data.subset_labels[i];
@@ -946,9 +946,11 @@ SubsetSelection.prototype.openExistingSubset = function(name) {
 		this.displayError("You must choose a subset");
 	}else{
 		var query_url = this.webservice_url + '/subsets/fetch';
+        var motif_length = this.motifLengthSelection.val()
 		var subset_fetch_query = {	'name': name,
 									'experiment': this.experiment_id,
-                                    'annotation_set_id': this.field_data.annotation_set
+                                    'annotation_set_id': this.field_data.annotation_set,
+                                    'motif_length': motif_length
 				 					}
 		
 		$.ajax({
@@ -1044,13 +1046,15 @@ SubsetSelection.prototype.openClusters = function(cluster_set) {
 			                  ['nop',['cluster', cluster_set, 'eq', label]]
 			                 ];
 			
+            var motif_length = this.motifLengthSelection.val()
 			var subset_query = {
 					'experiment': this.experiment_id,
 					'type': 'create',
 					'name': '{0}:{1}'.format(cluster_set, label),
 					'background': 'experiment',
 					'foreground': expression,
-                    'annotation_set_id': this.field_data.annotation_set
+                    'annotation_set_id': this.field_data.annotation_set, 
+                    'motif_length': motif_length
 			};
 			
 			$.ajax({
@@ -1107,14 +1111,16 @@ SubsetSelection.prototype.submitQuery = function() {
 		var bg_subset = background.substring(this.subsetPrefix.length);
 		background = [ ['nop', ['subset', 'in', bg_subset]] ];
 	}
-	
+
+    var motif_length = this.motifLengthSelection.val()
 	var subset_query = {
 			'experiment': this.experiment_id,
 			'type': 'create',
 			'name': 'Subset {0}'.format(this.query_num),
 			'background': background,
 			'foreground': expression,
-            'annotation_set_id': this.field_data.annotation_set
+            'annotation_set_id': this.field_data.annotation_set,
+            'motif_length': motif_length
 	};
     console.log(subset_query);
 	
@@ -1155,7 +1161,8 @@ SubsetSelection.prototype.submitQueryFromString = function(qstring) {
 			'name': 'Subset {0}'.format(this.query_num),
 			'background': background,
 			'foreground': foreground,
-            'annotation_set_id': this.field_data.annotation_set
+            'annotation_set_id': this.field_data.annotation_set,
+            'motif_length': "None"
 	};
 	
 	var query_url = this.webservice_url + '/subsets/query';

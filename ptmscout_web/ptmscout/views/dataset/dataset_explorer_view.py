@@ -784,7 +784,7 @@ def compute_annotations(annotation_set_id, exp, user, measurements):
             
     return annotation_types, annotation_order
 
-def compute_subset_enrichment(request, annotation_set_id, exp, user, subset_name, foreground_exp, background_exp):
+def compute_subset_enrichment(request, annotation_set_id, exp, user, subset_name, foreground_exp, background_exp, k):
     measurements = exp.measurements
 
     if annotation_set_id != None:
@@ -803,7 +803,11 @@ def compute_subset_enrichment(request, annotation_set_id, exp, user, subset_name
                 'message':strings.error_message_subset_empty}
     
     enrichment = calculate_feature_enrichment(foreground, background, annotation_types)
-    motif_tests, motif_results = motif.calculate_motif_enrichment(foreground, background)
+
+    if k != None:
+        motif_tests, motif_results = motif.calculate_motif_enrichment(foreground, background, k=k)
+    else:
+        motif_tests, motif_results = 0, []
     
     background_seqlogo = protein_utils.create_sequence_profile(background)
     background_site_cnt = len(set([(modpep.peptide_id, modpep.modification_id) for ms in background for modpep in ms.peptides]))
@@ -854,11 +858,16 @@ def perform_subset_enrichment(request):
     except:
         annotation_set_id = None
 
+    try:
+        motif_length = int(query_expression['motif_length'])
+    except:
+        motif_length = None
+
     subset_name = query_expression['name']
     foreground_exp = query_expression['foreground']
     background_exp = query_expression['background']
     
-    return compute_subset_enrichment(request, annotation_set_id, exp, request.user, subset_name, foreground_exp, background_exp)
+    return compute_subset_enrichment(request, annotation_set_id, exp, request.user, subset_name, foreground_exp, background_exp, motif_length)
     
 
 @view_config(route_name='save_subset', request_method='POST', renderer='json', permission='private')
@@ -921,7 +930,12 @@ def fetch_subset(request):
     if annotation_set_id and annotation_set_id != subset.annotation_set_id:
         return {'status':"error",
                 'message':strings.error_message_subset_name_does_not_exist}
-    
-    result = compute_subset_enrichment(request, annotation_set_id, exp, request.user, subset.name, subset.foreground_query, subset.background_query)
+   
+    try:
+        motif_length = int(query_expression['motif_length'])
+    except:
+        motif_length = None
+
+    result = compute_subset_enrichment(request, annotation_set_id, exp, request.user, subset.name, subset.foreground_query, subset.background_query, motif_length)
     result['id'] = subset.id
     return result

@@ -335,7 +335,7 @@ class TestDatasetExplorerView(UnitTestCase):
         result = dataset_explorer_view.fetch_subset(request)
         
         self.assertEqual({'id': subset.id, 'some': 'enrichment analysis'}, result)
-        patch_compute.assert_called_once_with(request, None, exp, user, 'named subset', 'some exp', 'some other exp')
+        patch_compute.assert_called_once_with(request, None, exp, user, 'named subset', 'some exp', 'some other exp', None)
         patch_getExp.assert_called_once_with(exp_id, user)
         patch_getSubset.assert_called_once_with(exp_id, 'named subset', user)
 
@@ -355,7 +355,8 @@ class TestDatasetExplorerView(UnitTestCase):
         fetch_query = {
                        'experiment': str(exp_id),
                        'id': '100000',
-                       'annotation_set_id': 10
+                       'annotation_set_id': 10,
+                       'motif_length': 5
                        }
                     
         request = DummyRequest()
@@ -368,7 +369,7 @@ class TestDatasetExplorerView(UnitTestCase):
         result = dataset_explorer_view.fetch_subset(request)
         
         self.assertEqual({'id':subset.id, 'some': 'enrichment analysis'}, result)
-        patch_compute.assert_called_once_with(request, 10, exp, user, 'named subset', 'some exp', 'some other exp')
+        patch_compute.assert_called_once_with(request, 10, exp, user, 'named subset', 'some exp', 'some other exp', 5)
         patch_getExp.assert_called_once_with(exp_id, user)
         patch_getSubset.assert_called_once_with(100000, exp_id)
 
