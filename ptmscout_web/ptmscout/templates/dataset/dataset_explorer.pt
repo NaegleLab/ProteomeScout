@@ -74,7 +74,16 @@
   		<div class="filter-set">
             <h4>Open Saved Subsets</h4>
             <div class="body">
-  				<div> <span class="condition-title">Subset:</span> <select id="saved-subset-select"> <option/> </select> <button class="longtask" id="open-saved-subset">View Subset</button> </div>
+                <div>
+                    <form method="POST" action="${request.route_url('share_subset', id=experiment.id)}">
+                        <span class="condition-title">Subset:</span>
+                        <select id="saved-subset-select" name="saved-subset-select">
+                            <option/>
+                        </select>
+                        <button class="longtask" id="open-saved-subset">View Subset</button>
+                        <input type="submit" value="Share Subset" id="share-saved-subset" />
+                    </form>
+                </div>
             </div>
 
             <h4>Motif Search Parameters</h4>

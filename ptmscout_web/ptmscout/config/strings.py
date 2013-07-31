@@ -269,6 +269,23 @@ protein_batch_search_page_title = "Protein Batch Search"
 
 share_experiment_page_title = "Share Experiment"
 
+share_subsets_page_title = "Share Subset: %s"
+
+share_subset_email_subject = "PTMScout User %s has shared a subset with you"
+share_subset_email_message = \
+"""PTMScout User %s has shared a subset for experiment '%s' with you,
+you may add this subset to your user account by visiting <a href="%s">this
+page</a>."""
+
+share_subsets_token_message = \
+"""Subset '%s' for experiment '%s' has been shared. Colleagues can now access this subset
+by visiting the following link: <a href="%s">%s</a>."""
+
+share_subset_success_message = \
+"""This subset has been added to experiment '%s' for your user account,
+you may view it be visiting <a href="%s">this page</a> and choosing
+the subset from the drop-down menu."""
+
 statistics_page_title = "PTMScout Statistics"
 
 upload_page_title = "Upload"

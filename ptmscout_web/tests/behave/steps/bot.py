@@ -90,7 +90,19 @@ class Bot(object):
         form.set('change_name', change_name)
         form.set('change_description', change_description)
         return form.submit()
-    
+   
+    def save_subset_selection(self, exp_id, annotation_set_id, fq, bq = 'experiment'):
+        self.numqueries+=1
+        query_expression = {
+                            'experiment': exp_id,
+                            'name': 'Subset %d' % (self.numqueries),
+                            'background': bq,
+                            'foreground': fq,
+                            'annotation_set_id': annotation_set_id }
+        
+        result = self.app.post_json("http://localhost/webservice/subsets/save", params=query_expression, status=200)
+        return result.json
+         
     def query_dataset_explorer(self, exp_id, annotation_set_id, fq, bq = 'experiment'):
         self.numqueries+=1
         query_expression = {
@@ -102,7 +114,15 @@ class Bot(object):
         
         result = self.app.post_json("http://localhost/webservice/subsets/query", params=query_expression, status=200)
         return result.json
-    
+   
+    def fetch_subset_from_dataset_explorer(self, exp_id, subset_name, annotation_set_id):
+        query_expression = {
+                'experiment': exp_id,
+                'name': subset_name,
+                'annotation_set_id': annotation_set_id }
+
+        result = self.app.post_json("http://localhost/webservice/subsets/fetch", params=query_expression, status=200)
+        return result.json
 
 def set_file_form_contents(field, filename, form):
     f = open(filename, 'rb')

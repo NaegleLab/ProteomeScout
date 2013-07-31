@@ -105,11 +105,16 @@ def start_annotation_import(session_id, job_id):
     valid_msIds = get_valid_msids(job, session)
     
     notify_tasks.set_job_stage.apply_async((job_id, 'annotate', len(annotation_cols)))
-    
+   
+    annotation_permission = annotations.AnnotationPermission()
+    annotation_permission.user_id = job.user_id
+    annotation_permission.access_level = 'owner'
+
     annotation_set = annotations.AnnotationSet()
     annotation_set.name = session.change_name
     annotation_set.owner_id = job.user_id
     annotation_set.experiment_id = session.experiment_id
+    annotation_set.permissions = [annotation_permission]
     annotation_set.save()
 
     used_labels = set()

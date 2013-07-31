@@ -30,7 +30,8 @@ class User(Base):
     expiration = Column(DateTime)
 
     permissions = relationship("Permission", backref="user")
-    
+    annotation_sets = relationship("AnnotationPermission")
+
     def __init__(self, username="", name="", email="", institution="", access_level='researcher'):
         self.username = username
         self.name = name
@@ -38,7 +39,10 @@ class User(Base):
         self.institution = institution
         self.access_level = access_level
         self.permissions = []
-        
+    
+    def canViewAnnotations(self, annotation_set_id):
+        return reduce(bool.__or__, [ap.annotation_set_id == annotation_set_id for ap in self.annotation_sets], False)
+
     def isExpired(self):
         if self.expiration != None:
             now = datetime.datetime.now()

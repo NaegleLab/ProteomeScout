@@ -126,7 +126,61 @@ def view_nominative_enrichment(context):
     assertAlmostEqual(0.23759270964480667, fun_p_values['not fun'])
     assertAlmostEqual(0.3949453933540862, fun_p_values['fun'])
 
+@given(u'the user saves a subset selection from that experiment')
+@patch('transaction.abort')
+@patch('transaction.commit')
+@patch('ptmscout.utils.mail.celery_send_mail')
+def save_subset_query_using_annotation_set(context, patch_mail, patch_commit, patch_abort):
+    patch_commit.side_effect = bot.session_flush
+    patch_abort.side_effect = bot.log_abort
+    
+    context.result.form.submit()
+    
+    argstr = str(patch_mail.call_args)
+    
+    assertContains(context.active_user.user.email, argstr)
+    assertContains(strings.annotation_upload_finished_subject, argstr)
 
+    result = context.ptmscoutapp.get("/experiments/28/subsets")
+
+    annotation_form = result.forms['select-annotation-form']
+    context.annotation_set_id = int(annotation_form['annotation_set'].options[1][0])
+
+    fq = [
+          ['nop', ['quantitative', 'Interestingness', 'gt', '0.5']]
+         ]
+    
+    result = context.active_user.save_subset_selection( 28, context.annotation_set_id, fq )
+    assertEqual( 'success', result['status'])
+    context.result = result
+
+@when(u'the user creates a sharing token for the experiment subset')
+def create_share_token_for_subset(context):
+    context.subset_name = context.result['name']
+
+    result = context.ptmscoutapp.post('http://localhost/experiments/28/subsets/share', {'saved-subset-select': context.subset_name})
+    result.mustcontain(strings.share_subsets_page_title % (context.subset_name))
+
+    m = re.search(r"http://localhost/experiments/28/subsets/share\?token=([a-zA-Z0-9]+)", result.body)
+    context.share_link = m.group(0)
+
+@then(u'other users should be able to view the shared subset')
+def other_user_login_and_view(context):
+    new_user = Bot(context.ptmscoutapp)
+    new_user.register()
+    new_user.activate()
+    new_user.acquire_experiments([28])
+    
+    context.active_user.logout()
+    new_user.login()
+    
+    result = context.ptmscoutapp.get(context.share_link)
+
+    result.mustcontain(strings.share_subsets_page_title % (context.subset_name))
+    result.mustcontain(strings.share_subset_success_message % ("Effects of HER2 overexpression on cell signaling networks governing proliferation and migration.", "http://localhost/experiments/28/subsets"))
+
+    result = new_user.fetch_subset_from_dataset_explorer(28, "%s: %s" % (context.active_user.username, context.subset_name), context.annotation_set_id)
+    assertEqual( 26, result['foreground']['peptides'] )
 
 @given(u'a user uploads a file containing non-mass spec experimental data')
 def upload_dataset_for_annotation(context):
@@ -288,14 +342,13 @@ def user_forbidden_comparison_and_ambiguity(context):
 @then(u'the user should be able to delete the dataset if needed')
 def user_delete_dataset(context):
     result = context.ptmscoutapp.get('http://localhost/account/experiments')
-
-    result = result.click(linkid='delete-dataset-1')
+    result = result.click(linkid='delete-dataset-0')
     result.mustcontain(strings.delete_experiment_confirm_message)
 
-    result = result.form.submit()
+    result = result.forms['confirm'].submit()
     result.mustcontain(strings.delete_experiment_success_message)
 
-    result = context.ptmscoutapp.get('http://localhost/experiments/%d' % (context.exp_id), status=404)
+    result = context.ptmscoutapp.get('http://localhost/experiments/%d' % (context.exp_id), status=403)
 
 
 @given(u'a user uploads multiple clusterings for an experiment')

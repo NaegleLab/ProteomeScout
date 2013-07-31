@@ -13,6 +13,13 @@ Feature: Dataset Explorer
           And the user should be able to filter by numerical data
           And the user should be able to view nominative features in the enrichment data
 
+    Scenario: Users should be able to share subsets created for experiments
+        Given a user uploads annotations to an experiment
+        And the user saves a subset selection from that experiment
+        When the user creates a sharing token for the experiment subset
+        Then other users should be able to view the shared subset
+
+    @runme
 	Scenario: Load residues of interest from a dataset and annotate them
 		Given a user uploads a file containing non-mass spec experimental data
 		Then the user should be sent an email with a link to the dataset which contains:
@@ -22,10 +29,10 @@ Feature: Dataset Explorer
 		  | field                | elements |
 		  | nearby_modifications | 17       |
 		  | protein_domains      | 37       |
-		  | site_regions         | 2        |
+		  | site_regions         | 3        |
 		  | site_domains         | 5        |
-		  | scansite_kinase      | 15       |
-		  | scansite_bind        | 4        |
+		  | scansite_kinase      | 14       |
+		  | scansite_bind        | 2        |
 		  | protein_GO_BP        | 153      |
 		  | protein_GO_MF        | 62       |
 		  | protein_GO_CC        | 55       |
@@ -34,7 +41,6 @@ Feature: Dataset Explorer
         And the user should not be able to use other experiment specific tools
         And the user should be able to delete the dataset if needed
 
-    @runme
     Scenario: Export matlab files for MCAM analysis
     	Given a user uploads multiple clusterings for an experiment
     	When the user chooses to export MCAM input files

@@ -44,6 +44,7 @@ def add_views(config):
     config.add_route('compute_subset', '/webservice/subsets/query')
     config.add_route('save_subset', '/webservice/subsets/save')
     config.add_route('fetch_subset', '/webservice/subsets/fetch')
+    config.add_route('share_subset', '/experiments/{id}/subsets/share')
     
     config.add_route('mcam_enrichment', '/experiments/{id}/mcam_enrichment')
     config.add_route('mcam_confirm', '/experiments/{id}/mcam_confirm')
