@@ -3,7 +3,7 @@ function ZoomWindow(structure_viewer, svg_container, residue, width, height) {
     this.residue = residue;
     this.width = width;
 
-    this.height = height;
+    this.height = height-100;
     this.minwidth = 50;
 
     var axis = structure_viewer.axis;
@@ -18,7 +18,7 @@ function ZoomWindow(structure_viewer, svg_container, residue, width, height) {
                     .attr('x', axis(this.residue))
                     .attr('width', axis(width))
                     .attr('y', 0)
-                    .attr('height', height+50)
+                    .attr('height', this.height+50)
                     .style('fill', "#666666")
                     .style('opacity', "0.3");
 
@@ -66,12 +66,12 @@ function ZoomWindow(structure_viewer, svg_container, residue, width, height) {
 };
 
 ZoomWindow.prototype.animate_height = function(t, nheight, timedelay) {
-    this.height=nheight;
+    this.height=nheight-100;
 
     t = t.transition().delay(timedelay);
 
     t.select(this.winselector)
-                .attrTween('height', d3.tween(this.height+50, d3.interpolate));
+                .attrTween('height', d3.tween(this.height + 50, d3.interpolate));
 
     var ntransform = 'translate(0,{0})'.format(this.height)
     t.select(this.expselector)
