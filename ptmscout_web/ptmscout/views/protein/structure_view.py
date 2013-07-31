@@ -273,6 +273,7 @@ def protein_structure_viewer(context, request):
                 ]
 
     return {'pageTitle': strings.protein_structure_page_title,
+            'protein_viewer_help_page': "/".join([settings.documentationUrl, settings.proteinViewerHelp]),
             'protein': prot,
             'experiments': formatted_exps,
             'mod_types': formatted_mod_types,

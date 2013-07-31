@@ -28,6 +28,7 @@
                 <button class="exp-tool">Filter Experiments</button>
                 <button class="track-tool">Filter Tracks</button>
                 <button class="svg-tool">Export SVG</button>
+                <a href="${protein_viewer_help_page}" target="_blank"><button class="help-tool">Help</button></a>
 
                 <div title="Modification Types" class="mods">
                     <ul>

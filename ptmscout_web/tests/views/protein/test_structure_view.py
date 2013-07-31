@@ -212,3 +212,4 @@ class TestProteinStructureViews(UnitTestCase):
         self.assertEqual(formatted_exps, result['experiments'])
         self.assertEqual(formatted_mod_types, result['mod_types'])
         self.assertEqual(exp_tracks, result['tracks'])
+        self.assertEqual("/".join([settings.documentationUrl, settings.proteinViewerHelp]), result['protein_viewer_help_page'])

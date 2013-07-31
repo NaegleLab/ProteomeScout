@@ -498,6 +498,8 @@ $(function(){
                         window.structure_viewer.export_svg();
                     });
 
+    $('.help-tool').button({ icons: { primary: 'ui-icon-help' }, text:false });
+
     $('.mods').toggle();
     $('.exps').toggle();
     $('.tracks').toggle();
