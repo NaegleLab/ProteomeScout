@@ -267,7 +267,7 @@ def protein_structure_viewer(context, request):
                     "Uniprot Binding Sites",
                     "Uniprot Macrostructure",
                     "Uniprot Topology",
-                    "Entrez Domains",
+#                    "Entrez Domains",
                     "Mutations",
                     "Scansite"
                 ]

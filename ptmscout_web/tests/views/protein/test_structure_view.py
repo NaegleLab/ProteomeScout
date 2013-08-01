@@ -203,7 +203,7 @@ class TestProteinStructureViews(UnitTestCase):
                     "Uniprot Binding Sites",
                     "Uniprot Macrostructure",
                     "Uniprot Topology",
-                    "Entrez Domains",
+#                    "Entrez Domains",
                     'Mutations',
                     'Scansite',
                     ]

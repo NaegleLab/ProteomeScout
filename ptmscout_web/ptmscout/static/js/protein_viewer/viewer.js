@@ -188,7 +188,7 @@ function StructureViewer(protein_data) {
 
     this.create_activation_loop_track(this.macro_viewer);
     this.create_uniprot_domain_track(this.macro_viewer);
-    this.create_ncbi_domain_track(this.macro_viewer);
+//    this.create_ncbi_domain_track(this.macro_viewer);
     this.create_domain_track(this.macro_viewer);
 
     this.create_region_track(this.macro_viewer, "Uniprot Structure", "uniprot_structure")
@@ -210,7 +210,7 @@ function StructureViewer(protein_data) {
     
     this.create_activation_loop_track(this.zoom_viewer);
     this.create_uniprot_domain_track(this.zoom_viewer);
-    this.create_ncbi_domain_track(this.zoom_viewer);
+//    this.create_ncbi_domain_track(this.zoom_viewer);
     this.create_domain_track(this.zoom_viewer);
 
     this.create_region_track(this.zoom_viewer, "Uniprot Structure", "uniprot_structure")
