@@ -80,7 +80,7 @@
                         <select id="saved-subset-select" name="saved-subset-select">
                             <option/>
                         </select>
-                        <button class="longtask" id="open-saved-subset">View Subset</button>
+                        <input type="button" class="longtask" id="open-saved-subset" value="View Subset" />
                         <input type="submit" value="Share Subset" id="share-saved-subset" />
                     </form>
                 </div>
