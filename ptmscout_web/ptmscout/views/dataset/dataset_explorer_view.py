@@ -848,6 +848,7 @@ def compute_subset_enrichment(request, annotation_set_id, exp, user, subset_name
             'peptides': peptide_data,
             'enrichment': enrichment,
             'motif': {
+                      'queried': k != None,
                       'tests': motif_tests,
                       'results': motif_results
                       }

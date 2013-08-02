@@ -329,8 +329,12 @@ SubsetTab.prototype.init = function(query_response) {
 	
 	createSeqlogo(d3.select("#{0}".format(this.tabId)).select(".foreground-seqlogo".format(this.tabId)), query_response.foreground.seqlogo, 350, 270);
 	createSeqlogo(d3.select("#{0}".format(this.tabId)).select(".background-seqlogo".format(this.tabId)), query_response.background.seqlogo, 350, 270);
-	
-	this.motifTable = new MotifTable(this.motif, query_response.motif.results, query_response.motif.tests)
+
+    if(query_response.motif.queried){
+	    this.motifTable = new MotifTable(this.motif, query_response.motif.results, query_response.motif.tests)
+    }else{
+        $("<div>Motif information was not collected for this subset</div>").appendTo(this.motif);
+    }
 	this.formatPeptides(query_response.peptides);
 	this.formatData(query_response.measurements);
 };
