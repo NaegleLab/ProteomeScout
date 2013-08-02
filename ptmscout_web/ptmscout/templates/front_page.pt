@@ -3,7 +3,7 @@
         <?python import ptmscout.config as config; ?>
         <link rel="icon" type="image/png" href="${request.static_url('ptmscout:static/images/ptmscoutMagGlass.png')}">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>PTMScout Portal</title>
+        <title>ProteomeScout Portal</title>
 
         <script type="text/javascript" src="${request.static_url('ptmscout:static/js/jquery-1.9.0.min.js')}" ></script>
         <script type="text/javascript" src="${request.static_url('ptmscout:static/js/jquery-ui-1.9.2.min.js')}"></script>
@@ -23,7 +23,7 @@
 
     <div metal:fill-slot="content">
         <div id="iewarn" title="Warning!" style="display: none;">
-            Warning! We have detected that your browser does not support Scalable Vector Graphics. We recommend viewing this site using the most recent versions of Chrome, Opera, or Firefox. We recommend Chrome for the best performance. Using Internet Explorer or any legacy browser will not allow you to use many graphical features of PTMScout.
+            Warning! We have detected that your browser does not support Scalable Vector Graphics. We recommend viewing this site using the most recent versions of Chrome, Opera, or Firefox. We recommend Chrome for the best performance. Using Internet Explorer or any legacy browser will not allow you to use many graphical features of ProteomeScout.
         </div>
 
         <div id="splash">

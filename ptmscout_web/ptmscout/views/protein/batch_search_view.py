@@ -64,7 +64,7 @@ def batch_search_view_POST(request):
 
     errors = []
     if not terms_of_use_accepted:
-        errors = ["You must agree to the PTMScout terms of use"]
+        errors = ["You must agree to the ProteomeScout terms of use"]
     elif len(accessions) == 0:
         errors = ["You must enter at least one accession number"]
     else:

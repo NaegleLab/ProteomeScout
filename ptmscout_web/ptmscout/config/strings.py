@@ -18,7 +18,7 @@ success_header = "Success"
 change_password_page_title = "Change Password"
 change_password_success_message = "Password successfully changed."
 
-about_page_title = "About PTMScout"
+about_page_title = "About ProteomeScout"
 
 account_activation_page_title = "Account Activation"
 account_activation_success_header = "Account Activation Succeeded"
@@ -28,7 +28,7 @@ account_activation_failed_message = "The specified account is not valid, please 
 
 account_management_page_title = "Account Management"
 
-compendia_download_page_title = 'PTMScout Flat File Data'
+compendia_download_page_title = 'ProteomeScout Flat File Data'
 compendia_download_page_desc = ''
 
 create_reviewer_account_page_title = "Create Reviewer Account"
@@ -65,9 +65,9 @@ experiment_prediction_page_title = "Experiment Predictions: %s"
 experiment_pfam_page_title = "Experiment Protein Families: %s"
 experiment_GO_page_title = "Experiment GO Terms: %s"
 
-experiment_upload_finished_subject = "PTMScout experiment upload completed" 
+experiment_upload_finished_subject = "ProteomeScout experiment upload completed" 
 experiment_upload_finished_message = \
-"""PTMScout has finished processing the upload of your experiment: '%s'
+"""ProteomeScout has finished processing the upload of your experiment: '%s'
 
 Upload Results:
 
@@ -77,8 +77,8 @@ Errors: %d
 
 You may view the error log for this upload at %s.
 
-Thanks for using PTMScout,
--The PTMScout Team"""
+Thanks for using ProteomeScout,
+-The ProteomeScout Team"""
 experiment_upload_configure_page_title = "Configure Experiment Data"
 experiment_upload_configure_instructions = """
 <span>Please verify and assign designations for the column types present in your experiment.</span><br />
@@ -157,7 +157,7 @@ experiment_upload_error_no_annotations = "You must specify at least one column c
 experiment_upload_warning_columns_values_should_be = "Expected column value to be of type '%s'"
 experiment_upload_warning_missing_column = "Warning: Row missing expected columns"
 experiment_upload_warning_data_missing = "Warning: Data fields were not set for this run"
-experiment_upload_warning_accession_not_found = "Warning: Protein accession '%s' was not found in any external databases queried by PTMScout"
+experiment_upload_warning_accession_not_found = "Warning: Protein accession '%s' was not found in any external databases queried by ProteomeScout"
 experiment_upload_warning_acc_column_contains_bad_accessions = "Warning: Accession column contains accession with unrecognized types"
 experiment_upload_warning_peptide_column_contains_bad_peptide_strings = "Warning: Peptide column contains peptide with incorrect formatting"
 
@@ -217,26 +217,26 @@ You may download the results of this export <a href="%s">here</a>.
 
 This file will be available for 24 hours.
 
--The PTMScout Team"""
-experiment_export_finished_subject = "PTMScout Experiment Export Finished"
+-The ProteomeScout Team"""
+experiment_export_finished_subject = "ProteomeScout Experiment Export Finished"
 
 
 
 forgotten_password_page_title = "Forgotten Password Retrieval"
 forgotten_password_success_header = "Password Reset Success"
 forgotten_password_success_message = "Your username and a temporary password have been sent to your e-mail address"
-forgotten_password_email_subject = "PTMScout password reset"
+forgotten_password_email_subject = "ProteomeScout password reset"
 forgotten_password_email_message = \
 """%s,
 
-Your password in PTMScout has been reset, your new login credentials are:
+Your password in ProteomeScout has been reset, your new login credentials are:
 Username: %s
 Password: %s
 
-Please visit <a href="%s">PTMScout</a> to login.
+Please visit <a href="%s">ProteomeScout</a> to login.
 After logging in, your can change your password <a href="%s">here</a>.
 
--PTMScout Administrator
+-ProteomeScout Administrator
 """
 
 login_page_title = "Login"
@@ -271,9 +271,9 @@ share_experiment_page_title = "Share Experiment"
 
 share_subsets_page_title = "Share Subset: %s"
 
-share_subset_email_subject = "PTMScout User %s has shared a subset with you"
+share_subset_email_subject = "ProteomeScout User %s has shared a subset with you"
 share_subset_email_message = \
-"""PTMScout User %s has shared a subset for experiment '%s' with you,
+"""ProteomeScout User %s has shared a subset for experiment '%s' with you,
 you may add this subset to your user account by visiting <a href="%s">this
 page</a>."""
 
@@ -286,7 +286,7 @@ share_subset_success_message = \
 you may view it be visiting <a href="%s">this page</a> and choosing
 the subset from the drop-down menu."""
 
-statistics_page_title = "PTMScout Statistics"
+statistics_page_title = "ProteomeScout Statistics"
 
 upload_page_title = "Upload"
 upload_page_header = "Data Upload"
@@ -300,16 +300,16 @@ user_invite_page_title = "Invite User"
 user_invite_confirm = "User %s is not a registered user, are you sure you wish to invite this user?"
 user_invite_email_required = "Email address is required"
 user_invited = "An invitation to view your dataset has been sent to %s."
-user_invite_email_subject = "PTMScout user %s has invited you to share a dataset"
+user_invite_email_subject = "ProteomeScout user %s has invited you to share a dataset"
 user_invite_email_message = """
 %s,
 
-User %s has invited you to view their dataset '%s', available through PTMScout.
+User %s has invited you to view their dataset '%s', available through ProteomeScout.
 
 Please <a href=\"%s\">visit</a> to access and view this data.
 
 Thanks,
--The PTMScout Team
+-The ProteomeScout Team
 """
 
 
@@ -317,20 +317,20 @@ user_registration_page_title = "User Registration"
 user_registration_success_header = "Registration Successful"
 user_registration_success_message = "A confirmation e-mail has been sent to the specified e-mail address. Please check your e-mail to complete your registration."
 
-user_registration_email_subject = "PTMScout Account Activation Details"
+user_registration_email_subject = "ProteomeScout Account Activation Details"
 user_registration_email_message = """
 %s,
 
-Thank you for choosing PTMScout for your research.
+Thank you for choosing ProteomeScout for your research.
 
 You can activate your new account by visiting <a href=\"%s/activate_account?username=%s&token=%s\">this link</a>.
 
 Thanks,
--The PTMScout Team<br>
+-The ProteomeScout Team<br>
 """
 
-portal_page_title = 'PTMScout Portal'
-view_page_title = "PTMScout Terms of Use"
+portal_page_title = 'ProteomeScout Portal'
+view_page_title = "ProteomeScout Terms of Use"
 
 failure_reason_experiment_file_not_enough_columns = "Not enough columns detected in data file. Verify that the file is TSV format and try again"
 failure_reason_experiment_header_no_peptide_column = "Data file did not contain a peptide column"
@@ -370,7 +370,7 @@ error_resource_not_ready_page_title = "Resource not ready"
 error_resource_not_ready_message = "The resource you are trying to access is currently in processing. If you are the creator of this resource, please visit <a href=\"%s\">this page</a> to check on its status."
 
 
-experiment_upload_failed_subject = "PTMScout experiment upload failed"
+experiment_upload_failed_subject = "ProteomeScout experiment upload failed"
 experiment_upload_failed_message = \
 """
 The upload process for the experiment '%s' failed during the '%s' loading stage with the following error message:
@@ -379,19 +379,19 @@ The upload process for the experiment '%s' failed during the '%s' loading stage 
 
 You can restart the upload by visiting <a href="%s/accounts/experiments">this page</a>.
 
-The PTMScout administrator has been notified of this error. If problems persist please contribute a bug report at our <a href="http://bitbucket.org/knaegle/ptmscout_dev">issue tracker</a>.
+The ProteomeScout administrator has been notified of this error. If problems persist please contribute a bug report at our <a href="http://bitbucket.org/knaegle/ptmscout_dev">issue tracker</a>.
 
--The PTMScout Team
+-The ProteomeScout Team
 """
 
 error_message_subset_name_exists = "A subset with that name already exists for this experiment, please choose another name"
 error_message_subset_name_does_not_exist = "No subset was found with that name"
 error_message_subset_empty = "Subset foreground selection was empty, please try another query"
 
-annotation_upload_finished_subject = "PTMScout annotation upload finished"
+annotation_upload_finished_subject = "ProteomeScout annotation upload finished"
 annotation_upload_finished_message = \
 """
-PTMScout has finished processing your job '%s'.
+ProteomeScout has finished processing your job '%s'.
 
 Annotations Loaded: %d
 Errors Encountered: %d
@@ -400,14 +400,14 @@ You may now use this annotation data by visiting the <a href="%s">dataset explor
 
 A listing of error reasons is provided below.
 
-Thanks for using PTMScout,
--The PTMScout Team
+Thanks for using ProteomeScout,
+-The ProteomeScout Team
 
 Upload Errors:
 --------------
 """
 
-job_failed_subject = "PTMScout job failed"
+job_failed_subject = "ProteomeScout job failed"
 job_failed_message = """
 Processing of your job '%s' failure during '%s' with the following error message:
 
@@ -415,9 +415,9 @@ Processing of your job '%s' failure during '%s' with the following error message
     
 You may retry your job at any time. 
 
-The PTMScout administrator has been notified of this error. If problems persist please contribute a bug report at our <a href="http://bitbucket.org/knaegle/ptmscout_dev">issue tracker</a>.
+The ProteomeScout administrator has been notified of this error. If problems persist please contribute a bug report at our <a href="http://bitbucket.org/knaegle/ptmscout_dev">issue tracker</a>.
 
--The PTMScout Team
+-The ProteomeScout Team
 """
 
 failure_reason_account_expired = "This account has expired"
@@ -436,10 +436,10 @@ You may download the results of this MCAM enrichment analysis <a href="%s">here<
 
 This file will be available for 24 hours.
 
--The PTMScout Team"""
-mcam_enrichment_finished_subject = "PTMScout MCAM Export Finished"
+-The ProteomeScout Team"""
+mcam_enrichment_finished_subject = "ProteomeScout MCAM Export Finished"
 
-batch_annotation_finished_subject = "PTMScout Batch Annotation Finished"
+batch_annotation_finished_subject = "ProteomeScout Batch Annotation Finished"
 batch_annotation_finished_message = \
 """Processing of your job '%s' succeeded.
 
@@ -450,4 +450,4 @@ You may download the results of this batch annotation <a href="%s">here</a>.
 
 This file will be available for 24 hours.
 
--The PTMScout Team"""
+-The ProteomeScout Team"""

@@ -5,7 +5,7 @@
 	
 	<div metal:fill-slot="content">
 		<div class="grid_12">
-		  <h2>PTMScout Summary Statistics</h2>
+		  <h2>ProteomeScout Summary Statistics</h2>
 			
           <div class="body">
                 <h4>All Data</h4>
