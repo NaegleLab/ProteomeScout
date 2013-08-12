@@ -2,7 +2,7 @@ import os
 
 documentationUrl = "https://www.assembla.com/spaces/proteomescout/wiki"
 proteinViewerHelp = "Protein_Viewer"
-adminEmail = "ptmscout@seas.wustl.edu"
+adminEmail = "proteomescout@seas.wustl.edu"
 automailerEmail = "no-reply@seas.wustl.edu"
 pubmedUrl = "www.ncbi.nlm.nih.gov/pubmed/%d"
 
