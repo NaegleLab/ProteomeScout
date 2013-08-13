@@ -13,6 +13,9 @@ class AnnotationPermission(Base):
 
     annotation_set = relationship("AnnotationSet", backref='permissions')
 
+    def save(self):
+        DBSession.add(self)
+        DBSession.flush()
 class Annotation(Base):
     __tablename__ = 'MS_annotations'
 

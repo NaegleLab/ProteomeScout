@@ -9,9 +9,16 @@ class IntegrationTestMCAMEnrichmentView(IntegrationTestCase):
     def test_view_integration(self, patch_run_mcam):
         annotation_set = annotations.AnnotationSet()
         annotation_set.name = 'Some Annotations'
-        annotation_set.owner_id = self.bot.user.id
+
         annotation_set.experiment_id = 26
         annotation_set.save()
+
+        annotation_permission = annotations.AnnotationPermission()
+        annotation_permission.annotation_set_id = annotation_set.id
+        annotation_permission.user_id = self.bot.user.id
+        annotation_permission.access_level = 'owner'
+        annotation_permission.save()
+
 
         result = self.ptmscoutapp.get("/experiments/26/mcam_enrichment", status=200)
         result.mustcontain(strings.mcam_enrichment_page_title)
