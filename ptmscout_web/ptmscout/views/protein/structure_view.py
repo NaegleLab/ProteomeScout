@@ -272,7 +272,7 @@ def protein_structure_viewer(context, request):
                     "Scansite"
                 ]
 
-    return {'pageTitle': strings.protein_structure_page_title,
+    return {'pageTitle': strings.protein_structure_page_title % (prot.name),
             'protein_viewer_help_page': "/".join([settings.documentationUrl, settings.proteinViewerHelp]),
             'protein': prot,
             'experiments': formatted_exps,

@@ -19,7 +19,7 @@ def protein_gene_ontology_view(context, request):
     for aspect in term_dict:
         term_dict[aspect] = sorted(list(term_dict[aspect]), key=lambda item: item[1])
     
-    return {'pageTitle': strings.protein_ontology_page_title,
+    return {'pageTitle': strings.protein_ontology_page_title % (prot.name),
             'protein': prot,
             'F_terms':term_dict['F'],
             'P_terms':term_dict['P'],

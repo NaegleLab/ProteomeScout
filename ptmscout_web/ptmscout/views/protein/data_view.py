@@ -69,7 +69,7 @@ def protein_experiment_data_view(context, request):
 
     output_data = format_protein_data(mods)
         
-    return {'pageTitle': strings.protein_data_page_title,
+    return {'pageTitle': strings.protein_data_page_title % (prot.name),
             'protein': prot,
             'experiment_data':output_data}
     

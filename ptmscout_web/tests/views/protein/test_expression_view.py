@@ -41,7 +41,7 @@ class TestProteinExpressionViews(unittest.TestCase):
         
         patch_getProtein.assert_called_with(mock_prot.id)
         
-        self.assertEqual(strings.protein_expression_page_title, result['pageTitle'])
+        self.assertEqual(strings.protein_expression_page_title % (mock_prot.name), result['pageTitle'])
         self.assertEqual(mock_prot, result['protein'])
         
         self.assertEqual([probe.probeset_id], result['probe_ids'])

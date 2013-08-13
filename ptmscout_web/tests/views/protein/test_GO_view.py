@@ -44,7 +44,7 @@ class TestProteinGOViews(unittest.TestCase):
         
         patch_getProtein.assert_called_with(mock_prot.id)
         
-        self.assertEqual(strings.protein_ontology_page_title, result['pageTitle'])
+        self.assertEqual(strings.protein_ontology_page_title % (mock_prot.name), result['pageTitle'])
         self.assertEqual(mock_prot, result['protein'])
         self.assertEqual(2, len(result['F_terms']))
         self.assertEqual(3, len(result['P_terms']))

@@ -7,6 +7,6 @@ from ptmscout.views.protein import decorators as prot_decorators
 @prot_decorators.experiment_filter
 @decorators.get_protein('id')
 def protein_experiment_data_view(context, request, prot):
-    return {'pageTitle': strings.protein_summary_page_title,
+    return {'pageTitle': strings.protein_summary_page_title % (prot.name),
             'protein': prot}
 

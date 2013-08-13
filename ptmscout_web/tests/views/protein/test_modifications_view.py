@@ -60,7 +60,7 @@ class TestProteinModificationViews(unittest.TestCase):
         patch_getProtein.assert_called_with(mock_prot.id)
         patch_getMods.assert_called_with(mock_prot.id, mock_user)
         
-        self.assertEqual(strings.protein_modification_sites_page_title, result['pageTitle'])
+        self.assertEqual(strings.protein_modification_sites_page_title % (mock_prot.name), result['pageTitle'])
         self.assertEqual(mock_prot, result['protein'])
         self.assertEqual([{'site': p1.site_pos, 'name':"mock_pep_name",'type':mod.name, 'peptide':"mock_peptide",'experiments':set([mock_mod.experiment, mock_mod2.experiment])}], result['modification_sites'])
     

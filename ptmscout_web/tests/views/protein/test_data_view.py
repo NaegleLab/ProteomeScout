@@ -42,7 +42,7 @@ class TestProteinDataViews(UnitTestCase):
         patch_getProtein.assert_called_once_with(mock_prot.id)
         patch_getMods.assert_called_once_with(mock_prot.id, request.user)
         
-        self.assertEqual(strings.protein_data_page_title, result['pageTitle'])
+        self.assertEqual(strings.protein_data_page_title % (mock_prot.name), result['pageTitle'])
         self.assertEqual(mock_prot, result['protein'])
         self.assertEqual(formatted_experiment_data, result['experiment_data'])
         
@@ -75,7 +75,7 @@ class TestProteinDataViews(UnitTestCase):
         patch_getProtein.assert_called_once_with(mock_prot.id)
         patch_getMods.assert_called_once_with(2, request.user, [mock_prot.id])
         
-        self.assertEqual(strings.protein_data_page_title, result['pageTitle'])
+        self.assertEqual(strings.protein_data_page_title % (mock_prot.name), result['pageTitle'])
         self.assertEqual(mock_prot, result['protein'])
         self.assertEqual(formatted_experiment_data, result['experiment_data'])
         
@@ -104,7 +104,7 @@ class TestProteinDataViews(UnitTestCase):
         patch_getProtein.assert_called_once_with(mock_prot.id)
         patch_getMods.assert_called_once_with(mock_prot.id, request.user)
         
-        self.assertEqual(strings.protein_data_page_title, result['pageTitle'])
+        self.assertEqual(strings.protein_data_page_title % (mock_prot.name), result['pageTitle'])
         self.assertEqual(mock_prot, result['protein'])
         self.assertEqual(formatted_experiment_data, result['experiment_data'])
     

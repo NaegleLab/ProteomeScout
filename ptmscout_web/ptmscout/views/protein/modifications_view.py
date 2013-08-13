@@ -28,5 +28,5 @@ def protein_modifications_view(context, request):
     mod_sites = sorted( mod_sites, key=lambda item: item['site'] )
     
     return {'protein': prot,
-            'pageTitle': strings.protein_modification_sites_page_title,
+            'pageTitle': strings.protein_modification_sites_page_title % (prot.name),
             'modification_sites': mod_sites}

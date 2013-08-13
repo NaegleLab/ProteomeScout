@@ -177,7 +177,7 @@ class TestProteinStructureViews(UnitTestCase):
         patch_formatMutations.assert_called_once_with(prot)
         patch_formatScansite.assert_called_once_with(prot)
 
-        self.assertEqual(strings.protein_structure_page_title, result['pageTitle'])
+        self.assertEqual(strings.protein_structure_page_title % (prot.name), result['pageTitle'])
         self.assertEqual(prot, result['protein'])
         decoded_data = json.loads(base64.b64decode(result['data']))
 

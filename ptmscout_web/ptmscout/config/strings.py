@@ -258,12 +258,12 @@ privatize_experiment_confirm_message = "Are you sure you want to make this data 
 privatize_experiment_success_message = "You have successfully made this experiment private."
 privatize_experiment_already_message = "Experiment has already been made private."
 
-protein_summary_page_title = "Protein Accessions"
-protein_data_page_title = "Experiment Measurements"
-protein_ontology_page_title = "Gene Ontologies"
-protein_expression_page_title = "Protein Expression"
-protein_structure_page_title = "Protein Sequence Viewer"
-protein_modification_sites_page_title = "Protein Modification Sites"
+protein_summary_page_title = "Protein Accessions: %s"
+protein_data_page_title = "Experiment Measurements: %s"
+protein_ontology_page_title = "Gene Ontologies: %s"
+protein_expression_page_title = "Protein Expression: %s"
+protein_structure_page_title = "Protein Sequence Viewer: %s"
+protein_modification_sites_page_title = "Protein Modification Sites: %s"
 protein_search_page_title = "Protein Search"
 protein_batch_search_page_title = "Protein Batch Search"
 

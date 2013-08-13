@@ -28,7 +28,7 @@ def protein_expression_view(context, request):
 
     expression_data = sorted(expression_data, key=lambda item: item['tissue'])
 
-    return {'pageTitle': strings.protein_expression_page_title,
+    return {'pageTitle': strings.protein_expression_page_title % (prot.name),
             'protein': prot,
             'probe_ids': sorted(probe_ids),
             'collections': sorted(list(collections)),
