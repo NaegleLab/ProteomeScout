@@ -2,6 +2,7 @@ from tests.DBTestCase import DBTestCase
 from ptmscout.database import protein, mutations
 
 class TestMutations(DBTestCase):
+
     def test_protein_has_mutation(self):
         p = protein.getProteinById(35546)
         m1 = mutations.Mutation('single', 134, 'A', 'K', 'ACK1_HUMAN',
@@ -32,7 +33,7 @@ class TestMutations(DBTestCase):
 
     def test_equals_works(self):
         p = protein.getProteinById(35546)
-        m1 = mutations.Mutation('single', 134, 'A', 'K', 'ACK1_HUMAN',
+        m1 = mutations.Mutation('Substitution (single)', 134, 'A', 'K', 'ACK1_HUMAN',
                  'some annotations', p.id)
 
         m2 = mutations.Mutation('single', 156, 'G', 'D', 'ACK1_HUMAN',
@@ -41,10 +42,10 @@ class TestMutations(DBTestCase):
 
         test_m1 = mutations.Mutation('single', 190, 'L', 'K', 'ACK1_HUMAN',
                  'some annotations', p.id)
-        test_m2 = mutations.Mutation('single', 134, 'L', 'K', 'ACK1_HUMAN',
-                 'some annotations', p.id)
+        test_m2 = mutations.Mutation('Substitution (single)', 134, 'L', 'K', 'ACK1_HUMAN',
+                 'some annotations which are different', p.id)
         test_m3 = mutations.Mutation('single', 156, 'L', 'K', 'ACK1_HUMAN',
-                 'some annotations', p.id)
+                 'some annotations which are again different', p.id)
 
         self.assertTrue( m1.equals(test_m2) )
         self.assertTrue( test_m2.equals(m1) )

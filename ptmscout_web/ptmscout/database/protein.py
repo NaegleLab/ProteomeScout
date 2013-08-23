@@ -207,11 +207,11 @@ class Protein(Base):
 
     def hasMutation(self, mutation):
         compare = [mutation.equals(m2) for m2 in self.mutations]
-        return compare != [] and reduce(bool.__or__, compare)
+        return reduce(bool.__or__, compare, False)
 
     def hasRegion(self, region):
         compare = [region == r2 for r2 in self.regions]
-        return compare != [] and reduce(bool.__or__, compare)
+        return reduce(bool.__or__, compare, False)
 
     def get_kmer(self, site_pos, k=7):
         prot_seq = self.sequence

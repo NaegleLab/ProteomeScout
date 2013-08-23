@@ -70,12 +70,12 @@ def load_new_protein(accession, protein_record):
     added_accessions = upload_helpers.create_accession_for_protein(prot, protein_record.other_accessions + other_accessions)
 
     parse_region_tracks(prot, protein_record.features)
+    upload_helpers.find_activation_loops(prot)
 
     upload_helpers.map_expression_probesets(prot)
 
     if created:
         pfam_tools.parse_or_query_domains(prot, accession)
-        upload_helpers.find_activation_loops(prot)
         load_scansite( prot, protein_record.full_taxonomy )
         
 

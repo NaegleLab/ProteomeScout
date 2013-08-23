@@ -177,7 +177,9 @@ def find_activation_loops(prot):
         region = protein.ProteinRegion('Activation Loop', label, source, loop_start, loop_end)
 
         i+=1
-        prot.regions.append(region)
+
+        if(not prot.hasRegion(region)):
+            prot.regions.append(region)
     return i
 
 
