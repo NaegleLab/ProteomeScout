@@ -35,13 +35,26 @@ if __name__ == "__main__":
         dbinit = DatabaseInitialization()
         dbinit.setUp()
 
+        pids = None
+        if len(sys.argv) > 1:
+            pids = sys.argv[1:]
+
         accessions = []
-        for prot in DBSession.query(protein.Protein):
+
+        def add_prot(prot):
             pacc = get_primary_accessions(prot)
             if len(pacc) > 0:
                 acc = pacc[0]
                 accessions.append(acc)
-    
+
+        if pids is not None:
+            for pid in pids:
+                prot = protein.getProteinById(pid)
+                add_prot(prot)
+        else:
+            for prot in DBSession.query(protein.Protein):
+                add_prot(prot)
+
         sys.stderr.write( "Querying for %d accessions\n" % (len(accessions)) )
         pb = progressbar.ProgressBar()
 
@@ -79,7 +92,9 @@ if __name__ == "__main__":
             pb.update(i)
         pb.finish()
 
-        sys.stderr.write("Reloaded info for %d proteins (%d mismatches, %d errors)" % (loaded, mismatches, len(errors)))
+        sys.stderr.write("Reloaded info for %d proteins (%d mismatches, %d errors)\n" % (loaded, mismatches, len(errors)))
+        for acc in errors:
+            sys.stderr.write("%s: %s\n" % ( acc, str(errors[acc]) ))
 
         DBSession.flush()
     except Exception, e:

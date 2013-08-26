@@ -35,10 +35,9 @@ class Mutation(Base):
     def equals(self, other):
         type_eq = self.mutationType == other.mutationType
         loc_eq = self.location == other.location
-        prot_eq = self.protein_id == other.protein_id
         mut_eq = self.mutant == other.mutant
 
-        return type_eq and loc_eq and prot_eq and mut_eq
+        return type_eq and loc_eq and mut_eq
 
     def consistent(self, prot_seq):
         start = self.location-1

@@ -205,8 +205,8 @@ class Protein(Base):
                 return True
         return False
 
-    def hasMutation(self, mutation):
-        compare = [mutation.equals(m2) for m2 in self.mutations]
+    def hasMutation(self, m):
+        compare = [m.equals(m2) for m2 in self.mutations]
         return reduce(bool.__or__, compare, False)
 
     def hasRegion(self, region):
