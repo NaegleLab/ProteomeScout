@@ -36,7 +36,7 @@ motif_script_path = os.path.join('scripts', 'motif')
 email_regex = r"^[a-zA-Z0-9\.\-\_]+@([a-zA-Z0-9\.\-\_]+\.[a-z]+)$"
 
 DISABLE_PFAM = False
-DISABLE_SCANSITE = True
+DISABLE_SCANSITE = False
 DISABLE_QUICKGO = False
 DISABLE_PICR = False
 DISABLE_UNIPROT_QUERY = False
