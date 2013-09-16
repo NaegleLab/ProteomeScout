@@ -9,7 +9,7 @@ class Job(Base):
     __tablename__ = 'jobs'
     id = Column(Integer(10), primary_key=True, autoincrement=True)
     
-    status = Column(Enum(['configuration', 'in queue', 'running', 'finished', 'error']), default='configuration')
+    status = Column(Enum(['configuration', 'in queue', 'started', 'finished', 'error']), default='configuration')
     failure_reason = Column(Text, default="")
     
     stage = Column(VARCHAR(20))

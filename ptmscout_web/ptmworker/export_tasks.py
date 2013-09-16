@@ -6,7 +6,11 @@ from ptmworker import notify_tasks, protein_tasks
 from ptmscout.utils import export_proteins
 import csv, os, random
 
-def annotate_experiment(user, exp, header, rows):
+NOTIFY_INTERVAL = 5
+
+def annotate_experiment(user, exp, header, rows, job_id):
+    notify_tasks.set_job_stage.apply_async((job_id, 'annotating', len(rows)))
+
     header += [ 'scansite_bind', 'scansite_kinase', 'nearby_modifications', 'nearby_mutations', 'site_domains', 'site_regions',\
                     'protein_domains', 'protein_GO_BP', 'protein_GO_CC', 'protein_GO_MF' ]
     protein_mods = {}
@@ -19,6 +23,8 @@ def annotate_experiment(user, exp, header, rows):
     for ms in exp.measurements:
         ms_map[ms.id] = ms
         
+    i = 0
+    mx_val = len(rows)
     for row in rows:
         ms = ms_map[row[0]]
         prot = ms.protein
@@ -74,6 +80,12 @@ def annotate_experiment(user, exp, header, rows):
         row.append(sep.join(list(protein_GO['P'])))
         row.append(sep.join(list(protein_GO['C'])))
         row.append(sep.join(list(protein_GO['F'])))
+
+        i+=1
+        if i % NOTIFY_INTERVAL == 0:
+            notify_tasks.set_job_progress.apply_async((job_id, i, mx_val))
+
+    return header, rows
         
 def get_experiment_header(exp):
     header = ['MS_id', 'query_accession', 'gene', 'locus', 'protein_name', 'species', 'peptide', 'mod_sites', 'gene_site', 'aligned_peptides', 'modification_types']
@@ -136,7 +148,7 @@ def run_experiment_export_job(annotate, export_id, exp_id, user_id, job_id):
     rows = get_experiment_data(exp, data_labels)
 
     if annotate:
-        annotate_experiment(usr, exp, header, rows)
+        header, rows = annotate_experiment(usr, exp, header, rows, job_id)
 
     with open(exp_path, 'w') as export_file:
         cw = csv.writer(export_file, dialect='excel-tab')
@@ -197,7 +209,7 @@ def annotate_proteins(protein_result, accessions, batch_id, exp_id, user_id, job
             errors+=1
 
         i+=1
-        if i % 25 == 0:
+        if i % NOTIFY_INTERVAL == 0:
             notify_tasks.set_job_progress.apply_async((job_id, i, len(protein_map)))
 
     with open(batch_filepath, 'w') as bfile:
