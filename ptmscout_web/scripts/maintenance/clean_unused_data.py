@@ -34,10 +34,12 @@ if __name__ == "__main__":
 
         active_files = set()
         known_experiments = set()
+        bound_job_ids = set()
 
         for exp in DBSession.query(experiment.Experiment):
             active_files.add(exp.dataset)
             known_experiments.add(exp.id)
+            bound_job_ids.add(exp.job_id)
 
         files_available = [ fn for fn in os.listdir(os.path.join(settings.ptmscout_path, settings.experiment_data_file_path)) if fn.find('experiment')==0 ]
 

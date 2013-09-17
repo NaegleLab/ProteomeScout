@@ -47,7 +47,7 @@ REVIEWER_ACCOUNT_EXPIRATION_DAYS = 365
 # rate limits in queries per second
 SCANSITE_RATE_LIMIT = 3
 
-valid_domain_suffixes = set([r'.+\.edu',r'.+\.gov', r'icr\.ac\.uk', r'gov\.br'])
+valid_domain_suffixes = set([r'.+\.edu',r'.+\.gov', r'icr\.ac\.uk', r'gov\.br', r'.+\.ac\.at'])
 
 
 isoform_sequence_diff_pfam_threshold = 50
