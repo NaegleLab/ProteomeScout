@@ -103,7 +103,7 @@
 	                            </div>
 							</td>
 							<td class="accesscontrol" tal:condition="experiment.public == 0">
-								<table>
+								<table class="no-border">
 									<tr>
 										<td>
 											<form tal:attributes="id 'publish'+str(experiment.id);action request.application_url + '/account/experiments/' + str(experiment.id) + '/publish'" method="link">											
@@ -124,7 +124,7 @@
 								</table>
 							</td>
 							<td class="accesscontrol" tal:condition="experiment.public == 1">
-								<table>
+								<table class="no-border">
 									<tr>
 										<td>
 											<form tal:attributes="id 'unpublish'+str(experiment.id);action request.application_url + '/account/experiments/' + str(experiment.id) + '/unpublish'" method="link">
