@@ -5,11 +5,12 @@
 	</div>
     <div metal:fill-slot="content">
       <div metal:use-macro="experiment_info" />
-
+      <div class="container_12">
+          <div class="grid_12">
     	<div class = "infobox" tal:condition="not confirm">
     		<div class = "infoheader">${header}</div>
     		<p class = "infotext">${message}</p>
-    		<table>
+     		<table class="no-border">
     			<tr>
     				<td>
 			    		<form id="confirm" method="post" action="">
@@ -30,4 +31,6 @@
     		<p class = "infotext">${structure:message}</p>
     	</div>
     </div>
+</div>
+</div>
 </div>
