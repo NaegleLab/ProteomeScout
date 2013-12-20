@@ -5,24 +5,10 @@
 	</div>
     <div metal:fill-slot="content">
 		<div metal:use-macro="experiment_info" />
-		
-    	<div class="loginform">
-	    	<div tal:condition="reason != None" class="errorbox">Error: ${reason}</div>
-	        <form method="POST" action="${request.application_url}/account/experiments/${experiment.id}/share">
-	        	<input type="hidden" name="submitted" value="1" />
-	        	<input type="hidden" name="mode" value="add" />
-	    		<div class="formcategory">Share your dataset:</div>
-	        	<table>
-	        		<tr>
-	        			<td class="fieldname">E-mail Address:</td>
-	        			<td><input type="text" value="" name="email" maxlength=100 size=31 /></td>
-	        			<td><input type="submit" value="Share" /></td>
-	        		</tr>
-	        	</table>
-	        </form>
-	        <a href="${ request.route_url( 'review_account', id=experiment.id ) }">Create a Temporary Reviewer Account</a>
-       	</div>
-       	<table class="usertable">
+        <div class="container_12">
+        <div class="grid_12">        
+        <h3>Users</h3>
+       	<table class="usertable no-border">
        		<tbody>
        			<tr>
        				<th>User</th>
@@ -47,5 +33,23 @@
 				</tal:experiments>
 			</tbody>
        	</table>
+    	<div class="">
+	    	<div tal:condition="reason != None" class="errorbox">Error: ${reason}</div>
+	        <form method="POST" action="${request.application_url}/account/experiments/${experiment.id}/share">
+	        	<input type="hidden" name="submitted" value="1" />
+	        	<input type="hidden" name="mode" value="add" />
+	    		<div class="formcategory" style="border:none">Share your dataset</div>
+	        	<table class="no-border" style="margin-left:1em">
+	        		<tr>
+                        <td class="fieldname bold">E-mail Address:</td>
+	        			<td style="width:300px"><input type="text" style="width:100%" value="" id="email" name="email" maxlength=100 size=31 /></td>
+	        			<td><input type="submit" value="Share" /></td>
+	        		</tr>
+	        	</table>
+	        </form>
+        </div>
+        <a href="${ request.route_url( 'review_account', id=experiment.id ) }">Create a Temporary Reviewer Account</a>
 	</div>
+</div>
+</div>
 </div>
