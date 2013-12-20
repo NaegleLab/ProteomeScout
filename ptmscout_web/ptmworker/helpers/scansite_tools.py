@@ -43,7 +43,11 @@ class ScansiteParser():
             self.sites.append(mn)
 
 class ScansiteError(Exception):
-    pass
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __repr__(self):
+        return self.msg
 
 RETRY_COUNT = 3
 
@@ -72,7 +76,7 @@ def get_scansite_motif(pep_seq, motif_class, filter_exact=True):
         except httplib.BadStatusLine:
             log.warning("Got bad status line from Scansite3, retrying (%d / %d)", i, RETRY_COUNT)
 
-    raise ScansiteError()
+    raise ScansiteError("Failed query: %s" % (query_url))
 
 def chop_overlapping(seq, size, overlap):
     query_sequences = []

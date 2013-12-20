@@ -4,7 +4,7 @@ from ptmworker.helpers import upload_helpers, scansite_tools
 from ptmscout.utils import decorators
 from ptmworker import peptide_tasks
 from collections import defaultdict
-import os
+import os, sys
 import traceback
 import datetime
 
@@ -54,8 +54,13 @@ def assign_scansite_to_protein(prot, scansite_predictions):
 
 if __name__ == "__main__":
     try:
-        settings = os.path.join(os.sep, 'data', 'ptmscout', 'ptmscout_web', 'production.ini')
-        
+        try:
+            settings = sys.argv[1]
+        except:
+            settings = os.path.join(os.sep, 'data', 'ptmscout', 'ptmscout_web', 'production.ini')
+
+
+        print "Loading settings:",settings
         DatabaseInitialization.setUpClass(settings)
         dbinit = DatabaseInitialization()
         dbinit.setUp()
@@ -67,7 +72,7 @@ if __name__ == "__main__":
         print "Getting scansite annotations..."
 
         def process_protein(prot):
-            global j, k, created
+            global j, k
             motif_class = get_motif_class( upload_helpers.get_taxonomic_lineage( prot.species.name ) )
 
             if motif_class:
@@ -76,7 +81,8 @@ if __name__ == "__main__":
                 k += assign_scansite_to_protein(prot, scansite_predictions)
 
         def report_progress(i):
-            print "Got %d annotations, assigned %d annotations, processed %d / %d protein sequences" % (j, k, created, i, total_proteins)
+            global j, k
+            print "Got %d annotations, assigned %d annotations, processed %d / %d protein sequences" % (j, k, i, total_proteins)
             DBSession.flush()
             dbinit.commit()
             dbinit.new_transaction()
@@ -86,7 +92,7 @@ if __name__ == "__main__":
         DBSession.flush()
     except Exception, e:
         traceback.print_exc()
-        
+
         print "Rolling back database changes..."
         dbinit.rollback()
     else:

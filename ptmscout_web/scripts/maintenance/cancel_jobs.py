@@ -1,6 +1,7 @@
 from scripts.DB_init import DatabaseInitialization
 from ptmscout.database import jobs
 from ptmscout.utils import mail
+from ptmscout.config import strings, settings
 import traceback
 import os, sys
 

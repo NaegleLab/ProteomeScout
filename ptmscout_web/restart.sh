@@ -17,6 +17,9 @@ sudo chmod -R 775 *
 sudo chown -R www-data *
 sudo chgrp -R development *
 
+echo "Cancelling running jobs"
+python scripts/maintenance/cancel_jobs.py
+
 ./stop.sh
 
 if [ "$arg" == "develop" ]
@@ -27,6 +30,7 @@ else
     loglevel="INFO"
     config="production.ini"
 fi
+
 
 echo "Starting workers..."
 /data/pyramid/bin/pceleryd $config -Q celery --concurrency=7 --logfile=logs/ptmworker.log --loglevel=$loglevel --pidfile=logs/ptmworker.0.pid > logs/ptmworker.0.start &
