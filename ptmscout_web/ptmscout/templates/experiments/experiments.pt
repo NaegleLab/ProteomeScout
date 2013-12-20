@@ -10,20 +10,20 @@
             <table class = "experimenttable drop-shadow">
                 <thead>
                     <tr>
-                        <th></th>
-                        <th>Compendia</th>
-                        <th>Description</th>
-                        <th>Authors</th>
+                        <th style="width:25px"></th>
+                        <th style="width:160px">Compendia</th>
+                        <th style="width:375px">Description</th>
+                        <th style="width:180px">Authors</th>
                         <th>Journal Info</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tal:experiments tal:repeat="(i, experiment) enumerate(compendia)">
                         <tr tal:attributes="class 'experiment' + (' even' if i % 2 == 0 else ' odd'); id 'e%d' % (experiment.id)" >
-                            <td class='expander'><button tal:condition="len(experiment.children) > 0" class="expand">+</button></td>
-                            <td>${structure:experiment.getClickable(request, new_window = True)}</td>
-                            <td tal:content="experiment.description"></td>
-                            <td tal:content="experiment.author"></td>
+                            <td style="width:25px" class='expander'><button tal:condition="len(experiment.children) > 0" class="expand">+</button></td>
+                            <td style="width:160px" >${structure:experiment.getClickable(request, new_window = True)}</td>
+                            <td style="width:375px" tal:content="experiment.description"></td>
+                            <td style="width:180px" tal:content="experiment.author"></td>
                             <td class="citation" tal:content="experiment.getCitationString()"></td>
                         </tr>
                     </tal:experiments>
@@ -35,20 +35,20 @@
             <table class = "experimenttable drop-shadow">
                 <thead>
                     <tr>
-                        <th></th>
-                        <th>Experiment</th>
-                        <th>Description</th>
-                        <th>Authors</th>
+                        <th style="width:25px"></th>
+                        <th style="width:160px">Experiment</th>
+                        <th style="width:375px">Description</th>
+                        <th style="width:180px">Authors</th>
                         <th>Journal Info</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tal:experiments tal:repeat="(i, experiment) enumerate(experiments)">
                         <tr tal:attributes="parent 'e%d' % (experiment.experiment_id) if experiment.experiment_id else None; class 'experiment' + (' even' if i % 2 == 0 else ' odd'); id 'e%d' % (experiment.id)" >
-                            <td class='expander'><button tal:condition="len(experiment.children) > 0" class="expand">+</button></td>
-                            <td>${structure:experiment.getClickable(request)}</td>
-                            <td tal:content="experiment.description"></td>
-                            <td tal:content="experiment.author"></td>
+                            <td style="width:25px" class='expander'><button tal:condition="len(experiment.children) > 0" class="expand">+</button></td>
+                            <td style="width:160px" >${structure:experiment.getClickable(request)}</td>
+                            <td style="width:375px" tal:content="experiment.description"></td>
+                            <td style="width:180px" tal:content="experiment.author"></td>
                             <td class="citation" tal:content="experiment.getCitationString()"></td>
                         </tr>
                     </tal:experiments>
