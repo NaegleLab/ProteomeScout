@@ -117,7 +117,7 @@ function EnrichmentTable(parentElement, tableData){
 	var widget = this;
 
 	this.tableElement = $('<table />', {'class':"enrichment-table"});
-	$('<thead><tr><th>Category</th><th>Term</th><th>P-Value</th></tr></thead>').appendTo(this.tableElement);
+	$('<thead><tr><th>Category</th><th>Term</th><th width="50px">P-Value</th></tr></thead>').appendTo(this.tableElement);
 	this.tbody = $('<tbody />').appendTo(this.tableElement);
 
 	for(var i in tableData){
