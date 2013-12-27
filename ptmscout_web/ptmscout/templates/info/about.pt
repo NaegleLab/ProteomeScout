@@ -93,7 +93,7 @@
 			<h3>Terms of Use</h3>
 		  <div class="body">
 		    <p>
-			    <a href="https://proteomescout.wustl.edu/cgi-bin/terms.cgi">View the PTM Scout Terms of Use</a>
+            <a href="${request.route_url('terms')}">View the PTM Scout Terms of Use</a>
 			  </p>
 			</div>
 
