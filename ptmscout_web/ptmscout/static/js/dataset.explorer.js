@@ -1,8 +1,10 @@
 
-function PValueCorrectedTable(parentElement, tableBody){
+function PValueCorrectedTable(parentElement, tableBody, tableData, byCategory, numTests){
 	var widget = this;
 	this.tableBody = tableBody;
-	
+    this.byCategory = byCategory;
+    this.numTests = numTests;
+
 	var div = $('<div />').appendTo(parentElement);
 	$('<span>Mark as significant with p-value less than: </span>').appendTo(div);
 	
@@ -53,7 +55,7 @@ PValueCorrectedTable.prototype.calculateFDRCutoff = function(cutoff, rows, numTe
 	var i = 0;
 	rows.each(function(){
 		var pval_td = $(this).find(".pvalue");
-		var pval = pval_td.attr('value');
+		var pval = parseFloat(pval_td.attr('value'));
 		
 		if(cutoff * i / numTests >= pval){
 			cutoff = pval;
@@ -65,7 +67,11 @@ PValueCorrectedTable.prototype.calculateFDRCutoff = function(cutoff, rows, numTe
 	return cutoff;
 };
 
-PValueCorrectedTable.prototype.applyCorrection = function(correction, corrected_cutoff, cutoff, rows, numTests) {
+PValueCorrectedTable.prototype.applyCorrection = function(correction, cutoff, rows, numTests) {
+    var corrected_cutoff = cutoff;
+    if(correction == 'fdr')
+        corrected_cutoff = this.calculateFDRCutoff(cutoff, rows, numTests);
+
 	rows.each(function() {
 		var pval_td = $(this).find(".pvalue");
 		var val = pval_td.attr('value');
@@ -95,22 +101,23 @@ PValueCorrectedTable.prototype.applyCorrection = function(correction, corrected_
 PValueCorrectedTable.prototype.filter = function(cutoff, correction) {
 	var widget = this;
 	
-	var rowClasses = {};
-	
-	this.tableBody.find('tr').each(function() {
-		var clsName = $(this).attr('value');
-		rowClasses[clsName] = 0;
-	});
-	
-	for(var clsName in rowClasses){
-		var rows = this.tableBody.find('tr[value="{0}"]'.format(clsName));
-		
-		var corrected_cutoff = cutoff;
-		if(correction == 'fdr')
-			corrected_cutoff = this.calculateFDRCutoff(cutoff, rows, rows.length);
-		
-		this.applyCorrection(correction, corrected_cutoff, cutoff, rows, rows.length);
-	}
+    if(widget.byCategory) {
+        var rowClasses = {};
+
+        this.tableBody.find('tr').each(function() {
+            var clsName = $(this).attr('value');
+            rowClasses[clsName] = 0;
+        });
+
+        for(var clsName in rowClasses){
+            var rows = this.tableBody.find('tr[value="{0}"]'.format(clsName));
+            this.applyCorrection(correction, cutoff, rows, rows.length);
+        }
+
+    }else{
+        var rows = this.tableBody.find('tr');
+        this.applyCorrection(correction, cutoff, rows, this.numTests);
+    }
 };
 
 function EnrichmentTable(parentElement, tableData){
@@ -131,7 +138,7 @@ function EnrichmentTable(parentElement, tableData){
 		$("<td />",{'value':value, 'text': formatted_value, 'class':"numeric pvalue"}).appendTo(row);
 	}
 	
-	this.corrector = new PValueCorrectedTable(parentElement, this.tbody, tableData, true);
+	this.corrector = new PValueCorrectedTable(parentElement, this.tbody, tableData, true, 0);
 	this.tableElement.appendTo(parentElement);
 };
 
@@ -165,7 +172,7 @@ function MotifTable(parentElement, tableData, numTests){
 		$("<td />",{'value': 1000.0, 'class':"pvalue"}).appendTo(row);
 	}
 	
-	this.corrector = new PValueCorrectedTable(parentElement, this.tbody, tableData, false);
+	this.corrector = new PValueCorrectedTable(parentElement, this.tbody, tableData, false, numTests);
 	this.tableElement.appendTo(parentElement);
 };
 

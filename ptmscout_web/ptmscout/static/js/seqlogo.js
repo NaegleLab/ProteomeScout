@@ -15,7 +15,8 @@ function createSeqlogo(node, data, w, h){
 		chartContainer.append("svg")
 			.attr("class", "seqlogo")
 			.attr("width", w)
-			.attr("height", h+20);
+			.attr("height", h+20)
+            .style("font-family", "\"Lucida Console\", Monaco, monospace");
 	
 	total = data.total;
 	total_columns = data.frequencies.length;
@@ -42,7 +43,7 @@ function createSeqlogo(node, data, w, h){
 	    .attr("text-anchor", "middle")
 	    .attr("x", cw/2)
 	    .attr("y", ch - (ch/50))
-	    .attr("class", "arial")
+        .style("font-family", "\"Arial\", Helvetica, sans-serif")
 	    .style("font-size", 13.5 * (ch / 10) + "px")
 	    .style("fill", function(d, i) { return colors(d[0]) })
 	    .text(function(d) { return d[0] });

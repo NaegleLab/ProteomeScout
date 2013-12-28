@@ -70,6 +70,7 @@ function PTMTrack(name, track_viewer, protein_data) {
         .attr('y', 0)
         .attr('text-anchor', 'left')
         .attr('class', 'track-label')
+        .style('fill', "#999")
         .text(name);
 };
 
@@ -312,7 +313,10 @@ ResidueTrack.prototype.create = function(axis, viewer_width, show_residues) {
             .attr('x1', 0)
             .attr('x2', viewer_width)
             .attr('y1', 0)
-            .attr('y2', 0);
+            .attr('y2', 0)
+            .style('stroke',"black")
+            .style('stroke-width',"2px")
+            .style('cursor',"default");
 };
 
 ResidueTrack.prototype.generate_ticks = function(viewer_width, axis, h, values, size, min_residue, max_residue){
@@ -321,6 +325,20 @@ ResidueTrack.prototype.generate_ticks = function(viewer_width, axis, h, values, 
     if(viewer_width / (axis(size) - axis(0)) < 20){
         tick_opacity = 1;
     }
+
+    tick_color = "#000";
+    if(size == 5000)
+        tick_color = "#000";
+    if(size == 1000)
+        tick_color = "#222";
+    if(size == 500)
+        tick_color = "#444";
+    if(size == 100)
+        tick_color = "#666";
+    if(size == 50)
+        tick_color = "#888";
+    if(size == 10)
+        tick_color = "#AAA";
 
     if(tick_opacity == 0)
         return;
@@ -333,6 +351,7 @@ ResidueTrack.prototype.generate_ticks = function(viewer_width, axis, h, values, 
                 .attr('x2', function(d) { return axis(d); })
                 .attr('y1', 0)
                 .attr('y2', h)
+                .style('stroke-width', "1")
                 .style('opacity', tick_opacity);
 
     this.g.selectAll('text.'+cls)
@@ -340,9 +359,9 @@ ResidueTrack.prototype.generate_ticks = function(viewer_width, axis, h, values, 
             .enter().append('text')
                 .attr('class', cls)
                 .attr('x', function(d) { return axis(d); })
-                .attr('y', h)
-                .attr('dy', '1em')
+                .attr('y', h + 8)
                 .text(function(d) { return "" + d; } )
+                .style('font-size', "8pt")
                 .style('opacity', tick_opacity);
 };
 
@@ -384,7 +403,7 @@ ResidueTrack.prototype.update_display = function(axis, viewer_width) {
                         .enter().append('text')
                             .attr('class', 'aminoacid')
                             .attr('x', function(d,i){ return axis(start_residue+i+0.5); })
-                            .attr('y', "-0.1em")
+                            .attr('y', -2)
                             .attr('text-anchor', 'middle')
                             .text(function(d) { return d; })
                             .style('pointer-events', 'none')
@@ -404,10 +423,10 @@ function DomainTrack(name, track_viewer, protein_data) {
 
     this.g.append('text')
         .attr('x', 0)
-        .attr('y', 0)
-        .attr('dy', '-0.1em')
+        .attr('y', -4)
         .attr('text-anchor', 'left')
         .attr('class', 'track-label')
+        .style('fill', "#999")
         .text(name);
 
 };
@@ -422,7 +441,10 @@ DomainTrack.prototype.create = function(axis, viewer_width, domain_colors) {
             .attr('x1', 0)
             .attr('x2', viewer_width)
             .attr('y1', 0)
-            .attr('y2', 0);
+            .attr('y2', 0)
+            .style('stroke',"black")
+            .style('stroke-width',"2px")
+            .style('cursor',"default");
 };
 
 DomainTrack.prototype.update_display = function(axis, viewer_width) {
@@ -455,6 +477,8 @@ DomainTrack.prototype.update_display = function(axis, viewer_width) {
                 .attr('height', this.domain_height)
                 .attr('title', function(d) { return d.label; })
                 .style('fill', function(d) { return track.domain_colors( d.label ); } )
+                .style('stroke', "black")
+                .style('stroke-width' ,"1px")
                 .on('mouseover', function() { d3.select(this).style('opacity', 0.8); })
                 .on('mouseout', function() { d3.select(this).style('opacity', 1.0); })
                 .on('click', function(d) { window.open(pfam_url + d.label, '_blank'); });
@@ -464,11 +488,13 @@ DomainTrack.prototype.update_display = function(axis, viewer_width) {
             .enter().append('text')
                 .attr('class', 'domain')
                 .attr('x', function(d) { return ( axis(d.start - 1) + axis(d.stop) ) / 2; })
-                .attr('y', this.domain_height)
-                .attr('dy', '1em')
+                .attr('y', this.domain_height + 12)
                 .attr('text-anchor', 'middle')
                 .each(function(d) { d.show = ( axis(d.stop) - axis(d.start - 1) ) > d.label.length * 8; })
                 .style('opacity', function(d) { return d.show ? 1 : 0; })
+                .style('stroke', "none")
+                .style('fill', "black")
+                .style('font-size', "12pt")
                 .text(function(d) { return d.label; });
 
 
@@ -499,10 +525,10 @@ function RegionTrack(name, track_viewer, protein_data) {
 
     this.g.append('text')
         .attr('x', 0)
-        .attr('y', 0)
-        .attr('dy', '-0.1em')
+        .attr('y', -4)
         .attr('text-anchor', 'left')
         .attr('class', 'track-label')
+        .style('fill', "#999")
         .text(name);
 };
 
@@ -516,7 +542,10 @@ RegionTrack.prototype.create = function(axis, viewer_width, region_colors, regio
             .attr('x1', 0)
             .attr('x2', viewer_width)
             .attr('y1', 0)
-            .attr('y2', 0);
+            .attr('y2', 0)
+            .style('stroke',"black")
+            .style('stroke-width',"2px")
+            .style('cursor',"default");
 };
 
 RegionTrack.prototype.update_display = function(axis, viewer_width) {
@@ -548,6 +577,8 @@ RegionTrack.prototype.update_display = function(axis, viewer_width) {
                 .attr('height', this.region_height)
                 .attr('title', function(d) { return d.label; })
                 .style('fill', function(d) { return track.region_colors( d.label ); } )
+                .style('stroke', "black")
+                .style('stroke-width', "1px")
                 .on('mouseover', function() { d3.select(this).style('opacity', 0.8); })
                 .on('mouseout', function() { d3.select(this).style('opacity', 1.0); });
 
@@ -556,11 +587,13 @@ RegionTrack.prototype.update_display = function(axis, viewer_width) {
             .enter().append('text')
                 .attr('class', 'region')
                 .attr('x', function(d) { return ( axis(d.start-1) + axis(d.stop) ) / 2; })
-                .attr('y', this.region_height)
-                .attr('dy', "1em")
+                .attr('y', this.region_height + 14)
                 .attr('text-anchor', 'middle')
                 .each(function(d) { d.show = ( axis(d.stop) - axis(d.start-1) ) > d.label.length * 8; })
                 .style('opacity', function(d) { return d.show ? 1 : 0; })
+                .style('stroke', "none")
+                .style('fill', "black")
+                .style('font-size', "12pt")
                 .text(function(d) { return d.label; });
 };
 
@@ -584,10 +617,10 @@ function MutationTrack(name, track_viewer, protein_data){
 
     this.g.append('text')
         .attr('x', 0)
-        .attr('y', 0)
-        .attr('dy', '0.5em')
+        .attr('y', -5)
         .attr('text-anchor', 'left')
         .attr('class', 'track-label')
+        .style('fill', "#999")
         .text(name);
 
 }
@@ -621,7 +654,10 @@ MutationTrack.prototype.create = function(axis, viewer_width, show_residues) {
             .attr('x1', 0)
             .attr('x2', viewer_width)
             .attr('y1', this.height/2)
-            .attr('y2', this.height/2);
+            .attr('y2', this.height/2)
+            .style('stroke',"black")
+            .style('stroke-width',"2px")
+            .style('cursor',"default");
 
 };
 
@@ -671,8 +707,7 @@ MutationTrack.prototype.update_display = function(axis, viewer_width) {
                     .enter().append('text')
                         .attr('class', 'mutation')
                         .attr('x', function(d) { return axis(d.key - 0.5); })
-                        .attr('y', this.height/2)
-                        .attr('dy', '0.35em')
+                        .attr('y', this.height/2 + Math.min(16, fontsize) * 0.35)
                         .attr('text-anchor', 'middle')
                         .style('pointer-events', 'none')
                         .style('fill', 'white')
@@ -702,10 +737,10 @@ function ScansiteTrack(name, track_viewer, protein_data){
 
     this.g.append('text')
         .attr('x', 0)
-        .attr('y', 0)
-        .attr('dy', '0.5em')
+        .attr('y', 6)
         .attr('text-anchor', 'left')
         .attr('class', 'track-label')
+        .style('fill', "#999")
         .text(name);
 
 }
@@ -737,7 +772,10 @@ ScansiteTrack.prototype.create = function(axis, viewer_width, show_residues) {
             .attr('x1', 0)
             .attr('x2', viewer_width)
             .attr('y1', this.height/2)
-            .attr('y2', this.height/2);
+            .attr('y2', this.height/2)
+            .style('stroke',"black")
+            .style('stroke-width',"2px")
+            .style('cursor',"default");
 
 
 };
@@ -794,8 +832,7 @@ ScansiteTrack.prototype.update_display = function(axis, viewer_width) {
                     .enter().append('text')
                         .attr('class', 'scansite')
                         .attr('x', function(d) { return axis(d.key - 0.5); })
-                        .attr('y', this.height/2)
-                        .attr('dy', '0.35em')
+                        .attr('y', this.height/2 + Math.min(16, fontsize) * 0.35)
                         .attr('text-anchor', 'middle')
                         .style('pointer-events', 'none')
                         .style('fill', 'white')

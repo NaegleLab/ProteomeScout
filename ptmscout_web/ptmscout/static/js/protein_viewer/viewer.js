@@ -166,7 +166,9 @@ function StructureViewer(protein_data) {
 
     this.svg_container =
                 this.svg.append('g')
-                    .attr('class', 'viewer_svg');
+                    .attr('class', 'viewer_svg')
+                    .style('font-family', "helvetica,arial,verdana")
+                    .style('font-size', "12pt");
 
 
 

@@ -7,113 +7,12 @@
 	margin-right:auto;
 }
 
-.graph .series {
-	fill:none;
-	stroke-width:2px;
-	opacity:0.8;
-}
-
-.graph .point {
-	fill:none;
-	stroke-width:1px;
-}
-
-.graph .tick {
-	font-size:9pt;
-}
-
-.graph .tick line {
-	fill:black;
-	stroke:black;
-}
-
-.graph .axis {
-	fill:black;
-	stroke:black;
-	stroke-width:1px;
-}
-
-.graph .title {
-	fill:black;
-	font-size:14pt;
-	text-anchor:middle;
-}
-
-.graph .label {
-	fill:black;
-	font-size:12pt;
-	text-anchor:middle;
-}
-
-.graph .legend .bg {
-	fill:none;
-	stroke:black;
-	stroke-width:1px;
-}
-
-.graph .legend .entry {
-	fill:black;
-	font-size:9pt;
-	text-anchor:left;
-}
-
-.graph .legend circle {
-	fill:none;
-	stroke-width:1px;
-}
-
-.graph .legend rect {
-	stroke:lightgray;
-	stroke-width:1px;	
-}
-
-.graph .errorbar line {
-	stroke-width:2px;
-}
-
-.graph .bar {
-	stroke:lightgray;
-	stroke-width:1px;
-}
-
-.piechart {
-	text-anchor:start;
-}
-
-.piechart .category_name {
-	fill:black;
-	font-size:10pt;
-}
-
-.piechart .outline {
-	fill:lightgray;
-}
-
-.seqlogo {
-	font-family:"Lucida Console", Monaco, monospace;
-}
-
-.seqlogo .arial {
-    font-family:"Arial", Helvetica, sans-serif;
-}
-
 .GO text {
-  fill: #000000;
-  font-size: 14px;
-  font-weight:bold;
   pointer-events: none;
 }
 
 .GO circle {
-  fill: #ccc;
-  stroke: #999;
   pointer-events: all;
-}
-
-.GO circle.parent {
-  fill: #1f77b4;
-  fill-opacity: .2;
-  stroke: steelblue;
 }
 
 .GO circle.parent:hover {

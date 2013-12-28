@@ -40,7 +40,8 @@ function createPieChart(node, data, w, h, mouseover) {
 			.attr("class", "outline")
 			.attr("cx", 0)
 			.attr("cy", 0)
-			.attr("r", radius + outlineSize);
+			.attr("r", radius + outlineSize)
+            .style("fill", "lightgray");
 	
 	origin.selectAll("path.category")
 			.data(data)
@@ -71,5 +72,7 @@ function createPieChart(node, data, w, h, mouseover) {
 					return "end"
 				})
 				.attr("dy", "4")
+                .style("fill","black")
+                .style("font-size","10pt")
 				.text(function(d) { return d.label });
 }

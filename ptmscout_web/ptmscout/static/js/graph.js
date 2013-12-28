@@ -14,15 +14,20 @@ function addLegend(graph, legendEntries, xpos, ypos, width, marker) {
 		.attr("x", 0)
 		.attr("y", 0)
 		.attr("width", width - 5)
-		.attr("height", height);
+		.attr("height", height)
+        .style("fill", "none")
+        .style("stroke", "black")
+        .style("stroke-width", "1px");
 	
 	legend.selectAll("text.entry")
 			.data(legendEntries)
 		.enter().append("text")
 			.attr("class", "entry")
 			.attr("x", 30)
-			.attr("y", function(d,i) { return (i+1) * h })
-			.attr("dy", -6)
+			.attr("y", function(d,i) { return (i+1) * h - 6 })
+            .style("fill","black")
+            .style("font-size", "9pt")
+            .style("text-anchor", "left")
 			.text(function(d) { return d.name });
 	
 	if(marker == "line"){
@@ -43,6 +48,8 @@ function addLegend(graph, legendEntries, xpos, ypos, width, marker) {
 				.attr("r", 2)
 				.attr("cx", 15)
 				.attr("cy", function(d,i) {return (i+1) * h - h/2; })
+                .style("fill", "none")
+                .style("stroke-width", "1px")
 				.style("stroke", function(d,i) { return d.color } );
 	}
 	
@@ -55,7 +62,9 @@ function addLegend(graph, legendEntries, xpos, ypos, width, marker) {
 			.attr("width", 15)
 			.attr("y", function(d,i) {return i * h+5; })
 			.attr("height", function(d,i) {return h-10; })
-			.attr("fill", function(d){ return d.color });
+			.attr("fill", function(d){ return d.color })
+            .style("stroke", "lightgray")
+            .style("stroke-width", "1px");	
 	}
 }
 
@@ -89,14 +98,19 @@ function addTimeSeries(graph, name, pts, xaxis, yaxis, color) {
 		.attr("r", 2)
 		.attr("cx", function(d) { return xaxis( parseFloat(d.x) ) })
 		.attr("cy", function(d) { return yaxis( parseFloat(d.y) ) })
-		.style("stroke", color);
+		.style("stroke", color)
+		.style("fill", "none")
+		.style("stroke-width", "1px");
 	
 	graph.selectAll('path.'+clsname)
 		.data(consecutive_runs)
 	.enter().append("path")
 		.attr("class", "series "+clsname)
     	.attr("d", line)
-    	.style("stroke", color);
+    	.style("stroke", color)
+        .style("fill","none")
+        .style("stroke-width","2px")
+        .style("opacity","0.8");
 }
 
 function addBarSeries(graph, name, pts, xaxis, yaxis, color, i, num) {
@@ -126,7 +140,9 @@ function addBarSeries(graph, name, pts, xaxis, yaxis, color, i, num) {
 			.attr("y", function(d) { return yaxis(d.y) })
 			.attr("width", function(d) { return 2 * (barw / num) })
 			.attr("height", function(d) { return yaxis(0) - yaxis(d.y) })
-			.style("fill", color);
+			.style("fill", color)
+            .style("stroke", "lightgray")
+            .style("stroke-width" ,"1px");
 }
 
 function addErrorBars(graph, name, errorbars, xaxis, yaxis, color, i, num) {
@@ -157,7 +173,8 @@ function addErrorBars(graph, name, errorbars, xaxis, yaxis, color, i, num) {
 		.attr("x2", offset)
 		.attr("y1", function(d){ return yaxis(d.y + d.s) - yaxis(d.y) })
 		.attr("y2", function(d){ return yaxis(d.y - d.s) - yaxis(d.y) })
-		.style("stroke", color);
+		.style("stroke", color)
+        .style("stroke-width", "2px");
 		
 	ebar.append("line")
 		.attr("class", "end")
@@ -165,7 +182,8 @@ function addErrorBars(graph, name, errorbars, xaxis, yaxis, color, i, num) {
 		.attr("x2", 5 + offset)
 		.attr("y1", function(d){ return yaxis(d.y + d.s) - yaxis(d.y) })
 		.attr("y2", function(d){ return yaxis(d.y + d.s) - yaxis(d.y) })
-		.style("stroke", color);
+		.style("stroke", color)
+        .style("stroke-width", "2px");
 	
 	ebar.append("line")
 		.attr("class", "end")
@@ -173,7 +191,8 @@ function addErrorBars(graph, name, errorbars, xaxis, yaxis, color, i, num) {
 		.attr("x2", 5 + offset)
 		.attr("y1", function(d){ return yaxis(d.y - d.s) - yaxis(d.y) })
 		.attr("y2", function(d){ return yaxis(d.y - d.s) - yaxis(d.y) })
-		.style("stroke", color);
+		.style("stroke", color)
+        .style("stroke-width", "2px");
 	
 }
 
@@ -187,14 +206,20 @@ function addAxes(graph, title, xlabels, ylabels, xaxis, yaxis, rotate) {
 		.attr('y1', Array.min(yrange) )
 		.attr('y2', Array.max(yrange) )
 		.attr('x1', Array.min(xrange) )
-		.attr('x2', Array.min(xrange) );
+		.attr('x2', Array.min(xrange) )
+	    .style('fill', "black")
+	    .style('stroke', "black")
+	    .style('stroke-width', "1px");
 
 	graph.append('svg:line')
 		.attr('class', 'axis')
 		.attr('y1', Array.max(yrange) )
 		.attr('y2', Array.max(yrange) )
 		.attr('x1', Array.min(xrange) )
-		.attr('x2', Array.max(xrange) );
+		.attr('x2', Array.max(xrange) )
+	    .style('fill', "black")
+	    .style('stroke', "black")
+	    .style('stroke-width', "1px");
 	
 
 	var ticks = 
@@ -208,13 +233,16 @@ function addAxes(graph, title, xlabels, ylabels, xaxis, yaxis, rotate) {
 		.attr('y1', 0)
 		.attr('y2', 0)
 		.attr('x1', 0)
-		.attr('x2', 5);
+		.attr('x2', 5)
+	    .style('fill', "black")
+	    .style('stroke', "black");
 
 	ticks.append('svg:text')
 		.text(function(d) { return d; })
 		.attr('text-anchor', 'end')
-		.attr('dy', 2)
-		.attr('dx', -4);
+		.attr('y', 2)
+		.attr('x', -4)
+	    .style('font-size', "9pt");
 	
 	ticks = 
 		graph.selectAll('.xtick')
@@ -227,7 +255,9 @@ function addAxes(graph, title, xlabels, ylabels, xaxis, yaxis, rotate) {
 		.attr('y1', -5)
 		.attr('y2', 0)
 		.attr('x1', 0)
-		.attr('x2', 0);
+		.attr('x2', 0)
+	    .style('fill', "black")
+	    .style('stroke', "black");
 	
 	var titleoffset = 30;
 	
@@ -237,8 +267,8 @@ function addAxes(graph, title, xlabels, ylabels, xaxis, yaxis, rotate) {
 			.append('svg:text')
 				.text(function(d) { return d; })
 				.attr('text-anchor', 'start')
-				.attr('dy', 4)
-				.attr('dx', 4);
+				.attr('y', 4)
+				.attr('x', 4);
 		
 		titleoffset = 60;
 	}
@@ -246,8 +276,9 @@ function addAxes(graph, title, xlabels, ylabels, xaxis, yaxis, rotate) {
 		ticks.append('svg:text')
 			.text(function(d) { return d; })
 			.attr('text-anchor', 'end')
-			.attr('dy', 12)
-			.attr('dx', 4);
+			.attr('y', 12)
+			.attr('x', 4)
+            .style('font-size', "9pt");
 	}
 	
 	var xm = ( Array.max(xrange) + Array.min(xrange) ) / 2
@@ -255,8 +286,10 @@ function addAxes(graph, title, xlabels, ylabels, xaxis, yaxis, rotate) {
 		.text(title)
 		.attr('class', "label")
 		.attr('x', xm)
-		.attr('y', yaxis(0) + titleoffset )
-		.attr('dy', 6);
+		.attr('y', yaxis(0) + titleoffset + 6 )
+	    .style("fill","black")
+	    .style("font-size","12pt")
+	    .style("text-anchor","middle");
 }
 
 function createGraph(parent, title, w, h, margin) {
@@ -271,7 +304,10 @@ function createGraph(parent, title, w, h, margin) {
 		.text(title)
 		.attr('class', "title")
 		.attr('x', w/2)
-		.attr('y', margin/2);
+		.attr('y', margin/2)
+	    .style("fill","black")
+	    .style("font-size","14pt")
+	    .style("text-anchor","middle");
 	
 	return graph;
 }

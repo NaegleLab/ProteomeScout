@@ -69,7 +69,11 @@ function createGOMap(json_data, container){
     		.attr("cy", function(d) { return d.y; })
     		.attr("r", function(d) { return d.r; })
             .attr("title", function(d) { return getNodeTitle(d); })
+            .style("fill", function(d) { return d.children ? "#1f77b4" : "#ccc"; })
+            .style("stroke", function(d) { return d.children ? "steelblue" : "#999"; })
+            .style("fill-opacity", function(d) { return d.children ? .2 : 1.0; })
     		.on("click", function(d) { return zoom(node == d ? root : d); });
+
 	var getScaledSize = function(d, size, scale) {
 		if(scale == undefined)
 			return 2 * d.r / r * size;
@@ -96,6 +100,7 @@ function createGOMap(json_data, container){
 			    		.style("fill", textcolor)
 			    		.style("opacity", textopacity)
 			    		.style("font-size", getScaledSize(d, id_size) + "px")
+                        .style("font-weight", "bold")
 			    		.text(d.GO);
     			
     			d3.select(this)
@@ -108,6 +113,7 @@ function createGOMap(json_data, container){
 			    		.style("fill", textcolor)
 			    		.style("opacity", textopacity)
 			    		.style("font-size", getScaledSize(d, term_size) + "px")
+                        .style("font-weight", "bold")
 			    		.text(d.term);
     		});
 
