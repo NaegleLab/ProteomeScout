@@ -12,7 +12,9 @@
    		<div style="margin-bottom:1em">
    		  <label for="citation">Citation:</label>
    		  <br />
-		    <tal:expcitation tal:content="structure experiment.getLongCitationString()"></tal:expcitation><br />
+          <tal:expcitation tal:content="structure experiment.getLongCitationString()"></tal:expcitation>
+          <a tal:condition="experiment.hasPMID()" href="${experiment.getPubMedUrl()}">[pubmed]</a>
+          <br />
 		  </div>
 		  <div style="margin-bottom:1em">
 		    <label for="description">Description:</label>

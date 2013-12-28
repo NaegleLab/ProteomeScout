@@ -234,7 +234,13 @@ class Experiment(Base):
 
                 cite_string += "."
         return cite_string
-    
+   
+    def hasPMID(self):
+        return self.PMID != None
+
+    def getPubMedUrl(self):
+        return config.pubmedUrl % (self.PMID)
+
     def getUrl(self):
         url = self.URL
         if url == "NA":
