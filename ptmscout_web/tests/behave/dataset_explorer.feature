@@ -28,11 +28,11 @@ Feature: Dataset Explorer
 		And the user should be able to export their dataset with additional annotations:
 		  | field                | elements |
 		  | nearby_modifications | 17       |
-		  | protein_domains      | 37       |
-		  | site_regions         | 3        |
-		  | site_domains         | 5        |
-		  | scansite_kinase      | 14       |
-		  | scansite_bind        | 2        |
+		  | protein_pfam_domains | 37       |
+		  | site_kinase_loop     | 2        |
+		  | site_pfam_domains    | 5        |
+		  | scansite_kinase      | 15       |
+		  | scansite_bind        | 4        |
 		  | protein_GO_BP        | 153      |
 		  | protein_GO_MF        | 62       |
 		  | protein_GO_CC        | 55       |

@@ -1,5 +1,6 @@
 from collections import defaultdict
 from ptmscout.utils import protein_utils
+from ptmscout.config import settings, strings
 
 def format_protein_accessions(accessions, query_accessions):
     accessions = [ acc.value for acc in sorted(accessions, key=lambda acc: acc.value) if protein_utils.get_accession_type( acc.value ) in protein_utils.get_valid_accession_types() ]
@@ -25,7 +26,24 @@ def check_modtype_filter(mod, modtype_filter):
 
 def get_query_accessions(mods):
     return set([ ms.query_accession for ms in mods ])
-        
+
+def filter_sites(ms, regions):
+    return list( set([ region
+                    for modpep in ms.peptides
+                    for region in regions
+                    if region.hasSite(modpep.peptide.site_pos) ]))
+
+def filter_site_regions(ms, regions, types):
+    return list( set([ region
+                    for modpep in ms.peptides
+                    for region in regions
+                    if region.hasSite(modpep.peptide.site_pos) and region.type in types ]))
+
+def filter_regions(regions, types):
+    return list( set([ region
+                    for region in regions
+                    if region.type in types ]))
+
 
 def format_modifications(mods, modtype_filter):
     modlist = [ (ms.experiment_id, modpep.peptide, modpep.modification) for ms in mods for modpep in ms.peptides ]
@@ -44,13 +62,13 @@ def format_modifications(mods, modtype_filter):
     return n, '; '.join(modlist), '; '.join(explist)
 
 def format_regions(regions):
-    return '; '.join( [ "%s:%d-%d" % (r.label, r.start, r.stop) for r in sorted( regions, key=lambda r: r.start ) ] )
+    return (settings.mod_separator_character + ' ').join( [ "%s:%d-%d" % (r.label, r.start, r.stop) for r in sorted( regions, key=lambda r: r.start ) ] )
 
 def format_mutations(mutations):
-    return '; '.join( [ str(m) for m in sorted(mutations, key=lambda m: m.location) ] )
+    return (settings.mod_separator_character + ' ').join( [ str(m) for m in sorted(mutations, key=lambda m: m.location) ] )
 
 def format_GO_terms(prot):
-    return '; '.join( [ "%s-%s" % (goe.GO_term.GO, goe.GO_term.term) for goe in sorted(prot.GO_terms, key=lambda term: term.GO_term.GO) ] )
+    return (settings.mod_separator_character + ' ').join( [ "%s-%s" % (goe.GO_term.GO, goe.GO_term.term) for goe in sorted(prot.GO_terms, key=lambda term: term.GO_term.GO) ] )
 
 def format_scansite(mods):
     plist = [ (modpep.peptide.site_pos, modpep.peptide.site_type, pred.source, pred.value, pred.percentile) for ms in mods for modpep in ms.peptides for pred in modpep.peptide.predictions ]

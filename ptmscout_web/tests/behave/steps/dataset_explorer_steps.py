@@ -297,7 +297,9 @@ def download_annotated_experiment_and_check_fields(context, patch_mail, patch_co
         cr = csv.DictReader(result.body.split("\n"), dialect='excel-tab')
         for crow in cr:
             crow[field] = crow[field].strip()
-            
+
+            if field == 'site_kinase_loop':
+                print crow[field]
 #            print crow['query_accession'], crow['mod_sites'], field, crow[field]
             
             if crow[field] != '':

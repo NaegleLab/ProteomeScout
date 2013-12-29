@@ -107,6 +107,10 @@ class ProteinDomain(Base):
     def save(self):
         DBSession.add(self)
 
+    def hasSite(self, site_pos):
+        return self.start <= site_pos and site_pos <= self.stop
+
+
 class ProteinRegion(Base):
     __tablename__='protein_regions'
     id = Column(Integer(10), primary_key=True, autoincrement=True)

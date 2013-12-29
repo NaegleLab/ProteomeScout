@@ -42,8 +42,11 @@ if __name__=='__main__':
 
     cw = csv.writer(sys.stdout, dialect='excel-tab')
 
-    cw.writerow(['protein_id', 'accessions', 'acc_gene', 'locus', 'protein_name',
-                    'species', 'sequence', 'modifications', 'evidence', 'domains',
+    cw.writerow(['protein_id', 'accessions', 'acc_gene', 'locus', 'protein_name',\
+                    'species', 'sequence', 'modifications', 'evidence', \
+                    'pfam_domains', 'uniprot_domains',\
+                    'kinase_loops', 'macro_molecular',\
+                    'topological', 'structure',\
                     'mutations', 'scansite_predictions', 'GO_terms'])
 
 
@@ -69,7 +72,20 @@ if __name__=='__main__':
                 row.append( p.sequence )
                 row.append( fmods )
                 row.append( fexps )
+
+                uniprot_domains = filter_regions(p.regions, set(['domain']))
+                kinase_loops = filter_regions(p.regions, set(['Activation Loop']))
+                macromolecular = filter_regions(p.regions, set([ 'zinc finger region', 'intramembrane region', 'coiled-coil region', 'transmembrane region' ]))
+                topological = filter_regions(p.regions, set(['topological domain']))
+                structure = filter_regions(p.regions, set(['helix', 'turn', 'strand']))
+
                 row.append( format_regions(p.domains) )
+                row.append( format_regions(uniprot_domains) )
+                row.append( format_regions(kinase_loops) )
+                row.append( format_regions(macromolecular) )
+                row.append( format_regions(topological) )
+                row.append( format_regions(structure) )
+
                 row.append( format_mutations(p.mutations) )
                 row.append( format_scansite(mods) )
                 row.append( format_GO_terms(p) )

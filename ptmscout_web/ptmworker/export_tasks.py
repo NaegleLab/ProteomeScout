@@ -11,8 +11,12 @@ NOTIFY_INTERVAL = 5
 def annotate_experiment(user, exp, header, rows, job_id):
     notify_tasks.set_job_stage.apply_async((job_id, 'annotating', len(rows)))
 
-    header += [ 'scansite_bind', 'scansite_kinase', 'nearby_modifications', 'nearby_mutations', 'site_domains', 'site_regions',\
-                    'protein_domains', 'protein_GO_BP', 'protein_GO_CC', 'protein_GO_MF' ]
+    header += [ 'scansite_bind', 'scansite_kinase', 'nearby_modifications', 'nearby_mutations',\
+                    'site_pfam_domains', 'site_uniprot_domains',\
+                    'site_kinase_loop', 'site_macro_molecular',\
+                    'site_topological', 'site_structure',\
+                    'protein_pfam_domains', 'protein_uniprot_domains',\
+                    'protein_GO_BP', 'protein_GO_CC', 'protein_GO_MF' ]
     protein_mods = {}
     
     for ms in exp.measurements:
@@ -45,9 +49,6 @@ def annotate_experiment(user, exp, header, rows, job_id):
         nearby_modifications = [ "%s%d: %s" % (site_type, site_pos, mod_name) for site_pos, site_type, mod_name in sorted(list(nearby_modifications)) ]
         nearby_mutations = [ str(mutation) for mutation in sorted(prot.mutations, key=lambda item: item.location) if min_range < mutation.location and mutation.location < max_range ]
         
-        site_domains = list(set([ modpep.peptide.protein_domain.label for modpep in ms.peptides if modpep.peptide.protein_domain ]))
-        site_regions = list(set([ region.label for modpep in ms.peptides for region in prot.regions if region.hasSite(modpep.peptide.site_pos) ]))
-
         sep = settings.mod_separator_character + ' '
         
         scansite_kinase = []
@@ -59,27 +60,40 @@ def annotate_experiment(user, exp, header, rows, job_id):
                 if pp.source=='scansite_bind':
                     scansite_bind.append( "%s (%.2f)" % ( pp.value, pp.percentile ))
 
-        protein_domains = []
+        pfam_sites = export_proteins.filter_sites(ms, prot.domains)
+        domain_sites = export_proteins.filter_site_regions(ms, prot.regions, set(['domain']))
+        kinase_sites = export_proteins.filter_site_regions(ms, prot.regions, set(['Activation Loop']))
+        macromolecular_sites = export_proteins.filter_site_regions(ms, prot.regions, set([ 'zinc finger region', 'intramembrane region', 'coiled-coil region', 'transmembrane region' ]))
+        topological_sites = export_proteins.filter_site_regions(ms, prot.regions, set(['topological domain']))
+        site_structure = export_proteins.filter_site_regions(ms, prot.regions, set(['helix', 'turn', 'strand']))
+
+        protein_uniprot_domains = export_proteins.filter_regions(prot.regions, set(['domain']))
+
         protein_GO = { 'P':set(), 'F':set(), 'C':set() }
 
-        for d in prot.domains:
-            protein_domains.append( "%s (%d-%d)" % ( d.label, d.start, d.stop ) )
         for ge in prot.GO_terms:
             term = ge.GO_term
             protein_GO[term.aspect].add(term.GO)
 
-        row.append(sep.join(scansite_bind))
-        row.append(sep.join(scansite_kinase))
+        row.append( sep.join(scansite_bind) )
+        row.append( sep.join(scansite_kinase) )
 
-        row.append(sep.join(nearby_modifications))
-        row.append(sep.join(nearby_mutations))
-        row.append(sep.join(site_domains))
-        row.append(sep.join(site_regions))
+        row.append( sep.join(nearby_modifications) )
+        row.append( sep.join(nearby_mutations) )
 
-        row.append(sep.join(protein_domains))
-        row.append(sep.join(list(protein_GO['P'])))
-        row.append(sep.join(list(protein_GO['C'])))
-        row.append(sep.join(list(protein_GO['F'])))
+        row.append( export_proteins.format_regions( pfam_sites ) )
+        row.append( export_proteins.format_regions( domain_sites ) )
+        row.append( export_proteins.format_regions( kinase_sites ) )
+        row.append( export_proteins.format_regions( macromolecular_sites ) )
+        row.append( export_proteins.format_regions( topological_sites ) )
+        row.append( export_proteins.format_regions( site_structure ) )
+
+        row.append( export_proteins.format_regions(prot.domains) )
+        row.append( export_proteins.format_regions(protein_uniprot_domains) )
+        
+        row.append( sep.join(list(protein_GO['P'])) )
+        row.append( sep.join(list(protein_GO['C'])) )
+        row.append( sep.join(list(protein_GO['F'])) )
 
         i+=1
         if i % NOTIFY_INTERVAL == 0:
@@ -169,8 +183,11 @@ def annotate_proteins(protein_result, accessions, batch_id, exp_id, user_id, job
     filename = "batch.%s.%d.tsv" % (batch_id, user_id)
     batch_filepath = os.path.join(settings.ptmscout_path, settings.annotation_export_file_path, filename)
 
-    header = ['protein_id', 'query_accession', 'other_accessions', 'acc_gene', 'locus', 'protein_name',
-                    'species', 'sequence', 'modifications', 'evidence', 'domains',
+    header = ['protein_id', 'query_accession', 'other_accessions', 'acc_gene', 'locus', 'protein_name',\
+                    'species', 'sequence', 'modifications', 'evidence',\
+                    'pfam_domains', 'uniprot_domains',\
+                    'kinase_loops', 'macro_molecular',\
+                    'topological', 'structure',\
                     'mutations', 'scansite_predictions', 'GO_terms']
     rows = []
     success = 0
@@ -197,7 +214,20 @@ def annotate_proteins(protein_result, accessions, batch_id, exp_id, user_id, job
             row.append( p.sequence )
             row.append( fmods )
             row.append( fexps )
+
+            uniprot_domains = export_proteins.filter_regions(p.regions, set([ 'domain' ]))
+            kinase_loops = export_proteins.filter_regions(p.regions, set([ 'Activation Loop' ]))
+            macromolecular = export_proteins.filter_regions(p.regions, set([ 'zinc finger region', 'intramembrane region', 'coiled-coil region', 'transmembrane region' ]))
+            topological = export_proteins.filter_regions(p.regions, set([ 'topological domain' ]))
+            structure = export_proteins.filter_regions(p.regions, set([ 'helix', 'turn', 'strand' ]))
+
             row.append( export_proteins.format_regions(p.domains) )
+            row.append( export_proteins.format_regions(uniprot_domains) )
+            row.append( export_proteins.format_regions(kinase_loops) )
+            row.append( export_proteins.format_regions(macromolecular) )
+            row.append( export_proteins.format_regions(topological) )
+            row.append( export_proteins.format_regions(structure) )
+
             row.append( export_proteins.format_mutations(p.mutations) )
             row.append( export_proteins.format_scansite(mods) )
             row.append( export_proteins.format_GO_terms(p) )
