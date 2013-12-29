@@ -36,6 +36,7 @@ function createGOMap(json_data, container){
 		.attr("class", "GO")
 	    .attr("width", w)
 	    .attr("height", h)
+        .style("background", "white")
 	  .append("svg:g")
 	    .attr("transform", "translate(" + (w - r) / 2 + "," + (h - r) / 2 + ")");
 	
