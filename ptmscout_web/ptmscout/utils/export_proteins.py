@@ -64,6 +64,9 @@ def format_modifications(mods, modtype_filter):
 def format_regions(regions):
     return (settings.mod_separator_character + ' ').join( [ "%s:%d-%d" % (r.label, r.start, r.stop) for r in sorted( regions, key=lambda r: r.start ) ] )
 
+def format_region_types(regions):
+    return (settings.mod_separator_character + ' ').join( [ "%s:%d-%d" % (r.type, r.start, r.stop) for r in sorted( regions, key=lambda r: r.start ) ] )
+
 def format_mutations(mutations):
     return (settings.mod_separator_character + ' ').join( [ str(m) for m in sorted(mutations, key=lambda m: m.location) ] )
 

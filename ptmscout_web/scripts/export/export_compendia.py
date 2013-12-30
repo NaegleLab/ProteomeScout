@@ -82,9 +82,9 @@ if __name__=='__main__':
                 row.append( format_regions(p.domains) )
                 row.append( format_regions(uniprot_domains) )
                 row.append( format_regions(kinase_loops) )
-                row.append( format_regions(macromolecular) )
+                row.append( format_region_types(macromolecular) )
                 row.append( format_regions(topological) )
-                row.append( format_regions(structure) )
+                row.append( format_region_types(structure) )
 
                 row.append( format_mutations(p.mutations) )
                 row.append( format_scansite(mods) )

@@ -84,9 +84,9 @@ def annotate_experiment(user, exp, header, rows, job_id):
         row.append( export_proteins.format_regions( pfam_sites ) )
         row.append( export_proteins.format_regions( domain_sites ) )
         row.append( export_proteins.format_regions( kinase_sites ) )
-        row.append( export_proteins.format_regions( macromolecular_sites ) )
+        row.append( export_proteins.format_region_types( macromolecular_sites ) )
         row.append( export_proteins.format_regions( topological_sites ) )
-        row.append( export_proteins.format_regions( site_structure ) )
+        row.append( export_proteins.format_region_types( site_structure ) )
 
         row.append( export_proteins.format_regions(prot.domains) )
         row.append( export_proteins.format_regions(protein_uniprot_domains) )
@@ -224,9 +224,9 @@ def annotate_proteins(protein_result, accessions, batch_id, exp_id, user_id, job
             row.append( export_proteins.format_regions(p.domains) )
             row.append( export_proteins.format_regions(uniprot_domains) )
             row.append( export_proteins.format_regions(kinase_loops) )
-            row.append( export_proteins.format_regions(macromolecular) )
+            row.append( export_proteins.format_region_types(macromolecular) )
             row.append( export_proteins.format_regions(topological) )
-            row.append( export_proteins.format_regions(structure) )
+            row.append( export_proteins.format_region_types(structure) )
 
             row.append( export_proteins.format_mutations(p.mutations) )
             row.append( export_proteins.format_scansite(mods) )
