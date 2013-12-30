@@ -1,6 +1,6 @@
 from scripts.DB_init import DatabaseInitialization
 from ptmscout.config import settings
-from ptmscout.database import DBSession, experiment, upload
+from ptmscout.database import DBSession, experiment, upload, jobs
 import datetime
 import time
 import os
@@ -67,6 +67,10 @@ if __name__ == "__main__":
             for delta, session in sorted_sessions[1:]:
                 inactive_sessions.append(session)
 
+        delete_jobs = []
+        for job in DBSession.query(jobs.Job):
+            if job.id not in bound_job_ids and not job.is_active() and job.is_old():
+                delete_jobs.append(job)
 
         print "Keeping %d active or referenced files" % (len(active_files))
         print "Keeping %d active or referenced sessions" % (len(active_sessions))
@@ -80,6 +84,11 @@ if __name__ == "__main__":
         for session in inactive_sessions:
             print session.id, session.experiment_id, session.date
             session.delete()
+
+        print "Deleted jobs:"
+        for job in delete_jobs:
+            print "Remove Job: %d - %s" % (job.id, job.name)
+            DBSession.delete(job)
 
         print "Deleted inactive files:"
         for fn in files_available:
