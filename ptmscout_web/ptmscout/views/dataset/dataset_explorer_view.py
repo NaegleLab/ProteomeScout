@@ -1,4 +1,5 @@
 from pyramid.view import view_config
+import re
 import json
 import base64
 from ptmscout.database import experiment, annotations
@@ -514,8 +515,9 @@ def create_scansite_filter(field, op, value, stringency):
     raise QueryError("Unrecognized scansite filter field '%s'" % (field))
 
 def create_sequence_filter(sequence):
+    seq_regex = re.compile(sequence)
     def seq_filter(ms):
-        return reduce(bool.__or__, [modpep.peptide.pep_aligned.upper() == sequence.upper() for modpep in ms.peptides ])
+        return reduce(bool.__or__, [seq_regex.search(modpep.peptide.pep_aligned) != None for modpep in ms.peptides ])
 
     return seq_filter
 

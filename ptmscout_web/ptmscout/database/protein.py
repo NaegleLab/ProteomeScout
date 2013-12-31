@@ -280,8 +280,7 @@ def searchProteins(search=None, species=None, sequence=None, page=None, exp_id=N
                     ProteinAccession.value.like(search))
 
     if sequence:
-        seq_search = ( "%" + sequence + "%" ) if sequence else "%"
-        clause = and_(clause, Protein.sequence.like(seq_search))
+        clause = and_(clause, Protein.sequence.op('regexp')(sequence))
 
     if exp_id:
         from ptmscout.database import modifications
