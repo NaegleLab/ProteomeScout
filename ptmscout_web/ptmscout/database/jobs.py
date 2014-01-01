@@ -11,11 +11,13 @@ import cPickle
 class CachedResult(Base):
     __tablename__ = 'cache'
     id = Column(Integer(10), primary_key=True, autoincrement=True)
-    hash_args = Column(Text)
+    function = Column(VARCHAR(300))
+    hash_args = Column(VARCHAR(32))
     started = Column(DateTime)
     finished = Column(DateTime, nullable=True)
 
-    def __init__(self, args):
+    def __init__(self, fn, args):
+        self.function = "%s.%s" % (fn.__doc__, fn.__name__)
         pickleargs = pickle.dumps(args)
         self.hash_args = crypto.md5(pickleargs)
         self.started = datetime.datetime.now()
@@ -49,10 +51,11 @@ class CachedResult(Base):
             cPickle.dump(result, pypfile)
         self.finished = datetime.datetime.now()
 
-def getCachedResult(args):
+def getCachedResult(fn, args):
+    function_np = "%s.%s" % (fn.__doc__, fn.__name__)
     search_args = pickle.dumps(args)
     md5_args = crypto.md5(search_args)
-    result = DBSession.query(CachedResult).filter_by(hash_args=md5_args).first()
+    result = DBSession.query(CachedResult).filter_by(function=function_np,hash_args=md5_args).first()
     return result
 
 class Job(Base):

@@ -6,10 +6,10 @@ import cPickle
 
 def cache_result(fn):
     def wrapper(*args):
-        cr = jobs.getCachedResult(args)
+        cr = jobs.getCachedResult(fn, args)
 
         if cr == None:
-            cr = jobs.CachedResult(args)
+            cr = jobs.CachedResult(fn, args)
             result = fn(*args)
             cr.store_result(result)
             cr.save()
