@@ -5,7 +5,7 @@ files=$(ls logs/ptmworker.*.pid 2> /dev/null)
 for f in $files
 do
     echo "Stopping workers... $f"
-    kill `cat "$f"`
+    sudo kill `cat "$f"`
     while [ -f "$f" ]
     do
         sleep 1
