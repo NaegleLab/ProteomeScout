@@ -2,8 +2,58 @@ from ptmscout.database import Base, DBSession
 from sqlalchemy.types import VARCHAR, Integer, Enum, Text, DateTime
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.orm import relationship
-import datetime
+import datetime, os
 from ptmscout.config import settings
+from ptmscout.utils import crypto
+import pickle
+import cPickle
+
+class CachedResult(Base):
+    __tablename__ = 'cache'
+    id = Column(Integer(10), primary_key=True, autoincrement=True)
+    hash_args = Column(Text)
+    started = Column(DateTime)
+    finished = Column(DateTime, nullable=True)
+
+    def __init__(self, args):
+        pickleargs = pickle.dumps(args)
+        self.hash_args = crypto.md5(pickleargs)
+        self.started = datetime.datetime.now()
+        self.finished = None
+
+    def restart(self):
+        self.started = datetime.datetime.now()
+        self.finished = None
+
+    def delete(self):
+        DBSession.delete(self)
+
+    def save(self):
+        DBSession.add(self)
+
+    def is_expired(self):
+        delta = datetime.datetime.now() - self.finished
+        return delta.total_seconds() > settings.cache_expiration_time
+
+    def get_location(self):
+        return os.sep.join(settings.ptmscout_path, settings.cache_storage_directory, self.hash_args + ".pyp")
+
+    def load_result(self):
+        fn = self.get_location()
+        with open(fn, 'rb') as pypfile:
+            return cPickle.load(pypfile)
+
+    def store_result(self, result):
+        fn = self.get_location()
+        with open(fn, 'wb') as pypfile:
+            cPickle.dump(result, pypfile)
+        self.finished = datetime.datetime.now()
+
+def getCachedResult(args):
+    search_args = pickle.dumps(args)
+    md5_args = crypto.md5(search_args)
+    result = DBSession.query(CachedResult).filter_by(hash_args=md5_args).first()
+    return result
 
 class Job(Base):
     __tablename__ = 'jobs'

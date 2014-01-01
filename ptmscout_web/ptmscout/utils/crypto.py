@@ -12,6 +12,9 @@ def generateActivationToken():
 def generateSalt():
     return __byteStringToHex(os.urandom(5))
 
+def md5(clear_text):
+    return hashlib.sha256(clear_text).hexdigest()
+
 def saltedPassword(clear_password, salt = generateSalt()):
     salted_password = hashlib.sha256(salt + clear_password).hexdigest()
     return salt, salted_password

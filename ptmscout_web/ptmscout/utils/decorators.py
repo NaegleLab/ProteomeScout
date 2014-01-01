@@ -1,5 +1,28 @@
 import time
 import os
+from ptmscout.config import settings
+from ptmscout.database import jobs
+import cPickle
+
+def cache_result(fn):
+    def wrapper(*args):
+        cr = jobs.getCachedResult(args)
+
+        if cr == None:
+            cr = jobs.CachedResult(args)
+            result = fn(*args)
+            cr.store_result(result)
+            cr.save()
+            return result
+        elif cr.is_expired():
+            cr.restart()
+            result = fn(*args)
+            cr.store_result(result)
+            cr.save()
+            return result
+        else:
+            return cr.load_result()
+    return wrapper
 
 def get_session(match_field, resource_type):
     def do_wrap(fn):
