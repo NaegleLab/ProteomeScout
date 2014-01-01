@@ -32,9 +32,13 @@ def parse_motif_result(result_file, log_file):
     
 def save_peptides(measurements, filename):
     ff = open(filename, 'w')
+    keys_seen = set()
     for ms in measurements:
         for mspep in ms.peptides:
-            ff.write("%s\n" % (mspep.peptide.pep_aligned))
+            pepkey = (mspep.peptide_id, mspep.modification_id)
+            if pepkey not in keys_seen:
+                ff.write("%s\n" % (mspep.peptide.pep_aligned))
+                keys_seen.add(pepkey)
     ff.close()
 
 def run_motif_result(foreground_file, background_file, result_file, k):

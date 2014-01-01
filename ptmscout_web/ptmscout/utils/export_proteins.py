@@ -61,11 +61,22 @@ def format_modifications(mods, modtype_filter):
     n = len(modlist)
     return n, '; '.join(modlist), '; '.join(explist)
 
-def format_regions(regions):
-    return (settings.mod_separator_character + ' ').join( [ "%s:%d-%d" % (r.label, r.start, r.stop) for r in sorted( regions, key=lambda r: r.start ) ] )
+def format_region(r):
+    tp = r.type.strip()
+    label = r.label.strip()
+    label = r.label.strip(settings.mod_separator_character)
+    label = label.replace(settings.mod_separator_character, settings.mod_separator_character_alt)
 
-def format_region_types(regions):
-    return (settings.mod_separator_character + ' ').join( [ "%s:%d-%d" % (r.type, r.start, r.stop) for r in sorted( regions, key=lambda r: r.start ) ] )
+    if label == '':
+        return "%s:%d-%d" % (tp, r.start, r.stop)
+    else:
+        return "%s:%s:%d-%d" % (tp, label, r.start, r.stop)
+
+def format_regions(regions):
+    return (settings.mod_separator_character + ' ').join( [ format_region(r) for r in sorted( regions, key=lambda r: r.start ) ] )
+
+def format_domains(domains):
+    return (settings.mod_separator_character + ' ').join( [ "%s:%d-%d" % (r.label, r.start, r.stop) for r in sorted( domains, key=lambda r: r.start ) ] )
 
 def format_mutations(mutations):
     return (settings.mod_separator_character + ' ').join( [ str(m) for m in sorted(mutations, key=lambda m: m.location) ] )
