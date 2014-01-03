@@ -140,8 +140,9 @@ def summarize_experiment_load(measurements):
 
     final_ptms = set()
     for ptm in ptms:
-        final_ptms.add(ptm)
-        final_ptms |= ptm.getAllParents()
+        if ptm != None:
+            final_ptms.add(ptm)
+            final_ptms |= ptm.getAllParents()
 
     return sorted( list( residues_modified ) ), final_ptms
 
