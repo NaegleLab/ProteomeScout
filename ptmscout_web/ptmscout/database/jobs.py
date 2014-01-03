@@ -29,6 +29,10 @@ class CachedResult(Base):
     def delete(self):
         DBSession.delete(self)
 
+        fn = self.get_location()
+        if(os.path.exists(fn)):
+            os.remove(fn)
+
     def save(self):
         DBSession.add(self)
 

@@ -19,7 +19,7 @@
   </div>
 	
 	<div metal:fill-slot="content">
-	  <div class="grid_12">
+        <div class="grid_12">
         <div class="errortext" tal:condition = "len(predictions) == 0">The peptides in this experiment do not have any associated scansite predictions</div>
   		<div tal:repeat="(source, data) predictions.items()">
   		  <h3 tal:content="source"></h3>

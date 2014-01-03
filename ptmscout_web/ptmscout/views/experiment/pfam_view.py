@@ -64,8 +64,8 @@ def create_query_generator(field):
 
 @decorators.cache_result
 def get_pfam_view_data(exp):
-    formatted_sites = format_pfam_sites(measurements)
-    formatted_domains = format_pfam_domains(measurements)
+    formatted_sites = format_pfam_sites(exp.measurements)
+    formatted_domains = format_pfam_domains(exp.measurements)
 
     return formatted_sites, formatted_domains
 

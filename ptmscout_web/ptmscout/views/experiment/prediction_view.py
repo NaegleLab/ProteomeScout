@@ -19,15 +19,15 @@ def format_predictions(measurements):
             
             for s in pep.predictions:
                 predictions.append(s)
-                phosphomap[s] = m
+                phosphomap[s.id] = m
     
     predictions = filter_predictions(predictions)
     
     for scansite in predictions:
         formatted_predictions[scansite.source] = {}
-        
+       
     for scansite in predictions:
-        m = phosphomap[scansite]
+        m = phosphomap[scansite.id]
         
         measureset = formatted_predictions[scansite.source].get(scansite.value, set())
         measureset.add(m)
@@ -37,7 +37,6 @@ def format_predictions(measurements):
     keyset = formatted_predictions.keys()[:]
     
     for source in keyset:
-        
         total = set()
         for value in formatted_predictions[source]:
             [ total.add(m) for m in formatted_predictions[source][value] ]

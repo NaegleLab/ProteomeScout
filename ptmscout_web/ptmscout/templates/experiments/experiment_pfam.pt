@@ -47,7 +47,8 @@
 			<div class="body">
 				<div class="data_table">
 					<table>
-						<tr>
+                        <tr>
+                            <th></th>
 							<th>Domain</th>
 							<th class="value">Proteins</th>
 						</tr>
