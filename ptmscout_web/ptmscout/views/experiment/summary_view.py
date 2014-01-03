@@ -3,7 +3,7 @@ from ptmscout.config import strings
 from ptmscout.database import experiment, modifications
 import base64
 import json
-from ptmscout.utils import protein_utils
+from ptmscout.utils import protein_utils, decorators
 
 def summarize_measurements(measurements):
     summary = {'modifications':0,
@@ -43,18 +43,23 @@ def summarize_measurements(measurements):
     
     return summary
 
-@view_config(route_name='experiment_summary', renderer='ptmscout:templates/experiments/experiment_summary.pt')
-def experiment_summary_view(request):
-    eid = request.matchdict['id']
-    exp = experiment.getExperimentById(eid, request.user)
-    measurements = modifications.getMeasuredPeptidesByExperiment(eid, request.user)
-    
-    user_owner = request.user != None and request.user.experimentOwner(exp)
-    
+@decorators.cache_result
+def summarize_experiment(exp):
+    measurement_summary = summarize_measurements(exp.measurements)
+    sequence_profile = protein_utils.create_sequence_profile(exp.measurements)
     rejected_peps = len(set([err.peptide for err in exp.errors]))
-    
-    measurement_summary = summarize_measurements(measurements)
-    sequence_profile = protein_utils.create_sequence_profile(measurements)
+
+    return measurement_summary, sequence_profile, rejected_peps
+
+@view_config(route_name='experiment_summary', renderer='ptmscout:templates/experiments/experiment_summary.pt')
+@decorators.get_experiment('id',types=set(['experiment']))
+def experiment_summary_view(context, request, exp):
+    user_owner = request.user != None and request.user.experimentOwner(exp)
+
+    result = summarize_experiment(exp)
+    print "Tuple size: %d" % (len(result))
+
+    measurement_summary, sequence_profile, rejected_peps = result
     
     encoded = base64.b64encode(json.dumps(sequence_profile))
     return {'experiment':exp,

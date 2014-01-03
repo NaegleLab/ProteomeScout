@@ -22,6 +22,7 @@ def cache_result(fn):
             return result
         else:
             return cr.load_result()
+
     return wrapper
 
 def get_session(match_field, resource_type):

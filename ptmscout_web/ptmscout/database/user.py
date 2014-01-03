@@ -32,6 +32,9 @@ class User(Base):
     permissions = relationship("Permission", backref="user")
     annotation_sets = relationship("AnnotationPermission")
 
+    def __repr__(self):
+        return 'users:%d' % (self.id)
+
     def __init__(self, username="", name="", email="", institution="", access_level='researcher'):
         self.username = username
         self.name = name

@@ -167,6 +167,9 @@ class MeasuredPeptide(Base):
     data = relationship("ExperimentData")
     ambiguities = relationship("PeptideAmbiguity", cascade='all,delete-orphan')
 
+    def __repr__(self):
+        return 'MS:%d' % (self.id)
+
     def save(self):
         DBSession.add(self)
     

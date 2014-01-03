@@ -5,21 +5,20 @@ from sqlalchemy.orm import relationship
 import datetime, os
 from ptmscout.config import settings
 from ptmscout.utils import crypto
-import pickle
 import cPickle
 
 class CachedResult(Base):
     __tablename__ = 'cache'
     id = Column(Integer(10), primary_key=True, autoincrement=True)
-    function = Column(VARCHAR(300))
-    hash_args = Column(VARCHAR(32))
+    function = Column(VARCHAR(100))
+    hash_args = Column(VARCHAR(64))
     started = Column(DateTime)
     finished = Column(DateTime, nullable=True)
 
     def __init__(self, fn, args):
-        self.function = "%s.%s" % (fn.__doc__, fn.__name__)
-        pickleargs = pickle.dumps(args)
-        self.hash_args = crypto.md5(pickleargs)
+        self.function = "%s.%s" % (fn.__module__, fn.__name__)
+        repr_args = canonicalizeArguments(args)
+        self.hash_args = crypto.md5(repr_args)
         self.started = datetime.datetime.now()
         self.finished = None
 
@@ -38,7 +37,10 @@ class CachedResult(Base):
         return delta.total_seconds() > settings.cache_expiration_time
 
     def get_location(self):
-        return os.sep.join(settings.ptmscout_path, settings.cache_storage_directory, self.hash_args + ".pyp")
+        dirpath = os.sep.join([settings.ptmscout_path, settings.cache_storage_directory, self.function])
+        if not os.path.exists(dirpath):
+            os.mkdir(dirpath)
+        return os.sep.join([dirpath, self.hash_args + ".pyp"])
 
     def load_result(self):
         fn = self.get_location()
@@ -51,9 +53,20 @@ class CachedResult(Base):
             cPickle.dump(result, pypfile)
         self.finished = datetime.datetime.now()
 
+def canonicalizeArguments(args):
+    rargs = []
+    for a in args:
+        if isinstance(a, list):
+            a = sorted(canonicalizeArguments(a))
+        else:
+            a = repr(a)
+
+        rargs.append(a)
+    return repr(rargs)
+
 def getCachedResult(fn, args):
-    function_np = "%s.%s" % (fn.__doc__, fn.__name__)
-    search_args = pickle.dumps(args)
+    function_np = "%s.%s" % (fn.__module__, fn.__name__)
+    search_args = canonicalizeArguments(args)
     md5_args = crypto.md5(search_args)
     result = DBSession.query(CachedResult).filter_by(function=function_np,hash_args=md5_args).first()
     return result

@@ -128,7 +128,7 @@ def internal_experiment_ambiguity_view(request, exp):
     if exp.ambiguity == 0:
         raise HTTPForbidden()
 
-    peptides = modifications.getMeasuredPeptidesByExperiment(exp.id, user=request.user)
+    peptides = exp.measurements
 
     form_schema, pep_list = create_ambiguity_schema(peptides, request)
 

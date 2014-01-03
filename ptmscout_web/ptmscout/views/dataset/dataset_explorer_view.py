@@ -3,7 +3,7 @@ import re
 import json
 import base64
 from ptmscout.database import experiment, annotations
-from ptmscout.utils import protein_utils, motif, fisher
+from ptmscout.utils import protein_utils, motif, fisher, decorators
 from ptmscout.config import strings
 from collections import defaultdict
 
@@ -116,49 +116,66 @@ def get_user_annotations(annotation_set, metadata_fields, quantitative_fields, c
         if annotation_type.type == 'numeric':
             quantitative_fields.add(annotation_type.name)
 
-def get_user_annotation_dict(annotation_sets):
+def get_user_annotation_dict(exp, user):
+    annotation_sets = annotations.getUserAnnotationSets(exp.id, user)
     annotation_dict = {}
     for annotation_set in annotation_sets:
         annotation_dict[annotation_set.id] = annotation_set.name
 
     return annotation_dict
 
-def format_explorer_view(experiment_id, annotation_set_id, measurements, user):
-    quantitative_fields = set()
-    
-    accessions = []
-    metadata_fields = {}
-    scansite_fields = {}
-    
+@decorators.cache_result
+def get_user_annotation_set(exp, annotation_set_id, user):
     cluster_labels = {}
-    subset_labels = get_valid_subset_labels(experiment_id, annotation_set_id, user)
-    
-    get_protein_metadata(measurements, metadata_fields, accessions)
-    get_pfam_metadata(measurements, metadata_fields)
-    
-    get_scansite_metadata(measurements, scansite_fields)
-    
-    get_GO_metadata(measurements, metadata_fields)
-    get_modification_metadata(measurements, metadata_fields)
-    
-    for ms in measurements:
-        for d in ms.data:
-            quantitative_fields.add(d.formatted_label)
+    metadata_fields = {}
+    quantitative_fields = set()
 
-    
-    for field in metadata_fields.keys():
-        metadata_fields[field] = sorted( list(metadata_fields[field]) )
-
-    annotation_sets = annotations.getUserAnnotationSets(experiment_id, user)
-    annotation_dict = get_user_annotation_dict(annotation_sets)
+    annotation_sets = annotations.getUserAnnotationSets(exp.id, user)
     for annotation_set in annotation_sets:
         if annotation_set.id == annotation_set_id:
             get_user_annotations(annotation_set, metadata_fields, quantitative_fields, cluster_labels)
             break
 
-    
+    return metadata_fields, quantitative_fields, cluster_labels
 
-    field_data = {'experiment_id': experiment_id,
+@decorators.cache_result
+def get_explorer_view_metadata(exp, user):
+    accessions = []
+    metadata_fields = {}
+    scansite_fields = {}
+    quantitative_fields = set()
+
+    measurements = exp.measurements
+
+    get_protein_metadata(measurements, metadata_fields, accessions)
+    get_pfam_metadata(measurements, metadata_fields)
+
+    get_scansite_metadata(measurements, scansite_fields)
+
+    get_GO_metadata(measurements, metadata_fields)
+    get_modification_metadata(measurements, metadata_fields)
+
+    for ms in measurements:
+        for d in ms.data:
+            quantitative_fields.add(d.formatted_label)
+
+    for field in metadata_fields.keys():
+        metadata_fields[field] = sorted( list(metadata_fields[field]) )
+
+    return accessions, metadata_fields, scansite_fields, quantitative_fields
+
+def format_explorer_view(exp, annotation_set_id, user):
+    subset_labels = get_valid_subset_labels(exp.id, annotation_set_id, user)
+
+    annotation_dict = get_user_annotation_dict(exp, user)
+
+    accessions, metadata_fields, scansite_fields, quantitative_fields = get_explorer_view_metadata(exp, user)
+    new_metadata_fields, new_quantitative_fields, cluster_labels = get_user_annotation_set(exp, annotation_set_id, user)
+
+    metadata_fields.update(new_metadata_fields)
+    quantitative_fields |= new_quantitative_fields
+
+    field_data = {'experiment_id': exp.id,
                   'quantitative_fields': sorted( list(quantitative_fields) ),
                   'accessions': accessions,
                   'scansite_fields': scansite_fields,
@@ -788,7 +805,7 @@ def compute_annotations(annotation_set_id, exp, user, measurements):
             ms = ms_map[annotation.MS_id]
             ms.annotations[aset.name] = annotation.value
             ms.annotation_types[aset.name] = aset.type
-            
+    
     return annotation_types, annotation_order
 
 def compute_subset_enrichment(request, annotation_set_id, exp, user, subset_name, foreground_exp, background_exp, k):

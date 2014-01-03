@@ -3,6 +3,7 @@ from ptmscout.database import experiment, modifications
 from ptmscout.config import strings
 import base64
 import json
+from ptmscout.utils import decorators
 
 def filter_predictions(predictions, threshold = 1.0):
     return [ p for p in predictions if p.percentile <= threshold ]
@@ -67,16 +68,17 @@ def create_query_generator(field):
 
     return query_generator
 
+@decorators.cache_result
+def wrap_format_predictions(exp):
+    return format_predictions(exp.measurements)
+
 @view_config(route_name='experiment_predictions', renderer='ptmscout:templates/experiments/experiment_predictions.pt')
-def prediction_view(request):
-    expid = request.matchdict['id']
-    exp = experiment.getExperimentById(expid, request.user)
-    
+@decorators.get_experiment('id',types=set(['experiment']))
+def prediction_view(context, request, exp):
     user_owner = request.user != None and request.user.experimentOwner(exp)
-    
-    measurements = modifications.getMeasuredPeptidesByExperiment(expid, request.user)
-    formatted_predictions = format_predictions(measurements)
-    
+
+    formatted_predictions = wrap_format_predictions(exp)
+
     return {'experiment': exp,
             'pageTitle': strings.experiment_prediction_page_title % (exp.name),
             'predictions': formatted_predictions,

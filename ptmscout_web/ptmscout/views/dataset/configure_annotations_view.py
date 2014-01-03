@@ -88,8 +88,7 @@ def parse_column_assignments(request, session, headers):
 
 def configure_annotations_POST(request, experiment, session):
     force = webutils.post(request, 'override', "false") != "false"
-    measurements = modifications.getMeasuredPeptidesByExperiment(experiment.id, request.user)
-    valid_MS_ids = set([ms.id for ms in measurements])
+    valid_MS_ids = set([ms.id for ms in experiment.measurements])
 
     headers, data_rows = uploadutils.load_header_and_data_rows(session.data_file, N=100)
     errors = parse_column_assignments(request, session, headers)

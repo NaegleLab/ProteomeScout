@@ -140,7 +140,7 @@ def summarize_experiment_load(measurements):
 
     final_ptms = set()
     for ptm in ptms:
-        if ptm != None:
+        if ptm is not None:
             final_ptms.add(ptm)
             final_ptms |= ptm.getAllParents()
 

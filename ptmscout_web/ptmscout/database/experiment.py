@@ -103,7 +103,12 @@ class Experiment(Base):
 
     modified_residues = Column(VARCHAR(40), default="")
     type = Column(Enum(['compendia','experiment','dataset'], default='experiment'))
-    
+  
+    version_number = Column(Integer(11))
+
+    def __repr__(self):
+        return 'experiment:%d:%d' % (self.id, self.version_number)
+
     def __get_job(self):
         from ptmscout.database import jobs
 
@@ -127,9 +132,11 @@ class Experiment(Base):
     
     def __init__(self):
         self.date = datetime.datetime.now()
+        self.version_number = 0
 
     def saveExperiment(self):
         DBSession.add(self)
+        self.version_number += 1
         DBSession.flush()
         
     def delete(self):

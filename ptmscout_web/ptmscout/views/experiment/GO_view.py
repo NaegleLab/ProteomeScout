@@ -3,6 +3,7 @@ from ptmscout.config import strings
 from ptmscout.database import experiment, modifications
 import base64
 import json
+from ptmscout.utils import decorators
 
 def build_go_annotation_tree(measurements):
     tree = {'F':[], 'P':[], 'C':[], 'total':0}
@@ -93,16 +94,19 @@ def create_query_generator(field):
 
     return query_generator
 
+@decorators.cache_result
+def build_go_viz(exp):
+    formatted_go_terms = format_go_terms(exp.measurements)
+    go_tree = build_go_annotation_tree(exp.measurements)
+
+    return formatted_go_terms, go_tree
+
 @view_config(route_name='experiment_GO', renderer='ptmscout:/templates/experiments/experiment_GO.pt')
-def show_experiment_go_terms(request):
-    exp_id = int(request.matchdict['id'])
-    exp = experiment.getExperimentById(exp_id, request.user)
+@decorators.get_experiment('id',types=set(['experiment']))
+def show_experiment_go_terms(context, request, exp):
     user_owner = request.user != None and request.user.experimentOwner(exp)
-    
-    measurements = modifications.getMeasuredPeptidesByExperiment(exp_id, request.user)
-    formatted_go_terms = format_go_terms(measurements)
-    go_tree = build_go_annotation_tree(measurements)
-    
+    formatted_go_terms, go_tree = build_go_viz(exp)
+
     return {'pageTitle': strings.experiment_GO_page_title % (exp.name),
             'experiment': exp,
             'go_tables': formatted_go_terms,

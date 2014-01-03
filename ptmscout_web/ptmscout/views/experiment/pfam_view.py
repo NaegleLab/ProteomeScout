@@ -3,6 +3,7 @@ from ptmscout.database import experiment, modifications
 from ptmscout.config import strings
 import base64
 import json
+from ptmscout.utils import decorators
 
 def format_pfam_domains(measurements):
     
@@ -61,16 +62,19 @@ def create_query_generator(field):
 
     return query_generator
 
-@view_config(route_name='experiment_pfam', renderer="ptmscout:templates/experiments/experiment_pfam.pt")
-def show_pfam_view(request):
-    expid = int(request.matchdict['id'])
-    exp = experiment.getExperimentById(expid, request.user)
-    measurements = modifications.getMeasuredPeptidesByExperiment(expid, request.user)
-    
-    user_owner = request.user != None and request.user.experimentOwner(exp)
-    
+@decorators.cache_result
+def get_pfam_view_data(exp):
     formatted_sites = format_pfam_sites(measurements)
     formatted_domains = format_pfam_domains(measurements)
+
+    return formatted_sites, formatted_domains
+
+@view_config(route_name='experiment_pfam', renderer="ptmscout:templates/experiments/experiment_pfam.pt")
+@decorators.get_experiment('id',types=set(['experiment']))
+def show_pfam_view(context, request, exp):
+    user_owner = request.user != None and request.user.experimentOwner(exp)
+    
+    formatted_sites, formatted_domains = get_pfam_view_data(exp)
     
     return {'pageTitle': strings.experiment_pfam_page_title % (exp.name),
             'experiment':exp,
