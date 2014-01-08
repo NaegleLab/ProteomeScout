@@ -25,6 +25,28 @@ def print_jobs(job_list):
         created = j.created
         print "%-20s %-20s %-30s %20s" % (str(created), uname, name, tp)
 
+def cancel_jobs(running):
+    if len(running)==0:
+        print "No running jobs to be canceled!"
+    else:
+        print "The following jobs will be cancelled:"
+        print "\n-----------\nRunning jobs:\n-----------"
+        print_jobs(running)
+
+        print "\n\n"
+        val = ""
+        while val not in ['yes','no','n','y']:
+            val = raw_input("Continue? (yes/no) ").lower()
+
+        if val in ['yes','y']:
+            for j in running:
+                notify_job_failed(j, "Server is shutting down, please try again later.", "Server shutdown!")
+
+def list_jobs(running):
+    print "\n-----------\nRunning jobs:\n-----------"
+    print_jobs(running)
+
+
 if __name__ == "__main__":
     try:
         config_options = os.path.join(os.sep, 'data', 'ptmscout', 'ptmscout_web', 'production.ini')
@@ -37,23 +59,15 @@ if __name__ == "__main__":
             if j.status != 'finished' and j.status !='error':
                 running.append(j)
 
-        if len(running)==0:
-            print "No running jobs to be canceled!"
-        else:
-            print "The following jobs will be cancelled:"
-            print "\n-----------\nRunning jobs:\n-----------"
-            print_jobs(running)
+        try:
+            if(sys.argv[1] == 'cancel'):
+                cancel_jobs(running)
+            elif(sys.argv[1] == 'list'):
+                list_jobs(running)
+        except:
+            list_jobs(running)
 
-            print "\n\n"
-            val = ""
-            while val not in ['yes','no','n','y']:
-                val = raw_input("Continue? (yes/no) ").lower()
-
-            if val in ['yes','y']:
-                for j in running:
-                    notify_job_failed(j, "Server is shutting down, please try again later.", "Server shutdown!")
-
-            dbinit.session.flush()
+        dbinit.session.flush()
     except Exception, e:
         traceback.print_exc()
         

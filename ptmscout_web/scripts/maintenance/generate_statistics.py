@@ -1,10 +1,12 @@
 from scripts.DB_init import DatabaseInitialization
 from ptmscout.config import settings
 from ptmscout.database import experiment, modifications, user, protein
+from sqlalchemy.sql.expression import or_
 from collections import defaultdict
 import traceback
 import os
 import cPickle
+import json, base64
 
 def get_sorted_children(parent_id, ptms):
     children = [ p for p in ptms if p.parent_id == parent_id ]
@@ -43,6 +45,16 @@ def dd_to_dict(dd):
         d[k] = dd[k]
     return d
 
+def mods_by_source(mod_list):
+    by_source = defaultdict(lambda: 0)
+    for ms in mod_list:
+        for modpep in ms.peptides:
+            if ms.experiment.type=='compendia':
+                by_source[ms.experiment.name] += 1
+            elif ms.experiment.type=='experiment':
+                by_source['experiment'] += 1
+    return dd_to_dict(by_source)
+
 def mods_by_residue(mod_list):
     by_residue = defaultdict(lambda: 0)
     for ms in mod_list:
@@ -77,6 +89,25 @@ def count_distinct_species(protein_list):
         species_ids.add(pr.species_id)
     return len(species_ids)
 
+def top_n(entries, n):
+    sorted_entries = sorted(entries, key=lambda item: -item[1])
+
+    if(len(sorted_entries) > n):
+        top_n = sorted_entries[:n]
+        rest_q = sum([k for (e, k) in sorted_entries[n:]])
+
+        return top_n + [('Other', rest_q)]
+
+    return sorted_entries
+
+def trim_species_name(name):
+    index = name.find('(')
+    if index > -1:
+        name = name[0:index-1]
+    return name
+
+def trim_species_names(entries):
+    return [(trim_species_name(name), k) for name, k in entries]
 
 if __name__ == "__main__":
     try:
@@ -104,7 +135,9 @@ if __name__ == "__main__":
         species = count_distinct_species(all_proteins)
 
         print "Counting modification types..."
-        all_mods = modifications.getAllMeasuredPeptides()
+
+        all_mods = dbinit.session.query(modifications.MeasuredPeptide).join(experiment.Experiment).filter(or_(experiment.Experiment.type=='compendia',experiment.Experiment.type=='experiment',experiment.Experiment.published==1)).all()
+        by_source = mods_by_source(all_mods)
         by_residue = mods_by_residue(all_mods)
         by_type = mods_by_type(all_mods)
         by_species = mods_by_species(all_mods)
@@ -113,6 +146,11 @@ if __name__ == "__main__":
         print "Formatting PTMs"
         all_ptms = modifications.getAllPTMs()
         formatted_ptms = format_ptms(all_ptms)
+
+        by_residue_short = top_n(by_residue.items(), 5)
+        by_source_short = by_source.items()
+        by_type_short = top_n(by_type.items(), 5)
+        by_species_short = trim_species_names( top_n(by_species.items(), 5) )
 
         rval = {
                 'compendia': compendia,
@@ -128,7 +166,11 @@ if __name__ == "__main__":
                 'by_type': by_type,
                 'ptms': ptms,
                 'species': species,
-                'ptm_defs': formatted_ptms
+                'ptm_defs': formatted_ptms,
+                'by_residue_json': base64.b64encode(json.dumps(by_residue_short)),
+                'by_source_json': base64.b64encode(json.dumps(by_source_short)),
+                'by_type_json': base64.b64encode(json.dumps(by_type_short)),
+                'by_species_json': base64.b64encode(json.dumps(by_species_short)),
                 }
 
         with open( os.path.join(settings.ptmscout_path, settings.statistics_file), 'w' ) as pypfile:

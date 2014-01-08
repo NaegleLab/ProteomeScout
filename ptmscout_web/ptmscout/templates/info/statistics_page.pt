@@ -1,5 +1,12 @@
 <div metal:use-macro="layout">
-	<metal:slot metal:fill-slot="header">
+    <metal:slot metal:fill-slot="header">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/graphs.css')}" />
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/utils.js')}" ></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/base64.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/graph.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/piechart.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/export.svg.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/make.pies.js')}"></script>
 	</metal:slot>
 	<div metal:fill-slot="nav"></div>
 	
@@ -51,6 +58,48 @@
 						<td class="value">${ptms}</td>
                     </tr>
 				</table>
+
+                <h4>Modified Sites</h4>
+
+                <table class="data_summary drop-shadow">
+                    <tr>
+                        <td><h5>Modifications by Residue</h5></td>
+                        <td><h5>Modifications by Source</h5></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="data_chart_pie_legend chart">
+                                <div class="data" tal:content="by_residue_json"></div>
+                            </div>
+                            <div class="clear"></div>
+                        </td>
+                        <td>
+                            <div class="data_chart_pie_legend chart">
+                                <div class="data" tal:content="by_source_json"></div>
+                            </div>
+                            <div class="clear"></div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><h5>Modifications by Type (Top 10)</h5></td>
+                        <td><h5>Modifications by Species (Top 10)</h5></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="data_chart_pie_legend chart">
+                                <div class="data" tal:content="by_type_json"></div>
+                            </div>
+                            <div class="clear"></div>
+                        </td>
+                        <td>
+                            <div class="data_chart_pie_legend chart">
+                                <div class="data" tal:content="by_species_json"></div>
+                            </div>
+                            <div class="clear"></div>
+                        </td>
+                    </tr>
+                </table>
 
                 <h4>Modified Sites By Grouping</h4>
 				<table class="data_summary drop-shadow">

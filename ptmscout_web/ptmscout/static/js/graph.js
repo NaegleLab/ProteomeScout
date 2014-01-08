@@ -1,14 +1,34 @@
-
+function format_text(name, width, size) {
+    var max_width = width / size;
+    if(name.length > max_width){
+        return name.substring(0, max_width) + "...";
+    }
+    return name;
+}
 
 function addLegend(graph, legendEntries, xpos, ypos, width, marker) {
 	var h = 20;
 	
 	var height = legendEntries.length * h;
 	
+    var actualWidth = 0;
+    for(var i in legendEntries){
+        var entry = legendEntries[i];
+        var eWidth = entry.name.length * 9 + 30
+        if(eWidth > actualWidth) {
+            actualWidth = eWidth;
+        }
+    }
+
+    var dx = 0;
+    if(actualWidth < width){
+        dx = width - actualWidth;
+        width = actualWidth;
+    }
 	var legend = graph.append("g")
 				.attr("class", "legend")
-				.attr("transform", "translate({0},{1})".format( xpos, ypos ));
-	
+				.attr("transform", "translate({0},{1})".format( dx + xpos, ypos ));
+
 	legend.append("rect")
 		.attr("class", "bg")
 		.attr("x", 0)
@@ -28,7 +48,7 @@ function addLegend(graph, legendEntries, xpos, ypos, width, marker) {
             .style("fill","black")
             .style("font-size", "9pt")
             .style("text-anchor", "left")
-			.text(function(d) { return d.name });
+			.text(function(d) { return format_text(d.name, width - 30, 8) });
 	
 	if(marker == "line"){
 		legend.selectAll("line.marker")
@@ -140,9 +160,7 @@ function addBarSeries(graph, name, pts, xaxis, yaxis, color, i, num) {
 			.attr("y", function(d) { return yaxis(d.y) })
 			.attr("width", function(d) { return 2 * (barw / num) })
 			.attr("height", function(d) { return yaxis(0) - yaxis(d.y) })
-			.style("fill", color)
-            .style("stroke", "lightgray")
-            .style("stroke-width" ,"1px");
+			.style("fill", color);
 }
 
 function addErrorBars(graph, name, errorbars, xaxis, yaxis, color, i, num) {
@@ -297,6 +315,7 @@ function createGraph(parent, title, w, h, margin) {
 		parent 
 			.append("svg")
 			.attr("class", "graph")
+            .style('font-family', "helvetica,arial,verdana")
 			.attr("width", w)
 			.attr("height", h);
 

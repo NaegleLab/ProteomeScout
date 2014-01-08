@@ -17,9 +17,6 @@ sudo chmod -R 775 *
 sudo chown -R www-data *
 sudo chgrp -R development *
 
-echo "Cancelling running jobs"
-python scripts/maintenance/cancel_jobs.py
-
 ./stop.sh
 
 if [ "$arg" == "develop" ]
