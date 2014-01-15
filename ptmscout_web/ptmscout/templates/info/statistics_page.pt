@@ -1,12 +1,16 @@
 <div metal:use-macro="layout">
     <metal:slot metal:fill-slot="header">
     <link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/graphs.css')}" />
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/numeric-1.2.6.min.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/mds.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/utils.js')}" ></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/base64.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/graph.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/venn.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/piechart.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/export.svg.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/make.pies.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('ptmscout:static/js/make.venn.js')}"></script>
 	</metal:slot>
 	<div metal:fill-slot="nav"></div>
 	
@@ -63,7 +67,7 @@
 
                 <table class="data_summary drop-shadow">
                     <tr>
-                        <td><h5>Modifications by Residue</h5></td>
+                        <td><h5>Modifications by Residue (Top 5)</h5></td>
                         <td><h5>Modifications by Source</h5></td>
                     </tr>
                     <tr>
@@ -82,8 +86,8 @@
                     </tr>
 
                     <tr>
-                        <td><h5>Modifications by Type (Top 10)</h5></td>
-                        <td><h5>Modifications by Species (Top 10)</h5></td>
+                        <td><h5>Modifications by Type (Top 5)</h5></td>
+                        <td><h5>Modifications by Species (Top 5)</h5></td>
                     </tr>
                     <tr>
                         <td>
@@ -97,6 +101,18 @@
                                 <div class="data" tal:content="by_species_json"></div>
                             </div>
                             <div class="clear"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div style="margin-left:auto;margin-right:auto;width:470px;padding-top:20px;padding-bottom:20px">
+                                <h5>Modifications Reported in Common</h5>
+
+                                <div class="data_chart_venn_legend chart">
+                                    <div class="data" tal:content="mod_venn_diagram"></div>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
                         </td>
                     </tr>
                 </table>
@@ -139,7 +155,7 @@
     </div>
 
 		<div class="grid_12" style="margin-top:1em">
-		  <h2>Supported PTM Types</h2>
+            <h2>Supported PTM Types: <tal:empty content="len(ptm_defs)"></tal:empty></h2>
             <div class="body">
                 <table class="data_summary drop-shadow">
                     <tr>

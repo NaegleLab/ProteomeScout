@@ -109,6 +109,38 @@ def trim_species_name(name):
 def trim_species_names(entries):
     return [(trim_species_name(name), k) for name, k in entries]
 
+def get_all_ptms(ptms, eid=None):
+    result = set()
+    for ms in ptms:
+        if ms.experiment_id == eid or eid == None:
+            for modpep in ms.peptides:
+                result.add((modpep.peptide_id, modpep.modification_id))
+    return result
+
+def compare_experiments(ptms, expids, experiments):
+    expids = sorted(expids)
+
+    ptm_sets = {}
+    for eid in expids:
+        ptm_sets[eid] = get_all_ptms(ptms, eid)
+
+    sets = []
+    overlaps = []
+
+    for eid in expids:
+        sets.append({'label':experiments[eid].name, 'size': len(ptm_sets[eid])})
+
+    for i in xrange(0, len(expids)-1):
+        for j in xrange(i+1, len(expids)):
+            overlaps.append({'sets':[i,j], 'size':len(ptm_sets[expids[i]] & ptm_sets[expids[j]])})
+
+    e1 = expids[0]
+    e2 = expids[1]
+    e3 = expids[2]
+    overlaps.append({'sets':[0,1,2], 'size':len(ptm_sets[e1] & ptm_sets[e2] & ptm_sets[e3])})
+
+    return sets, overlaps
+
 if __name__ == "__main__":
     try:
         config_options = os.path.join(os.sep, 'data', 'ptmscout', 'ptmscout_web', 'production.ini')
@@ -136,7 +168,7 @@ if __name__ == "__main__":
 
         print "Counting modification types..."
 
-        all_mods = dbinit.session.query(modifications.MeasuredPeptide).join(experiment.Experiment).filter(or_(experiment.Experiment.type=='compendia',experiment.Experiment.type=='experiment',experiment.Experiment.published==1)).all()
+        all_mods = dbinit.session.query(modifications.MeasuredPeptide).join(experiment.Experiment).filter(or_(experiment.Experiment.type=='compendia',experiment.Experiment.type=='experiment'),experiment.Experiment.public==1).all()
         by_source = mods_by_source(all_mods)
         by_residue = mods_by_residue(all_mods)
         by_type = mods_by_type(all_mods)
@@ -151,6 +183,14 @@ if __name__ == "__main__":
         by_source_short = by_source.items()
         by_type_short = top_n(by_type.items(), 5)
         by_species_short = trim_species_names( top_n(by_species.items(), 5) )
+
+
+        experiments_dict = {}
+        for exp in dbinit.session.query(experiment.Experiment).filter(experiment.Experiment.public == 1):
+            experiments_dict[exp.id] = exp
+
+        sets, overlaps = compare_experiments(all_mods, [1395,1413,1419], experiments_dict)
+        experiment_venn_diagram = {'sets':sets, 'overlaps': overlaps}
 
         rval = {
                 'compendia': compendia,
@@ -171,6 +211,7 @@ if __name__ == "__main__":
                 'by_source_json': base64.b64encode(json.dumps(by_source_short)),
                 'by_type_json': base64.b64encode(json.dumps(by_type_short)),
                 'by_species_json': base64.b64encode(json.dumps(by_species_short)),
+                'mod_venn_diagram': base64.b64encode(json.dumps(experiment_venn_diagram)),
                 }
 
         with open( os.path.join(settings.ptmscout_path, settings.statistics_file), 'w' ) as pypfile:
