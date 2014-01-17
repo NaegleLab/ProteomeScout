@@ -415,6 +415,7 @@
         padding = padding || 6;
         dataset = venn.scaleSolution(dataset, width, height, padding);
         var svg = element.append("svg")
+                .style('font-family', "helvetica,arial,verdana")
                 .attr("width", width)
                 .attr("height", height);
 

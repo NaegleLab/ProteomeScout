@@ -104,9 +104,9 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2">
-                            <div style="margin-left:auto;margin-right:auto;width:470px;padding-top:20px;padding-bottom:20px">
-                                <h5>Modifications Reported in Common</h5>
+                        <td>
+                            <div>
+                                <h5>Modifications Reported among Compendia</h5>
 
                                 <div class="data_chart_venn_legend chart">
                                     <div class="data" tal:content="mod_venn_diagram"></div>
@@ -114,6 +114,17 @@
                                 <div class="clear"></div>
                             </div>
                         </td>
+                        <td>
+                            <div>
+                                <h5>Novel Modifications Reported in Experiments</h5>
+
+                                <div class="data_chart_venn_legend chart">
+                                    <div class="data" tal:content="exp_venn_diagram"></div>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                        </td>
+
                     </tr>
                 </table>
 

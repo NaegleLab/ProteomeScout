@@ -109,7 +109,7 @@ def trim_species_name(name):
 def trim_species_names(entries):
     return [(trim_species_name(name), k) for name, k in entries]
 
-def get_all_ptms(ptms, eid=None):
+def get_all_ptms_for_exp(ptms, eid=None):
     result = set()
     for ms in ptms:
         if ms.experiment_id == eid or eid == None:
@@ -117,12 +117,31 @@ def get_all_ptms(ptms, eid=None):
                 result.add((modpep.peptide_id, modpep.modification_id))
     return result
 
+def get_all_ptms_for_exp_type(ptms, type='compendia'):
+    result = set()
+    for ms in ptms:
+        if ms.experiment.type == type:
+            for modpep in ms.peptides:
+                result.add((modpep.peptide_id, modpep.modification_id))
+    return result
+
+def compare_experiments_to_compendia(ptms):
+    compendia_mods = get_all_ptms_for_exp_type(ptms, 'compendia')
+    experiment_mods = get_all_ptms_for_exp_type(ptms, 'experiment')
+
+    sets = [{'label': 'compendia', 'size': len(compendia_mods)},\
+            {'label': 'experiments', 'size': len(experiment_mods)}]
+
+    overlaps = [{'sets':[0,1], 'size':len(compendia_mods & experiment_mods)}]
+
+    return sets, overlaps
+
 def compare_experiments(ptms, expids, experiments):
     expids = sorted(expids)
 
     ptm_sets = {}
     for eid in expids:
-        ptm_sets[eid] = get_all_ptms(ptms, eid)
+        ptm_sets[eid] = get_all_ptms_for_exp(ptms, eid)
 
     sets = []
     overlaps = []
@@ -190,6 +209,9 @@ if __name__ == "__main__":
             experiments_dict[exp.id] = exp
 
         sets, overlaps = compare_experiments(all_mods, [1395,1413,1419], experiments_dict)
+        compendia_venn_diagram = {'sets':sets, 'overlaps': overlaps}
+
+        sets, overlaps = compare_experiments_to_compendia(all_mods)
         experiment_venn_diagram = {'sets':sets, 'overlaps': overlaps}
 
         rval = {
@@ -211,7 +233,8 @@ if __name__ == "__main__":
                 'by_source_json': base64.b64encode(json.dumps(by_source_short)),
                 'by_type_json': base64.b64encode(json.dumps(by_type_short)),
                 'by_species_json': base64.b64encode(json.dumps(by_species_short)),
-                'mod_venn_diagram': base64.b64encode(json.dumps(experiment_venn_diagram)),
+                'mod_venn_diagram': base64.b64encode(json.dumps(compendia_venn_diagram)),
+                'exp_venn_diagram': base64.b64encode(json.dumps(experiment_venn_diagram)),
                 }
 
         with open( os.path.join(settings.ptmscout_path, settings.statistics_file), 'w' ) as pypfile:
