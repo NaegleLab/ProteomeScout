@@ -1,3 +1,5 @@
+import settings
+
 accession_type_strings = {'ipi':"International Protein Index", 
                      'gene_synonym':"Gene Synonym",
                      'refseq': "RefSeq",
@@ -379,10 +381,10 @@ The upload process for the experiment '%s' failed during the '%s' loading stage 
 
 You can restart the upload by visiting <a href="%s/accounts/experiments">this page</a>.
 
-The ProteomeScout administrator has been notified of this error. If problems persist please contribute a bug report at our <a href="http://bitbucket.org/knaegle/ptmscout_dev">issue tracker</a>.
+The ProteomeScout administrator has been notified of this error. If problems persist please contribute a bug report at our <a href="%s">issue tracker</a>.
 
 -The ProteomeScout Team
-"""
+""" % ("%s", "%s", "%s", "%s", settings.issueTrackerUrl)
 
 error_message_subset_name_exists = "A subset with that name already exists for this experiment, please choose another name"
 error_message_subset_name_does_not_exist = "No subset was found with that name"
@@ -412,13 +414,13 @@ job_failed_message = """
 Processing of your job '%s' failure during '%s' with the following error message:
 
     %s
-    
+
 You may retry your job at any time. 
 
-The ProteomeScout administrator has been notified of this error. If problems persist please contribute a bug report at our <a href="http://bitbucket.org/knaegle/ptmscout_dev">issue tracker</a>.
+The ProteomeScout administrator has been notified of this error. If problems persist please contribute a bug report at our <a href="%s">issue tracker</a>.
 
 -The ProteomeScout Team
-"""
+""" % ("%s", "%s", "%s", settings.issueTrackerUrl)
 
 failure_reason_account_expired = "This account has expired"
 
