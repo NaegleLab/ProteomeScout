@@ -326,6 +326,8 @@ ResidueTrack.prototype.generate_ticks = function(viewer_width, axis, h, values, 
         tick_opacity = 1;
     }
 
+    console.log("Tick opacity: {0}".format(tick_opacity));
+
     tick_color = "#000";
     if(size == 5000)
         tick_color = "#000";
@@ -347,21 +349,24 @@ ResidueTrack.prototype.generate_ticks = function(viewer_width, axis, h, values, 
         .data( values )
             .enter().append('line')
                 .attr('class', cls)
-                .attr('x1', function(d) { return axis(d); })
-                .attr('x2', function(d) { return axis(d); })
+                .attr('x1', function(d) { return axis(d - 0.5); })
+                .attr('x2', function(d) { return axis(d - 0.5); })
                 .attr('y1', 0)
                 .attr('y2', h)
                 .style('stroke-width', "1")
+                .style('stroke', tick_color)
                 .style('opacity', tick_opacity);
 
     this.g.selectAll('text.'+cls)
         .data( values )
             .enter().append('text')
                 .attr('class', cls)
-                .attr('x', function(d) { return axis(d); })
+                .attr('x', function(d) { return axis(d - 0.5); })
                 .attr('y', h + 8)
                 .text(function(d) { return "" + d; } )
+                .style('text-anchor', 'middle')
                 .style('font-size', "8pt")
+                .style('fill', tick_color)
                 .style('opacity', tick_opacity);
 };
 
@@ -389,7 +394,7 @@ ResidueTrack.prototype.update_display = function(axis, viewer_width) {
 
         this.g.selectAll('line.'+cls).remove();
         this.g.selectAll('text.'+cls).remove();
-        this.generate_ticks(viewer_width, axis, 5, ticks[j], size);
+        this.generate_ticks(viewer_width, axis, 5, ticks[j], size, start_residue, end_residue);
     }
 
     if(this.show_residues){
