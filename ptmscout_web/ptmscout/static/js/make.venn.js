@@ -29,7 +29,7 @@ $(document).ready(function() {
             var sets = venn.venn(data.sets, data.overlaps);
 
             venn.drawD3Diagram(span, sets, 450, 400);
-			addExport(span, div);
+			addExportSVG(span, div);
 			num+=1;
 		});
 });

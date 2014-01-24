@@ -31,7 +31,7 @@ $(document).ready(function() {
 			var span = div.append('span');
 			
 			createPieChart(span, ndata, 450, 400);
-			addExport(span, div);
+			addExportSVG(span, div);
 			num+=1;
 		});
 
@@ -60,7 +60,7 @@ $(document).ready(function() {
 			var span = div.append('span');
 			
 			createPieChartWithLegend(span, ndata, 425, 400);
-			addExport(span, div);
+			addExportSVG(span, div);
 			num+=1;
 		});
 

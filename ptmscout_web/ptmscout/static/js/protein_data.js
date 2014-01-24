@@ -150,7 +150,8 @@ function createTimeSeriesGraph(experiment_data, run) {
 	
 	addAxes(graph, run.axis, Array.unique(xticks), yaxis.ticks(7), xaxis, yaxis, false);
 	addLegend(graph, legendEntries, w-lwidth, margin, lwidth, "line");
-	addExport(parent, container);
+	addExportSVG(parent, container);
+	addExportChartData(experiment_data, container);
 }
 
 function getArray(run, property) {
@@ -225,5 +226,6 @@ function createBarGraph(experiment_data, run) {
 	
 	addAxes(graph, run.axis, xvals, yaxis.ticks(7), xaxis, yaxis, true);
 	addLegend(graph, legendEntries, w-lwidth, margin, lwidth, "square");
-	addExport(parent, container);
+	addExportSVG(parent, container);
+	addExportChartData(experiment_data, container);
 }

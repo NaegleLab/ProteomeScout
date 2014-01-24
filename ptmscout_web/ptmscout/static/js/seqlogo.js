@@ -48,5 +48,5 @@ function createSeqlogo(node, data, w, h){
 	    .style("fill", function(d, i) { return colors(d[0]) })
 	    .text(function(d) { return d[0] });
     
-    addExport(chartContainer, container);
+    addExportSVG(chartContainer, container);
 }
