@@ -788,12 +788,13 @@ def format_measurement_data(measurements):
         
     return experiment_data
 
-def compute_annotations(annotation_set_id, exp, user, measurements):
+@decorators.cache_result
+def compute_annotations(annotation_set_id, exp, user):
     annotation_set = annotations.getUserAnnotations(annotation_set_id, exp.id, user)
     annotation_types = {}
     annotation_order = {}
     ms_map = {}
-    for ms in measurements:
+    for ms in exp.measurements:
         ms_map[ms.id] = ms
         ms.annotations = {}
         ms.annotation_types = {}
@@ -812,7 +813,7 @@ def compute_subset_enrichment(request, annotation_set_id, exp, user, subset_name
     measurements = exp.measurements
 
     if annotation_set_id != None:
-        annotation_types, _ = compute_annotations(annotation_set_id, exp, user, measurements)
+        annotation_types, _ = compute_annotations(annotation_set_id, exp, user)
     else:
         annotation_types = {}
 
