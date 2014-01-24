@@ -3,9 +3,12 @@
     <div class="grid_4">
       <ul>
         <li><h3>Contact</h3></li>
-        <li>
+          <li>
 	        ${adminEmail}
-	      </li>
+          </li>
+          <li>
+            Report <a href="${issueTrackerUrl}" target="_blank">Issues and Requests</a>
+          </li>
 	    </ul>
 	  </div>
 	  <div class="grid_4">
@@ -13,11 +16,11 @@
 	      <li>
 	        <h3>About</h3>
 	      </li>
-	      <li>Created by <a href="http://naegle.wustl.edu">The Naegle Lab</a></li>
-	      <li>In <a href="http://cbse.wustl.edu/">The Center for Biological Systems Engineering</a></li>
-	      <li>At <a href="http://wustl.edu">Washington University in St. Louis</a></li>
+	      <li>Created by <a href="http://naegle.wustl.edu" target="_blank">The Naegle Lab</a></li>
+	      <li>In <a href="http://cbse.wustl.edu/" target="_blank">The Center for Biological Systems Engineering</a></li>
+	      <li>At <a href="http://wustl.edu" target="_blank">Washington University in St. Louis</a></li>
 	      <li>
-          <a rel="terms" href="${request.application_url}/terms">Terms of Use</a>
+          <a rel="terms" href="${request.application_url}/terms" target="_blank">Terms of Use</a>
         </li>
       </ul>
       
@@ -31,10 +34,10 @@
         <li>
           <span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">ProteomeScout</span>
           is licensed under a
-          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.
+          <a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.
         </li>
         <li>
-          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">
+          <a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">
               <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" />
           </a>
         </li>

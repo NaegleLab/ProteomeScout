@@ -30,7 +30,13 @@
   			</ul>
   			<br /> 
   		</div>
-  		
+
+        <h2>Reporting Issues and Feature Requests</h2>
+        <div class="body">
+            <p>
+                Please use the ProteomeScout issue tracker service located <a href="${issueTrackerUrl}" target="_blank">here</a>.
+        </div>
+
 			<h2>License, Disclaimer	and Terms of Use</h2>
 			<div class="body">
 			  <p>
