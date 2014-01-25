@@ -5,7 +5,12 @@
     <div metal:fill-slot="content">
     	<div class = "infobox">
     		<div class = "forbiddenheader">Forbidden</div>
-	    	<p class = "infotext">You do not have permission to access this resource. <span tal:condition="request.user == None">Please try <a href = "${request.application_url}/login">logging in</a></span></p>
+            <p class = "infotext">
+                You do not have permission to access this resource. 
+                <span tal:condition="request.user == None">
+                    Please try <a href = "${request.route_url('login', _query={'origin': request.path_qs})}">logging in</a>
+                </span>
+            </p>
     	</div>
     </div>
 </div>
