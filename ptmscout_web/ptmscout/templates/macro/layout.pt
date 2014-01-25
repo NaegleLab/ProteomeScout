@@ -49,7 +49,7 @@
     	  <div class="grid_4" style="text-align:right">
     	    <ul class="link_menu" tal:condition="request.user == None" style="float:right;">
     	      <li>
-                <a href="${request.route_url('login')}">Login</a>
+                  <a href="${request.route_url('login', _query={'origin':request.path_qs})}">Login</a>
       	      </li>
       	    </ul>
     	    <ul class="link_menu" tal:condition="request.user != None" style="float:right;">
