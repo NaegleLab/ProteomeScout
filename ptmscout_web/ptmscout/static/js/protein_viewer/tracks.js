@@ -636,7 +636,11 @@ function get_mutation_tooltip(d){
     var i = 0
     while(i < d.value.length){
         mutation = d.value[i];
-        tooltip_text += "-> {0} | {1}<br>".format(mutation.mutant, mutation.annotation);
+
+        if(mutation.clinical != '')
+            tooltip_text += "-> {0} | Clinical Significance: {1} | Annotation: {2}<br>".format(mutation.mutant, mutation.clinical, mutation.annotation);
+        else
+            tooltip_text += "-> {0} | Annotation: {1}<br>".format(mutation.mutant, mutation.annotation);
 
         i += 1;
     }

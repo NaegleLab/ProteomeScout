@@ -26,6 +26,7 @@ def format_protein_mutations(prot):
         mut_dict['original'] = m.original
         mut_dict['mutant'] = m.mutant
         mut_dict['annotation'] = m.annotation
+        mut_dict['clinical'] = m.clinical
 
         mut_list = formatted_mutations.get(m.location, [])
         mut_list.append(mut_dict)
