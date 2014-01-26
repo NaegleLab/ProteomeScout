@@ -4,6 +4,7 @@ from sqlalchemy.types import Integer, VARCHAR, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.mysql import INTEGER as Integer 
 import datetime
+import re
 
 class Mutation(Base):
     __tablename__= 'protein_mutations'
@@ -16,6 +17,7 @@ class Mutation(Base):
     mutant = Column(VARCHAR(3))
     date = Column(DateTime)
     annotation = Column(VARCHAR(256))
+    clinical = Column(VARCHAR(100))
 
     protein = relationship("Protein")
 
@@ -42,3 +44,10 @@ class Mutation(Base):
     def consistent(self, prot_seq):
         start = self.location-1
         return prot_seq[start:start+len(self.original)] == self.original
+
+
+    def getDBSNPId(self):
+        m = re.search('rs[0-9]+', self.annotation)
+        if m == None:
+            return None
+        return m.group(0)

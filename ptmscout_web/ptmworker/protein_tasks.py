@@ -52,6 +52,19 @@ def parse_region_tracks(prot, features):
         if not prot.hasRegion(pr):
             prot.regions.append(pr)
 
+def get_clinical_significance(mutations):
+    snps = {}
+    for m in mutations:
+        dbsnp_id = m.getDBSNPId()
+        if dbsnp_id != None:
+            snps[dbsnp_id] = m
+
+    result = dbsnp_tools.get_variant_classification(snps.keys())
+    for rsid in snps:
+        if rsid in result:
+            snps[rsid].clinical = result[rsid]
+            session.add(snps[rsid])
+
 def load_new_protein(accession, protein_record):
     created = False
     prot = protein.getProteinBySequence(protein_record.sequence, protein_record.species)
@@ -78,10 +91,12 @@ def load_new_protein(accession, protein_record):
         pfam_tools.parse_or_query_domains(prot, accession)
         load_scansite( prot, protein_record.full_taxonomy )
         
-
+    new_mutations = []
     for m in protein_record.mutations:
         if not prot.hasMutation(m):
             prot.mutations.append(m)
+            new_mutations.append(m)
+    get_clinical_significance(new_mutations)
 
     prot.saveProtein()
 
