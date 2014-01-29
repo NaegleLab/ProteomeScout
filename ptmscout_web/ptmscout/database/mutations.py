@@ -1,4 +1,4 @@
-from ptmscout.database import Base
+from ptmscout.database import Base, DBSession
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, VARCHAR, DateTime
 from sqlalchemy.orm import relationship
@@ -30,9 +30,13 @@ class Mutation(Base):
         self.mutant = mutant
         self.date = datetime.datetime.now()
         self.annotation = annotation
+        self.clinical = ""
 
     def __repr__(self):
-        return "%s%d%s" % (self.original, self.location, self.mutant)
+        if self.clinical != "":
+            return "%s%d%s:%s" % (self.original, self.location, self.mutant, self.clinical)
+        else:
+            return "%s%d%s" % (self.original, self.location, self.mutant)
 
     def equals(self, other):
         type_eq = self.mutationType == other.mutationType
@@ -45,9 +49,13 @@ class Mutation(Base):
         start = self.location-1
         return prot_seq[start:start+len(self.original)] == self.original
 
-
     def getDBSNPId(self):
-        m = re.search('rs[0-9]+', self.annotation)
-        if m == None:
+        m = re.findall('rs[0-9]+', self.annotation)
+        if len(m)==0:
             return None
-        return m.group(0)
+        return m[0]
+
+    def getReferenceIds(self):
+        dbSNP = re.findall('rs[0-9]+', self.annotation)
+        uniVar = re.findall('VAR_[0-9]+', self.annotation)
+        return uniVar + dbSNP

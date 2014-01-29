@@ -3,6 +3,13 @@ from ptmscout.database import protein, mutations
 
 class TestMutations(DBTestCase):
 
+    def test_mutation_get_reference_ids(self):
+        m1 = mutations.Mutation('single', 134, 'A', 'K', 'ACK1_HUMAN', '(found in a lung cancer sample; dbSNP:rs28929495).  /FTId=VAR_026087.', 13214)
+
+        refIds = m1.getReferenceIds()
+
+        self.assertEqual(['VAR_026087', 'rs28929495'], refIds)
+
     def test_protein_has_mutation(self):
         p = protein.getProteinById(35546)
         m1 = mutations.Mutation('single', 134, 'A', 'K', 'ACK1_HUMAN',
