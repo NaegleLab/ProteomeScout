@@ -789,33 +789,31 @@ def format_measurement_data(measurements):
     return experiment_data
 
 @decorators.cache_result
-def compute_annotations(annotation_set_id, exp, user):
-    annotation_set = annotations.getUserAnnotations(annotation_set_id, exp.id, user)
+def compute_annotations(annotation_set_id, exp_id, user, measurements):
+    annotation_set = annotations.getUserAnnotations(annotation_set_id, exp_id, user)
     annotation_types = {}
     annotation_order = {}
     ms_map = {}
-    for ms in exp.measurements:
+    for ms in measurements:
         ms_map[ms.id] = ms
         ms.annotations = {}
         ms.annotation_types = {}
     
-    for aset in annotation_set.annotation_types:
-        annotation_types[aset.name] = aset.type
-        annotation_order[aset.name] = aset.order
-        for annotation in aset.annotations:
-            ms = ms_map[annotation.MS_id]
-            ms.annotations[aset.name] = annotation.value
-            ms.annotation_types[aset.name] = aset.type
-    
+    if annotation_set is not None:
+        for aset in annotation_set.annotation_types:
+            annotation_types[aset.name] = aset.type
+            annotation_order[aset.name] = aset.order
+            for annotation in aset.annotations:
+                ms = ms_map[annotation.MS_id]
+                ms.annotations[aset.name] = annotation.value
+                ms.annotation_types[aset.name] = aset.type
+        
     return annotation_types, annotation_order
 
 def compute_subset_enrichment(request, annotation_set_id, exp, user, subset_name, foreground_exp, background_exp, k):
     measurements = exp.measurements
 
-    if annotation_set_id != None:
-        annotation_types, _ = compute_annotations(annotation_set_id, exp, user)
-    else:
-        annotation_types = {}
+    annotation_types, _ = compute_annotations(annotation_set_id, exp.id, user, measurements)
 
     foreground_decision_func = parse_query_expression(foreground_exp, exp.id, user, annotation_types)
     background_decision_func = parse_query_expression(background_exp, exp.id, user, annotation_types)
@@ -910,9 +908,7 @@ def save_subset(request):
     except:
         annotation_set_id = None
    
-    annotation_types = {}
-    if annotation_set_id != None:
-        annotation_types, _ = compute_annotations(annotation_set_id, exp, request.user, exp.measurements)
+    annotation_types, _ = compute_annotations(annotation_set_id, exp, request.user, exp.measurements)
 
     parse_query_expression(foreground_exp, exp_id, request.user, annotation_types)
     parse_query_expression(background_exp, exp_id, request.user, annotation_types)

@@ -47,7 +47,7 @@ def annotate_experiment(user, exp, header, rows, job_id):
                     nearby_modifications.add((site_pos, site_type, mod_name))
                     
         nearby_modifications = [ "%s%d: %s" % (site_type, site_pos, mod_name) for site_pos, site_type, mod_name in sorted(list(nearby_modifications)) ]
-        nearby_mutations = [ str(mutation) for mutation in sorted(prot.mutations, key=lambda item: item.location) if min_range < mutation.location and mutation.location < max_range ]
+        nearby_mutations = [ mutation for mutation in sorted(prot.mutations, key=lambda item: item.location) if min_range < mutation.location and mutation.location < max_range ]
         
         sep = settings.mod_separator_character + ' '
         
@@ -79,7 +79,7 @@ def annotate_experiment(user, exp, header, rows, job_id):
         row.append( sep.join(scansite_kinase) )
 
         row.append( sep.join(nearby_modifications) )
-        row.append( sep.join(nearby_mutations) )
+        row.append( export_proteins.format_mutations( nearby_mutations ) )
 
         row.append( export_proteins.format_domains( pfam_sites ) )
         row.append( export_proteins.format_domains( domain_sites ) )

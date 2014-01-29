@@ -88,8 +88,8 @@ def aggregate_results(result):
     return aggregate_enrichment, aggregate_test_cnt
 
 def calculateEnrichment(scansite_cutoff, domain_cutoff, annotation_set_id, exp_id, user_id, job_id):
-    measurements = modifications.getMeasuredPeptidesByExperiment(exp_id, secure=False)
     exp = experiment.getExperimentById(exp_id, secure=False)
+    measurements = exp.measurements
     ptm_user = user.getUserById(user_id)
     
     annotation_types, annotation_order = dataset_explorer_view.compute_annotations(annotation_set_id, exp, ptm_user, measurements)
