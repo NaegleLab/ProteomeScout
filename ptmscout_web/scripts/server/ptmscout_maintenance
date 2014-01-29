@@ -1,5 +1,5 @@
 <VirtualHost *:80>
-	ServerAdmin ptmscout@seas.wustl.edu
+	ServerAdmin proteomescout@seas.wustl.edu
 
 	DocumentRoot /data/ptmscout/maintenance
 
