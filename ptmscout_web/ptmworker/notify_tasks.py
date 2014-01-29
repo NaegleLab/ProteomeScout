@@ -83,7 +83,7 @@ def notify_job_failed(job_id, exc, stack_trace):
     job.save()
     
     subject = strings.job_failed_subject
-    message = strings.job_failed_message % (job.name, job.stage, "Exception: " + str(exc))
+    message = strings.job_failed_message % (job.name, job.stage, "Exception: " + str(exc), settings.issueTrackerUrl)
     
     mail.celery_send_mail([job.user.email, settings.adminEmail], subject, message)
     

@@ -77,7 +77,7 @@ Peptides: %d
 Proteins: %d
 Errors: %d
 
-You may view the error log for this upload at %s.
+You may view the error log for this upload <a href="%s">here</a>.
 
 Thanks for using ProteomeScout,
 -The ProteomeScout Team"""
@@ -420,7 +420,7 @@ You may retry your job at any time.
 The ProteomeScout administrator has been notified of this error. If problems persist please contribute a bug report at our <a href="%s">issue tracker</a>.
 
 -The ProteomeScout Team
-""" % ("%s", "%s", "%s", settings.issueTrackerUrl)
+"""
 
 failure_reason_account_expired = "This account has expired"
 
