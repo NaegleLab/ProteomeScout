@@ -1,7 +1,7 @@
 import celery
 import logging
 from ptmworker import notify_tasks
-from ptmworker.helpers import upload_helpers, entrez_tools, pfam_tools, picr_tools, uniprot_tools
+from ptmworker.helpers import upload_helpers, entrez_tools, pfam_tools, picr_tools, uniprot_tools, dbsnp_tools
 from ptmscout.database import protein, experiment
 from ptmscout.config import strings
 from ptmscout.utils import uploadutils
@@ -63,7 +63,6 @@ def get_clinical_significance(mutations):
     for rsid in snps:
         if rsid in result:
             snps[rsid].clinical = result[rsid]
-            session.add(snps[rsid])
 
 def load_new_protein(accession, protein_record):
     created = False
