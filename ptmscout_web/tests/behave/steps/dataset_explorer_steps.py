@@ -177,7 +177,7 @@ def other_user_login_and_view(context):
     result = context.ptmscoutapp.get(context.share_link)
 
     result.mustcontain(strings.share_subsets_page_title % (context.subset_name))
-    result.mustcontain(strings.share_subset_success_message % ("Effects of HER2 overexpression on cell signaling networks governing proliferation and migration.", "http://localhost/experiments/28/subsets?annotation_set_id=%d" % (context.annotation_set_id)))
+    result.mustcontain(strings.share_subset_success_message % ("Effects of HER2 overexpression on cell signaling networks governing proliferation and migration.", "http://localhost/experiments/28/subsets?annotation_set=%d" % (context.annotation_set_id)))
 
     result = new_user.fetch_subset_from_dataset_explorer(28, "%s: %s" % (context.active_user.username, context.subset_name), context.annotation_set_id)
     assertEqual( 26, result['foreground']['peptides'] )
