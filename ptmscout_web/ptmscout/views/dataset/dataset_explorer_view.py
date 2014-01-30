@@ -85,12 +85,10 @@ def get_modification_metadata(measurements, metadata_fields):
     for ms in measurements:
         for modpep in ms.peptides:
             metadata_fields['Modified Residue'].add(modpep.peptide.site_type)
-            
+
             metadata_fields['Modification Type'].add(modpep.modification.name)
             for ptm in modpep.modification.getAllParents():
                 metadata_fields['Modification Type'].add(ptm.name)
-
-
 
 def get_valid_subset_labels(experiment_id, annotation_set_id, user):
     subset_labels = []
@@ -761,8 +759,9 @@ def format_peptide_data(request, experiment_id, measurements):
         for modpep in ms.peptides:
             pep_aligned = modpep.peptide.pep_aligned
             site_name = modpep.peptide.getName()
-            mod_name = modpep.modification.name
             
+            mod_name = modpep.modification.name
+
             annotations = get_peptide_annotations(modpep.peptide, ms.protein)
             formatted_peptide_data.append( (ms.id, ms.query_accession, gene_name, protein_link, pep_aligned, site_name, mod_name, annotations) )
     
@@ -788,9 +787,7 @@ def format_measurement_data(measurements):
         
     return experiment_data
 
-@decorators.cache_result
 def compute_annotations(annotation_set_id, exp_id, user, measurements):
-    annotation_set = annotations.getUserAnnotations(annotation_set_id, exp_id, user)
     annotation_types = {}
     annotation_order = {}
     ms_map = {}
@@ -798,7 +795,8 @@ def compute_annotations(annotation_set_id, exp_id, user, measurements):
         ms_map[ms.id] = ms
         ms.annotations = {}
         ms.annotation_types = {}
-    
+
+    annotation_set = annotations.getUserAnnotations(annotation_set_id, exp_id, user)
     if annotation_set is not None:
         for aset in annotation_set.annotation_types:
             annotation_types[aset.name] = aset.type
@@ -807,7 +805,7 @@ def compute_annotations(annotation_set_id, exp_id, user, measurements):
                 ms = ms_map[annotation.MS_id]
                 ms.annotations[aset.name] = annotation.value
                 ms.annotation_types[aset.name] = aset.type
-        
+
     return annotation_types, annotation_order
 
 def compute_subset_enrichment(request, annotation_set_id, exp, user, subset_name, foreground_exp, background_exp, k):
