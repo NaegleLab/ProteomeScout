@@ -102,7 +102,7 @@ def build_go_viz(exp):
     return formatted_go_terms, go_tree
 
 @view_config(route_name='experiment_GO', renderer='ptmscout:/templates/experiments/experiment_GO.pt')
-@decorators.get_experiment('id',types=set(['experiment']))
+@decorators.get_experiment('id',types=set(['experiment', 'dataset']))
 def show_experiment_go_terms(context, request, exp):
     user_owner = request.user != None and request.user.experimentOwner(exp)
     formatted_go_terms, go_tree = build_go_viz(exp)

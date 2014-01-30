@@ -70,7 +70,7 @@ def get_pfam_view_data(exp):
     return formatted_sites, formatted_domains
 
 @view_config(route_name='experiment_pfam', renderer="ptmscout:templates/experiments/experiment_pfam.pt")
-@decorators.get_experiment('id',types=set(['experiment']))
+@decorators.get_experiment('id',types=set(['experiment', 'dataset']))
 def show_pfam_view(context, request, exp):
     user_owner = request.user != None and request.user.experimentOwner(exp)
     

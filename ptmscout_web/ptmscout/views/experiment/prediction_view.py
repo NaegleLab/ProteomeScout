@@ -72,7 +72,7 @@ def wrap_format_predictions(exp):
     return format_predictions(exp.measurements)
 
 @view_config(route_name='experiment_predictions', renderer='ptmscout:templates/experiments/experiment_predictions.pt')
-@decorators.get_experiment('id',types=set(['experiment']))
+@decorators.get_experiment('id',types=set(['experiment', 'dataset']))
 def prediction_view(context, request, exp):
     user_owner = request.user != None and request.user.experimentOwner(exp)
 

@@ -93,7 +93,7 @@ def view_mcam_enrichment_POST(context, request, experiment):
     return HTTPFound(request.route_url('mcam_confirm', id=experiment.id))
 
 @view_config(route_name='mcam_enrichment', request_method='GET', renderer='ptmscout:/templates/experiments/experiment_mcam.pt', permission='private', )
-@decorators.get_experiment('id')
+@decorators.get_experiment('id',types=['dataset','experiment'])
 def view_mcam_enrichment_GET(context, request, experiment):
     annotation_sets = get_annotation_sets(experiment, request.user)
     schema = create_schema(request, annotation_sets)

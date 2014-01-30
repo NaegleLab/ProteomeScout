@@ -52,7 +52,7 @@ def summarize_experiment(exp):
     return measurement_summary, sequence_profile, rejected_peps
 
 @view_config(route_name='experiment_summary', renderer='ptmscout:templates/experiments/experiment_summary.pt')
-@decorators.get_experiment('id',types=set(['experiment']))
+@decorators.get_experiment('id',types=set(['experiment','dataset']))
 def experiment_summary_view(context, request, exp):
     user_owner = request.user != None and request.user.experimentOwner(exp)
 
