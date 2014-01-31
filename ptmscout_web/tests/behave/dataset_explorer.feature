@@ -2,7 +2,6 @@ Feature: Dataset Explorer
     Users should be able to explore uploaded experiments, upload annotations to an experiment, and upload 
     peptides for annotation and exploration
 
-    @runme
     Scenario: Assign annotations to measured peptides in an experiment
           Given a user uploads annotations to an experiment
           Then the user should be sent an email with a link to the dataset explorer with:
@@ -20,6 +19,7 @@ Feature: Dataset Explorer
         When the user creates a sharing token for the experiment subset
         Then other users should be able to view the shared subset
 
+    @runme
 	Scenario: Load residues of interest from a dataset and annotate them
 		Given a user uploads a file containing non-mass spec experimental data
 		Then the user should be sent an email with a link to the dataset which contains:

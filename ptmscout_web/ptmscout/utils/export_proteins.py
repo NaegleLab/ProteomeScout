@@ -81,6 +81,9 @@ def format_domains(domains):
 def format_mutations(mutations):
     return (settings.mod_separator_character + ' ').join( [ str(m) for m in sorted(mutations, key=lambda m: m.location) ] )
 
+def format_mutation_annotations(mutations):
+    return (settings.mod_separator_character_alt + ' ').join( [ m.annotation for m in sorted(mutations, key=lambda m: m.location) ] )
+
 def format_GO_terms(prot):
     return (settings.mod_separator_character + ' ').join( [ "%s-%s" % (goe.GO_term.GO, goe.GO_term.term) for goe in sorted(prot.GO_terms, key=lambda term: term.GO_term.GO) ] )
 

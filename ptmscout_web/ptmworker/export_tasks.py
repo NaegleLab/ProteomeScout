@@ -11,7 +11,8 @@ NOTIFY_INTERVAL = 5
 def annotate_experiment(user, exp, header, rows, job_id):
     notify_tasks.set_job_stage.apply_async((job_id, 'annotating', len(rows)))
 
-    header += [ 'scansite_bind', 'scansite_kinase', 'nearby_modifications', 'nearby_mutations',\
+    header += [ 'scansite_bind', 'scansite_kinase', 'nearby_modifications',\
+            'nearby_mutations', 'nearby_mutation_annotations', \
                     'site_pfam_domains', 'site_uniprot_domains',\
                     'site_kinase_loop', 'site_macro_molecular',\
                     'site_topological', 'site_structure',\
@@ -80,6 +81,7 @@ def annotate_experiment(user, exp, header, rows, job_id):
 
         row.append( sep.join(nearby_modifications) )
         row.append( export_proteins.format_mutations( nearby_mutations ) )
+        row.append( export_proteins.format_mutation_annotations( nearby_mutations ) )
 
         row.append( export_proteins.format_domains( pfam_sites ) )
         row.append( export_proteins.format_domains( domain_sites ) )
@@ -189,7 +191,7 @@ def annotate_proteins(protein_result, accessions, batch_id, exp_id, user_id, job
                     'pfam_domains', 'uniprot_domains',\
                     'kinase_loops', 'macro_molecular',\
                     'topological', 'structure',\
-                    'mutations', 'scansite_predictions', 'GO_terms']
+                    'mutations', 'mutation_annotations', 'scansite_predictions', 'GO_terms']
     rows = []
     success = 0
     errors = 0
@@ -230,6 +232,7 @@ def annotate_proteins(protein_result, accessions, batch_id, exp_id, user_id, job
             row.append( export_proteins.format_regions(structure) )
 
             row.append( export_proteins.format_mutations(p.mutations) )
+            row.append( export_proteins.format_mutation_annotations(p.mutations) )
             row.append( export_proteins.format_scansite(mods) )
             row.append( export_proteins.format_GO_terms(p) )
             rows.append( row )

@@ -298,14 +298,10 @@ def download_annotated_experiment_and_check_fields(context, patch_mail, patch_co
         for crow in cr:
             crow[field] = crow[field].strip()
 
-            if field == 'site_kinase_loop':
-                print crow[field]
-#            print crow['query_accession'], crow['mod_sites'], field, crow[field]
-            
             if crow[field] != '':
-                cnt += len(crow[field].split(";"))        
+                cnt += len(crow[field].split(";"))
         
-        assert num == cnt, "%d != %d, field %s is not as expected" % (num, cnt, field)
+        assert num == cnt, "expected %d but got %d, field %s is not as expected" % (num, cnt, field)
 
 
 @then(u'the user should be able to view summary data')

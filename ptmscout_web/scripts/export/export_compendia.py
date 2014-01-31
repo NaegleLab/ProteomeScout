@@ -47,7 +47,8 @@ if __name__=='__main__':
                     'pfam_domains', 'uniprot_domains',\
                     'kinase_loops', 'macro_molecular',\
                     'topological', 'structure',\
-                    'mutations', 'scansite_predictions', 'GO_terms'])
+                    'scansite_predictions', 'GO_terms',\
+                    'mutations','mutation_annotations'])
 
 
     pb = ProgressBar(max_value = prot_cnt)
@@ -86,9 +87,10 @@ if __name__=='__main__':
                 row.append( format_domains(topological) )
                 row.append( format_regions(structure) )
 
-                row.append( format_mutations(p.mutations) )
                 row.append( format_scansite(mods) )
                 row.append( format_GO_terms(p) )
+                row.append( format_mutations(p.mutations) )
+                row.append( format_mutation_annotations(p.mutations) )
                 cw.writerow(row)
                 j+=1
 
