@@ -22,3 +22,6 @@ production.ini$
 development.ini$
 test.ini$
 settings.py
+scripts/server/ptmscout$
+scripts/server/ptmscout_internal$
+scripts/server/ptmscout_maintenance$
