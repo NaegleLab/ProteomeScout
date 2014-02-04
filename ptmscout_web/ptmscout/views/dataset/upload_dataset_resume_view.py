@@ -30,16 +30,12 @@ def retry_failed_upload(request, session):
     if exp.status != 'error':
         raise upload_confirm.UploadAlreadyStarted()
     
-    exp_dict = webutils.object_to_dict(exp)
-    exp_dict['citation'] = exp.getLongCitationString()
-    exp_dict['url'] = exp.getUrl()
-    
     prepare_experiment(session, exp)
     data_import.start_import.apply_async((exp.id, session.id, exp.job.id, True))
 
     return {'pageTitle': strings.dataset_upload_started_page_title,
             'message': strings.dataset_upload_started_message % (request.route_url('my_experiments')),
-            'experiment': exp_dict,
+            'experiment': exp,
             'session_id':session.id,
             'reason':None,
             'confirm':True}
