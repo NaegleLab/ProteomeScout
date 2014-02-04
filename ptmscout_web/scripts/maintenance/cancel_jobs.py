@@ -10,7 +10,7 @@ def notify_job_failed(job, exc, stack_trace):
     job.save()
     
     subject = strings.job_failed_subject
-    message = strings.job_failed_message % (job.name, job.stage, "Exception: " + str(exc))
+    message = strings.job_failed_message % (job.name, job.stage, "Exception: " + str(exc), settings.issueTrackerUrl)
     
     mail.celery_send_mail([job.user.email, settings.adminEmail], subject, message)
  
@@ -41,6 +41,8 @@ def cancel_jobs(running):
         if val in ['yes','y']:
             for j in running:
                 notify_job_failed(j, "Server is shutting down, please try again later.", "Server shutdown!")
+        else:
+            raise Exception("Abort. Action cancelled")
 
 def list_jobs(running):
     print "\n-----------\nRunning jobs:\n-----------"
@@ -58,13 +60,15 @@ if __name__ == "__main__":
         for j in dbinit.session.query(jobs.Job):
             if j.status != 'finished' and j.status !='error':
                 running.append(j)
-
+        
         try:
-            if(sys.argv[1] == 'cancel'):
-                cancel_jobs(running)
-            elif(sys.argv[1] == 'list'):
-                list_jobs(running)
+            arg = sys.argv[1]
         except:
+            arg = 'list'
+
+        if(arg == 'cancel'):
+            cancel_jobs(running)
+        elif(arg == 'list'):
             list_jobs(running)
 
         dbinit.session.flush()
@@ -73,6 +77,8 @@ if __name__ == "__main__":
         
         print "Rolling back database changes..."
         dbinit.rollback()
+
+        raise e
     else:
         print "Finalizing DB changes"
         dbinit.tearDown()
