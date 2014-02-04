@@ -47,8 +47,8 @@ def compare_to_all(exp, user, experiment_list = set()):
                 novel_sites.append( (ms, modpep) )
 
             for exp in other_exps:
-                if exp_id in by_experiment:
-                    by_experiment[exp_id].append( (ms, modpep) )
+                if exp.id in by_experiment:
+                    by_experiment[exp.id].append( (ms, modpep) )
 
     for exp_id in experiment_list:
         by_experiment[exp_id] = format_peptide_list( by_experiment[exp_id] )
