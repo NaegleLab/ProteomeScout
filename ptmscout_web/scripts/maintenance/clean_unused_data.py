@@ -41,7 +41,7 @@ if __name__ == "__main__":
             known_experiments.add(exp.id)
             bound_job_ids.add(exp.job_id)
 
-        files_available = [ fn for fn in os.listdir(os.path.join(settings.ptmscout_path, settings.experiment_data_file_path)) if fn.find('experiment')==0 ]
+        files_available = [ fn for fn in os.listdir(os.path.join(settings.ptmscout_path, settings.experiment_data_file_path)) if fn.find('experiment')==0 or fn.find('annotation')==0 or fn.find('dataset')==0 ]
 
         active_sessions = []
         inactive_sessions = []
