@@ -63,7 +63,7 @@ def internal_experiment_comparison_view(request, exp):
     if submitted_val == 'all':
         results = compare_to_all(exp, request.user)
     elif submitted_val == 'subset':
-        experiment_list = set([int(exp.id) for exp.id in request.POST.getall('experiment')])
+        experiment_list = set([int(eid) for eid in request.POST.getall('experiment')])
         results = compare_to_all(exp, request.user, experiment_list)
 
     return {'pageTitle': strings.experiment_compare_page_title % (exp.name),
