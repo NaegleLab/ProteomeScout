@@ -70,7 +70,7 @@ def internal_experiment_comparison_view(request, exp):
             'experiment': exp,
             'results': results}
 
-@view_config(route_name='experiment_compare', renderer='ptmscout:templates/experiments/experiment_compare.pt')
+@view_config(route_name='experiment_compare', renderer='ptmscout:templates/experiments/experiment_compare.pt', permission='private')
 @decorators.get_experiment('id',types=set(['experiment','compendia']))
 def experiment_comparison_view(context, request, exp):
     return internal_experiment_comparison_view(request, exp)
