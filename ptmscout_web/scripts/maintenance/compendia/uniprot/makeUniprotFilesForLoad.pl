@@ -13,6 +13,6 @@ my $outputFile = "../data/Uniprot_MODRES".$dateStr.".txt";
 
 retrieveUniprotFile($query, $uniprotFile);
 my $STRICT = 1;
-my $numRecordsPerFile = 20000;
+my $numRecordsPerFile = 50000;
 my $files = parseModResFile($uniprotFile, $outputFile, $STRICT, $numRecordsPerFile);
 print "Files produced @$files\n";

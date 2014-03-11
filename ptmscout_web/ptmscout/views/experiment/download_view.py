@@ -16,7 +16,7 @@ def download_experiment(request):
     exp_id = int(request.matchdict['id'])
     exp = experiment.getExperimentById(exp_id, request.user)
     
-    if exp not in request.user.myExperiments():
+    if exp not in request.user.myExperiments() and exp not in request.user.myDatasets():
         raise HTTPForbidden()
 
     header, rows = downloadutils.annotate_experiment_with_errors(exp, get_errors)
