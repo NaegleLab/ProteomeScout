@@ -35,7 +35,7 @@
 
             <a href="${request.route_url('protein_search')}">
                 <div class="menuitem" style="top:70px; left:325px;">
-                    <span>Browse<br>Proteins</span>
+                    <span>Search<br>Proteins</span>
                 </div>
             </a>
             <a href="${request.route_url('upload')}">
