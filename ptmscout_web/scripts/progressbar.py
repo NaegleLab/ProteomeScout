@@ -13,6 +13,7 @@ class ProgressBar(object):
     def start(self):
         self.start_time = datetime.datetime.now()
         sys.stderr.write( "\n" )
+        self.update(0)
 
     def estimate_time(self, percent):
         if percent == 0:
