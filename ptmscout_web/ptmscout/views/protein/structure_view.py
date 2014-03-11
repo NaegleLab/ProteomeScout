@@ -256,6 +256,7 @@ def protein_structure_viewer(context, request):
             'exps': formatted_exps,
             'pfam_url': settings.pfam_family_url,
             'protein_data_url': "%s/proteins/%d/data" % (request.application_url, protein_id),
+            'images_url': "%s/static/images/{0}" % (request.application_url),
             'experiment': request.urlfilter.get_field('experiment_id') }
     encoded_data = base64.b64encode( json.dumps( data ) )
 

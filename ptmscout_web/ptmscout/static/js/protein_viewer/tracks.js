@@ -171,7 +171,7 @@ function build_ptm_table(k, mods, protein_data) {
                         .text(d.experiment_name);
                     
                     annotation_td = d3.select(this).append('td');
-                    images_url = 'https://proteomescout.wustl.edu/static/images/{0}';
+                    images_url = protein_data.images_url;
                     if(d.is_mutated)
                         annotation_td.append('img')
                                 .attr('title', 'This residue has recorded natural variants')
