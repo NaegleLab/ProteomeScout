@@ -109,10 +109,10 @@ def trim_species_name(name):
 def trim_species_names(entries):
     return [(trim_species_name(name), k) for name, k in entries]
 
-def get_all_ptms_for_exp(ptms, eid=None):
+def get_all_ptms_for_exp(ptms, eid):
     result = set()
     for ms in ptms:
-        if ms.experiment_id == eid or eid == None:
+        if ms.experiment_id == eid:
             for modpep in ms.peptides:
                 result.add((modpep.peptide_id, modpep.modification_id))
     return result
