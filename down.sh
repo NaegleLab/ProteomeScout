@@ -1,4 +1,4 @@
 a2ensite ptmscout_maintenance
 a2ensite ptmscout_internal
-a2dissite ptmscout
+a2dissite proteomescout
 apache2ctl restart
