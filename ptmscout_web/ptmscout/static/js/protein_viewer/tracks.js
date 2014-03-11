@@ -99,11 +99,12 @@ function is_kinase(k, protein_data){
 }
 
 function is_kinase_loop(k, protein_data){
-    for(var i in protein_data.regions){
-        if(protein_data.regions[i].start <= k && k <= protein_data.regions[i].stop){
-            if(protein_data.regions[i].label == 'Kinase Activation Loop')
+    kinase_activation_loops = protein_data.regions['activation_loops']
+    for(var i in kinase_activation_loops){
+        if(kinase_activation_loops[i].start <= k && k <= kinase_activation_loops[i].stop){
+            if(kinase_activation_loops[i].label == 'Kinase Activation Loop')
                 return 'K';
-            if(protein_data.regions[i].label == 'Possible Kinase Activation Loop')
+            if(kinase_activation_loops[i].label == 'Possible Kinase Activation Loop')
                 return '?';
         }
     }
@@ -168,9 +169,9 @@ function build_ptm_table(k, mods, protein_data) {
                         .attr('href', "{0}".format(d.experiment_url))
                         .attr('target', '_blank')
                         .text(d.experiment_name);
-
+                    
                     annotation_td = d3.select(this).append('td');
-                    images_url = 'http://ptmscout.wustl.edu/static/images/{0}';
+                    images_url = 'https://proteomescout.wustl.edu/static/images/{0}';
                     if(d.is_mutated)
                         annotation_td.append('img')
                                 .attr('title', 'This residue has recorded natural variants')
