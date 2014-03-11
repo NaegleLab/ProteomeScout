@@ -67,16 +67,27 @@ def format_region(r):
     label = r.label.strip(settings.mod_separator_character)
     label = label.replace(settings.mod_separator_character, settings.mod_separator_character_alt)
 
-    if label == '':
-        return "%s:%d-%d" % (tp, r.start, r.stop)
+    start = str(r.start)
+    if r.stop is None:
+        stop = "?"
     else:
-        return "%s:%s:%d-%d" % (tp, label, r.start, r.stop)
+        stop = str(r.stop)
+
+    if label == '':
+        return "%s:%s-%s" % (tp, start, stop)
+    else:
+        return "%s:%s:%s-%s" % (tp, label, start, stop)
+
+def format_domain(d):
+    if d.stop is None:
+        return "%s:%d-?" % (d.label, d.start)
+    return "%s:%d-%d" % (d.label, d.start, d.stop)
 
 def format_regions(regions):
     return (settings.mod_separator_character + ' ').join( [ format_region(r) for r in sorted( regions, key=lambda r: r.start ) ] )
 
 def format_domains(domains):
-    return (settings.mod_separator_character + ' ').join( [ "%s:%d-%d" % (r.label, r.start, r.stop) for r in sorted( domains, key=lambda r: r.start ) ] )
+    return (settings.mod_separator_character + ' ').join( [ format_domain(r) for r in sorted( domains, key=lambda r: r.start ) ] )
 
 def format_mutations(mutations):
     return (settings.mod_separator_character + ' ').join( [ str(m) for m in sorted(mutations, key=lambda m: m.location) ] )
