@@ -300,15 +300,6 @@ def getExperimentsReportingModifiedPeptide(modified_peptide, other_exps):
 
     return found_exps
 
-def countMeasuredPeptides():
-    return DBSession.query(MeasuredPeptide).count()
-
-def countReportedModifications():
-    return DBSession.query(PeptideModification).count()
-
-def countSitesOfModification():
-    return DBSession.query(Peptide).count()
-
 def countPTMs():
     return DBSession.query(PTM).count()
 

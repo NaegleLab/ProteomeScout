@@ -484,8 +484,8 @@ def searchExperiments(text_search=None, conditions={}, user=None, page=None):
 def countExperiments():
     exps = [ exp for exp in DBSession.query(Experiment).all() if exp.ready() ]
 
-    compendia = len([ exp for exp in exps if exp.type == 'compendia' ])
-    experiments = len([ exp for exp in exps if exp.type == 'experiment' ])
+    compendia = len([ exp for exp in exps if exp.type == 'compendia' and exp.public==1 ])
+    experiments = len([ exp for exp in exps if exp.type == 'experiment' and exp.public==1 ])
     datasets = len([ exp for exp in exps if exp.type == 'dataset' ])
 
     return compendia, experiments, datasets

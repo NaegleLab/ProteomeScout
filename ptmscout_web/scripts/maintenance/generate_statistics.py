@@ -83,12 +83,6 @@ def count_distinct_ptm_types(mod_list):
 
     return len(mod_ids)
 
-def count_distinct_species(protein_list):
-    species_ids = set()
-    for pr in protein_list:
-        species_ids.add(pr.species_id)
-    return len(species_ids)
-
 def top_n(entries, n):
     sorted_entries = sorted(entries, key=lambda item: -item[1])
 
@@ -160,6 +154,35 @@ def compare_experiments(ptms, expids, experiments):
 
     return sets, overlaps
 
+def countMeasuredPeptides(all_mods):
+    return len(all_mods)
+
+def countReportedModifications(all_mods):
+    site_set = set()
+    for ms in all_mods:
+        for modpep in ms.peptides:
+            site_set.add((modpep.peptide_id,modpep.modification_id))
+    return len(site_set)
+
+def countSitesOfModification(all_mods):
+    site_set = set()
+    for ms in all_mods:
+        for modpep in ms.peptides:
+            site_set.add(modpep.peptide_id)
+    return len(site_set)
+
+def countProteins(all_mods):
+    pidset=set()
+    for ms in all_mods:
+        pidset.add(ms.protein_id)
+    return len(pidset)
+
+def count_distinct_species(all_mods):
+    species_ids = set()
+    for ms in all_mods:
+        species_ids.add(ms.protein.species_id)
+    return len(species_ids)
+
 if __name__ == "__main__":
     try:
         config_options = os.path.join(os.sep, 'data', 'ptmscout', 'ptmscout_web', 'production.ini')
@@ -167,27 +190,26 @@ if __name__ == "__main__":
         dbinit = DatabaseInitialization()
         dbinit.setUp()
 
+        print "Fetching modifictions from database..."
+        all_mods = dbinit.session.query(modifications.MeasuredPeptide).join(experiment.Experiment).filter(or_(experiment.Experiment.type=='compendia',experiment.Experiment.type=='experiment'),experiment.Experiment.public==1).all()
 
         print "Counting experiments..."
         compendia, experiments, datasets = experiment.countExperiments()
         print "Counting proteins..."
-        proteins = protein.countProteins()
+        proteins = countProteins(all_mods)
         print "Counting peptides..."
-        peps = modifications.countMeasuredPeptides()
+        peps = countMeasuredPeptides(all_mods)
         print "Counting modifications..."
-        mods = modifications.countReportedModifications()
+        mods = countReportedModifications(all_mods)
         print "Counting sites..."
-        sites = modifications.countSitesOfModification()
+        sites = countSitesOfModification(all_mods)
         print "Counting users..."
         users = user.countUsers()
 
         print "Counting species..."
-        all_proteins = protein.getAllProteins()
-        species = count_distinct_species(all_proteins)
+        species = count_distinct_species(all_mods)
 
         print "Counting modification types..."
-
-        all_mods = dbinit.session.query(modifications.MeasuredPeptide).join(experiment.Experiment).filter(or_(experiment.Experiment.type=='compendia',experiment.Experiment.type=='experiment'),experiment.Experiment.public==1).all()
         by_source = mods_by_source(all_mods)
         by_residue = mods_by_residue(all_mods)
         by_type = mods_by_type(all_mods)
@@ -208,7 +230,7 @@ if __name__ == "__main__":
         for exp in dbinit.session.query(experiment.Experiment).filter(experiment.Experiment.public == 1):
             experiments_dict[exp.id] = exp
 
-        sets, overlaps = compare_experiments(all_mods, [1395,1413,1419], experiments_dict)
+        sets, overlaps = compare_experiments(all_mods, [1395,1456,1464], experiments_dict)
         compendia_venn_diagram = {'sets':sets, 'overlaps': overlaps}
 
         sets, overlaps = compare_experiments_to_compendia(all_mods)
