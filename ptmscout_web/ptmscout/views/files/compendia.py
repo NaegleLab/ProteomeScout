@@ -21,14 +21,14 @@ def compendia_listing(request):
         listing = pickle.load(listing_file)
 
     files = [
-                create_file_entry( request, 'ptmscout_everything.tsv', 'All proteins and modifications', listing ),
-                create_file_entry( request, 'ptmscout_vertebrata.tsv', 'All vertebrate protein modifications', listing ),
-                create_file_entry( request, 'ptmscout_mammalia.tsv', 'All mammalian protein modifications', listing ),
-                create_file_entry( request, 'ptmscout_phosphorylation.tsv', 'All species phosphorylations', listing ),
-                create_file_entry( request, 'ptmscout_acetylation.tsv', 'All species acetylation', listing ),
-                create_file_entry( request, 'ptmscout_methylation.tsv', 'All species methylation', listing ),
-                create_file_entry( request, 'ptmscout_ubiquitination.tsv', 'All species ubiquitination', listing ),
-                create_file_entry( request, 'ptmscout_glycosylation.tsv', 'All species glycosylation', listing ),
+                create_file_entry( request, 'proteomescout_everything.tsv', 'All proteins and modifications', listing ),
+                create_file_entry( request, 'proteomescout_vertebrata.tsv', 'All vertebrate protein modifications', listing ),
+                create_file_entry( request, 'proteomescout_mammalia.tsv', 'All mammalian protein modifications', listing ),
+                create_file_entry( request, 'proteomescout_phosphorylation.tsv', 'All species phosphorylations', listing ),
+                create_file_entry( request, 'proteomescout_acetylation.tsv', 'All species acetylation', listing ),
+                create_file_entry( request, 'proteomescout_methylation.tsv', 'All species methylation', listing ),
+                create_file_entry( request, 'proteomescout_ubiquitination.tsv', 'All species ubiquitination', listing ),
+                create_file_entry( request, 'proteomescout_glycosylation.tsv', 'All species glycosylation', listing ),
             ]
 
     return {'files': files,
