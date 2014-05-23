@@ -151,26 +151,28 @@ def filter_domains(domains):
     return chosen_domains
 
 
-PFAM_MIRRORS = ["http://pfam.janelia.org",
-                "http://pfam.sanger.ac.uk",
-                "http://pfam.sbc.su.se"]
+PFAM_MIRRORS = ["http://pfam.xfam.org"]
 
 def wait_for_result(jobrequest):
     job_xml = jobrequest.read()
     dom = xml.parseString(job_xml)
-    result_url = dom.getElementsByTagName('result_url')[0].childNodes[0].nodeValue
-    
-    code = 202
-    started = time.clock()
-    while(code == 202):
-        if time.clock() - started > TIMEOUT:
-            raise PFamError("Request Timed Out")
-        
-        resultquery = urllib2.urlopen(result_url)
-        code = resultquery.getcode()
-        time.sleep(INTER_QUERY_INTERVAL)
- 
-    return code, resultquery
+
+    try:
+        result_url = dom.getElementsByTagName('result_url')[0].childNodes[0].nodeValue
+
+        code = 202
+        started = time.clock()
+        while(code == 202):
+            if time.clock() - started > TIMEOUT:
+                raise PFamError("Request Timed Out")
+            
+            resultquery = urllib2.urlopen(result_url)
+            code = resultquery.getcode()
+            time.sleep(INTER_QUERY_INTERVAL)
+     
+        return code, resultquery
+    except IndexError:
+        raise PFamError("PFam Query Failed to Create Sequence Prediction Job")
 
 @rate_limit(rate=3)
 def get_computed_pfam_domains(prot_seq, cutoff):
@@ -185,7 +187,12 @@ def get_computed_pfam_domains(prot_seq, cutoff):
     i = 0
     while i < len(PFAM_MIRRORS):
         try:
-            jobrequest = urllib2.urlopen("%s/search/sequence" % (PFAM_MIRRORS[i]), urllib.urlencode(args))
+            jobrequest_url = "%s/search/sequence" % (PFAM_MIRRORS[i])
+            form_encoded_args = urllib.urlencode(args.items())
+
+            jobrequest_obj = urllib2.Request(jobrequest_url, form_encoded_args, {'Expect':''})
+            jobrequest = urllib2.urlopen(jobrequest_obj)
+
             code, resultquery = wait_for_result(jobrequest)
 
             if code != 200:

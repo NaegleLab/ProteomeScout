@@ -5,6 +5,16 @@ from mock import patch
 
 class IntegrationTestPFamQuery(IntegrationTestCase):
     
+    def test_pfam_C9JA03(self):
+        from ptmworker.helpers import uniprot_tools
+
+        rm = uniprot_tools.get_uniprot_records(['C9JA03'])
+        pr = rm['C9JA03']
+
+        pr_obj = protein.Protein()
+        pr_obj.sequence = pr.sequence
+        pfam_tools.parse_or_query_domains(pr_obj, 'C9JA03')
+
     def test_pfam_parser(self):
         pfam_xml = \
 """<?xml version="1.0" encoding="UTF-8"?>
