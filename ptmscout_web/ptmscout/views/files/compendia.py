@@ -14,7 +14,7 @@ def create_file_entry(request, fn, desc, listing):
              'date': listing[fn]['date']}
     return entry
 
-@view_config(route_name='compendia', renderer='ptmscout:templates/info/filelist.pt', permission='private')
+@view_config(route_name='compendia', renderer='ptmscout:templates/info/filelist.pt')
 def compendia_listing(request):
     listing = None
     with open(os.path.join(settings.ptmscout_path, settings.export_file_path, 'listing.pyp'),'r') as listing_file:
@@ -35,7 +35,7 @@ def compendia_listing(request):
             'desc': strings.compendia_download_page_desc,
             'pageTitle': strings.compendia_download_page_title}
 
-@view_config(route_name='compendia_download', permission='private')
+@view_config(route_name='compendia_download')
 def compendia_download(context, request):
     listing = None
     with open(os.path.join(settings.ptmscout_path, settings.export_file_path, 'listing.pyp'),'r') as listing_file:

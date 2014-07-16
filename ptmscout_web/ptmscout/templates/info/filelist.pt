@@ -1,5 +1,6 @@
 <div metal:use-macro="layout">
 	<metal:slot metal:fill-slot="header">
+		<link rel="stylesheet" type="text/css" href="${request.static_url('ptmscout:static/css/info.css')}" />
     </metal:slot>
     <div metal:fill-slot="content">
         <div tal:condition="len(files) > 0" class="file-list">
@@ -26,6 +27,15 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+        <div class="infobox">
+            <p class="infotext"
+                Data contained in ProteomeScout contains compendia from resources
+                licensed under non-commercial licenses. Therefore, the download of
+                the ProteomeScout database is licensed under the 
+                <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.
+                By downloading this data you acknowledge the terms of this license.
+            </p>
         </div>
     </div>
 </div>
