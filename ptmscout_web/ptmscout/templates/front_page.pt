@@ -58,7 +58,7 @@
 
             <a href="${documentationUrl}">
                 <div class="menuitem" style="top:345px; left:275px;">
-                    <span>Documentation</span>
+                    <span>Help</span>
                 </div>
             </a>
             <a href="${naegleUrl}">
