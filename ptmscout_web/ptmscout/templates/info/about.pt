@@ -40,8 +40,7 @@
 			<h2>License, Disclaimer	and Terms of Use</h2>
 			<div class="body">
 			  <p>
-  				<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode">Licensed
-  					under Creative Commons Noncommercial, Share-Alike, Attribution 3.0 Unported
+  				<a href="http://creativecommons.org/licenses/by-sa/4.0">Licensed under Creative Commons Share-Alike, Attribution 4.0 International License
   				</a>
   			</p>
       </div>
@@ -74,7 +73,7 @@
   				herein. <br /> <br /> The Site's information is furnished
   				freely, and you are specifically granted a limited license to copy
   				anything from this Site pursuant to a <a
-  					href="http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode">"Creative
+  					href="http://creativecommons.org/licenses/by-sa/4.0">"Creative
   					Commons License"</a>. Notwithstanding the benefits provided by this
   				limited license, no agreement or contract is created between you
   				and the Site\'s owners or users; the owners of the servers on which
@@ -133,18 +132,18 @@
 			</h2>
       <div class="body">
         <p>In order to download your own version of ProteomeScout software,
-					for analysis of non-public data, please e-mail the administrator at
-					<a href="${adminEmail}">${adminEmail}</a>.
+					for analysis of non-public data, please visit our Mercurial repository at:
+					<a target="_blank" href="${mercurialRepo}">ProteomeScout Assembla Site</a>.
 					The software is distributed under the 
-					<a href="http://creativecommons.org/licenses/by-nc-sa/3.0">Creative
-					Commons Attribution Noncommercial ShareAlike license.</a>
+					<a target="_blank" href="http://creativecommons.org/licenses/by-sa/4.0">Creative
+					Commons Attribution ShareAlike license.</a>
 				</p>
 			</div>
 
 			<h2>Download MCAM Matlab Software</h2>
 			<div class="body">
             <ul>
-  				<li><a href="https://www.assembla.com/spaces/proteomescout/wiki/MCAM">MCAM Matlab Code</a></li>
+  				<li><a target="_blank" href="https://www.assembla.com/spaces/proteomescout/wiki/MCAM">MCAM Matlab Code</a></li>
   			</ul>
       </div>
       
