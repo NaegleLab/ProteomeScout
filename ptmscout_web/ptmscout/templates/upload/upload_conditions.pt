@@ -10,7 +10,7 @@
     <div metal:fill-slot="content">
     <div class="grid_12">
         <div>${navigation.nav_crumb()}</div>
-        <h1>Experimental Conditions</h1>
+        <h1>Experimental Conditions <a target="_blank" href="${documentationUrl}/Configure_Experimental_Conditions"><img width="24" height="24" src="${request.static_url('ptmscout:static/images/helpicon.png')}" /></a></h1>
         <div class="body">
           <h2>Instructions</h2>
           <div class="body">

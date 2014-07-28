@@ -25,7 +25,7 @@
     <h2>Input and Output</h2>
     <div class="body">
 	    <div class="filter-set" style="padding-bottom:30px">
-	      <h4>Export Experiment for Analysis</h4>
+	      <h4>Export Experiment for Analysis <a target="_blank" href="${documentationUrl}/File_Export"><img width="24" height="24" src="${request.static_url('ptmscout:static/images/helpicon.png')}" /></a></h4>
 		      <div class="body">
     		    <form method="GET" action="${request.application_url}/experiments/${experiment.id}/export" target="_blank">
 		    		<div>
@@ -39,7 +39,7 @@
   	    	</form>
 	    	</div>
 	    	
-    		<h4>Import Annotation File</h4>
+            <h4>Import Annotation File <a target="_blank" href="${documentationUrl}/Dataset_Annotation"><img width="24" height="24" src="${request.static_url('ptmscout:static/images/helpicon.png')}" /></a></h4>
 	    		<div class="body">
     	    	<form method="POST" action="${request.route_url('experiment_annotate', id=experiment.id)}" enctype="multipart/form-data" >
                     <span class="condition-title">Name:</span> <input type="text" name="annotationname" /> <br />
@@ -63,7 +63,7 @@
     			<span class="condition-title">Cluster Set:</span> <select id="cluster-set"></select> <button id="show-clusters" class="longtask">Show All Clusters From Set</button>
             </div>
 
-            <h4>MCAM Enrichment</h4>
+            <h4>MCAM Enrichment <a target="_blank" href="${documentationUrl}/Flexible_subgrouping_Clustering_and_MCAM"><img width="24" height="24" src="${request.static_url('ptmscout:static/images/helpicon.png')}" /></a></h4>
             <div class="body">
     			<a href="${request.route_url('mcam_enrichment', id=experiment.id)}"><button id="mcam-enrichment">Run MCAM</button></a>
             </div>
