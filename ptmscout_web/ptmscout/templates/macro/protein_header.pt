@@ -1,6 +1,8 @@
 <div metal:define-macro="protein_header">
     <!-- <div metal:use-macro="protein_info" /> -->
-        <h2>Protein: ${protein.name} <a target="_blank" href="${documentationUrl}/Protein_Features"><img width="24" height="24" src="${request.static_url('ptmscout:static/images/helpicon.png')}" /></a></h2>
+        <div style="margin-left:10px">
+            <h2>Protein: ${protein.name} <a target="_blank" href="${documentationUrl}/Protein_Features"><img width="24" height="24" src="${request.static_url('ptmscout:static/images/helpicon.png')}" /></a></h2>
+        </div>
   <div class='notification' tal:condition="request.urlfilter.field_is_set('experiment_id')">
       Experiment filter active. Some data may not be shown. <a href="${request.urlfilter.clear_url()}">Click here</a> to show all data.
   </div>

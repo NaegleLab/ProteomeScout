@@ -34,7 +34,7 @@
     	    <ul class="link_menu">
     	      <li>
       	        <a href="${request.application_url}">
-          	      <img alt="ProteomeScout" src="${request.static_url('ptmscout:static/images/ptmscout_logoHalf.png')}" title="Home" />    	      
+          	      <img alt="ProteomeScout" src="${request.static_url('ptmscout:static/images/ptmscout_logoHalf.png')}" />    	      
       	        </a>
       	      </li>
               <li><a href="${request.route_url('experiments')}">Experiments</a></li>
