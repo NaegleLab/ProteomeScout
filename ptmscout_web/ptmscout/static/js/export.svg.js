@@ -5,7 +5,8 @@ function displayStringData(mimetype, data) {
 
 function displaySVG(id) {
 	var svgml = $(id).html();
-    svgml = svgml.replace("#zoomgrad", "url(#zoomgrad)");
+    svgml = svgml.replace(/#zoomgrad/g, "url(#zoomgrad)");
+    svgml = svgml.replace(/<br>/g, " ")
     displayStringData("image/svg+xml", svgml);
 }
 
