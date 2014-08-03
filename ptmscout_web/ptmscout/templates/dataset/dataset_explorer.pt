@@ -69,7 +69,7 @@
             </div>
 	    </div>
     </div>
-    <h2>Subset Selection</h2>
+    <h2>Subset Selection <a target="_blank" href="${documentationUrl}/Creating_a_subset"><img width="24" height="24" src="${request.static_url('ptmscout:static/images/helpicon.png')}" /></a></h2>
     <div class="body">
   		<div class="filter-set">
             <h4>Open Saved Subsets</h4>

@@ -30,10 +30,9 @@ function PValueCorrectedTable(parentElement, tableBody, tableData, byCategory, n
 			correction = 'fdr'
 		}
 		
-		
 		widget.filter(cutoff_val, correction);
 	});
-	
+
 	var field_name = "{0}-test-correction".format( getUniqueId() );
 	
 	div = $('<div />').appendTo(parentElement);
@@ -240,8 +239,10 @@ function SubsetTab(tabId, name, selectionEngine) {
 		subsetTab.selectionEngine.saveSubset(subsetTab, name, subsetTab.response.foreground.query, subsetTab.response.background.query);
 	});
 	
+    doc_url = 'http://www.assembla.com/spaces/proteomescout/wiki';
+    images_url = 'https://proteomescout.wustl.edu/static/images';
 	this.summary = $('<fieldset class="result-summary"><legend>Results</legend></fieldset>').appendTo(this.contentContainer);
-	this.enrichment = $('<fieldset class="enrichment-tables"><legend>Feature Enrichment</legend></fieldset>').appendTo(this.contentContainer);
+	this.enrichment = $('<fieldset class="enrichment-tables"><legend>Feature Enrichment<a target="_blank" href="'+doc_url+'/Dataset_Analysis"><img width="24" height="24" src="'+images_url+'/helpicon.png" /></a></legend></fieldset>').appendTo(this.contentContainer);
 	
 	this.frequency = $('<fieldset class="frequency-charts"><legend>Residue Frequency</legend><table><thead><tr><th>Foreground:</th><th>Background:</th></tr></thead><tbody><tr><td class="foreground-seqlogo"></td><td class="background-seqlogo"></td></tr></tbody></table></div>').appendTo(this.contentContainer);
 	this.motif = $('<fieldset class="motifs"><legend>Motif Enrichment</legend></div>').appendTo(this.contentContainer);
@@ -260,7 +261,7 @@ SubsetTab.prototype.changeName = function(name) {
 };
 
 function add_annotations(pepEntry, annotation_td){
-    images_url = 'http://ptmscout.wustl.edu/static/images/{0}';
+    images_url = 'https://proteomescout.wustl.edu/static/images/{0}';
     d = pepEntry[7]
     if(d.mutant)
         $('<img />', {'title': 'This residue has recorded natural variants', 'src': images_url.format('red_flag.jpg')}).appendTo(annotation_td);
