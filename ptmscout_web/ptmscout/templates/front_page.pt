@@ -33,24 +33,24 @@
               <img src="${request.static_url('ptmscout:static/images/ptmscout_splash.png')}" style="margin-left:-85px" />
             </div>
 
-            <a href="${request.route_url('protein_search')}">
+            <a href="${request.route_url('protein_search')}" title="Visualize proteins or annotate your own proteins">
                 <div class="menuitem" style="top:70px; left:325px;">
                     <span>Search<br>Proteins</span>
                 </div>
             </a>
-            <a href="${request.route_url('upload')}">
+            <a href="${request.route_url('upload')}" title="Upload a PTM experiment for analysis or publication (e.g. HT-MassSpec data)">
                 <div class="menuitem" style="top:70px; right:325px;">
                     <span>Upload<br>Dataset</span>
                 </div>
             </a>
 
-            <a href="${request.route_url('experiments')}">
+            <a href="${request.route_url('experiments')}" title="Browse PTM experiments currently in the ProteomeScout repository">
                 <div class="menuitem" style="top:200px; left:230px;">
                     <span>Browse<br>Experiments</span>
                 </div>
             </a>
 
-            <a href="${request.route_url('dataset_upload')}">
+            <a href="${request.route_url('dataset_upload')}" title="Explore your own protein data, with protein residues of interest annotated with protein information from the ProteomeScout Database">
                 <div class="menuitem" style="top:200px; right:230px;">
                     <span>Annotate<br>Sites</span>
                 </div>
