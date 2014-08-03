@@ -33,6 +33,7 @@ sub retrieveUniprotFile($$){
 # Kristen Naegle
 # Sept. 22, 2009 
 # Modified Feb 4, 2013
+# Modified Aug 2, 2014 -- Check for probability is over restricitive, catching some probabilities for other terms in the value string
 sub parseModResFile($$$$){
     my ($inputFile, $outputFile, $STRICT, $numRecordsPerFile) = @_;
     
@@ -49,69 +50,44 @@ sub parseModResFile($$$$){
     push @files, $outputFileNew;	    
 
     while(my $seq = $in->next_seq()){
-	if($countLines > $numRecordsPerFile){ #check to see if we need to start a new file
-	    close(OUT);
-	    $countLines = 0;
-	    $numFile += 1;
-	    $outputFileNew = $outputFile."_$numFile";
-	    open(OUT, ">$outputFileNew") || die "Can't open $outputFile for writing\n";
-	    
-	    print OUT "acc\tpep\tMOD_TYPE\n";
-	}
+        if($countLines > $numRecordsPerFile){ #check to see if we need to start a new file
+            close(OUT);
+            $countLines = 0;
+            $numFile += 1;
+            $outputFileNew = $outputFile."_$numFile";
+            open(OUT, ">$outputFileNew") || die "Can't open $outputFile for writing\n";
+            print OUT "acc\tpep\tMOD_TYPE\n";
+        }
 	
-	# print $seq."\n";
-	#get accession and sequence
-	my ($errorCode, $sequence, $species, $gene, $geneSyn, $name, $primaryAcc) = getProteinFromRichSeq($seq);
-#	my %siteHash;
-	my @siteArr;
-	#
-	#if($speciesAllowed->{$species}){
-	    #print "DEBUG: Species: $species\n";
-	    # push all the phosphorylations onto a hash then print
-	for my $feat_object ($seq->get_SeqFeatures){
-
-	    if($feat_object->primary_tag eq "MOD_RES"){
-   
-		for my $tag ($feat_object->get_all_tags){
-		    #	print "tag: ", $tag, "\n";
-		    for my $value ($feat_object->get_tag_values($tag)){
-			if($STRICT){
-			    if($value =~ m/(similarity|partial|probable|potential)/i){
-				#$INSERT = 0;
-				next; #skip those records that are not 
-			    }
-			}
-			if($value =~ m/;/){
-			    my @value = split(';', $value);
-			    $value = $value[0];
-			    
-			}
-
-			#if($value =~ m/$match/){
-			#my $code = $transhash{$1};
-			my $pos = $feat_object->location->start;
-
-			my $site = substr($sequence,$pos-1,1);
-			#print "DEBUG: position in string $pos is site $site\n";		      
-			my $shortSeq = returnAlignedSequence($numberResidues, $sequence, $site, $pos);
-			#print "DEBUG: $shortSeq\n";
-			#my $modSeq = $modSeqStart.lc($site).substr($sequence,$pos+2);
-			my $modSeq = $seq;
-			#return the sequence with the position lower cased.
-			my $code = $value; #get the name 
-
-
-
-			my @site = ($shortSeq, $value);
-			#print "DEBUG: site @site\n";
-			
-		      		
-			push @siteArr, \@site;
-			
-			#} #end if match value
-			# print "    value: ", $value, "\n";
-			# print "         start: ", $feat_object->location->start, "\n";
-		    }
+        # print $seq."\n";
+        #get accession and sequence
+        my ($errorCode, $sequence, $species, $gene, $geneSyn, $name, $primaryAcc) = getProteinFromRichSeq($seq);
+        my @siteArr;
+        for my $feat_object ($seq->get_SeqFeatures){
+            if($feat_object->primary_tag eq "MOD_RES"){
+            for my $tag ($feat_object->get_all_tags){
+                for my $value ($feat_object->get_tag_values($tag)){
+                    if($value =~ m/;/){
+                        my @value = split(';', $value);
+                        $value = $value[0];
+                    }
+                    if($STRICT){
+                        if($value =~ m/(similarity|partial|probable|potential)/i){
+                            print "DEBUG: Skipping $value\n";
+                            next; #skip those records that are not 
+                        }
+                    }
+                my $pos = $feat_object->location->start;
+                my $site = substr($sequence,$pos-1,1);
+                my $shortSeq = returnAlignedSequence($numberResidues, $sequence, $site, $pos);
+                #print "DEBUG: $shortSeq\n";
+                #my $modSeq = $modSeqStart.lc($site).substr($sequence,$pos+2);
+                my $modSeq = $seq;
+                #return the sequence with the position lower cased.
+                my $code = $value; #get the name 
+                my @site = ($shortSeq, $value);
+                push @siteArr, \@site;
+		    } #end for my $value
 		}
 		
 	    }
