@@ -20,13 +20,28 @@
 		    <label for="description">Description:</label>
 	      <br />
 	      ${experiment.description}
-	    </div>
-	    <div style="margin-bottom:1em">
-	      <label for="loaded">Loaded:</label>
-	      <br />
-	      ${experiment.date}
-	    </div>
-	    
+      </div>
+      <div stlye="margin-bottom:1em">
+          <label for="loaded">Conditions:</label>
+          <br/>
+          <table style="margin-left:10px" class="vertical-headers no-border align-left">
+            <colgroup>
+              <col style="width:50px"></col>
+              <col></col>
+            </colgroup>
+            <tbody>
+              <tr tal:repeat="condition experiment.conditions">
+                <th tal:content="condition.type.capitalize()"></th>
+                <td tal:content="condition.value"></td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+	  <div style="margin-bottom:1em">
+	    <label for="loaded">Loaded:</label>
+	    <br />
+	    ${experiment.date}
+	  </div>
     </div>
     
   </div>  
