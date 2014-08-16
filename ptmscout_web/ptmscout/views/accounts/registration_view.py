@@ -47,9 +47,9 @@ def validate_email(field_name, field_value, schema):
     email_valid, domain_allowed = mail.email_is_valid(field_value)
     if not email_valid:
         return strings.failure_reason_email_not_valid
-    if not domain_allowed:
-        return strings.failure_reason_email_not_allowed
-    
+#    if not domain_allowed:
+#        return strings.failure_reason_email_not_allowed
+
 
 def create_validator(schema):
     validator = forms.FormValidator(schema)
