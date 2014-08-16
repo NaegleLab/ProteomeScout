@@ -12,7 +12,7 @@
 	
 	<div metal:fill-slot="content">
 		<div class="section_group">
-			<div class="title">Experiment Error Summary</div>
+			<div class="title">Experiment Error Summary <a target="_blank" href="${documentationUrl}/Finishing_Upload"><img width="24" height="24" src="${request.static_url('ptmscout:static/images/helpicon.png')}" /></a></div>
 			
 			<div class="body">
 				<table class="summary_quantity">

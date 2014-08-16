@@ -166,7 +166,7 @@
     </div>
 
 		<div class="grid_12" style="margin-top:1em">
-            <h2>Supported PTM Types: <tal:empty content="len(ptm_defs)"></tal:empty></h2>
+            <h2>Supported PTM Types: <tal:empty content="len(ptm_defs)"></tal:empty> <a target="_blank" href="${documentationUrl}/Modification_Types"><img width="24" height="24" src="${request.static_url('ptmscout:static/images/helpicon.png')}" /></a> </h2>
             <div class="body">
                 <table class="data_summary drop-shadow">
                     <tr>
