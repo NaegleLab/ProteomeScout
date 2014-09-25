@@ -76,12 +76,14 @@
                                 <div class="data" tal:content="by_residue_json"></div>
                             </div>
                             <div class="clear"></div>
+                            <div style="height:50px"></div>
                         </td>
                         <td>
                             <div class="data_chart_pie_legend chart">
                                 <div class="data" tal:content="by_source_json"></div>
                             </div>
                             <div class="clear"></div>
+                            <div style="height:50px"></div>
                         </td>
                     </tr>
 
@@ -95,12 +97,14 @@
                                 <div class="data" tal:content="by_type_json"></div>
                             </div>
                             <div class="clear"></div>
+                            <div style="height:50px"></div>
                         </td>
                         <td>
                             <div class="data_chart_pie_legend chart">
                                 <div class="data" tal:content="by_species_json"></div>
                             </div>
                             <div class="clear"></div>
+                            <div style="height:50px"></div>
                         </td>
                     </tr>
                     <tr>
@@ -112,6 +116,7 @@
                                     <div class="data" tal:content="mod_venn_diagram"></div>
                                 </div>
                                 <div class="clear"></div>
+                                <div style="height:50px"></div>
                             </div>
                         </td>
                         <td>
@@ -122,6 +127,7 @@
                                     <div class="data" tal:content="exp_venn_diagram"></div>
                                 </div>
                                 <div class="clear"></div>
+                                <div style="height:50px"></div>
                             </div>
                         </td>
 
