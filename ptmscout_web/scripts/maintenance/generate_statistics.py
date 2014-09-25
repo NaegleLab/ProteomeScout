@@ -8,6 +8,10 @@ import os
 import cPickle
 import json, base64
 
+phosphosite_exp_id = 1523
+hprd_exp_id = 1395
+uniprot_exp_id = 1535
+
 def get_sorted_children(parent_id, ptms):
     children = [ p for p in ptms if p.parent_id == parent_id ]
     ordered_ptms = []
@@ -230,7 +234,7 @@ if __name__ == "__main__":
         for exp in dbinit.session.query(experiment.Experiment).filter(experiment.Experiment.public == 1):
             experiments_dict[exp.id] = exp
 
-        sets, overlaps = compare_experiments(all_mods, [1395,1456,1464], experiments_dict)
+        sets, overlaps = compare_experiments( all_mods, [ hprd_exp_id, phosphosite_exp_id, uniprot_exp_id ], experiments_dict )
         compendia_venn_diagram = {'sets':sets, 'overlaps': overlaps}
 
         sets, overlaps = compare_experiments_to_compendia(all_mods)
