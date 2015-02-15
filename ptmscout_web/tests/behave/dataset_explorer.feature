@@ -19,7 +19,6 @@ Feature: Dataset Explorer
         When the user creates a sharing token for the experiment subset
         Then other users should be able to view the shared subset
 
-    @runme
 	Scenario: Load residues of interest from a dataset and annotate them
 		Given a user uploads a file containing non-mass spec experimental data
 		Then the user should be sent an email with a link to the dataset which contains:
@@ -41,6 +40,7 @@ Feature: Dataset Explorer
         And the user should not be able to use other experiment specific tools
         And the user should be able to delete the dataset if needed
 
+    @runme
     Scenario: Export matlab files for MCAM analysis
     	Given a user uploads multiple clusterings for an experiment
     	When the user chooses to export MCAM input files

@@ -92,8 +92,8 @@ def calculateEnrichment(scansite_cutoff, domain_cutoff, annotation_set_id, exp_i
     measurements = exp.measurements
     ptm_user = user.getUserById(user_id)
     
-    annotation_types, annotation_order = dataset_explorer_view.compute_annotations(annotation_set_id, exp, ptm_user, measurements)
-    
+    annotation_types, annotation_order = dataset_explorer_view.compute_annotations(annotation_set_id, exp_id, ptm_user, measurements)
+
     cluster_sets = {}
     
     for ann_name in annotation_types:

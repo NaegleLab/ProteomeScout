@@ -371,7 +371,6 @@ def user_upload_cluster_file(context):
     result.form.set('terms_of_use', "yes")
     context.result = result
 
-
 @when(u'the user chooses to export MCAM input files')
 @patch('transaction.abort')
 @patch('transaction.commit')
@@ -382,9 +381,29 @@ def user_export_mcam(context, patch_mail, patch_commit, patch_abort):
     
     # submit the clusterings
     context.result.form.submit()
-    
+
+    from ptmscout.database import annotations
+    from ptmscout.database import DBSession
+
     # submit the MCAM request
     result = context.ptmscoutapp.get('/experiments/28/mcam_enrichment')
+
+    annot_set_id = int(result.form['annotationset'].options[1][0])
+    print "User login:", context.active_user.user.id
+    print "Selecting:", annot_set_id
+
+    for annot_set in DBSession.query(annotations.AnnotationSet):
+        print "Annotation set: (%d, '%s', %d)" % ( annot_set.id, annot_set.name, annot_set.experiment_id )
+        print "Types:"
+        for annot_type in annot_set.annotation_types:
+            print "   ", annot_type.name, annot_type.type
+        print "Permissions:"
+        for perm in annot_set.permissions:
+            print "Permission:", perm.user_id, perm.annotation_set_id
+
+    annot_set = annotations.getUserAnnotations(annot_set_id, 28, context.active_user.user)
+    print "Available:", "None" if annot_set is None else annot_set.name
+
     result.form['annotationset'] = result.form['annotationset'].options[1][0]
     result.form.set('correction', 'fdr')
     result.form.set('scansitecutoff', "3.0")
@@ -430,6 +449,11 @@ def user_download_mcam_files(context):
     enrichBoolFilename = os.path.join(zdir, 'loadEnrichBool.m')
     numStructExpFilename = "tests/behave/data/datasetExplorer_numStruct_expected.txt"
     enrichBoolExpFilename = "tests/behave/data/datasetExplorer_enrichBool_expected.txt"
+
+    if False:
+        import shutil
+        shutil.copyfile(numStructFilename, numStructExpFilename)
+        shutil.copyfile(enrichBoolFilename, enrichBoolExpFilename)
 
     assertions.assertTextFilesEqual(numStructFilename, numStructExpFilename)
     assertions.assertTextFilesEqual(enrichBoolFilename, enrichBoolExpFilename)

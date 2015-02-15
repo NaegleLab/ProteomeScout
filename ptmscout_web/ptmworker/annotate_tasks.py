@@ -47,7 +47,7 @@ def create_annotation(valid_msIds, ms_col, annotation_col, data_rows):
         try:
             ms_id = int(row[ms_col.column_number].strip())
             value = row[annotation_col.column_number].strip()
-           
+
             if ms_id not in valid_msIds:
                 raise uploadutils.ParseError(i+1, None, "Invalid MS_id specified: %d" % (ms_id)) 
             
