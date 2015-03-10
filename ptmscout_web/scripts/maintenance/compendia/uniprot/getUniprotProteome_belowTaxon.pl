@@ -5,6 +5,11 @@ use HTTP::Date;
 
 # Taxonomy identifier of top node for query, e.g. 2 for Bacteria, 2157 for Archea, etc.
 # # (see http://www.uniprot.org/taxonomy)
+if(scalar(@ARGV)<1){
+    print "USAGE: getUniprotProteome_belowTaxon.pl <TAXON_NODE>\n";
+    exit();
+
+}
 my $top_node = $ARGV[0];
 #
 my $reference = 0; # Toggle this to 1 if you want reference instead of complete proteomes.
@@ -24,7 +29,10 @@ die 'Failed, got ' . $response_list->status_line .
 # For each taxon, mirror its proteome in FASTA format.
 for my $taxon (split(/\n/, $response_list->content)) {
     #my $file = $taxon . '.fasta';
-    my $file = $taxon . '.txt';
+    my $dir = './data/'.$top_node;
+    `touch $dir`;
+    my $file = $dir.'/'.$taxon. '.txt';
+    print $file;
     my $text = 'mod%20res';
     #my $query_taxon = "http://www.uniprot.org/uniprot/?query=$text+&organism:$taxon+$keyword&format=text&include=yes";
     my $query_taxon = "http://www.uniprot.org/uniprot/?query=$text+organism:$taxon+$keyword&format=txt&include=yes";
