@@ -23,8 +23,11 @@ die 'Failed, got ' . $response_list->status_line .
 
 # For each taxon, mirror its proteome in FASTA format.
 for my $taxon (split(/\n/, $response_list->content)) {
-    my $file = $taxon . '.fasta';
-    my $query_taxon = "http://www.uniprot.org/uniprot/?query=organism:$taxon+$keyword&format=fasta&include=yes";
+    #my $file = $taxon . '.fasta';
+    my $file = $taxon . '.txt';
+    my $text = 'mod%20res';
+    #my $query_taxon = "http://www.uniprot.org/uniprot/?query=$text+&organism:$taxon+$keyword&format=text&include=yes";
+    my $query_taxon = "http://www.uniprot.org/uniprot/?query=organism:$taxon+$keyword&format=txt&include=yes";
     my $response_taxon = $agent->mirror($query_taxon, $file);
 
     if ($response_taxon->is_success) {
