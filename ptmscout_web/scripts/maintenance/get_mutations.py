@@ -68,8 +68,28 @@ if __name__ == "__main__":
         for batch_query in batch_queries:
             i+=1
             print "querying for accession batch... %d / %d" % (i, len(batch_queries))
-            manager.batch_get_protein_name(batch_query)
-
+	    try:
+		    manager.batch_get_protein_name(batch_query)
+	    except Exception, e2: 
+		    print "Error in get_protein_name with error %s, attempting recovery"%(e2)
+		    for query in batch_query:
+			try:
+				seq = manager.get_protein_sequence(query)
+				if seq is None:
+					print "Error getting sequence %s with error: %s, removing from protein map"%(query, e2)
+					queryBad.append(query)
+					protein_map.pop(query, None)
+			except Exception, e3:
+				print "Error getting sequence %s with error: %s, removing from protein map"%(query, e3)
+				queryBad.append(query)
+				protein_map.pop(query, None)
+			else:
+				print "Success for %s"%(query)
+	    else: 
+		print "No errors on that try catch for batch %d / %d" %(i, len(batch_queries))
+	
+	print "Total bad queries:\n"
+	print queryBad
         print "Building variant table..."
         i = 0
         for acc in protein_map:
