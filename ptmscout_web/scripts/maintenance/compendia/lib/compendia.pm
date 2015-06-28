@@ -85,7 +85,17 @@ sub parseModResFile($$$$){
                 my $modSeq = $seq;
                 #return the sequence with the position lower cased.
                 my $code = $value; #get the name 
-                my @site = ($shortSeq, $value);
+                my $name = $value;
+                my $anno = ' ';
+                if($value =~ m/./){
+                    my @code = split(/\./, $value);
+                   $name = $code[0];
+                   if(scalar(@code)>1){
+                  $anno = $code[1]; 
+              }
+
+                }
+                my @site = ($shortSeq, $name, $anno);
                 push @siteArr, \@site;
 		    } #end for my $value
 		}
@@ -94,9 +104,9 @@ sub parseModResFile($$$$){
 	}
     
 	foreach my $site (@siteArr){
-#	    print "Site info: @$site->[0]\n";
-	    my ($modSeq, $name) = @$site;
-	    print OUT "$primaryAcc\t$modSeq\t$name\n";
+        #print "Site info: @$site->[1]\n";
+	    my ($modSeq, $name, $anno) = @$site;
+	    print OUT "$primaryAcc\t$modSeq\t$name\t$anno\n";
 	    $countLines += 1;
 	}
 	# } #end speices
