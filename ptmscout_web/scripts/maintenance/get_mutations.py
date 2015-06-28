@@ -1,5 +1,5 @@
 from scripts.DB_init import DatabaseInitialization
-from ptmscout.database import DBSession, protein, mutations
+from ptmscout.database import DBSession, Protein, taxonomies, protein, mutations
 from ptmscout.config import settings
 from geeneus import Proteome
 import traceback
@@ -39,14 +39,16 @@ if __name__ == "__main__":
         dbinit.setUp()
 
         manager = Proteome.ProteinManager(settings.adminEmail, cache=True, retry=3) # but remember to purge!
-        pcnt = DBSession.query(protein.Protein.id).count()
+	pcnt = DBSession.query(Protein).join(Protein.species).filter(taxonomies.Species.name=='homo sapiens').count()
+	q = DBSession.query(Protein).join(Protein.species).filter(taxonomies.Species.name=='homo sapiens').count()
+	
         
         protein_map = {}
         batch_queries = [[]]
 
         i = 0
         print "Getting protein data..."
-        for prot in DBSession.query(protein.Protein):
+        for prot in DBSession.query(Protein).join(Protein.species).filter(taxonomies.Species.name=='homo sapiens'):
             accessions = get_primary_accessions(prot)
             if len(accessions) == 0:
                 print "Warning: No prefered or secondary accessions for record %d [ %s ]" % (prot.id, ', '.join([acc.value for acc in prot.accessions]))
