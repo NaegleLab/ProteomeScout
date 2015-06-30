@@ -10,6 +10,7 @@ ptmscout_web/scripts/db
 ptmscout_web/logs
 ptmscout_web/ptmscout/logs
 ptmscout_web/modules
+ptmscout_web/scripts/maintenance/mutations
 pfam.map
 .*\.pyc
 .*.project$
