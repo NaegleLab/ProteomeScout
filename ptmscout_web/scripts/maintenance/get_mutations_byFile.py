@@ -5,6 +5,8 @@ from geeneus import Proteome
 import traceback
 import os
 import pickle
+import re
+import glob
 
 
 DEBUG=False
@@ -90,12 +92,32 @@ def get_mutations_for_accList(accFile, logFile):
         dbinit.rollback()
 	flag = -1
     else:
-        print "Finalizing DB changes"
+        fLog.write("Finalizing DB changes\n")
 	flag = 1
-	print "Completed access list %s\n"%(accFile)
+	fLog.write("Completed access list %s\n"%(accFile))
         dbinit.tearDown()
     fLog.close()
     return flag, queryBad
+
+def get_acc_files(directory):
+	fileNums = []
+	files = glob.glob(directory+'*')
+	p = re.compile("accList_([0-9]+)")
+	for f in files:
+		m = p.search(f)
+		if m:
+			fileNums.append(m.group(1))
+	return fileNums
+
+def get_completed_files(logFile):
+	completed = []
+	p = re.compile("Completed access list .\/mutations/accList_([0-9]+)")
+	with open(logFile, 'r') as f:
+		for line in f:
+			m = p.match(line)
+			if m:
+				completed.append(m.group(1))
+	return completed
 
 if __name__ == "__main__":
         dbconfig = os.path.join(os.sep, 'data', 'ptmscout', 'ptmscout_web', 'production.ini')
@@ -106,6 +128,18 @@ if __name__ == "__main__":
 	
 	j = 0
 	accFile = FILEBASE+str(j)
-	flag, queryBad = get_mutations_for_accList(accFile, LOGFILE)
+	#flag, queryBad = get_mutations_for_accList(accFile, LOGFILE)
+	fileNums = get_acc_files('./mutations/')
+	print "Files found: "
+	print fileNums
+	completed = get_completed_files(LOGFILE)
+	print "completed: "
+	print completed
+	for done in completed:
+		fileNums.remove(done)
+	
+	print "left to do: "
+	print fileNums
+
 	if(flag==1): 
 		print "Success for %s"%(accFile)
