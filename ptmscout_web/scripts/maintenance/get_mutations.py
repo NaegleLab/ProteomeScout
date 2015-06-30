@@ -38,7 +38,7 @@ if __name__ == "__main__":
         dbinit = DatabaseInitialization()
         dbinit.setUp()
 
-        manager = Proteome.ProteinManager(settings.adminEmail, cache=True, retry=3) # but remember to purge!
+        manager = Proteome.ProteinManager(settings.adminEmail, cache=True, retry=2) # but remember to purge!
 	pcnt = DBSession.query(Protein).join(Protein.species).filter(taxonomies.Species.name=='homo sapiens').count()
 	q = DBSession.query(Protein).join(Protein.species).filter(taxonomies.Species.name=='homo sapiens').count()
 	
