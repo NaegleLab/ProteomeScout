@@ -25,30 +25,31 @@ def get_mutations_for_accList(accFile, logFile):
 	i+=1
 	with open (accFile, 'r') as f:
 		batch_query = [line.rstrip() for line in f]
-		fLog.write("there are %d accessions in %s"%(len(batch_query), accFile))
+		fLog.write("there are %d accessions in %s\n"%(len(batch_query), accFile))
 	try:
 		manager.batch_get_protein_name(batch_query)
 	except Exception, e2: 
-		fLog.write("Error in get_protein_name with error %s, attempting recovery"%(e2))
+		fLog.write("Error in get_protein_name with error %s, attempting recovery\n"%(e2))
 		for query in batch_query:
 			try:
 				seq = manager.get_protein_sequence(query)
 				if seq is None:
-					fLog.write("Error getting sequence %s with error: %s, removing from protein map"%(query, e2))
+					fLog.write("Error getting sequence %s with error: %s, removing from protein map\n"%(query, e2))
 					queryBad.append(query)
 					batch_query.remove(query)
 			except Exception, e3:
-				fLog.write("Error getting sequence %s with error: %s, removing from protein map"%(query, e3))
+				fLog.write("Error getting sequence %s with error: %s, removing from protein map\n"%(query, e3))
 				queryBad.append(query)
 				batch_query.remove(query)
 			else:
-				fLog.write("Success for %s"%(query))
+				fLog.write("Success for %s\n"%(query))
 	else: 
-		fLog.write("No errors on that try catch for batch %s" %(accFile))
+		fLog.write("No errors on that try catch for batch %s\n" %(accFile))
 	
 	fLog.write("Total bad queries: for %s is %d \n"%(accFile, len(queryBad)))
 	for q in queryBad:
 		fLog.write("%s, "%(q))
+	fLog.write("\n")
         i = 0
         for acc in batch_query:
 	    prots = protein.getProteinsByAccession(acc)
@@ -68,14 +69,14 @@ def get_mutations_for_accList(accFile, logFile):
                                 mutantDict['mutant'], acc,
                                 mutantDict['notes'], prot.id)
                         if not new_mutation.consistent(prot_seq):
-                            fLog.write("Loaded mutation does not match protein sequence %s (%d %s) %s -> %s" % (acc, new_mutation.location, prot_seq[new_mutation.location-1], new_mutation.original, new_mutation.mutant))
+                            fLog.write("Loaded mutation does not match protein sequence %s (%d %s) %s -> %s\n" % (acc, new_mutation.location, prot_seq[new_mutation.location-1], new_mutation.original, new_mutation.mutant))
                         elif not prot.hasMutation(new_mutation):
                             j+=1
                             DBSession.add(new_mutation)
 
-                fLog.write("Added %d mutations for protein %d %s"  % (j, prot.id, acc))
+                fLog.write("Added %d mutations for protein %d %s\n"  % (j, prot.id, acc))
             else:
-                fLog.write("Warning: protein sequence mismatch for %d with %s" % (prot.id, acc))
+                fLog.write("Warning: protein sequence mismatch for %d with %s\n" % (prot.id, acc))
 
             i+=1
             if i % FLUSH_FREQ == 0:
@@ -85,13 +86,13 @@ def get_mutations_for_accList(accFile, logFile):
     except Exception, e:
         traceback.print_exc()
         
-        fLog.write("Rolling back database changes... for %s"%(accFile))
+        fLog.write("Rolling back database changes... for %s\n"%(accFile))
         dbinit.rollback()
 	flag = -1
     else:
         print "Finalizing DB changes"
 	flag = 1
-	print "Completed access list %s"%(accFile)
+	print "Completed access list %s\n"%(accFile)
         dbinit.tearDown()
     fLog.close()
     return flag, queryBad
