@@ -95,7 +95,7 @@ def get_mutations_for_accList(accFile, logFile):
         fLog.write("Finalizing DB changes\n")
 	flag = 1
 	fLog.write("Completed access list %s\n"%(accFile))
-        dbinit.tearDown()
+	dbinit.commit()        
     fLog.close()
     return flag, queryBad
 
@@ -126,9 +126,6 @@ if __name__ == "__main__":
         dbinit = DatabaseInitialization()
         dbinit.setUp()
 	
-	j = 0
-	accFile = FILEBASE+str(j)
-	#flag, queryBad = get_mutations_for_accList(accFile, LOGFILE)
 	fileNums = get_acc_files('./mutations/')
 	print "Files found: "
 	print fileNums
@@ -140,6 +137,10 @@ if __name__ == "__main__":
 	
 	print "left to do: "
 	print fileNums
+	for fileNum in fileNums:
+		accFile = FILEBASE+fileNum
+		flag, queryBad = get_mutations_for_accList(accFile, LOGFILE)
 
-	if(flag==1): 
-		print "Success for %s"%(accFile)
+		if(flag==1): 
+			print "Success for %s"%(accFile)
+	dbinit.tearDown()
