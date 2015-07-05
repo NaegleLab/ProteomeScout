@@ -81,21 +81,13 @@ def get_mutations_for_accList(accFile, logFile):
                 fLog.write("Warning: protein sequence mismatch for %d with %s\n" % (prot.id, acc))
 
             i+=1
-            if i % FLUSH_FREQ == 0:
-                DBSession.flush()
 
-        DBSession.flush()
     except Exception, e:
         traceback.print_exc()
         
-        fLog.write("Rolling back database changes... for %s\n"%(accFile))
-        dbinit.rollback()
 	flag = -1
     else:
-        fLog.write("Finalizing DB changes\n")
 	flag = 1
-	fLog.write("Completed access list %s\n"%(accFile))
-	dbinit.commit()        
     fLog.close()
     return flag, queryBad
 
@@ -125,6 +117,7 @@ if __name__ == "__main__":
         DatabaseInitialization.setUpClass(dbconfig)
         dbinit = DatabaseInitialization()
         dbinit.setUp()
+        fLog = open(LOGFILE, 'a')
 	
 	fileNums = get_acc_files('./mutations/')
 	print "Files found: "
@@ -133,7 +126,11 @@ if __name__ == "__main__":
 	print "completed: "
 	print completed
 	for done in completed:
-		fileNums.remove(done)
+		try:
+
+			fileNums.remove(done)
+		except Exception as e:
+			"print cannot find %s in array"%(done)
 	
 	print "left to do: "
 	print fileNums
@@ -143,4 +140,14 @@ if __name__ == "__main__":
 
 		if(flag==1): 
 			print "Success for %s"%(accFile)
+			DBSession.flush()
+			fLog.write("Finalizing DB changes\n")
+			fLog.write("Completed access list %s\n"%(accFile))
+		elif(flag==-1):
+			print "Error on %s"%(accFile)
+			fLog.write("Rolling back database changes... for %s\n"%(accFile))
+			dbinit.rollback()
+
+		DBSession.flush()
 	dbinit.tearDown()
+	fLog.close()
