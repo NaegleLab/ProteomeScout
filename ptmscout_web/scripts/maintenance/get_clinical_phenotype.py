@@ -19,8 +19,8 @@ def query_mutation_info(snps, session):
 
 if __name__ == "__main__":
     try:
-        ini_file = sys.argv[1]
-        config_options = os.path.join(os.sep, 'data', 'ptmscout', 'ptmscout_web', ini_file)
+	
+        config_options = os.path.join(os.sep, 'data', 'ptmscout', 'ptmscout_web', 'production.ini')
         DatabaseInitialization.setUpClass(config_options)
         dbinit = DatabaseInitialization()
         dbinit.setUp()

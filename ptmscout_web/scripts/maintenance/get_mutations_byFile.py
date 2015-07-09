@@ -59,24 +59,27 @@ def get_mutations_for_accList(accFile, logFile):
             prot_seq = manager.get_protein_sequence(acc)
             if prot_seq and prot.sequence == prot_seq.upper():
                 prot_seq = prot_seq.upper()
-                variantTuple = manager.get_variants(acc)
+		try:
+			variantTuple = manager.get_variants(acc)
                 
-                j = 0
-                for mutantDict in variantTuple:
+			j = 0
+			for mutantDict in variantTuple:
                     # for now we're only working with single mutants, but could expand
                     # to double mutants in the future...
-                    if(mutantDict['type'] == "Substitution (single)"):
-                        new_mutation = mutations.Mutation(mutantDict['type'],
-                                mutantDict['location'], mutantDict['original'],
-                                mutantDict['mutant'], acc,
-                                mutantDict['notes'], prot.id)
-                        if not new_mutation.consistent(prot_seq):
-                            fLog.write("Loaded mutation does not match protein sequence %s (%d %s) %s -> %s\n" % (acc, new_mutation.location, prot_seq[new_mutation.location-1], new_mutation.original, new_mutation.mutant))
-                        elif not prot.hasMutation(new_mutation):
-                            j+=1
-                            DBSession.add(new_mutation)
+			    if(mutantDict['type'] == "Substitution (single)"):
+				new_mutation = mutations.Mutation(mutantDict['type'],
+					mutantDict['location'], mutantDict['original'],
+					mutantDict['mutant'], acc,
+					mutantDict['notes'], prot.id)
+				if not new_mutation.consistent(prot_seq):
+				    fLog.write("Loaded mutation does not match protein sequence %s (%d %s) %s -> %s\n" % (acc, new_mutation.location, prot_seq[new_mutation.location-1], new_mutation.original, new_mutation.mutant))
+				elif not prot.hasMutation(new_mutation):
+				    j+=1
+				    DBSession.add(new_mutation)
 
-                fLog.write("Added %d mutations for protein %d %s\n"  % (j, prot.id, acc))
+			fLog.write("Added %d mutations for protein %d %s\n"  % (j, prot.id, acc))
+		except Exception, em:
+			fLog.write("Error adding mutations for protein %d %s: %s\n" %(prot.id, acc, em))
             else:
                 fLog.write("Warning: protein sequence mismatch for %d with %s\n" % (prot.id, acc))
 
@@ -117,7 +120,6 @@ if __name__ == "__main__":
         DatabaseInitialization.setUpClass(dbconfig)
         dbinit = DatabaseInitialization()
         dbinit.setUp()
-        fLog = open(LOGFILE, 'a')
 	
 	fileNums = get_acc_files('./mutations/')
 	print "Files found: "
@@ -141,13 +143,16 @@ if __name__ == "__main__":
 		if(flag==1): 
 			print "Success for %s"%(accFile)
 			DBSession.flush()
+			fLog = open(LOGFILE, 'a')
 			fLog.write("Finalizing DB changes\n")
 			fLog.write("Completed access list %s\n"%(accFile))
+			fLog.close()
 		elif(flag==-1):
 			print "Error on %s"%(accFile)
+			fLog = open(LOGFILE, 'a')
 			fLog.write("Rolling back database changes... for %s\n"%(accFile))
+			fLog.close()
 			dbinit.rollback()
 
 		DBSession.flush()
 	dbinit.tearDown()
-	fLog.close()
