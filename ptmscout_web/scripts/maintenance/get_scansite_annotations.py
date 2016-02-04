@@ -44,10 +44,12 @@ def assign_scansite_to_protein(prot, scansite_predictions):
         pred.value = sp.nickname
         pred.source = sp.parse_source()
         pred.site_pos = int(sp.site[1:])
-        
-        if not prot.hasPrediction(pred.source, pred.value, pred.site_pos):
-            k += 1
-            prot.scansite.append(pred)
+        try: 
+		if not prot.hasPrediction(pred.source, pred.value, pred.site_pos):
+		    k += 1
+		    prot.scansite.append(pred)
+	except Exception, e:
+		print "Error: Could not add prediction %s, %s to protein %s, with error %s"(pred.source, pred.value, prot.id, e)
         
     prot.saveProtein()
     return k
