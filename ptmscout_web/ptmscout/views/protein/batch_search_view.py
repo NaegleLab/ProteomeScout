@@ -2,28 +2,22 @@ from ptmscout.config import strings, settings
 from ptmscout.utils import webutils, protein_utils
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from pyramid.response import FileResponse
 from ptmscout.database import jobs
 from ptmworker import export_tasks
 from random import randint
 import sys, os, csv, time
 
-@view_config(route_name='batch_download', renderer='zip', permission='private')
+@view_config(route_name='batch_download', permission='private')
 def download_batch_annotation_file(request):
     fname = "batch.%s.%d.zip" % (request.matchdict['id'], request.user.id)
     fpath = os.path.join(settings.ptmscout_path, settings.annotation_export_file_path, fname)
     if not os.path.exists(fpath):
         raise HTTPNotFound()
 
-    rows = []
-    with open(fpath, 'r') as ifile:
-        dr = csv.reader(ifile, dialect='excel-tab')
-        for row in dr:
-            rows.append(row)
-
-    request.response.content_type = 'application/zip'
-    request.response.content_disposition = 'attachment; filename="%s"' % (fname)
-    return { 'header': rows[0], 'data': rows[1:] }
-
+    response = FileResponse(fpath, request=request, content_type='application/zip')
+    response.content_disposition = 'attachment; filename="%s"' % (fname)
+    return response
 
 @view_config(route_name='batch_submit', renderer='ptmscout:templates/info/information.pt', permission='private')
 def start_accession_search_job(request):

@@ -261,7 +261,7 @@ def annotate_proteins(protein_result, accessions, batch_id, exp_id, user_id, job
             cw.writerow(row)
 
     experiments = [ experiment.getExperimentById(exp_id) for exp_id in experiment_list ]
-    experiment_metadata_to_tsv(experiments, metadata_filepath)
+    downloadutils.experiment_metadata_to_tsv(experiments, metadata_filepath)
 
     downloadutils.zip_package([data_filepath, metadata_filepath], zip_filepath)
 
