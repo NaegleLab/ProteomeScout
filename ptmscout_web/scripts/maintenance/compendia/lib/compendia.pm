@@ -121,6 +121,101 @@ sub parseModResFile($$$$){
     
 }
 
+# parseCarbohydFile($inputFile, $outputFile, $STRICT, $numRecordsPerFile);
+# Parses uniprot search for CARBOHYD, keeping all modifications and creating output files that are numbered so we can restrict the number of records per file.
+# Inputs: $inputFile - txt format search result
+#         $outputFile - destination for parsed output
+#         $STRICT - boolean, if 1 then only consider MOD_RES known by strict, not by similarity, partial, probably or potential. 
+#         $numRecordsPerFile - number of recrods to allow per file
+# Kristen Naegle
+# November 13, 2015 
+sub parseCarbohydFile($$$$){
+    my ($inputFile, $outputFile, $STRICT, $numRecordsPerFile) = @_;
+    
+    my $in = Bio::SeqIO->new(-file => $inputFile, -format => 'swiss');
+    my $numberResidues = 15;
+    #my $speciesAllowed = returnHashAllowedSpecies();
+    my $countLines = 0;
+    my $numFile = 1;
+    my @files; 
+    my $outputFileNew = $outputFile."_$numFile";
+    
+    open(OUT, ">$outputFileNew") || die "Can't open $outputFileNew for writing\n";
+    print OUT "acc\tpep\tMOD_TYPE\n";
+    push @files, $outputFileNew;	    
+
+    while(my $seq = $in->next_seq()){
+        if($countLines > $numRecordsPerFile){ #check to see if we need to start a new file
+            close(OUT);
+            $countLines = 0;
+            $numFile += 1;
+            $outputFileNew = $outputFile."_$numFile";
+            open(OUT, ">$outputFileNew") || die "Can't open $outputFile for writing\n";
+            print OUT "acc\tpep\tMOD_TYPE\n";
+        }
+	
+        # print $seq."\n";
+        #get accession and sequence
+        my ($errorCode, $sequence, $species, $gene, $geneSyn, $name, $primaryAcc) = getProteinFromRichSeq($seq);
+        my @siteArr;
+        for my $feat_object ($seq->get_SeqFeatures){
+            if($feat_object->primary_tag eq "CARBOHYD"){
+            for my $tag ($feat_object->get_all_tags){
+                for my $value ($feat_object->get_tag_values($tag)){
+                    if($value =~ m/;/){
+                        my @value = split(';', $value);
+                        $value = $value[0];
+                    }
+                    if($STRICT){
+                        if($value =~ m/(similarity|partial|probable|potential)/i){
+                            print "DEBUG: Skipping $value\n";
+                            next; #skip those records that are not 
+                        }
+                    }
+                my $pos = $feat_object->location->start;
+                my $site = substr($sequence,$pos-1,1);
+                my $shortSeq = returnAlignedSequence($numberResidues, $sequence, $site, $pos);
+                print "DEBUG: $shortSeq\n";
+                #my $modSeq = $modSeqStart.lc($site).substr($sequence,$pos+2);
+                my $modSeq = $seq;
+                #return the sequence with the position lower cased.
+                my $code = $value; #get the name 
+                my $name = $value;
+                my $anno = ' ';
+                if($value =~ m/./){
+                    my @code = split(/\./, $value);
+                   $name = $code[0];
+                   if(scalar(@code)>1){
+                  $anno = $code[1]; 
+              }
+
+                }
+                my @site = ($shortSeq, $name, $anno);
+                push @siteArr, \@site;
+		    } #end for my $value
+		}
+		
+	    }
+	}
+    
+	foreach my $site (@siteArr){
+        #print "Site info: @$site->[1]\n";
+	    my ($modSeq, $name, $anno) = @$site;
+	    print OUT "$primaryAcc\t$modSeq\t$name\t$anno\n";
+	    $countLines += 1;
+	}
+	# } #end speices
+    
+    }
+    #foreach my $s (keys %pHash){
+#	print OUT "$primaryAcc\t$sequence\t$s\t$pHash{$s}\n";
+#    }
+    
+    close(OUT);
+    return \@files;
+    
+}
+
 
 
 
