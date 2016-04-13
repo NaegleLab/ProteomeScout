@@ -39,9 +39,9 @@ if __name__ == "__main__":
         dbinit.setUp()
 
         manager = Proteome.ProteinManager(settings.adminEmail, cache=True, retry=2) # but remember to purge!
-	pcnt = DBSession.query(Protein).join(Protein.species).filter(taxonomies.Species.name=='homo sapiens').count()
-	q = DBSession.query(Protein).join(Protein.species).filter(taxonomies.Species.name=='homo sapiens').count()
-	
+        pcnt = DBSession.query(Protein).join(Protein.species).filter(taxonomies.Species.name=='homo sapiens').count()
+        q = DBSession.query(Protein).join(Protein.species).filter(taxonomies.Species.name=='homo sapiens').count()
+
         
         protein_map = {}
         batch_queries = [[]]
@@ -90,8 +90,10 @@ if __name__ == "__main__":
 	    else: 
 		print "No errors on that try catch for batch %d / %d" %(i, len(batch_queries))
 	
-	print "Total bad queries:\n"
-	print queryBad
+		print "Total bad queries:\n"
+		print queryBad
+        print "Building variant table..."
+
         print "Building variant table..."
         i = 0
         for acc in protein_map:
