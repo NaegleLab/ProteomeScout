@@ -7,9 +7,9 @@ from ptmworker import export_tasks
 from random import randint
 import sys, os, csv, time
 
-@view_config(route_name='batch_download', renderer='tsv', permission='private')
+@view_config(route_name='batch_download', renderer='zip', permission='private')
 def download_batch_annotation_file(request):
-    fname = "batch.%s.%d.tsv" % (request.matchdict['id'], request.user.id)
+    fname = "batch.%s.%d.zip" % (request.matchdict['id'], request.user.id)
     fpath = os.path.join(settings.ptmscout_path, settings.annotation_export_file_path, fname)
     if not os.path.exists(fpath):
         raise HTTPNotFound()
@@ -20,7 +20,7 @@ def download_batch_annotation_file(request):
         for row in dr:
             rows.append(row)
 
-    request.response.content_type = 'text/tab-separated-values'
+    request.response.content_type = 'application/zip'
     request.response.content_disposition = 'attachment; filename="%s"' % (fname)
     return { 'header': rows[0], 'data': rows[1:] }
 

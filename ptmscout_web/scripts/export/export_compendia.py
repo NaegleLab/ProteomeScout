@@ -4,14 +4,7 @@ import sys, os
 import csv
 from scripts.progressbar import ProgressBar
 from ptmscout.utils.export_proteins import *
-from ptmscout.utils.downloadutils import experiment_metadata_to_tsv
-import zipfile
-
-def zip_package(flist, zip_filename):
-    zipper = zipfile.ZipFile(zip_filename, 'w')
-    for f in flist:
-        last = f.split(os.sep)[-1]
-        zipper.write(f, last)
+from ptmscout.utils.downloadutils import experiment_metadata_to_tsv, zip_package
 
 def check_species_filter(f, p):
     if f == None:

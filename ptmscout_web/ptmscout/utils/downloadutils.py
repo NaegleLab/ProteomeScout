@@ -1,7 +1,13 @@
 import sys, os, time, csv
 from ptmscout.config import strings, settings
 from ptmscout.utils import uploadutils
+import zipfile
 
+def zip_package(flist, zip_filename):
+    zipper = zipfile.ZipFile(zip_filename, 'w')
+    for f in flist:
+        last = f.split(os.sep)[-1]
+        zipper.write(f, last)
 
 def insert_errors(errors, rows):
     for row in rows:

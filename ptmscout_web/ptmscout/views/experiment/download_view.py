@@ -9,6 +9,9 @@ from ptmscout.config import strings, settings
 from ptmworker import export_tasks
 import time
 import os, csv
+import tempfile
+import zipfile
+
 
 @view_config(route_name='experiment_download', renderer='tsv', permission='private')
 def download_experiment(request):
@@ -34,10 +37,12 @@ def download_experiment(request):
 @decorators.get_experiment('id')
 def download_export_file(context, request, exp):
     fname = "experiment.%d.%d.%s.tsv" % (exp.id, request.user.id, request.matchdict['export_id'])
-    
+
     fpath = os.path.join(settings.ptmscout_path, settings.annotation_export_file_path, fname)
     if not os.path.exists(fpath):
         raise HTTPNotFound()
+
+    experiment_metadata_to_tsv
 
     rows = []
     with open(fpath, 'r') as ifile:

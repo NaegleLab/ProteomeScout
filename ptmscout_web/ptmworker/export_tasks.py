@@ -3,7 +3,7 @@ from ptmscout.config import settings, strings
 from ptmscout.database import experiment, modifications, user, modifications, protein
 import celery
 from ptmworker import notify_tasks, protein_tasks
-from ptmscout.utils import export_proteins
+from ptmscout.utils import export_proteins, downloadutils
 import csv, os, random
 
 NOTIFY_INTERVAL = 5
@@ -183,8 +183,13 @@ def annotate_proteins(protein_result, accessions, batch_id, exp_id, user_id, job
 
     usr = user.getUserById(user_id)
     notify_tasks.set_job_stage.apply_async((job_id, 'annotate', len(protein_map)))
-    filename = "batch.%s.%d.tsv" % (batch_id, user_id)
-    batch_filepath = os.path.join(settings.ptmscout_path, settings.annotation_export_file_path, filename)
+    data_filename = "batch.data.%s.%d.tsv" % (batch_id, user_id)
+    metadata_filename = "batch.metadata.%s.%d.tsv" % (batch_id, user_id)
+    zip_filename =  "batch.%s.%d.zip" % (batch_id, user_id)
+
+    data_filepath = os.path.join(settings.ptmscout_path, settings.annotation_export_file_path, data_filename)
+    metadata_filepath = os.path.join(settings.ptmscout_path, settings.annotation_export_file_path, metadata_filename)
+    zip_filepath = os.path.join(settings.ptmscout_path, settings.annotation_export_file_path, zip_filename)
 
     header = ['protein_id', 'query_accession', 'other_accessions', 'acc_gene', 'locus', 'protein_name',\
                     'species', 'sequence', 'modifications', 'evidence',\
@@ -196,6 +201,8 @@ def annotate_proteins(protein_result, accessions, batch_id, exp_id, user_id, job
     success = 0
     errors = 0
 
+    experiment_list = set()
+
     i = 0
     for acc in accessions:
         if acc in protein_map:
@@ -204,7 +211,8 @@ def annotate_proteins(protein_result, accessions, batch_id, exp_id, user_id, job
             mods = modifications.getMeasuredPeptidesByProtein(p.id, usr)
 
             qaccs = export_proteins.get_query_accessions(mods)
-            n, fmods, fexps = export_proteins.format_modifications(mods, None)
+            n, fmods, fexps, exp_list = export_proteins.format_modifications(mods, None)
+            experiment_list |= exp_list
 
             row = []
             row.append( p.id )
@@ -246,11 +254,16 @@ def annotate_proteins(protein_result, accessions, batch_id, exp_id, user_id, job
         if i % NOTIFY_INTERVAL == 0:
             notify_tasks.set_job_progress.apply_async((job_id, i, len(protein_map)))
 
-    with open(batch_filepath, 'w') as bfile:
+    with open(data_filepath, 'w') as bfile:
         cw = csv.writer(bfile, dialect='excel-tab')
         cw.writerow(header)
         for row in rows:
             cw.writerow(row)
+
+    experiments = [ experiment.getExperimentById(exp_id) for exp_id in experiment_list ]
+    experiment_metadata_to_tsv(experiments, metadata_filepath)
+
+    downloadutils.zip_package([data_filepath, metadata_filepath], zip_filepath)
 
     exp = experiment.getExperimentById(exp_id, secure=False, check_ready=False)
     exp.delete()
