@@ -4,6 +4,7 @@ import urllib2, httplib
 from ptmscout.config import settings
 from ptmscout.utils.decorators import rate_limit
 import logging
+import socket
 
 log = logging.getLogger('ptmscout')
 
@@ -62,5 +63,7 @@ def get_picr(accession, taxon_id):
             log.warning("HTTPError '%s' when querying PICR, retrying (%d / %d)", str(e), i, PICR_QUERY_RETRIES)
         except httplib.BadStatusLine:
             log.warning("Got bad status line from PICR, retrying (%d / %d)", i, PICR_QUERY_RETRIES)
+        except socket.timeout, e:
+            log.warning("PICR Timeout reached, retrying (%d / %d)", i, PICR_QUERY_RETRIES)
 
     raise PICRError()
