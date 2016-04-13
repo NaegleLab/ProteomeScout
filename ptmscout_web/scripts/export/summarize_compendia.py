@@ -1,5 +1,6 @@
 import sys, os, csv, time, pickle
 from ptmscout.config import settings
+import zipfile
 
 def format_size( size ):
     postfix = ['B','KB','MB','GB','TB']
@@ -17,14 +18,15 @@ def format_size( size ):
 if __name__=='__main__':
     summary_struct = {}
     for filename in sys.argv[1:]:
-        if filename.find('.tsv') == -1:
+        if filename.find('.zip') == -1:
             continue
         fpath = os.path.join(settings.ptmscout_path, settings.export_file_path, filename)
 
         i = 0
         j = 0
         with open(fpath, 'r') as f:
-            dr = csv.DictReader(f, dialect='excel-tab')
+            zf = zipfile.ZipFile(fpath, 'r')
+            dr = csv.DictReader(zf.open('data.tsv', 'r'), dialect='excel-tab')
 
             for row in dr:
                 i+=1
@@ -33,7 +35,7 @@ if __name__=='__main__':
                     mods.pop()
                 j += len(mods)
 
-        mod_time = time.ctime(os.path.getmtime(fpath))
+        mod_time = time.ctime( os.path.getmtime(fpath) )
         size = format_size( os.path.getsize(fpath) )
         summary_struct[filename] = {'proteins':i,'modifications':j,'date':mod_time,'size':size}
 

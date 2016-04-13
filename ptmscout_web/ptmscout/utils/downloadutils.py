@@ -82,3 +82,22 @@ def experiment_to_tsv(exp, ms_map = {}):
             exp_tsv.writerow(r)
 
     return headers, exp_filename
+
+def experiment_metadata_to_tsv(exp_list, exp_path=None):
+    if exp_path is None:
+        exp_filename = "experiment_metadata" + str(time.time())
+        exp_path = os.path.join(settings.ptmscout_path, settings.experiment_data_file_path, exp_filename)
+    else:
+        exp_filename = exp_path.split(os.sep)[-1]
+
+    with open(exp_path, 'w') as exp_file:
+        exp_tsv = csv.writer(exp_file, delimiter='\t')
+        exp_tsv.writerow(['ID', 'Name', 'Citation', \
+                          'Description', 'Contact', \
+                          'URL', 'PMID' ])
+        for exp in exp_list:
+            exp_tsv.writerow([ exp.id, exp.name, exp.getLongCitationString(),
+                                exp.description, exp.contact,
+                                exp.getUrl(), exp.PMID ])
+
+    return exp_filename

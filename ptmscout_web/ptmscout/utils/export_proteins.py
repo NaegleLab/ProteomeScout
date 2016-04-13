@@ -50,8 +50,10 @@ def format_modifications(mods, modtype_filter):
     modlist = [ (exp_id, pep.site_pos, "%s-%s" % (pep.getName(), mod.name)) for exp_id, pep, mod in modlist if check_modtype_filter(mod, modtype_filter) ]
 
     explist = defaultdict(set)
+    expid_set = set()
     for exp_id, site_pos, modstr in modlist:
         explist[(site_pos, modstr)].add(exp_id)
+        expid_set.add(exp_id)
 
     modlist = [ (site_pos, modstr) for _, site_pos, modstr in modlist ]
     modlist = [ modstr for site_pos, modstr in sorted( list( set(modlist) ) ) ]
@@ -59,7 +61,7 @@ def format_modifications(mods, modtype_filter):
     explist = [ ','.join([ str(exp_id) for exp_id in sorted( list( explist[k] )) ]) for k in sorted(explist.keys())  ]
 
     n = len(modlist)
-    return n, '; '.join(modlist), '; '.join(explist)
+    return n, '; '.join(modlist), '; '.join(explist), expid_set
 
 def format_region(r):
     tp = r.type.strip()
