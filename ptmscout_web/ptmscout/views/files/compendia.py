@@ -21,14 +21,14 @@ def compendia_listing(request):
         listing = pickle.load(listing_file)
 
     files = [
-                create_file_entry( request, 'proteomescout_everything.tsv', 'All proteins and modifications', listing ),
-                create_file_entry( request, 'proteomescout_vertebrata.tsv', 'All vertebrate protein modifications', listing ),
-                create_file_entry( request, 'proteomescout_mammalia.tsv', 'All mammalian protein modifications', listing ),
-                create_file_entry( request, 'proteomescout_phosphorylation.tsv', 'All species phosphorylations', listing ),
-                create_file_entry( request, 'proteomescout_acetylation.tsv', 'All species acetylation', listing ),
-                create_file_entry( request, 'proteomescout_methylation.tsv', 'All species methylation', listing ),
-                create_file_entry( request, 'proteomescout_ubiquitination.tsv', 'All species ubiquitination', listing ),
-                create_file_entry( request, 'proteomescout_glycosylation.tsv', 'All species glycosylation', listing ),
+                create_file_entry( request, 'proteomescout_everything.zip', 'All proteins and modifications', listing ),
+                create_file_entry( request, 'proteomescout_vertebrata.zip', 'All vertebrate protein modifications', listing ),
+                create_file_entry( request, 'proteomescout_mammalia.zip', 'All mammalian protein modifications', listing ),
+                create_file_entry( request, 'proteomescout_phosphorylation.zip', 'All species phosphorylations', listing ),
+                create_file_entry( request, 'proteomescout_acetylation.zip', 'All species acetylation', listing ),
+                create_file_entry( request, 'proteomescout_methylation.zip', 'All species methylation', listing ),
+                create_file_entry( request, 'proteomescout_ubiquitination.zip', 'All species ubiquitination', listing ),
+                create_file_entry( request, 'proteomescout_glycosylation.zip', 'All species glycosylation', listing ),
             ]
 
     return {'files': files,
@@ -49,7 +49,7 @@ def compendia_download(context, request):
     t = time.strptime( listing[fname]['date'] )
     strt = time.strftime("%Y%m%d", t)
     response = FileResponse(fpath, request)
-    response.content_type = 'text/tab-separated-values'
-    response.content_disposition = 'attachment; filename="%s"' % ('%s_%s.tsv' % (fname[:fname.find('.tsv')], strt))
+    response.content_type = 'application/zip'
+    response.content_disposition = 'attachment; filename="%s"' % ('%s_%s.zip' % (fname[:fname.find('.zip')], strt))
 
     return response
