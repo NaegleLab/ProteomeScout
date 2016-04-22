@@ -42,8 +42,6 @@ def download_export_file(context, request, exp):
     if not os.path.exists(fpath):
         raise HTTPNotFound()
 
-    experiment_metadata_to_tsv
-
     rows = []
     with open(fpath, 'r') as ifile:
         dr = csv.reader(ifile, dialect='excel-tab')
