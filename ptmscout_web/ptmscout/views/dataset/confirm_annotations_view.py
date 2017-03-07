@@ -72,7 +72,7 @@ def upload_confirm(request, exp, session):
             'confirm': confirm}
     
 @view_config(route_name='confirm_annotations', renderer='ptmscout:/templates/upload/upload_confirm.pt', permission='private')
-@decorators.get_experiment('id', types=set(['experiment']))
+@decorators.get_experiment('id', types=set(['experiment', 'dataset']))
 @decorators.get_session('sid', 'annotations')
 def upload_confirm_view(context, request, exp, session):
     return upload_confirm(request, exp, session)
