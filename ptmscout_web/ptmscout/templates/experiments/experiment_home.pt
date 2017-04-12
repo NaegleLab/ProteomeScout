@@ -25,8 +25,6 @@
                 <dd>Select a foreground from data or metadata, view composition and evaluate enrichment</dd>
 
                 <tal:empty tal:condition="experiment.type=='experiment'">
-                    <dt><a href="${request.route_url('experiment_compare', id=experiment.id)}">Compare Datasets</a></dt>
-                    <dd>View novel sites compared to other datasets</dd>
             
                     <tal:empty tal:condition="experiment.ambiguity == 1">
                         <dt><a href="${request.route_url('experiment_ambiguity', id=experiment.id)}">Report Ambiguity</a></dt>

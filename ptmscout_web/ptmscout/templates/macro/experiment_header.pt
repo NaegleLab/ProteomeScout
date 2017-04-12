@@ -6,7 +6,6 @@
     <li><a class="longtask" href="${request.route_url('experiment_subset', id=experiment.id)}" title='Look for enrichments in subsets'>Evaluate</a></li>
 
     <tal:empty tal:condition="experiment.type=='experiment'">
-        <li><a href="${request.route_url('experiment_compare', id=experiment.id)}" title='Compare overlap with other datasets'>Compare</a></li>
           
         <tal:empty tal:condition="experiment.ambiguity == 1">
           <li><a href="${request.route_url('experiment_ambiguity', id=experiment.id)}" title='View ambiguiously assigned peptides'>Ambiguity</a></li>
