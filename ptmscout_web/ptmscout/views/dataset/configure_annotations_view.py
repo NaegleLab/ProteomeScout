@@ -108,7 +108,7 @@ def configure_annotations_POST(request, experiment, session):
     return HTTPFound(request.route_url('confirm_annotations', id=experiment.id, sid=session.id))
 
 @view_config(route_name='configure_annotations', request_method='POST', renderer='ptmscout:/templates/upload/upload_config.pt', permission='private')
-@decorators.get_experiment('id',types=set(['experiment']))    
+@decorators.get_experiment('id',types=set(['experiment', 'dataset']))    
 @decorators.get_session('sid','annotations')
 def configure_annotations_POST_view(context, request, experiment, session):
     return configure_annotations_POST(request, experiment, session)
@@ -166,7 +166,7 @@ def configure_annotations_GET(request, experiment, session):
             }
 
 @view_config(route_name='configure_annotations', request_method='GET', renderer='ptmscout:/templates/upload/upload_config.pt', permission='private')
-@decorators.get_experiment('id',types=set(['experiment']))    
+@decorators.get_experiment('id',types=set(['experiment', 'dataset']))    
 @decorators.get_session('sid','annotations')
 def configure_annotations_GET_view(context, request, experiment, session):
     return configure_annotations_GET(request, experiment, session)

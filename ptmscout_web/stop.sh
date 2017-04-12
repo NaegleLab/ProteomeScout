@@ -5,7 +5,7 @@ set -e
 echo "Cancelling running jobs"
 python scripts/maintenance/cancel_jobs.py cancel
 
-files=$(ls logs/ptmworker.*.pid 2> /dev/null)
+files=$(ls logs/ptmworker.*.pid 2> /dev/null || echo "")
 
 for f in $files
 do

@@ -8,9 +8,9 @@ import os
 import cPickle
 import json, base64
 
-phosphosite_exp_id = 1665 
+phosphosite_exp_id = 1790 
 hprd_exp_id = 1395
-uniprot_exp_id = 1667 
+uniprot_exp_id = 1803 
 
 def get_sorted_children(parent_id, ptms):
     children = [ p for p in ptms if p.parent_id == parent_id ]
