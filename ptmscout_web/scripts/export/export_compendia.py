@@ -41,7 +41,7 @@ if __name__=='__main__':
     db.setUp()
 
     prot_cnt = db.session.query(protein.Protein).count()
-    all_proteins = db.session.query(protein.Protein)
+    all_proteins = db.session.query(protein.Protein.id)
 
     if not os.path.exists(output_fn_root):
         os.makedirs(output_fn_root)
@@ -67,7 +67,8 @@ if __name__=='__main__':
         i = 0
         j = 0
         k = 0
-        for p in all_proteins:
+        for p_id in all_proteins:
+	    p = db.session.query(protein.Protein).get(p_id)
             if check_species_filter(species_filter, p):
                 mods = modifications.getMeasuredPeptidesByProtein(p.id)
                 qaccs = get_query_accessions(mods)
