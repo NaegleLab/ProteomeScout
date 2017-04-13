@@ -98,12 +98,12 @@ def experiment_metadata_to_tsv(exp_list, exp_path=None):
 
     with open(exp_path, 'w') as exp_file:
         exp_tsv = csv.writer(exp_file, delimiter='\t')
-        exp_tsv.writerow(['ID', 'Name', 'Citation', \
-                          'Description', 'Contact', \
+        exp_tsv.writerow(['Experiment ID', 'Name', 'Citation', \
+                          'Description',  \
                           'URL', 'PMID' ])
         for exp in exp_list:
             exp_tsv.writerow([ exp.id, exp.name, exp.getLongCitationString(),
-                                exp.description, exp.contact,
+                                exp.description, 
                                 exp.getUrl(), exp.PMID ])
 
     return exp_filename
