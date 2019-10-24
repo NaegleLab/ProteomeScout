@@ -9,6 +9,7 @@ from collections import defaultdict
 log = logging.getLogger('ptmscout')
 scansite_url = "http://scansite3.mit.edu/ws/proteinScan/proteinName=PTMSCOUT_QUERY/sequence=%s/motifClass=%s/motifNicknames=/stringencyValue=LOW"
 #scansite_url = "http://scansite3.mit.edu/Scansite3Webservice/proteinScan/proteinName=PTMSCOUT_QUERY/sequence=%s/motifClass=%s/motifNicknames=/stringencyValue=LOW"
+scansite_url = "https://scansite4.mit.edu/webservice/proteinscan/identifier=PTMSCOUT_QUERY/sequence=%s/motifclass=%s/stringency=Low"
 
 class MotifNode(object):
     def __init__(self, siteNode):
