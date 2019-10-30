@@ -1,6 +1,7 @@
-from tests.PTMScoutTestCase import IntegrationTestCase
+import sys
+sys.path.append('/Users/bj8th/Documents/GitHub/ProteomeScout/ptmscout_web')
+# from tests.PTMScoutTestCase import IntegrationTestCase
 from ptmworker.helpers import quickgo_tools
-
 class IntegrationTestQuickGoQuery(IntegrationTestCase):
     
     def test_OBO_XML_Parser(self):
