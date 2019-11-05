@@ -9,7 +9,7 @@ log = logging.getLogger('ptmscout')
 
 
 
-quick_go_term_url = "https://www.ebi.ac.uk/QuickGO/services/ontology/go/terms/"
+quick_go_term_url = "https://www.ebi.ac.uk/QuickGO/services/ontology/go/terms/%s/ancestors?relations=is_a"
 quick_go_annot_url = "https://www.ebi.ac.uk/QuickGO/services/annotation/search?geneProductId="
 RETRY_COUNT = 3
 
@@ -25,10 +25,11 @@ class TermNode():
         self.goName = None
         self.goFunction = None
         self.is_a = []
+        self.children = []
 
 def get_GO_term(goId):
     
-    requestURL = quick_go_term_url + goId
+    requestURL = quick_go_term_url % ( goId )
     tn = TermNode()
     i = 0
     while i < RETRY_COUNT:
@@ -43,7 +44,9 @@ def get_GO_term(goId):
             tn.goFunction = GO_function_map[result['aspect']]
             for child in result['children']:
                 if child['relation'] == 'is_a':
-                    tn.is_a.append(child['id'])
+                    tn.children.append(child['id'])
+            for ancestor in result['ancestors']:
+                tn.is_a.append(ancestor)
             break
         except HTTPError as http_err:
             log.error(http_err)
