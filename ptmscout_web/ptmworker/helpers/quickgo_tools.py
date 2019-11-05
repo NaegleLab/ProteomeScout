@@ -1,47 +1,57 @@
 import requests, sys
+from requests.exceptions import HTTPError
 import logging
 import json
-# log = logging.getLogger('ptmscout')
+from ptmscout.config import settings
+from ptmscout.utils.decorators import rate_limit
+
+log = logging.getLogger('ptmscout')
 
 
-
-
-
-go_term = "GO:0005768"
-go_term = go_term.replace(':', '%3A')
-
-requestURL = "https://www.ebi.ac.uk/QuickGO/services/ontology/go/terms/" + go_term
-print(requestURL)
-
-r = requests.get(requestURL, headers={ "Accept" : "application/json"})
-
-js = r.json()
-print js['results']
-# for j in js:
-#     print j
-
-# print js
 
 quick_go_term_url = "https://www.ebi.ac.uk/QuickGO/services/ontology/go/terms/"
 quick_go_annot_url = "https://www.ebi.ac.uk/QuickGO/services/annotation/search?geneProductId="
+RETRY_COUNT = 3
+
+
+GO_function_map = {'cellular_component':'C',
+                'molecular_function':'F',
+                'biological_process':'P'
+                }
+
+class TermNode():
+    def __init__(self):
+        self.goId = None
+        self.goName = None
+        self.goFunction = None
+        self.is_a = []
+
 def get_GO_term(goId):
-    go_term = goId.replace(':', '%')
     
-    request_url = quick_go_term_url + go_term
-    # request_url = f"{quick_go_term_url}{go_term}"
+    requestURL = quick_go_term_url + goId
+    tn = TermNode()
+    i = 0
+    while i < RETRY_COUNT:
+        i+=1
+        try:
+            response = requests.get(requestURL)
+            response.raise_for_status()
+            result = response.json()['results'][0]
 
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        # TODO : ADD CODE TO PULL INFORMATION
-
-    except HTTPError as http_err:
-        log.error(http_err)
-    except Exception as err:
-        log.exception(err)
-    else:
-        log.info("Success! Get Go Term " + goId)
-
+            tn.goId = result['id']
+            tn.goName = result['name']
+            tn.goFunction = GO_function_map[result['aspect']]
+            for child in result['children']:
+                if child['relation'] == 'is_a':
+                    tn.is_a.append(child['id'])
+            break
+        except HTTPError as http_err:
+            log.error(http_err)
+        except Exception as err:
+            log.exception(err)
+        else:
+            log.info("Success! Get Go Term " + goId)
+        return -1, tn
 
 def parse_result(response, annotations, gene_symbols):
     
@@ -77,18 +87,19 @@ def batch_get_GO_annotations(protein_accessions):
     while i < RETRY_COUNT:
         i+=1
         try:
-            query_url = quick_go_annot_url % ("%2C".join(protein_accessions))
+            requestURL = quick_go_annot_url % (",".join(protein_accessions))
             response = requests.get(requestURL, headers={ "Accept" : "application/json"})
             response.raise_for_status()
             parse_result(response, annotations, gene_symbols)
+            break
         except HTTPError as http_err:
             log.error(http_err)
         except Exception as err:
             log.exception(err)
         else:
             log.info("Success! Protein Accessions " + ",".join(protein_accessions))
-            
-    
+        
+
     return annotations, gene_symbols
 
 # import urllib2
