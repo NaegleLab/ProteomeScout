@@ -3,11 +3,39 @@
 import pandas as pd
 import requests
 import re
+from io import StringIO
 from ptmscout.config import settings
 
-def get_picr(accession, taxon_id = None):
+def pull_xref(accession, from_database = 'P_REFSEQ_AC', to_database = 'ACC', xref_db_name = 'swissprot'):
+    """
+    Pulls Uniprot IDs given the provided RefSeq protein id(s) using Uniprot API
+    
+    Returns
+    --------
+    xrefs : list of lists
+        database
+        xref accession
+    """
+    url = 'https://www.uniprot.org/uploadlists/'
+    params = {
+        'from' : from_database,
+        'to' : to_database,
+        'format' : 'tab',
+        'query' : accession
+    }
+    response = requests.get(url, params)
+    if response.ok and response.text:
+        xrefs = pd.read_csv(StringIO(response.text), sep = '\t')
+        xrefs['From'] = xref_db_name
+        return xrefs.values.tolist()
+    return []
+
+
+def get_picr(accession, taxon_id = None, database = None):
     """
     Cross reference accession against Uniprot and RefSeq protein ids
+    If database is provided pull using said database
+    If no database is provided check against Uniprot and RefSeq databases
     
     Parameters
     -----------
@@ -15,6 +43,9 @@ def get_picr(accession, taxon_id = None):
         protein id
     taxon_id : str
         taxon (not currently used)
+    database : str
+        what database accession maps to
+        see https://www.uniprot.org/help/api_idmapping to find database mapping
     
     Returns
     -------
@@ -24,59 +55,18 @@ def get_picr(accession, taxon_id = None):
     """
     if settings.DISABLE_PICR:
         return []
-    xrefs = xref_refseq_uniprot(accession)
-    if xrefs:
+    
+    if database:
+        full_xrefs = []
+        full_xrefs.extend(pull_xref(accession, from_database = database, to_database = 'ACC', xref_db_name = 'swissprot'))
+        full_xrefs.extend(pull_xref(accession, from_database = database, to_database = 'P_REFSEQ_AC', xref_db_name = 'refseq'))
+        return full_xrefs
+    else:
+        xrefs = pull_xref(accession, from_database = 'ACC', to_database = 'P_REFSEQ_AC', xref_db_name = 'refseq')
+        if xrefs:
+            return xrefs
+        xrefs = xrefs = pull_xref(accession, from_database = 'P_REFSEQ_AC', to_database = 'ACC', xref_db_name = 'swissprot')
         return xrefs
-    xrefs = xref_uniprot_refseq(accession)
-    return xrefs
-
-def xref_refseq_uniprot(refseq_id):
-    """
-    Pulls Uniprot IDs given the provided RefSeq protein id(s) using Uniprot database
-    
-    Returns
-    --------
-    xrefs : list of lists
-        database
-        xref accession
-    """
-    url = 'https://www.uniprot.org/uploadlists/'
-    params = {
-        'from' : 'P_REFSEQ_AC',
-        'to' : 'ACC',
-        'format' : 'tab',
-        'query' : refseq_id
-    }
-    response = requests.get(url, params)
-    if response.ok and response.text:
-        xrefs = pd.read_csv(StringIO(response.text), sep = '\t')
-        xrefs['From'] = 'swissprot'
-        return xrefs.values.tolist()
-    return []
-
-def xref_uniprot_refseq(uniprot_id):
-    """
-    Pulls RefSeq protein ids from Uniprot id(s) using Uniprot database
-    
-    Returns
-    --------
-    xrefs : list of lists
-        database
-        xref accession
-    """
-    url = 'https://www.uniprot.org/uploadlists/'
-    params = {
-        'from' : 'ACC+ID',
-        'to' : 'P_REFSEQ_AC',
-        'format' : 'tab',
-        'query' : uniprot_id
-    }
-    response = requests.get(url, params)
-    if response.ok and response.text:
-        xrefs = pd.read_csv(StringIO(response.text), sep = '\t')
-        xrefs['From'] = 'refseq'
-        return xrefs.values.tolist()
-    return []
 
 def version_search(row):
     """
